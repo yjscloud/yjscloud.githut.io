@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-04-24T23:50:28.000Z</updated>
+  <updated>2017-04-24T23:54:26.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     <id>http://yjscloud.com/2017/04/25/Git学习笔记/</id>
     <published>2017-04-24T23:15:57.000Z</published>
-    <updated>2017-04-24T23:50:28.000Z</updated>
+    <updated>2017-04-24T23:54:26.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="1、安装Git"><a href="#1、安装Git" class="headerlink" title="1、安装Git:"></a>1、安装Git:</h2><p>在linux下安装：yum install git</p>
 <p>其他系统安装在这里略去~~~</p>
@@ -57,8 +57,7 @@ Initialized empty Git repository in /root/testgit/.git/
 
 create mode 100644 test_01.txt
 </code></pre><p>简单解释一下git commit命令，-m后面输入的是本次提交的说明，可以输入任意内容，当然最好是有意义的，这样你就能从历史记录里方便地找到改动记录。<br>嫌麻烦不想输入-m “xxx”行不行？确实有办法可以这么干，但是强烈不建议你这么干，因为输入说明对自己对别人阅读都很重要。<br>git commit命令执行成功后会告诉你，1个文件被改动（我们新添加的test_01.txt文件），插入了两行内容（test_01.txt有两行内容）</p>
-<p>##3、撤销命令</p>
-<p>我们将test_01.txt文件的内容改为如下内容：</p>
+<h2 id="3、撤销命令"><a href="#3、撤销命令" class="headerlink" title="3、撤销命令"></a>3、撤销命令</h2><p>我们将test_01.txt文件的内容改为如下内容：</p>
 <p>Git is a distributed version control system.</p>
 <p>Git is free software.</p>
 <p>运行git status命令查看结果：</p>
@@ -119,7 +118,7 @@ Git is free software.
 [master 6c90823] add distributed
 
 1 file changed, 1 insertion(+), 1 deletion(-)
-</code></pre><p>##4、版本回退<br>我们再次对test_01.txt文件进行修改，修改内容如下：</p>
+</code></pre><h2 id="4、版本回退"><a href="#4、版本回退" class="headerlink" title="4、版本回退"></a>4、版本回退</h2><p>我们再次对test_01.txt文件进行修改，修改内容如下：</p>
 <p>Git is a distributed version control system.</p>
 <p>Git is free software distributed under the GPL.</p>
 <p>然后提交：</p>
