@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content=" Linux, Python, RedHat" />
+  <meta name="keywords" content="redhat 7上安装VNC服务器," />
 
 
 
@@ -92,16 +92,20 @@
 
 
 
-<meta name="description" content="独孤九剑，剑指运维！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="tags">
-<meta property="og:url" content="http://yjscloud.com/tags/index.html">
+<meta name="description" content="平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器">
+<meta name="keywords" content="redhat 7上安装VNC服务器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在redhat 7上安装VNC服务器">
+<meta property="og:url" content="http://yjscloud.com/2017/04/25/如何在redhat-7上安装VNC服务器/index.html">
 <meta property="og:site_name" content="yjsloud notes">
-<meta property="og:description" content="独孤九剑，剑指运维！">
-<meta property="og:updated_time" content="2017-04-23T15:21:24.000Z">
+<meta property="og:description" content="平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器">
+<meta property="og:image" content="http://oovxjr0mr.bkt.clouddn.com/vnc%E9%85%8D%E7%BD%AE%EF%BC%881%EF%BC%89.png">
+<meta property="og:image" content="http://oovxjr0mr.bkt.clouddn.com/VNC%E9%85%8D%E7%BD%AE%EF%BC%882%EF%BC%89.png">
+<meta property="og:updated_time" content="2017-04-25T00:27:44.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tags">
-<meta name="twitter:description" content="独孤九剑，剑指运维！">
+<meta name="twitter:title" content="如何在redhat 7上安装VNC服务器">
+<meta name="twitter:description" content="平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器">
+<meta name="twitter:image" content="http://oovxjr0mr.bkt.clouddn.com/vnc%E9%85%8D%E7%BD%AE%EF%BC%881%EF%BC%89.png">
 
 
 
@@ -129,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/tags/"/>
+  <link rel="canonical" href="http://yjscloud.com/2017/04/25/如何在redhat-7上安装VNC服务器/"/>
 
 
 
 
 
-  <title>tags | yjsloud notes</title>
+  <title>如何在redhat 7上安装VNC服务器 | yjsloud notes</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -165,7 +169,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -300,25 +304,284 @@
             
 
   <div id="posts" class="posts-expand">
-  <header class="post-header">
+    
 
-	<h1 class="post-title" itemprop="name headline">tags</h1>
+  
 
+  
+  
+  
 
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/04/25/如何在redhat-7上安装VNC服务器/">
 
-</header>
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yjsloud notes">
+    </span>
 
     
-    
-      <div class="tag-cloud">
-        <div class="tag-cloud-title">
-            目前共计 2 个标签
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何在redhat 7上安装VNC服务器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+	      
+                <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-25T08:05:55+08:00">
+                2017-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/04/25/如何在redhat-7上安装VNC服务器/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
         </div>
-        <div class="tag-cloud-tags">
-          <a href="/tags/Git学习/" style="font-size: 12px; color: #ccc">Git学习</a> <a href="/tags/redhat-7上安装VNC服务器/" style="font-size: 12px; color: #ccc">redhat 7上安装VNC服务器</a>
-        </div>
-      </div>
+      </header>
     
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器</p>
+<a id="more"></a>
+<h2 id="1、安装VNC-Server：yum-y-install-vnc-server"><a href="#1、安装VNC-Server：yum-y-install-vnc-server" class="headerlink" title="1、安装VNC Server：yum -y install vnc-server"></a>1、安装VNC Server：yum -y install vnc-server</h2><p><img src="http://oovxjr0mr.bkt.clouddn.com/vnc%E9%85%8D%E7%BD%AE%EF%BC%881%EF%BC%89.png" alt=""></p>
+<h2 id="2、复制vnc-server的配置模板："><a href="#2、复制vnc-server的配置模板：" class="headerlink" title="2、复制vnc server的配置模板："></a>2、复制vnc server的配置模板：</h2><p>参考命令：cp  vncserver@.service   vncserver@:1.service</p>
+<pre><code>[root@xwq ~]# cd /lib/systemd/system
+[root@xwq system]# cp  vncserver@.service   vncserver@:1.service
+</code></pre><p> 注：VNC 服务本身使用的是5900端口。鉴于有不同的用户使用 VNC ，每个人的连接都会获得不同的端口。配置文件名里面的数字告诉 VNC 服务器把服务运行在5900的子端口上。在我们这个例子里，第一个 VNC 服务会运行在5901（5900 + 1）端口上，之后的依次增加，运行在5900 + x 号端口上。其中 x 是指之后用户的配置文件名 vncserver@:x.service 里面的 x 。<br>如果要用更多的用户连接，需要创建配置文件和端口，添加一个新的用户和端口。你需要创建 vncserver@:2.service 并替换配置文件里的用户名和之后步骤里相应的文件名、端口号。请确保你登录 VNC 服务器用的是你之前配置 VNC 密码的时候使用的那个用户名。</p>
+<h2 id="3、编辑配置模板："><a href="#3、编辑配置模板：" class="headerlink" title="3、编辑配置模板："></a>3、编辑配置模板：</h2><p>参考命令:vim vncserver@:1.service</p>
+<p>把root用户加入登陆用户中，以及修改登陆后的vnc分辨率</p>
+<p>修改前：</p>
+<pre><code>[Unit]
+Description=Remote desktop service (VNC)
+After=syslog.target network.target
+
+[Service]
+Type=forking
+# Clean any existing files in /tmp/.X11-unix environment
+ExecStartPre=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
+ExecStart=/usr/sbin/runuser -l &lt;USER&gt; -c &quot;/usr/bin/vncserver %i&quot;
+PIDFile=/home/&lt;USER&gt;/.vnc/%H%i.pid
+ExecStop=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
+
+[Install]
+WantedBy=multi-user.target
+</code></pre><p>修改后：</p>
+<pre><code>[Unit]
+Description=Remote desktop service (VNC)
+After=syslog.target network.target
+
+[Service]
+Type=forking
+# Clean any existing files in /tmp/.X11-unix environment
+ExecStartPre=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
+ExecStart=/usr/sbin/runuser -l root -c &quot;/usr/bin/vncserver %i -geometry 1376x730&quot;
+PIDFile=/home/root/.vnc/%H%i.pid
+ExecStop=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
+
+[Install]
+WantedBy=multi-user.target
+</code></pre><h2 id="4、配置VNC远程用户"><a href="#4、配置VNC远程用户" class="headerlink" title="4、配置VNC远程用户"></a>4、配置VNC远程用户</h2><p>（1）重新载入 systemd，扫描新的或有变动的单元：systemctl daemon-reload</p>
+<pre><code>[root@xwq system]# systemctl daemon-reload
+</code></pre><p>（2）为登陆的root用户添加一个密码</p>
+<pre><code>[root@xwq system]# vncpasswd root
+
+Password:输入你的密码
+
+Verify:再次输入你的密码
+</code></pre><p>（3）启动vnc桌面</p>
+<pre><code>[root@xwq system]# vncserver :1
+
+You will require a password to access your desktops.
+
+Password:输入你的密码
+
+Verify:再次输入你的密码
+
+xauth:  file /root/.Xauthority does not exist
+
+xauth: (stdin):1:  bad display name &quot;xwq:1&quot; in &quot;add&quot; command
+
+New &apos;xwq:1 (root)&apos; desktop is xwq:1
+
+Creating default startup script /root/.vnc/xstartup
+
+Starting applications specified in /root/.vnc/xstartup
+
+Log file is /root/.vnc/xwq:1.log
+</code></pre><p>（4）用下面的命令（永久的）开启服务</p>
+<pre><code>[root@xwq system]# systemctl enable vncserver@:1.service
+</code></pre><p>如果输入systemctl enable vncserver@:1.service命令输出了如下代码，</p>
+<pre><code>[root@xwq system]# systemctl enable vncserver@:1.service
+
+ln -s &apos;/usr/lib/systemd/system/vncserver@:1.service&apos; &apos;/etc/systemd/system/multi-user.target.wants/vncserver@:1.service&apos;
+</code></pre><p>  请在终端输入这行命令：echo “127.0.0.1 xwq”&gt; /etc/hosts</p>
+<p>  （5）输入以下命令配置防火墙规则：</p>
+<pre><code>[root@xwq ~]# firewall-cmd --permanent --zone=public --add-port=5901/tcp
+
+success
+
+[root@xwq ~]# firewall-cmd --reload
+
+success
+</code></pre><h2 id="5、访问redhat"><a href="#5、访问redhat" class="headerlink" title="5、访问redhat"></a>5、访问redhat</h2><p>使用windows端安装vnc viewer访问redhat，可以成功访问。<br><img src="http://oovxjr0mr.bkt.clouddn.com/VNC%E9%85%8D%E7%BD%AE%EF%BC%882%EF%BC%89.png" alt=""></p>
+<h2 id="6：其他命令"><a href="#6：其他命令" class="headerlink" title="6：其他命令"></a>6：其他命令</h2><p>关闭vnc服务：systemctl stop vncserver@:1.service</p>
+<p>禁止 VNC 服务开机启动：systemctl disable vncserver@:1.service</p>
+<p>关闭防火墙：systemctl stop firewalld.service</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/redhat-7上安装VNC服务器/" rel="tag"># redhat 7上安装VNC服务器</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/25/Git学习笔记/" rel="prev" title="Git学习笔记（1）">
+                Git学习笔记（1） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -352,8 +615,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
@@ -474,6 +746,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、安装VNC-Server：yum-y-install-vnc-server"><span class="nav-number">1.</span> <span class="nav-text">1、安装VNC Server：yum -y install vnc-server</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、复制vnc-server的配置模板："><span class="nav-number">2.</span> <span class="nav-text">2、复制vnc server的配置模板：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、编辑配置模板："><span class="nav-number">3.</span> <span class="nav-text">3、编辑配置模板：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、配置VNC远程用户"><span class="nav-number">4.</span> <span class="nav-text">4、配置VNC远程用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5、访问redhat"><span class="nav-number">5.</span> <span class="nav-text">5、访问redhat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6：其他命令"><span class="nav-number">6.</span> <span class="nav-text">6：其他命令</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

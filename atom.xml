@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-04-25T00:01:14.000Z</updated>
+  <updated>2017-04-25T00:27:44.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -16,13 +16,128 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>如何在redhat 7上安装VNC服务器</title>
+    <link href="http://yjscloud.com/2017/04/25/%E5%A6%82%E4%BD%95%E5%9C%A8redhat-7%E4%B8%8A%E5%AE%89%E8%A3%85VNC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    <id>http://yjscloud.com/2017/04/25/如何在redhat-7上安装VNC服务器/</id>
+    <published>2017-04-25T00:05:55.000Z</published>
+    <updated>2017-04-25T00:27:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器</p>
+<a id="more"></a>
+<h2 id="1、安装VNC-Server：yum-y-install-vnc-server"><a href="#1、安装VNC-Server：yum-y-install-vnc-server" class="headerlink" title="1、安装VNC Server：yum -y install vnc-server"></a>1、安装VNC Server：yum -y install vnc-server</h2><p><img src="http://oovxjr0mr.bkt.clouddn.com/vnc%E9%85%8D%E7%BD%AE%EF%BC%881%EF%BC%89.png" alt=""></p>
+<h2 id="2、复制vnc-server的配置模板："><a href="#2、复制vnc-server的配置模板：" class="headerlink" title="2、复制vnc server的配置模板："></a>2、复制vnc server的配置模板：</h2><p>参考命令：cp  vncserver@.service   vncserver@:1.service</p>
+<pre><code>[root@xwq ~]# cd /lib/systemd/system
+[root@xwq system]# cp  vncserver@.service   vncserver@:1.service
+</code></pre><p> 注：VNC 服务本身使用的是5900端口。鉴于有不同的用户使用 VNC ，每个人的连接都会获得不同的端口。配置文件名里面的数字告诉 VNC 服务器把服务运行在5900的子端口上。在我们这个例子里，第一个 VNC 服务会运行在5901（5900 + 1）端口上，之后的依次增加，运行在5900 + x 号端口上。其中 x 是指之后用户的配置文件名 vncserver@:x.service 里面的 x 。<br>如果要用更多的用户连接，需要创建配置文件和端口，添加一个新的用户和端口。你需要创建 vncserver@:2.service 并替换配置文件里的用户名和之后步骤里相应的文件名、端口号。请确保你登录 VNC 服务器用的是你之前配置 VNC 密码的时候使用的那个用户名。</p>
+<h2 id="3、编辑配置模板："><a href="#3、编辑配置模板：" class="headerlink" title="3、编辑配置模板："></a>3、编辑配置模板：</h2><p>参考命令:vim vncserver@:1.service</p>
+<p>把root用户加入登陆用户中，以及修改登陆后的vnc分辨率</p>
+<p>修改前：</p>
+<pre><code>[Unit]
+Description=Remote desktop service (VNC)
+After=syslog.target network.target
+
+[Service]
+Type=forking
+# Clean any existing files in /tmp/.X11-unix environment
+ExecStartPre=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
+ExecStart=/usr/sbin/runuser -l &lt;USER&gt; -c &quot;/usr/bin/vncserver %i&quot;
+PIDFile=/home/&lt;USER&gt;/.vnc/%H%i.pid
+ExecStop=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
+
+[Install]
+WantedBy=multi-user.target
+</code></pre><p>修改后：</p>
+<pre><code>[Unit]
+Description=Remote desktop service (VNC)
+After=syslog.target network.target
+
+[Service]
+Type=forking
+# Clean any existing files in /tmp/.X11-unix environment
+ExecStartPre=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
+ExecStart=/usr/sbin/runuser -l root -c &quot;/usr/bin/vncserver %i -geometry 1376x730&quot;
+PIDFile=/home/root/.vnc/%H%i.pid
+ExecStop=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
+
+[Install]
+WantedBy=multi-user.target
+</code></pre><h2 id="4、配置VNC远程用户"><a href="#4、配置VNC远程用户" class="headerlink" title="4、配置VNC远程用户"></a>4、配置VNC远程用户</h2><p>（1）重新载入 systemd，扫描新的或有变动的单元：systemctl daemon-reload</p>
+<pre><code>[root@xwq system]# systemctl daemon-reload
+</code></pre><p>（2）为登陆的root用户添加一个密码</p>
+<pre><code>[root@xwq system]# vncpasswd root
+
+Password:输入你的密码
+
+Verify:再次输入你的密码
+</code></pre><p>（3）启动vnc桌面</p>
+<pre><code>[root@xwq system]# vncserver :1
+
+You will require a password to access your desktops.
+
+Password:输入你的密码
+
+Verify:再次输入你的密码
+
+xauth:  file /root/.Xauthority does not exist
+
+xauth: (stdin):1:  bad display name &quot;xwq:1&quot; in &quot;add&quot; command
+
+New &apos;xwq:1 (root)&apos; desktop is xwq:1
+
+Creating default startup script /root/.vnc/xstartup
+
+Starting applications specified in /root/.vnc/xstartup
+
+Log file is /root/.vnc/xwq:1.log
+</code></pre><p>（4）用下面的命令（永久的）开启服务</p>
+<pre><code>[root@xwq system]# systemctl enable vncserver@:1.service
+</code></pre><p>如果输入systemctl enable vncserver@:1.service命令输出了如下代码，</p>
+<pre><code>[root@xwq system]# systemctl enable vncserver@:1.service
+
+ln -s &apos;/usr/lib/systemd/system/vncserver@:1.service&apos; &apos;/etc/systemd/system/multi-user.target.wants/vncserver@:1.service&apos;
+</code></pre><p>  请在终端输入这行命令：echo “127.0.0.1 xwq”&gt; /etc/hosts</p>
+<p>  （5）输入以下命令配置防火墙规则：</p>
+<pre><code>[root@xwq ~]# firewall-cmd --permanent --zone=public --add-port=5901/tcp
+
+success
+
+[root@xwq ~]# firewall-cmd --reload
+
+success
+</code></pre><h2 id="5、访问redhat"><a href="#5、访问redhat" class="headerlink" title="5、访问redhat"></a>5、访问redhat</h2><p>使用windows端安装vnc viewer访问redhat，可以成功访问。<br><img src="http://oovxjr0mr.bkt.clouddn.com/VNC%E9%85%8D%E7%BD%AE%EF%BC%882%EF%BC%89.png" alt=""></p>
+<h2 id="6：其他命令"><a href="#6：其他命令" class="headerlink" title="6：其他命令"></a>6：其他命令</h2><p>关闭vnc服务：systemctl stop vncserver@:1.service</p>
+<p>禁止 VNC 服务开机启动：systemctl disable vncserver@:1.service</p>
+<p>关闭防火墙：systemctl stop firewalld.service</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="redhat 7上安装VNC服务器" scheme="http://yjscloud.com/tags/redhat-7%E4%B8%8A%E5%AE%89%E8%A3%85VNC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Git学习笔记（1）</title>
     <link href="http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     <id>http://yjscloud.com/2017/04/25/Git学习笔记/</id>
     <published>2017-04-24T23:15:57.000Z</published>
-    <updated>2017-04-25T00:01:14.000Z</updated>
+    <updated>2017-04-25T00:34:45.000Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="1、安装Git"><a href="#1、安装Git" class="headerlink" title="1、安装Git:"></a>1、安装Git:</h2><p>在linux下安装：yum install git</p>
+    <content type="html"><![CDATA[<p>Git是什么？</p>
+<p>Git是目前世界上最先进的分布式版本控制系统（没有之一）。</p>
+<p>Git有什么特点？简单来说就是：高端大气上档次！</p>
+<p>Git是所有程序最爱的分布式控制系统！</p>
+<p>Git有是世界上最活跃的开源社区！</p>
+<p>Git上有这无数的开源项目！</p>
+<a id="more"></a>
+<h2 id="1、安装Git"><a href="#1、安装Git" class="headerlink" title="1、安装Git:"></a>1、安装Git:</h2><p>在linux下安装：yum install git</p>
 <p>其他系统安装在这里略去~~~</p>
 <p>安装完成后，需要设置一下，在命令行输入以下命令：</p>
 <pre><code>[root@xwq ~]# git config --global user.name &quot;your name&quot;
@@ -227,8 +342,12 @@ Git is free software distributed under the GPL.
     
     <summary type="html">
     
-      &lt;h2 id=&quot;1、安装Git&quot;&gt;&lt;a href=&quot;#1、安装Git&quot; class=&quot;headerlink&quot; title=&quot;1、安装Git:&quot;&gt;&lt;/a&gt;1、安装Git:&lt;/h2&gt;&lt;p&gt;在linux下安装：yum install git&lt;/p&gt;
-&lt;p&gt;其他系统安装在这里略去~~~&lt;
+      &lt;p&gt;Git是什么？&lt;/p&gt;
+&lt;p&gt;Git是目前世界上最先进的分布式版本控制系统（没有之一）。&lt;/p&gt;
+&lt;p&gt;Git有什么特点？简单来说就是：高端大气上档次！&lt;/p&gt;
+&lt;p&gt;Git是所有程序最爱的分布式控制系统！&lt;/p&gt;
+&lt;p&gt;Git有是世界上最活跃的开源社区！&lt;/p&gt;
+&lt;p&gt;Git上有这无数的开源项目！&lt;/p&gt;
     
     </summary>
     
