@@ -2,23 +2,44 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yjscloud.com/about/index.html</loc>
+    <loc>http://yjscloud.com/2017/04/26/redhat-7%E5%AE%89%E8%A3%85CentOS-7-yum%E6%BA%90/</loc>
     
-    <lastmod>2017-04-25T03:36:14.000Z</lastmod>
+    <lastmod>2017-04-25T23:58:49.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yjscloud.com/2017/04/25/%E5%A6%82%E4%BD%95%E5%9C%A8redhat-7%E4%B8%8A%E5%AE%89%E8%A3%85VNC%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
+    <loc>http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2/</loc>
     
-    <lastmod>2017-04-25T02:55:45.000Z</lastmod>
+    <lastmod>2017-04-25T23:35:18.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     
-    <lastmod>2017-04-25T02:52:23.000Z</lastmod>
+    <lastmod>2017-04-25T23:33:10.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yjscloud.com/2017/04/25/%E5%A6%82%E4%BD%95%E5%9C%A8redhat-7%E4%B8%8A%E5%AE%89%E8%A3%85VNC%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
+    
+    <lastmod>2017-04-25T23:26:28.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yjscloud.com/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2/index.html</loc>
+    
+    <lastmod>2017-04-25T15:27:56.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yjscloud.com/about/index.html</loc>
+    
+    <lastmod>2017-04-25T03:36:14.000Z</lastmod>
     
   </url>
   

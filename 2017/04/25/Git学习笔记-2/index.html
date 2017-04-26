@@ -1,0 +1,982 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Git学习," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="yjsloud notes" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="1、工作区和暂存区我们在testgit文件夹下创建一个文件test_02.txt 123[root@xwq testgit]# lstest_01.txt  test_02.txt 库版本：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。Git的版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及">
+<meta name="keywords" content="Git学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git学习笔记(2)">
+<meta property="og:url" content="http://yjscloud.com/2017/04/25/Git学习笔记-2/index.html">
+<meta property="og:site_name" content="yjsloud notes">
+<meta property="og:description" content="1、工作区和暂存区我们在testgit文件夹下创建一个文件test_02.txt 123[root@xwq testgit]# lstest_01.txt  test_02.txt 库版本：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。Git的版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及">
+<meta property="og:image" content="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B03.png">
+<meta property="og:image" content="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B04.png">
+<meta property="og:image" content="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B07.png">
+<meta property="og:image" content="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B08.png">
+<meta property="og:image" content="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B09.png">
+<meta property="og:image" content="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B010.png">
+<meta property="og:image" content="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B011.png">
+<meta property="og:updated_time" content="2017-04-25T23:35:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git学习笔记(2)">
+<meta name="twitter:description" content="1、工作区和暂存区我们在testgit文件夹下创建一个文件test_02.txt 123[root@xwq testgit]# lstest_01.txt  test_02.txt 库版本：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。Git的版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及">
+<meta name="twitter:image" content="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B03.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2017/04/25/Git学习笔记-2/"/>
+
+
+
+
+
+  <title>Git学习笔记(2) | yjsloud notes</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">yjsloud notes</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">取次花丛懒回顾，半缘修道半缘君</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/04/25/Git学习笔记-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="yjsloud notes">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Git学习笔记(2)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-25T23:27:29+08:00">
+                2017-04-25
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/04/25/Git学习笔记-2/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1、工作区和暂存区"><a href="#1、工作区和暂存区" class="headerlink" title="1、工作区和暂存区"></a>1、工作区和暂存区</h1><p>我们在testgit文件夹下创建一个文件test_02.txt</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# ls</div><div class="line"></div><div class="line">test_01.txt  test_02.txt</div></pre></td></tr></table></figure>
+<p>库版本：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。<br>Git的版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。</p>
+<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B03.png" alt="git笔记3"></p>
+<p>前面讲了我们把文件往Git版本库里添加的时候，是分两步执行的：<br>第一步是用git add把文件添加进去，实际上就是把文件修改添加到暂存区；<br>第二步是用git commit提交更改，实际上就是把暂存区的所有内容提交到当前分支。<br>因为我们创建Git版本库时，Git自动为我们创建了唯一一个master分支，所以，现在，git commit就是往master分支上提交更改。<br>你可以简单理解为，需要提交的文件修改通通放到暂存区，然后，一次性提交暂存区的所有修改。<br>现在，我们再练习一遍，先对test_01.txt做个修改，加上一行内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# cat test_01.txt </div><div class="line"></div><div class="line">Git is a distributed version control system.</div><div class="line"></div><div class="line">Git is free software distributed under the GPL.</div><div class="line"></div><div class="line">Git has a mutable index called stage.</div></pre></td></tr></table></figure>
+<p>然后，在工作区新增的test_02.txt文本文件随便随便写点东西。<br>用git status查看一下状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"># On branch master</div><div class="line"># Changes not staged for commit:</div><div class="line">#   (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</div><div class="line">#   (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)</div><div class="line">#</div><div class="line">#    modified:   test_01.txt</div><div class="line">#</div><div class="line"># Untracked files:</div><div class="line">#   (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</div><div class="line">#</div><div class="line">#    test_02.txt</div><div class="line">no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</div></pre></td></tr></table></figure>
+<p>Git告诉我们，test_01.txt被修改了，而test_02.txt还从来没有被添加过，所以它的状态是Untracked。<br>现在，使用两次命令git add，把test_01.txt和test_02.txt都添加后，用git status再查看一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git add test_01.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git add test_02.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git status</div><div class="line"></div><div class="line"># On branch master</div><div class="line"></div><div class="line"># Changes to be committed:</div><div class="line"></div><div class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line">#    modified:   test_01.txt</div><div class="line"></div><div class="line">#    new file:   test_02.txt</div><div class="line"></div><div class="line">#</div></pre></td></tr></table></figure>
+<p>现在暂存区的状态变成了这样：</p>
+<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B04.png" alt="git笔记4"></p>
+<p>所以，git add命令实际上就是把要提交的所有修改放到暂存区（Stage），然后，执行git commit就可以一次性把暂存区的所有修改提交到分支。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git commit -m &quot;undeestand how stage works&quot;</div><div class="line"></div><div class="line">[master 10820b3] undeestand how stage works</div><div class="line"></div><div class="line"> 2 files changed, 2 insertions(+)</div><div class="line"></div><div class="line"> create mode 100644 test_02.txt</div></pre></td></tr></table></figure>
+<p>现在再来查看工作区，就会发现什么都没有了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"># On branch master</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure>
+<h1 id="2、管理修改"><a href="#2、管理修改" class="headerlink" title="2、管理修改"></a>2、管理修改</h1><p>Git的优秀之处在于他的跟踪并管理的是修改，而非文件。什么是修改？修改就是你对文件内容增删改都叫修改，甚至创建文件夹也算修改，我们通过实验来证明这一点。<br>我们对文件test_01.txt进行如下修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# cat test_01.txt </div><div class="line">Git is a distributed version control system.</div><div class="line">Git is free software distributed under the GPL.</div><div class="line">Git has a mutable index called stage.</div><div class="line">Git tracks changes.</div></pre></td></tr></table></figure>
+<p>然后添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git add test_01.txt</div><div class="line">[root@xwq testgit]# git status</div><div class="line"># On branch master</div><div class="line"># Changes to be committed:</div><div class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line">#</div><div class="line">#    modified:   test_01.txt</div><div class="line">#</div></pre></td></tr></table></figure>
+<p>再次对test_01.txt文件进行修改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# cat test_01.txt </div><div class="line">Git is a distributed version control system.</div><div class="line">Git is free software distributed under the GPL.</div><div class="line">Git has a mutable index called stage.</div><div class="line">Git tracks changes of files.</div></pre></td></tr></table></figure>
+<p>提交：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git commit -m &quot;git tracks changes&quot;</div><div class="line">[master d65f079] git tracks changes</div><div class="line"> 1 file changed, 1 insertion(+)</div></pre></td></tr></table></figure>
+<p>查看状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"># On branch master</div><div class="line"># Changes not staged for commit:</div><div class="line">#   (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</div><div class="line">#   (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)</div><div class="line">#</div><div class="line">#    modified:   test_01.txt</div><div class="line">#</div><div class="line">no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</div></pre></td></tr></table></figure>
+<p>我们发现第二次修改并没有被提交，我们查看一下操作流程：<br>第一次修改 -&gt; git add -&gt; 第二次修改 -&gt; git commit<br>前面我们说到Git管理的是修改，当你用git add命令后，在工作区的第一次修改被放入暂存区，准备提交，但是，在工作区的第二次修改并没有放入暂存区，所以，git commit只负责把暂存区的修改提交了，也就是第一次的修改被提交了，第二次的修改不会被提交。<br>提交后，用git diff HEAD – readme.txt命令可以查看工作区和版本库里面最新版本的区别：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@xwq testgit]# git add test_01.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git diff HEAD -- test_01.txt</div><div class="line"></div><div class="line">diff --git a/test_01.txt b/test_01.txt</div><div class="line"></div><div class="line">index a9c5755..9520f67 100644</div><div class="line"></div><div class="line">--- a/test_01.txt</div><div class="line"></div><div class="line">+++ b/test_01.txt</div><div class="line"></div><div class="line">@@ -1,4 +1,4 @@</div><div class="line"></div><div class="line"> Git is a distributed version control system.</div><div class="line"></div><div class="line"> Git is free software distributed under the GPL.</div><div class="line"></div><div class="line"> Git has a mutable index called stage.</div><div class="line"></div><div class="line">-Git tracks changes.</div><div class="line"></div><div class="line">+Git tracks changes of files.</div></pre></td></tr></table></figure>
+<h1 id="3、撤销修改"><a href="#3、撤销修改" class="headerlink" title="3、撤销修改"></a>3、撤销修改</h1><p>假如你对test_01.txt进行了如下修改：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# cat test_01.txt </div><div class="line"></div><div class="line">Git is a distributed version control system.</div><div class="line"></div><div class="line">Git is free software distributed under the GPL.</div><div class="line"></div><div class="line">Git has a mutable index called stage.</div><div class="line"></div><div class="line">Git tracks changes of files.</div><div class="line"></div><div class="line">My stupid boss still prefers SVN.</div></pre></td></tr></table></figure>
+<p>要如何撤销修改呢？我们用git status命令查看一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"></div><div class="line"># On branch master</div><div class="line"></div><div class="line"># Changes to be committed:</div><div class="line"></div><div class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line">#    modified:   test_01.txt</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line"># Changes not staged for commit:</div><div class="line"></div><div class="line">#   (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</div><div class="line"></div><div class="line">#   (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line">#    modified:   test_01.txt</div><div class="line"></div><div class="line">#</div></pre></td></tr></table></figure>
+<p>其实Git已经告诉你如何撤销修改了，我们只要在命令行输入git checkout – test_01.txt就可以撤销修改：<br>命令git checkout – test_01.txt意思就是，把test_01.txt文件在工作区的修改全部撤销，这里有两种情况：<br>一种是test_01txt自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态；<br>一种是test_01.txt已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态.总之，就是让这个文件回到最近一次git commit或git add时的状态。</p>
+<p>我们现在来查看一下test_01.txt文件内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">root@xwq testgit]# git checkout -- test_01.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# cat test_01.txt</div><div class="line"></div><div class="line">Git is a distributed version control system.</div><div class="line"></div><div class="line">Git is free software distributed under the GPL.</div><div class="line"></div><div class="line">Git has a mutable index called stage.</div><div class="line"></div><div class="line">Git tracks changes of files</div></pre></td></tr></table></figure>
+<p>假如你不小心把文件已经用git add提交到暂存区了又该怎么办？<br>我们查看一下状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"></div><div class="line"># On branch master</div><div class="line"></div><div class="line"># Changes to be committed:</div><div class="line"></div><div class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line">#    modified:   test_01.txt</div><div class="line"></div><div class="line">#</div></pre></td></tr></table></figure>
+<p>同样Git也告诉了我们如何做，用命令git reset HEAD file可以把暂存区的修改撤销掉（unstage），重新放回工作区：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git reset HEAD test_01.txt</div><div class="line"></div><div class="line">Unstaged changes after reset:</div><div class="line"></div><div class="line">M    test_01.txt</div></pre></td></tr></table></figure>
+<p>git reset命令既可以回退版本，也可以把暂存区的修改回退到工作区。当我们用HEAD时，表示最新的版本。</p>
+<h1 id="4、删除文件"><a href="#4、删除文件" class="headerlink" title="4、删除文件"></a>4、删除文件</h1><p>如何在Git删除一个文件呢？ 我们创建一个文件来实验一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# vim test_03.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git add test_03.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git commit -m &quot;add test_03.txt&quot;</div><div class="line"></div><div class="line">[master 436a7c1] add test_03.txt</div><div class="line"></div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"></div><div class="line"> create mode 100644 test_03.txt</div></pre></td></tr></table></figure>
+<p>我们可以用命令git rm test_03.txt直接删除</p>
+<h1 id="5、远程仓库"><a href="#5、远程仓库" class="headerlink" title="5、远程仓库"></a>5、远程仓库</h1><p>Git有一个杀手级的功能，就是远程仓库！！！没有之一！！！说他是世界最强也不为过！！！</p>
+<p>要想使用这个功能我们首先要注册一个GitHub账号。由于本地Git仓库和GitHub仓库之间的传输是通过SSH加密的，所以，需要一点设置：</p>
+<p>第1步：创建SSH Key。在用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有id_rsa和id_rsa.pub这两个文件，如果已经有了，可直接跳到下一步。如果没有，打开Shell（Windows下打开Git Bash），创建SSH Key：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# ssh-keygen -t rsa -C &quot;1303460512@qq.com&quot;</div><div class="line"></div><div class="line">Generating public/private rsa key pair.</div><div class="line"></div><div class="line">Enter file in which to save the key (/root/.ssh/id_rsa):</div><div class="line"></div><div class="line">Created directory &apos;/root/.ssh&apos;.</div><div class="line"></div><div class="line">Enter passphrase (empty for no passphrase):</div><div class="line"></div><div class="line">Enter same passphrase again:</div><div class="line"></div><div class="line">Your identification has been saved in /root/.ssh/id_rsa.</div><div class="line"></div><div class="line">Your public key has been saved in /root/.ssh/id_rsa.pub.</div><div class="line"></div><div class="line">The key fingerprint is:</div><div class="line"></div><div class="line">02:58:bd:65:5c:dc:12:78:4f:fe:bf:6e:5e:e9:84:79 1303460512@qq.com</div><div class="line"></div><div class="line">The key&apos;s randomart image is:</div><div class="line"></div><div class="line">+--[ RSA 2048]----+</div><div class="line"></div><div class="line">|    .. . +oo     |</div><div class="line"></div><div class="line">|   o  . = + o    |</div><div class="line"></div><div class="line">|  . .  + . =     |</div><div class="line"></div><div class="line">|     ..     o    |</div><div class="line"></div><div class="line">|      . S    .   |</div><div class="line"></div><div class="line">|       .      + .|</div><div class="line"></div><div class="line">|             o E.|</div><div class="line"></div><div class="line">|              +.o|</div><div class="line"></div><div class="line">|              +=.|</div><div class="line"></div><div class="line">+-----------------+</div></pre></td></tr></table></figure>
+<p>输入命令一路回车即可，保持默认即可<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">如果一切顺利的话，可以在用户主目录里找到.ssh目录，里面有id_rsa和id_rsa.pub两个文件，这两个就是SSH Key的秘钥对，id_rsa是私钥，不能泄露出去，id_rsa.pub是公钥，可以放心地告诉任何人。</div><div class="line"></div><div class="line">第2步：登陆GitHub，打开GitHub添加key页面：https://github.com/settings/keys</div><div class="line"></div><div class="line">![git笔记5](http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B05.png)</div><div class="line">![git笔记6](http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B06.png)</div><div class="line"></div><div class="line">为什么要添加ssh key呢？不解释自行谷歌</div></pre></td></tr></table></figure></p>
+<h1 id="6、添加远程库"><a href="#6、添加远程库" class="headerlink" title="6、添加远程库"></a>6、添加远程库</h1><p>现在我们既有了本地仓库又有了github里远程仓库，问题来了如何把本地仓里文件备份到远程库里呢？</p>
+<p>第一步：我们登陆github，然后我们创建一个新的仓库<br><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B07.png" alt="git笔记7"><br><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B08.png" alt="git笔记8"></p>
+<p>接下来我们按照github的提示将我们本地库添加到远程库里，运行如下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git remote add origin https://github.com/wenqiuan/test_01.git</div><div class="line"></div><div class="line">[root@xwq testgit]# git push -u origin master</div><div class="line"></div><div class="line">Username for &apos;https://github.com&apos;: wenqiuan</div><div class="line"></div><div class="line">Password for &apos;https://wenqiuan@github.com&apos;: </div><div class="line"></div><div class="line">fatal: unable to access &apos;https://github.com/wenqiuan/test_01.git/&apos;: Empty reply from server</div></pre></td></tr></table></figure>
+<p>发现无法上传文件，我们把linux的防火墙关闭~~~</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# systemctl status firewalld（查看linux防火墙状态）</div><div class="line"></div><div class="line">firewalld.service - firewalld - dynamic firewall daemon</div><div class="line"></div><div class="line">  Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled)</div><div class="line"></div><div class="line">  Active: active (running) since Thu 2017-04-13 19:31:06 EDT; 2h 48min ago</div><div class="line"></div><div class="line">Main PID: 1047 (firewalld)</div><div class="line"></div><div class="line">  CGroup: /system.slice/firewalld.service</div><div class="line"></div><div class="line">          └─1047 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid</div><div class="line"></div><div class="line">Apr 13 19:31:06 xwq systemd[1]: Started firewalld - dynamic firewall daemon.</div><div class="line"></div><div class="line">[root@xwq testgit]# systemctl stop firewalld（关闭防火墙）</div><div class="line"></div><div class="line">[root@xwq testgit]# systemctl disable firewalld（永久关闭防火墙）</div><div class="line"></div><div class="line">rm &apos;/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service&apos;</div><div class="line"></div><div class="line">rm &apos;/etc/systemd/system/basic.target.wants/firewalld.service&apos;</div></pre></td></tr></table></figure>
+<p>再次运行上传命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git remote rm origin</div><div class="line">[root@xwq testgit]# git remote add origin https://github.com/wenqiuan/test_01.git</div><div class="line">[root@xwq testgit]# git push -u origin master</div><div class="line">Username for &apos;https://github.com&apos;: wenqiuan</div><div class="line">Password for &apos;https://wenqiuan@github.com&apos;: </div><div class="line">Counting objects: 28, done.</div><div class="line">Delta compression using up to 2 threads.</div><div class="line">Compressing objects: 100% (22/22), done.</div><div class="line">Writing objects: 100% (28/28), 2.20 KiB | 0 bytes/s, done.</div><div class="line">Total 28 (delta 7), reused 0 (delta 0)</div><div class="line">remote: Resolving deltas: 100% (7/7), done.</div><div class="line">To https://github.com/wenqiuan/test_01.git</div><div class="line"> * [new branch]      master -&gt; master</div><div class="line">Branch master set up to track remote branch master from origin.</div></pre></td></tr></table></figure>
+<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B09.png" alt="git笔记9"></p>
+<p>成功的把本地库推送到远程库<br>从现在起，只要本地作了提交，就可以通过命令：git push origin master<br>把本地master分支的最新修改推送至GitHub，现在，你就拥有了真正的分布式版本库！</p>
+<h1 id="7、从远程库克隆"><a href="#7、从远程库克隆" class="headerlink" title="7、从远程库克隆"></a>7、从远程库克隆</h1><p>现在我们有了本地库也有了远程库，我们现在来聊一下如何克隆远程库<br>第一步：登陆GitHub,创建一个新的仓库，名字就叫test_clone</p>
+<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B010.png" alt="git笔记10"><br><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B011.png" alt="git笔记11"></p>
+<p>现在我们有了远程库了，接下来我们把远程库克隆下了，用如下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git clone git@github.com:wenqiuan/test_clone.git</div><div class="line"></div><div class="line">Cloning into &apos;test_clone&apos;...</div><div class="line"></div><div class="line">The authenticity of host &apos;github.com (192.30.255.113)&apos; can&apos;t be established.</div><div class="line"></div><div class="line">RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.</div><div class="line"></div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line"></div><div class="line">Warning: Permanently added &apos;github.com,192.30.255.113&apos; (RSA) to the list of known hosts.</div><div class="line"></div><div class="line">remote: Counting objects: 3, done.</div><div class="line"></div><div class="line">remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0</div><div class="line"></div><div class="line">Receiving objects: 100% (3/3), done.</div><div class="line"></div><div class="line">[root@xwq testgit]# cd test_clone/</div><div class="line"></div><div class="line">[root@xwq test_clone]# ls</div><div class="line"></div><div class="line">README.md</div></pre></td></tr></table></figure>
+<p>成功克隆！！！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Git学习/" rel="tag"># Git学习</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/26/redhat-7安装CentOS-7-yum源/" rel="next" title="redhat 7安装CentOS 7 yum源">
+                <i class="fa fa-chevron-left"></i> redhat 7安装CentOS 7 yum源
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/25/如何在redhat-7上安装VNC服务器/" rel="prev" title="如何在redhat 7上安装VNC服务器">
+                如何在redhat 7上安装VNC服务器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="我的博客园" target="_blank">我的博客园</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1、工作区和暂存区"><span class="nav-number">1.</span> <span class="nav-text">1、工作区和暂存区</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2、管理修改"><span class="nav-number">2.</span> <span class="nav-text">2、管理修改</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3、撤销修改"><span class="nav-number">3.</span> <span class="nav-text">3、撤销修改</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4、删除文件"><span class="nav-number">4.</span> <span class="nav-text">4、删除文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5、远程仓库"><span class="nav-number">5.</span> <span class="nav-text">5、远程仓库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6、添加远程库"><span class="nav-number">6.</span> <span class="nav-text">6、添加远程库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7、从远程库克隆"><span class="nav-number">7.</span> <span class="nav-text">7、从远程库克隆</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<script type="text/javascript">
+  var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cspan id='cnzz_stat_icon_1261789938'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261789938' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+&nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/baidusitemap.xml">百度网站地图</a></span>
+
+  </span>
+</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+&nbsp;&nbsp;|&nbsp;&nbsp;您是第 <span id="busuanzi_value_site_uv"></span> 位访客
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <!-- 小红心 -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+
+</body>
+</html>

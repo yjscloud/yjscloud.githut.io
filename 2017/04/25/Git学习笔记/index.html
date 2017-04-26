@@ -99,7 +99,7 @@
 <meta property="og:url" content="http://yjscloud.com/2017/04/25/Git学习笔记/index.html">
 <meta property="og:site_name" content="yjsloud notes">
 <meta property="og:description" content="Git是什么？ Git是目前世界上最先进的分布式版本控制系统（没有之一）。 Git有什么特点？简单来说就是：高端大气上档次！ Git是所有程序最爱的分布式控制系统！ Git有是世界上最活跃的开源社区！ Git上有这无数的开源项目！">
-<meta property="og:updated_time" content="2017-04-25T02:52:23.000Z">
+<meta property="og:updated_time" content="2017-04-25T23:33:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Git学习笔记（1）">
 <meta name="twitter:description" content="Git是什么？ Git是目前世界上最先进的分布式版本控制系统（没有之一）。 Git有什么特点？简单来说就是：高端大气上档次！ Git是所有程序最爱的分布式控制系统！ Git有是世界上最活跃的开源社区！ Git上有这无数的开源项目！">
@@ -423,14 +423,14 @@
 <p>Git有是世界上最活跃的开源社区！</p>
 <p>Git上有这无数的开源项目！</p>
 <a id="more"></a>
-<h2 id="1、安装Git"><a href="#1、安装Git" class="headerlink" title="1、安装Git:"></a>1、安装Git:</h2><p>在linux下安装：yum install git</p>
+<h1 id="1、安装Git"><a href="#1、安装Git" class="headerlink" title="1、安装Git:"></a>1、安装Git:</h1><p>在linux下安装：yum install git</p>
 <p>其他系统安装在这里略去~~~</p>
 <p>安装完成后，需要设置一下，在命令行输入以下命令：</p>
 <pre><code>[root@xwq ~]# git config --global user.name &quot;your name&quot;
 
 [root@xwq ~]# git config --global user.email &quot;your email&quot;
 </code></pre><p>注意git config命令的–global参数，用了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置，当然也可以对某个仓库指定不同的用户名和Email地址。</p>
-<h2 id="2、创建版本库"><a href="#2、创建版本库" class="headerlink" title="2、创建版本库"></a>2、创建版本库</h2><p>创建版本库很简单，找到一个合适的地方，创建一个空目录：</p>
+<h1 id="2、创建版本库"><a href="#2、创建版本库" class="headerlink" title="2、创建版本库"></a>2、创建版本库</h1><p>创建版本库很简单，找到一个合适的地方，创建一个空目录：</p>
 <pre><code>[root@xwq ~]# mkdir testgit
 
 [root@xwq ~]# cd testgit/
@@ -458,7 +458,7 @@ Initialized empty Git repository in /root/testgit/.git/
 
 create mode 100644 test_01.txt
 </code></pre><p>简单解释一下git commit命令，-m后面输入的是本次提交的说明，可以输入任意内容，当然最好是有意义的，这样你就能从历史记录里方便地找到改动记录。<br>嫌麻烦不想输入-m “xxx”行不行？确实有办法可以这么干，但是强烈不建议你这么干，因为输入说明对自己对别人阅读都很重要。<br>git commit命令执行成功后会告诉你，1个文件被改动（我们新添加的test_01.txt文件），插入了两行内容（test_01.txt有两行内容）</p>
-<h2 id="3、撤销命令"><a href="#3、撤销命令" class="headerlink" title="3、撤销命令"></a>3、撤销命令</h2><p>我们将test_01.txt文件的内容改为如下内容：</p>
+<h1 id="3、撤销命令"><a href="#3、撤销命令" class="headerlink" title="3、撤销命令"></a>3、撤销命令</h1><p>我们将test_01.txt文件的内容改为如下内容：</p>
 <p>Git is a distributed version control system.</p>
 <p>Git is free software.</p>
 <p>运行git status命令查看结果：</p>
@@ -519,7 +519,7 @@ Git is free software.
 [master 6c90823] add distributed
 
 1 file changed, 1 insertion(+), 1 deletion(-)
-</code></pre><h2 id="4、版本回退"><a href="#4、版本回退" class="headerlink" title="4、版本回退"></a>4、版本回退</h2><p>我们再次对test_01.txt文件进行修改，修改内容如下：</p>
+</code></pre><h1 id="4、版本回退"><a href="#4、版本回退" class="headerlink" title="4、版本回退"></a>4、版本回退</h1><p>我们再次对test_01.txt文件进行修改，修改内容如下：</p>
 <p>Git is a distributed version control system.</p>
 <p>Git is free software distributed under the GPL.</p>
 <p>然后提交：</p>
@@ -759,7 +759,7 @@ Git is free software distributed under the GPL.
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -875,7 +875,7 @@ Git is free software distributed under the GPL.
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1、安装Git"><span class="nav-number">1.</span> <span class="nav-text">1、安装Git:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2、创建版本库"><span class="nav-number">2.</span> <span class="nav-text">2、创建版本库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3、撤销命令"><span class="nav-number">3.</span> <span class="nav-text">3、撤销命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4、版本回退"><span class="nav-number">4.</span> <span class="nav-text">4、版本回退</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1、安装Git"><span class="nav-number">1.</span> <span class="nav-text">1、安装Git:</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2、创建版本库"><span class="nav-number">2.</span> <span class="nav-text">2、创建版本库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3、撤销命令"><span class="nav-number">3.</span> <span class="nav-text">3、撤销命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4、版本回退"><span class="nav-number">4.</span> <span class="nav-text">4、版本回退</span></a></li></ol></div>
             
 
           </div>
