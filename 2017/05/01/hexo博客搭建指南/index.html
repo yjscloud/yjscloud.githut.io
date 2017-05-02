@@ -1,370 +1,471 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>戏子登台</title>
-  <subtitle>唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</subtitle>
-  <link href="/atom.xml" rel="self"/>
+<!doctype html>
+
+
+
   
-  <link href="http://yjscloud.com/"/>
-  <updated>2017-05-02T03:36:31.000Z</updated>
-  <id>http://yjscloud.com/</id>
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
-  <author>
-    <name>Pan</name>
-    
-  </author>
   
-  <generator uri="http://hexo.io/">Hexo</generator>
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
   
-  <entry>
-    <title>bash基础特性</title>
-    <link href="http://yjscloud.com/2017/05/02/bash%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/"/>
-    <id>http://yjscloud.com/2017/05/02/bash基础特性/</id>
-    <published>2017-05-02T03:16:28.000Z</published>
-    <updated>2017-05-02T03:36:31.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="bash中的变量类型："><a href="#bash中的变量类型：" class="headerlink" title="bash中的变量类型："></a>bash中的变量类型：</h2><p> 根据变量的生效范围等标准：</p>
-<pre><code>本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效
-环境变量：生效范围当前shell进程和子进程
-局部变量：生效范围为当前shell进程中某代码片段（通常指函数）
-位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数
-特殊变量：$?,$0,$*,$#,$@
-</code></pre><h3 id="本地变量"><a href="#本地变量" class="headerlink" title="本地变量"></a>本地变量</h3><p>  变量赋值：name=’value’</p>
-<pre><code>可以使用引用：
-    value:
-         (1）可以是直接字符;name=&quot;username&quot;
-        （2）变量引用：name=&quot;$username&quot;
-         (3)命令引用：name=`COMMAND` ,name=$(COMMAND)
-        变量引用：${name},$name
-            &quot;&quot;:弱引用，其中的变量引用会被替换为变量值；
-            &apos;&apos;:强引用，其中的变量引用不会被替换为变量值，而保持原字符串；
-        显示已定义的所有变量
-            set
-        销毁变量
-            unset name
-</code></pre><h3 id="环境变量："><a href="#环境变量：" class="headerlink" title="环境变量："></a>环境变量：</h3><pre><code> 变量声明、赋值：
-     export name=VALUE
-     declare -x name=VALUE
-     变量引用：$name,${name}
-     显示所有环境变量：
-         export
-         env
-         printenv
-     销毁：
-         unset name
-
-     bash有许多内建的环境变量：PATH,SHELL,UID,HISISZE,HOME,PWD,OLD
-
-变量命名法则：
-     1、不能使程序中的保留字，例如if ，for；
-     2、只能使用数字、字母及下划线，且不能一以数字开头
-     3、见名知义：驼峰命名法（尽量不要用大写字母）
-
- 只读变量：
-     readonly name
-     declare -r name
-</code></pre><h3 id="位置变量："><a href="#位置变量：" class="headerlink" title="位置变量："></a>位置变量：</h3><pre><code>在脚本代码中调用通过命令行传递给脚本参数
-    $1,$2,...:对应调用第1、第2等参数
-    $0:命令本身
-    $*：传递给脚本的所有参数
-    $@:传递给脚本的所有参数
-  $#:传递给脚本的参数的个数
-
-实例：判段给出的文件的行数
-    #!/bin/bash
-    linecount=&quot;$(wc -1 $1| cut -d&apos;&apos; -f1)&quot;
-    echo &quot;$1 has $linecount line.&quot;
-</code></pre><h2 id="bash的配置文件："><a href="#bash的配置文件：" class="headerlink" title="bash的配置文件："></a>bash的配置文件：</h2><pre><code>按生效范围划分，存在两类：
-    全局配置：
-        /etc/profile
-            /etc/profile.d/*.sh
-        /etc/bashrc
-    个人配置：        
-        ~/.bash_profile
-        ~./bashrc
-
-按功能划分，存在两类：
-    profile类：为交互式登陆的shell提供配置
-        全局：/etc/profile,/ect/profile.d/*.sh
-        个人：~/.bash_profile
-        功用：
-            （1）用于定义环境变量
-            （2）运行命令或脚本
-    bashrc类：为非交互式登陆的shell提供配置
-      全局： /etc/bashrc
-      个人：~/.bashrc
-
-      功用：
-          （1）定义命令别名
-           (2）定义本地变量
-</code></pre><h2 id="shell登录："><a href="#shell登录：" class="headerlink" title="shell登录："></a>shell登录：</h2><h3 id="交互式登录："><a href="#交互式登录：" class="headerlink" title="交互式登录："></a>交互式登录：</h3><pre><code>直接通过终端输入账号密码登录；
-    使用“su - UserName&quot;或”su -l UserName&quot;切换的用户
-
-    /etc/profile --&gt; /etc/profile.d/*.sh --&gt; ~/.bash_profile --&gt;~/.bashrc --&gt; /etc/bashrc
-</code></pre><h3 id="非交互式登陆"><a href="#非交互式登陆" class="headerlink" title="非交互式登陆:"></a>非交互式登陆:</h3><pre><code> su UserName
-     图型界面下打开的终端
-     执行脚本
-
-     ~/.bashrc --&gt; /etc/basgrc --&gt; /etc/profile.d/*.sh
-
-编辑配置文件定义的新配置的生效方式：
-    （1）重新启动shell进程
-    （2）使用source或.命令进程
-</code></pre><h2 id="bash中的算术运算"><a href="#bash中的算术运算" class="headerlink" title="bash中的算术运算"></a>bash中的算术运算</h2><pre><code>+，-，*，/，%，**，
-
-实现算术运算：
-    （1）let var=算术表达式
-    （2）var=$[算术表达式]
-    （3）var=$((算术表达式))
-    （4）var=$(expr arg1 arg2 arg3 ...)
-        乘法符号有时候需要转义
-        bash有内建的随机数生成器：$RANDOM
-
-        增强型赋值：
-            +=，-=，*=，/=，%=
-
-            let varOPERvalue
-                例如：let count+=1
-
-        自增，自减：
-            let var+=1
-                let var++
-            let var-=1
-                let var--
-</code></pre><h3 id="练习-1）：写一个脚本"><a href="#练习-1）：写一个脚本" class="headerlink" title="练习(1）：写一个脚本"></a>练习(1）：写一个脚本</h3><p>  计算/etc/passwd文件中的第10个用户和第20用户的ID之和</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">	#!/bin/bash</div><div class="line">userid1=$(head -n 10 /etc/passwd | tail -n 1 | cut -d: -f3)</div><div class="line">userid2=$(head -n 20 /etc/passwd | tail -n 1 | cut -d: -f3)</div><div class="line">useridsum=$[$userid1+userid2]</div><div class="line">echo &quot;uid sum:$useridsum&quot;</div></pre></td></tr></table></figure>
-<h3 id="练习-2-：写一个脚本"><a href="#练习-2-：写一个脚本" class="headerlink" title="练习(2)：写一个脚本"></a>练习(2)：写一个脚本</h3><p> 传递两个文件路径作为参数给脚本，计算着两个文件中所有空白行之和</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line">spaceline1=$(grep &quot;^[[:space:]]*$&quot; $1 | wc -l)</div><div class="line">spaceline2=$(grep &quot;^[[:space:]]*$&quot; $2 | wc -l)</div><div class="line">echo &quot;the sum of space line:$[$spaceline1+$spaceline2]&quot;</div></pre></td></tr></table></figure>
-<h2 id="bash测试"><a href="#bash测试" class="headerlink" title="bash测试"></a>bash测试</h2><p> 条件测试：<br>     判断某需求是否满足，需要由测试机制来实现</p>
-<pre><code>Note：专用的测试表达式需要由测试命令辅助完成测试过程
-
-测试命令：
-    test EXPRESSION
-    [ EXPRESSION ]
-    [[ EXPRESSION ]]
-    Note:EXPRESSION前后必须有空白字符：
-
-    bash的测试类型：
-        数值测试：
-            -gt:是否大于
-            -ge：是否大于等于
-            -eq:是否等于
-            -ne:是否不等于
-            -lt：是否小于
-            -le：是否小于等于
-    字符串测试：
-            ==/=：是否等于
-            &gt;:是否等于
-            &lt;:是否小于
-            ！=：是否等于
-            =~：左侧字符是否能够被右侧的PATTERN所匹配
-                Note:此表达式一般用于[[ ]]中
-            -z：”SIRING&quot;：测试字符串是否为空，空则为真，不空为假
-            -n:”SIRING&quot;：测试字符串是否不空，不空则为真，空则为假
-
-            Note：用于字符串比较式时的用到的操作数都应该使用引号；
-
-    文件测试
-</code></pre><h2 id="bash自定义退出码"><a href="#bash自定义退出码" class="headerlink" title="bash自定义退出码"></a>bash自定义退出码</h2><pre><code>exit [n]:自定义退出状态码
-    注意：脚本中一旦遇到exit命令，脚本会立即终止，终止退出状态取决于exit命令后面的数字，如果未给脚本指定退出状态码，整个脚本的退出状态码取决于脚本中执行的最后一条命令的状态码；
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;bash中的变量类型：&quot;&gt;&lt;a href=&quot;#bash中的变量类型：&quot; class=&quot;headerlink&quot; title=&quot;bash中的变量类型：&quot;&gt;&lt;/a&gt;bash中的变量类型：&lt;/h2&gt;&lt;p&gt; 根据变量的生效范围等标准：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;本地变量
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
   
-  <entry>
-    <title>linux正则表达式</title>
-    <link href="http://yjscloud.com/2017/05/02/linux%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
-    <id>http://yjscloud.com/2017/05/02/linux正则表达式/</id>
-    <published>2017-05-02T02:54:46.000Z</published>
-    <updated>2017-05-02T03:13:58.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="Linux正则表达式"><a href="#Linux正则表达式" class="headerlink" title="Linux正则表达式"></a>Linux正则表达式</h2><pre><code>grep : 最早的文本匹配程序，使用POSIX定义的基本正则表达式（BRE）来匹配文本。
-egrep : 扩展式grep，其使用扩展式正规表达式（ERE）来匹配文本。
-fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。并且是唯一可
-
- grep：
-     作用：文本过滤，文本搜索工具，根据用户指定的模式对目标文本进行匹配检查，打印匹配结果
-     模式：由正则表达式字符及文本所填写的过滤条件，
-     正则表达式有两类：
-         基本正则表达式：BRE
-         扩展正则表达式：ERE
-             表达式：grep [OPTIONS] PATTERN [FILE...]
-                 选项：
-                     --color=auto:对匹配到的文本着色显示
-                     -v: 显示不能够被pattern匹配到的行
-                     -i:忽略字符大小写
-                     -o:仅显示匹配到的字符串
-                     -s:不显示错误信息，通常与-q并用
-                     -q:静默模式，不输出任何信息
-                     -A #：after ,后#行
-                     -B #：before，前#行
-                     -C #：context,前后各#行
-</code></pre><h2 id="基本正则表达式介绍"><a href="#基本正则表达式介绍" class="headerlink" title="基本正则表达式介绍"></a>基本正则表达式介绍</h2><h3 id="正则表达式组成"><a href="#正则表达式组成" class="headerlink" title="正则表达式组成"></a>正则表达式组成</h3><pre><code>一般字符：没有特殊意义的字符
-元字符（meta字符）：在正则表达式中有特殊意义
-</code></pre><h3 id="元字符匹配"><a href="#元字符匹配" class="headerlink" title="元字符匹配"></a>元字符匹配</h3><pre><code> .:匹配任意单个字符；
- \：通常用于打开或关闭后续字符的特殊含义，如\(...\)与{...\}
- []:匹配指定范围内的任意单个字符；
- [^]:匹配指定范围外的任意单个字符；
- 匹配次数:用在要指定次数的字符后面，用于指定前面的字符要出现的次数；
- *：匹配前面的字符任意次；
-     例如：grep &quot;x*y&quot;
-             abxy
-             xay
- .*：任意长度的任意字符；
- + : 匹配前面正则表达式的一个或多个扩展
-? : 匹配前面正则表达式的零个或一个扩展
-| : 匹配|符号前或后的正则表达式
-( ) : 匹配方括号括起来的正则表达式群
- \?：匹配其前面的字符0或1次，即前面的可有可无；
-     例如：x\?y
-         xy,y,ay
- \+：匹配其前面的字符至少1次；
- \{m\}:匹配前面的字符m次；
-     例如：x\{2\}y
-         xy,xxy,y,xxxxy,xyy
- \{m,n\}:匹配前面的字符至少m次，至多n次；
-     例如：x\{2,5\}y
-         xy,y,xxy
-     \{0，n\}:匹配前面的字符至多n次
-     \{m,\}:匹配前面的字符至少m次
-</code></pre><h3 id="字符集-：："><a href="#字符集-：：" class="headerlink" title="字符集[：：]"></a>字符集[：：]</h3><pre><code>[:alnum:]:数字字符
-[:digit:] : 数字字符
-[:punct:] : 标点符号字符
-[:alpha:] : 字母字符
-[:graph:] : 非空格字符
-[:space:] : 空格字符
-[:blank:] : 空格与定位字符
-[:lower:] : 小写字母字符
-[:upper:] : 大写字母字符
-[:cntrl:] : 控制字符
-[:print:] : 可显示的字符
-[:xdigit:] : 16进制数字
-</code></pre><h3 id="位置锚定"><a href="#位置锚定" class="headerlink" title="位置锚定"></a>位置锚定</h3><pre><code>位置锚定：
-   ^: 行首锚定；
-       写在模式最左侧
-   $: 行尾锚定：
-       写在模式最右侧
-       ^$: 空白行
-
-       不包含特殊字符的连续字符组成的串叫单词：
-       \&lt;或\b: 词首，出现于单词左侧,
-       \&gt;或\b: 词尾，出现于单词右侧,
-       \&lt;PATTERN\&gt;:匹配整个单词：
-</code></pre><h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><pre><code>\(\)：将一个或多个字符捆绑在一起，当做一个整体进行处理；
-    例如：\(ab\)*
-        分组中的模式匹配到的内容，可由正则表达式引擎记忆在内存中，之后可被引用
-</code></pre><h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><pre><code>例如\(ab\(x\)y\).*\(mn\)
-    有编号：自左而后的左括号，以及与其匹配右括号
-    \(a\(b\(c\)\)mn\(x\)\).*\1
-
-    \#: 引用第n个括号所匹配到的内容，而非模式本身
-        例如：
-            \(ab\?c\).*\1
-                abcmnaaa
-                abcmnabc
-                abcmnac
-                acxyac
-</code></pre><h3 id="练习（1）"><a href="#练习（1）" class="headerlink" title="练习（1）"></a>练习（1）</h3><pre><code>1、显示/proc/meminfo文件中以大写或小写S开头的行；
-    grep -i &apos;^s&apos; /proc/meninfo
-    grep &apos;^[Ss]&apos; /proc/meninfo
-2、显示/etc/passwd文件中不以/bin/bash结尾的行；
-    grep -v &apos;/bin/bash$&apos; /etc/passwd
-3、显示/etc/passwd文件中ID号最大的用户名；
-    sort -t: -k3 -n /etc/passwd | tail -1 | cut -d: -f1
-4、如果用户root存在，显示其默认的shell程序；
-    id root &amp;&gt; /dev/null &amp;&amp; grep &quot;^root\&gt;&quot; /etc/passwd | cut -d: -f7
-5、找出/etc/passwd中的两位或三位数；
-    grep &quot;\&lt;[0-9]\{2,3\}\&gt;&quot; /etc/passwd
-6、显示/etc/grub2.cfg文件中，至少以一个空白字符开头的且后面存在空白字符的行；
-    grep &quot;^[[:space:]]\+[^[:space:]]&quot; /etc/grub2.cfg
-7、找出”netstat -tan&quot;命令的结果中以&apos;LISTEN&apos;后跟0、1或多个空白字符结尾的行；
-    netstat -tan | grep &quot;[LISTEN[[:space:]]*$&quot;
-8、添加用户bash、testbash、basher以及nologin(其shell为sbin/nologin);而后找出/etc/passwd文件中用户名同shell名的行，
-    useradd bash
-    useradd basher
-    useradd testbash
-    useradd -s /sbin/nologin nologin
-    grep &quot;^\([[:alnum:]]\+\&gt;\).*\1$&quot; /etc/passwd
-</code></pre><h3 id="练习-2"><a href="#练习-2" class="headerlink" title="练习(2)"></a>练习(2)</h3><pre><code>1、写一个脚本，实现如下功能
-    如果user1用户存在，就显示其存在，否则加之；
-    显示添加的用户的id号等信息；
-    #!/bin/bash
-   id user1 &amp;&gt; /dev/null &amp;&amp; echo &quot;user1 exists.&quot; || useradd user1
-   id user1
-
-
-2、写一个脚本，完成如下功能
-    如果root用户登陆了当前系统，就显示root用户在线；否则说明其未登陆
-    w | grep &quot;^root\&gt;&quot; &amp;&gt; /dev/null &amp;&amp; echo &quot;root logged&quot; || echo &quot;root not logged.&quot;
-</code></pre><h3 id="egrep及扩展的正则表达式"><a href="#egrep及扩展的正则表达式" class="headerlink" title="egrep及扩展的正则表达式"></a>egrep及扩展的正则表达式</h3><p>egrep = grep -E</p>
-<pre><code>egrep [OPTIONS] PATTERN [FILE...]
-
- 扩展正则表达式的元字符：
-     字符匹配：
-         .
-         []
-         [^]
-     次数匹配：
-         *
-         ？：0或1次
-         +：1次或多次
-         {m}:匹配m次
-         {m,n}:至少m,至多n次
-     锚定：
-         ^
-         $
-        \&lt;,\b
-        \&gt;,\b
-    分组：
-        （）
-
-        后向引用：\1,\2.....
-    或者：
-        a|b
-            （C|c)at:C或cat
-</code></pre><h3 id="练习-3"><a href="#练习-3" class="headerlink" title="练习(3)"></a>练习(3)</h3><pre><code>1、显示当前系统root、centos或user1用户的默认shell和UID
-            grep -E &apos;^(root|centos|user1)\&gt;&apos; /etc/passwd | cut -d: -f1,3,7
-
-2、找出/etc/rc.d/init.d/funtions文件（centos）中某单词后面跟一个小括号的行
-           grep -E -o &quot;^[_[:alpha:]]+(\)&quot; /etc/rc.d/init.d/funtions
-
-3、使用echo输出一绝对路径，使用egrep取出其基名
-           echo &quot;/mmt/sdc&quot; | grep -E -o &quot;[^/]+/?$&quot; | cut -d&quot;/&quot; -f1
-       进一步使用egrep取出路径的目录名，类似于dirname命令的结果
-</code></pre><h3 id="fgrep-不支持正则表达式搜索"><a href="#fgrep-不支持正则表达式搜索" class="headerlink" title="fgrep :不支持正则表达式搜索"></a>fgrep :不支持正则表达式搜索</h3>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;Linux正则表达式&quot;&gt;&lt;a href=&quot;#Linux正则表达式&quot; class=&quot;headerlink&quot; title=&quot;Linux正则表达式&quot;&gt;&lt;/a&gt;Linux正则表达式&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;grep : 最早的文本匹配程序，使用POSIX定义的基本正
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
   
-  <entry>
-    <title>hexo博客搭建指南</title>
-    <link href="http://yjscloud.com/2017/05/01/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/"/>
-    <id>http://yjscloud.com/2017/05/01/hexo博客搭建指南/</id>
-    <published>2017-05-01T11:14:56.000Z</published>
-    <updated>2017-05-02T05:45:32.000Z</updated>
+  
+
+  
     
-    <content type="html"><![CDATA[<p>自己在腾讯云买了一个域名半年来都不知道做什么（学生党购买腾讯云只要1块钱！！！），Hexo优雅整洁深深的把我给吸引住了，于是动手搭了一个博客出来，在搭建博客的过程中碰到很多问题，我在参考别人的博文的基础上整理此文，一是方便其他搭建自己的人博客，二是给自己的学习之旅做个总结。</p>
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="hexo," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="自己在腾讯云买了一个域名半年来都不知道做什么（学生党购买腾讯云只要1块钱！！！），Hexo优雅整洁深深的把我给吸引住了，于是动手搭了一个博客出来，在搭建博客的过程中碰到很多问题，我在参考别人的博文的基础上整理此文，一是方便其他搭建自己的人博客，二是给自己的学习之旅做个总结。 我的博客地址：yjscloud.com">
+<meta name="keywords" content="hexo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo博客搭建指南">
+<meta property="og:url" content="http://yjscloud.com/2017/05/01/hexo博客搭建指南/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="自己在腾讯云买了一个域名半年来都不知道做什么（学生党购买腾讯云只要1块钱！！！），Hexo优雅整洁深深的把我给吸引住了，于是动手搭了一个博客出来，在搭建博客的过程中碰到很多问题，我在参考别人的博文的基础上整理此文，一是方便其他搭建自己的人博客，二是给自己的学习之旅做个总结。 我的博客地址：yjscloud.com">
+<meta property="og:image" content="http://op9ud5mja.bkt.clouddn.com/hexo%E6%90%AD%E5%BB%BA01.png">
+<meta property="og:updated_time" content="2017-05-02T05:45:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hexo博客搭建指南">
+<meta name="twitter:description" content="自己在腾讯云买了一个域名半年来都不知道做什么（学生党购买腾讯云只要1块钱！！！），Hexo优雅整洁深深的把我给吸引住了，于是动手搭了一个博客出来，在搭建博客的过程中碰到很多问题，我在参考别人的博文的基础上整理此文，一是方便其他搭建自己的人博客，二是给自己的学习之旅做个总结。 我的博客地址：yjscloud.com">
+<meta name="twitter:image" content="http://op9ud5mja.bkt.clouddn.com/hexo%E6%90%AD%E5%BB%BA01.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2017/05/01/hexo博客搭建指南/"/>
+
+
+
+
+
+  <title>hexo博客搭建指南 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/05/01/hexo博客搭建指南/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                hexo博客搭建指南
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-01T19:14:56+08:00">
+                2017-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/01/hexo博客搭建指南/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  6,295
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  31
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+        <div class="post-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+          
+          
+            <div class="post-gallery-row">
+              <a class="post-gallery-img fancybox"
+                 href="http://op9ud5mja.bkt.clouddn.com/hexo%E6%90%AD%E5%BB%BA01.png" rel="gallery_cj274rjmq00088p8orsms57yv"
+                 itemscope itemtype="http://schema.org/ImageObject" itemprop="url">
+                <img src="http://op9ud5mja.bkt.clouddn.com/hexo%E6%90%AD%E5%BB%BA01.png" itemprop="contentUrl"/>
+              </a>
+            
+          
+
+          
+          </div>
+        </div>
+      
+
+      
+        <p>自己在腾讯云买了一个域名半年来都不知道做什么（学生党购买腾讯云只要1块钱！！！），Hexo优雅整洁深深的把我给吸引住了，于是动手搭了一个博客出来，在搭建博客的过程中碰到很多问题，我在参考别人的博文的基础上整理此文，一是方便其他搭建自己的人博客，二是给自己的学习之旅做个总结。</p>
 <p>我的博客地址：<a href="http://yjscloud.com/">yjscloud.com</a></p>
 <a id="more"></a>
 <h2 id="Hexo介绍"><a href="#Hexo介绍" class="headerlink" title="Hexo介绍"></a>Hexo介绍</h2><p>Hexo是基于NodeJs的静态博客框架，简单、轻量，其生成的静态网页可以托管在Github和Heroku上。</p>
@@ -523,493 +624,502 @@ fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。�
 <p>保存后终端执行</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hexo clean</div><div class="line">hexo g</div><div class="line">hexo d</div></pre></td></tr></table></figure>
 <p>到这里基本上完成了hexo的配置和项目的上传,您也拥有了自己的hexo博客！！！</p>
-]]></content>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/hexo/" rel="tag"># hexo</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/02/linux正则表达式/" rel="next" title="linux正则表达式">
+                <i class="fa fa-chevron-left"></i> linux正则表达式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/26/redhat-7安装CentOS-7-yum源/" rel="prev" title="redhat 7安装CentOS 7 yum源">
+                redhat 7安装CentOS 7 yum源 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
     
-    <summary type="html">
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
     
-      &lt;p&gt;自己在腾讯云买了一个域名半年来都不知道做什么（学生党购买腾讯云只要1块钱！！！），Hexo优雅整洁深深的把我给吸引住了，于是动手搭了一个博客出来，在搭建博客的过程中碰到很多问题，我在参考别人的博文的基础上整理此文，一是方便其他搭建自己的人博客，二是给自己的学习之旅做个总结。&lt;/p&gt;
-&lt;p&gt;我的博客地址：&lt;a href=&quot;http://yjscloud.com/&quot;&gt;yjscloud.com&lt;/a&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="hexo" scheme="http://yjscloud.com/tags/hexo/"/>
-    
-  </entry>
+  </div>
+
+
+        </div>
+        
+          
   
-  <entry>
-    <title>redhat 7安装CentOS 7 yum源</title>
-    <link href="http://yjscloud.com/2017/04/26/redhat-7%E5%AE%89%E8%A3%85CentOS-7-yum%E6%BA%90/"/>
-    <id>http://yjscloud.com/2017/04/26/redhat-7安装CentOS-7-yum源/</id>
-    <published>2017-04-25T23:36:38.000Z</published>
-    <updated>2017-05-02T03:38:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<p> 由于redhat 的更新包只对注册的用户生效，所以需要自己手动更改成CentOS 的更新包，<br>CentOS几乎和redhat是一样的，所以无需担心软件包是否可安装，下面是安装步骤。</p>
-<a id="more"></a>
-<h1 id="首先查看redhat-7-0系统本身所安装的那些yum-软件包："><a href="#首先查看redhat-7-0系统本身所安装的那些yum-软件包：" class="headerlink" title="首先查看redhat 7.0系统本身所安装的那些yum 软件包："></a>首先查看redhat 7.0系统本身所安装的那些yum 软件包：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# rpm -qa | grep yum</div><div class="line">yum-utils-1.1.31-24.el7.noarch</div><div class="line">yum-langpacks-0.4.2-3.el7.noarch</div><div class="line">yum-metadata-parser-1.1.4-10.el7.x86_64</div><div class="line">yum-rhn-plugin-2.0.1-4.el7.noarch</div><div class="line">PackageKit-yum-0.8.9-11.el7.x86_64</div><div class="line">yum-3.4.3-118.el7.noarch</div></pre></td></tr></table></figure>
-<h1 id="卸载这些软件包："><a href="#卸载这些软件包：" class="headerlink" title="卸载这些软件包："></a>卸载这些软件包：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# rpm -e yum-3.4.3-118.el7.noarch --nodeps</div><div class="line">[root@pan ~]# rpm -e yum-utils-1.1.31-24.el7.noarch --nodeps</div><div class="line">[root@pan ~]# rpm -e yum-rhn-plugin-2.0.1-4.el7.noarch --nodeps</div><div class="line">[root@pan ~]# rpm -e yum-metadata-parser-1.1.4-10.el7.x86_64 --nodeps</div><div class="line">[root@pan ~]# rpm -e yum-langpacks-0.4.2-3.el7.noarch --nodeps</div><div class="line">[root@pan ~]# rpm -e PackageKit-yum-0.8.9-11.el7.x86_64 --nodeps</div></pre></td></tr></table></figure>
-<h1 id="保证本机电脑能上网"><a href="#保证本机电脑能上网" class="headerlink" title="保证本机电脑能上网:"></a>保证本机电脑能上网:</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# ping www.baidu.com</div><div class="line">PING www.a.shifen.com (163.177.151.110) 56(84) bytes of data.</div><div class="line">64 bytes from 163.177.151.110: icmp_seq=1 ttl=49 time=13.1 ms</div><div class="line">64 bytes from 163.177.151.110: icmp_seq=2 ttl=49 time=6.80 ms</div><div class="line">64 bytes from 163.177.151.110: icmp_seq=3 ttl=49 time=6.77 ms</div><div class="line">^C</div><div class="line">--- www.a.shifen.com ping statistics ---</div><div class="line">3 packets transmitted, 3 received, 0% packet loss, time 2007ms</div><div class="line">rtt min/avg/max/mdev = 6.777/8.917/13.168/3.006 ms</div></pre></td></tr></table></figure>
-<p>进入以下网站上面查看软件包的版本是否升级或者找到自己系统所对应的文件包版本更新；</p>
-<p>网易163网络源地址：<a href="http://mirrors.163.com/" target="_blank" rel="external">http://mirrors.163.com/</a><br>CentOS网络源地址：<a href="http://centos.ustc.edu.cn/centos/" target="_blank" rel="external">http://centos.ustc.edu.cn/centos/</a></p>
-<h1 id="找到自己所需要的版本下载："><a href="#找到自己所需要的版本下载：" class="headerlink" title="找到自己所需要的版本下载："></a>找到自己所需要的版本下载：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wget http://mirrors.163.com/centos/7/os/x86_64/Packages/yum-3.4.3-150.el7.centos.noarch.rpm</div><div class="line">wget http://mirrors.163.com/centos/7/os/x86_64/Packages/yum-metadata-parser-1.1.4-10.el7.x86_64.rpm</div><div class="line">wget http://mirrors.163.com/centos/7/os/x86_64/Packages/yum-utils-1.1.31-40.el7.noarch.rpm</div><div class="line">wget http://mirrors.163.com/centos/7/os/x86_64/Packages/yum-updateonboot-1.1.31-40.el7.noarch.rpm</div><div class="line">wget http://mirrors.163.com/centos/7/os/x86_64/Packages/yum-plugin-fastestmirror-1.1.31-40.el7.noarch.rpm</div></pre></td></tr></table></figure>
-<p>查看下载完成结果；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# ls</div><div class="line">anaconda-ks.cfg                              yum-plugin-fastestmirror-1.1.31-40.el7.noarch.rpm</div><div class="line">initial-setup-ks.cfg                         yum-updateonboot-1.1.31-40.el7.noarch.rpm</div><div class="line">yum-3.4.3-150.el7.centos.noarch.rpm          yum-utils-1.1.31-40.el7.noarch.rpm</div><div class="line">yum-metadata-parser-1.1.4-10.el7.x86_64.rpm</div></pre></td></tr></table></figure>
-<h1 id="安装软件包："><a href="#安装软件包：" class="headerlink" title="安装软件包："></a>安装软件包：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# rpm -ivh yum-*</div><div class="line">warning: yum-3.4.3-150.el7.centos.noarch.rpm: Header V3 RSA/SHA256 Signature, key ID f4a80eb5: NOKEY</div><div class="line">error: Failed dependencies:</div><div class="line">        python-urlgrabber &gt;= 3.10-8 is needed by yum-3.4.3-150.el7.centos.noarch</div></pre></td></tr></table></figure>
-<p>这里出现了一个小问题：<br>安装的python-urlgrabber版本不符合您尝试安装的RPM的依赖关系，我目前没有能力解决这个问题的办法，后来想了一个折中的办法，FQ去一个国外的yum源网站下载上面这五个较低版本的安装包，在来安装就不会有问题了<br>在这里附上链接各位可以FQ出去下载对应版本的rpm包<br>链接：<a href="http://rpm.pbone.net/" target="_blank" rel="external">http://rpm.pbone.net/</a><br>不报错版本安装包：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">yum-3.4.3-132.el7.centos.0.1.noarch.rpm</div><div class="line">yum-metadata-parser-1.1.4-10.el7.x86_64.rpm</div><div class="line">yum-plugin-fastestmirror-1.1.31-34.el7.noarch.rpm</div><div class="line">yum-updateonboot-1.1.31-34.el7.noarch.rpm</div><div class="line">yum-utils-1.1.31-34.el7.noarch.rpm</div></pre></td></tr></table></figure>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/yum%E5%AE%89%E8%A3%851.png" alt="yum安装1"><br><img src="http://oozms7qtq.bkt.clouddn.com/yum%E5%AE%89%E8%A3%852.png" alt="yum安装2"></p>
-<p>我把这五个rpm包下载到我的windows电脑里，然后用WinSCP这个软件上传到redhat 7 系统里，WinSCP这个软件的使用方法就不在这里赘述了</p>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/yum%E5%AE%89%E8%A3%853.png" alt="yum安装3"></p>
-<h1 id="下载好后重新安装："><a href="#下载好后重新安装：" class="headerlink" title="下载好后重新安装："></a>下载好后重新安装：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# ls</div><div class="line">yum-3.4.3-132.el7.centos.0.1.noarch.rpm            yum-updateonboot-1.1.31-34.el7.noarch.rpm</div><div class="line">yum-metadata-parser-1.1.4-10.el7.x86_64.rpm        yum-utils-1.1.31-34.el7.noarch.rpm</div><div class="line">yum-plugin-fastestmirror-1.1.31-34.el7.noarch.rpm</div><div class="line">[root@pan ~]# rpm -ivh yum-*</div><div class="line">warning: yum-3.4.3-132.el7.centos.0.1.noarch.rpm: Header V3 RSA/SHA256 Signature, key ID f4a80eb5: NOKEY</div><div class="line">Preparing...                          ################################# [100%]</div><div class="line">Updating / installing...</div><div class="line">   1:yum-metadata-parser-1.1.4-10.el7 ################################# [ 20%]</div><div class="line">   2:yum-plugin-fastestmirror-1.1.31-3################################# [ 40%]</div><div class="line">   3:yum-3.4.3-132.el7.centos.0.1     ################################# [ 60%]</div><div class="line">   4:yum-updateonboot-1.1.31-34.el7   ################################# [ 80%]</div><div class="line">   5:yum-utils-1.1.31-34.el7          ################################# [100%]</div><div class="line">[root@pan ~]#</div></pre></td></tr></table></figure>
-<p>这次没有报错了，安装完成！！！</p>
-<h1 id="新建repo-配置文件："><a href="#新建repo-配置文件：" class="headerlink" title="新建repo 配置文件："></a>新建repo 配置文件：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@pan ~]# vim /etc/yum.repos.d/CentOS-Base.repo</div><div class="line"></div><div class="line">#CentOS-Base.repo</div><div class="line">#</div><div class="line"># The mirror system uses the connecting IP address of the client and the</div><div class="line"># update status of each mirror to pick mirrors that are updated to and</div><div class="line"># geographically close to the client.  You should use this for CentOS updates</div><div class="line"># unless you are manually picking other mirrors.</div><div class="line">#</div><div class="line"># If the mirrorlist= does not work for you, as a fall back you can try the</div><div class="line"># remarked out baseurl= line instead.</div><div class="line">#</div><div class="line">#</div><div class="line">[base]</div><div class="line">name=CentOS-$7 - Base - 163.com</div><div class="line">#mirrorlist=http://mirrorlist.centos.org/?release=$7&amp;arch=$basearch&amp;repo=os</div><div class="line">baseurl=http://mirrors.163.com/centos/7/os/$basearch/</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line">#released updates</div><div class="line">[updates]</div><div class="line">name=CentOS-$7 - Updates - 163.com</div><div class="line">#mirrorlist=http://mirrorlist.centos.org/?release=$7&amp;arch=$basearch&amp;repo=updates</div><div class="line">baseurl=http://mirrors.163.com/centos/7/updates/$basearch/</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line">#additional packages that may be useful</div><div class="line">[extras]</div><div class="line">name=CentOS-$7 - Extras - 163.com</div><div class="line">#mirrorlist=http://mirrorlist.centos.org/?release=$7&amp;arch=$basearch&amp;repo=extras</div><div class="line">baseurl=http://mirrors.163.com/centos/7/extras/$basearch/</div><div class="line">gpgcheck=1</div><div class="line">gpgkey=http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-7</div><div class="line"></div><div class="line">#additional packages that extend functionality of existing packages</div><div class="line">[centosplus]</div><div class="line">name=CentOS-$7 - Plus - 163.com</div><div class="line">baseurl=http://mirrors.163.com/centos/7/centosplus/$basearch/</div><div class="line">gpgcheck=1</div><div class="line">enabled=0</div><div class="line">gpgkey=http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-7</div></pre></td></tr></table></figure>
-<h1 id="清除缓存："><a href="#清除缓存：" class="headerlink" title="清除缓存："></a>清除缓存：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# yum clean all</div><div class="line">Loaded plugins: fastestmirror, product-id, subscription-manager</div><div class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</div><div class="line">Cleaning repos: base extras updates</div><div class="line">Cleaning up everything</div></pre></td></tr></table></figure>
-<h1 id="测试安装是否正常；"><a href="#测试安装是否正常；" class="headerlink" title="测试安装是否正常；"></a>测试安装是否正常；</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# yum -y install lftp</div><div class="line">Loaded plugins: fastestmirror, product-id, subscription-manager</div><div class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</div><div class="line">base                                                                                            | 3.6 kB  00:00:00    </div><div class="line">extras                                                                                          | 3.4 kB  00:00:00    </div><div class="line">updates                                                                                         | 3.4 kB  00:00:00    </div><div class="line">(1/4): extras/x86_64/primary_db                                                                 | 139 kB  00:00:00    </div><div class="line">(2/4): base/x86_64/group_gz                                                                     | 155 kB  00:00:00    </div><div class="line">(3/4): updates/x86_64/primary_db                                                                | 3.9 MB  00:00:01    </div><div class="line">(4/4): base/x86_64/primary_db                                                                   | 5.6 MB  00:00:02    </div><div class="line">Determining fastest mirrors</div><div class="line">Resolving Dependencies</div><div class="line">--&gt; Running transaction check</div><div class="line">---&gt; Package lftp.x86_64 0:4.4.8-8.el7_3.2 will be installed</div><div class="line">--&gt; Finished Dependency Resolution</div><div class="line"></div><div class="line">Dependencies Resolved</div><div class="line"></div><div class="line">=======================================================================================================================</div><div class="line">Package                 Arch                      Version                            Repository                  Size</div><div class="line">=======================================================================================================================</div><div class="line">Installing:</div><div class="line">lftp                    x86_64                    4.4.8-8.el7_3.2                    updates                    751 k</div><div class="line"></div><div class="line">Transaction Summary</div><div class="line">=======================================================================================================================</div><div class="line">Install  1 Package</div><div class="line"></div><div class="line">~~~~~此处省略安装输出内容~~~~</div><div class="line">Installed:</div><div class="line">  lftp.x86_64 0:4.4.8-8.el7_3.2                                                                                       </div><div class="line"></div><div class="line">Complete!</div></pre></td></tr></table></figure>
-<p>到这里安装完成，以后安装所需包，可以不用本地yum源了，直接使用网络yum源。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt; 由于redhat 的更新包只对注册的用户生效，所以需要自己手动更改成CentOS 的更新包，&lt;br&gt;CentOS几乎和redhat是一样的，所以无需担心软件包是否可安装，下面是安装步骤。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo介绍"><span class="nav-number">1.</span> <span class="nav-text">Hexo介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装所需要的软件"><span class="nav-number">2.</span> <span class="nav-text">安装所需要的软件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Node-js"><span class="nav-number">2.1.</span> <span class="nav-text">Node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装git"><span class="nav-number">2.2.</span> <span class="nav-text">安装git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装hexo"><span class="nav-number">2.3.</span> <span class="nav-text">安装hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建hexo博客"><span class="nav-number">3.</span> <span class="nav-text">搭建hexo博客</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建博客目录yjscloud-github-io"><span class="nav-number">3.1.</span> <span class="nav-text">创建博客目录yjscloud.github.io</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动博客"><span class="nav-number">3.2.</span> <span class="nav-text">启动博客</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建文章"><span class="nav-number">3.3.</span> <span class="nav-text">新建文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑文章"><span class="nav-number">3.4.</span> <span class="nav-text">编辑文章</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入图片"><span class="nav-number">3.5.</span> <span class="nav-text">插入图片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置博客"><span class="nav-number">4.</span> <span class="nav-text">配置博客</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#全站配置"><span class="nav-number">4.1.</span> <span class="nav-text">全站配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更换博客主题"><span class="nav-number">4.2.</span> <span class="nav-text">更换博客主题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#个性化配置"><span class="nav-number">5.</span> <span class="nav-text">个性化配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sitemap-插件"><span class="nav-number">5.1.</span> <span class="nav-text">sitemap 插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改页面宽度"><span class="nav-number">5.2.</span> <span class="nav-text">修改页面宽度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改字体大小"><span class="nav-number">5.3.</span> <span class="nav-text">修改字体大小</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改网页配色"><span class="nav-number">5.4.</span> <span class="nav-text">修改网页配色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改超链接颜色"><span class="nav-number">5.5.</span> <span class="nav-text">修改超链接颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改小型代码块颜色"><span class="nav-number">5.6.</span> <span class="nav-text">修改小型代码块颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改底栏"><span class="nav-number">5.7.</span> <span class="nav-text">修改底栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不蒜子统计代码："><span class="nav-number">5.8.</span> <span class="nav-text">不蒜子统计代码：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标题下添加「阅读量」"><span class="nav-number">5.9.</span> <span class="nav-text">标题下添加「阅读量」</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网易云跟帖"><span class="nav-number">5.10.</span> <span class="nav-text">网易云跟帖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo-wordcount实现统计功能"><span class="nav-number">5.11.</span> <span class="nav-text">hexo-wordcount实现统计功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加头像"><span class="nav-number">5.12.</span> <span class="nav-text">添加头像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置网站logo"><span class="nav-number">5.13.</span> <span class="nav-text">设置网站logo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为博客加入鼠标点击显示红心"><span class="nav-number">5.14.</span> <span class="nav-text">为博客加入鼠标点击显示红心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加RSS"><span class="nav-number">5.15.</span> <span class="nav-text">添加RSS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加网易云音乐"><span class="nav-number">5.16.</span> <span class="nav-text">添加网易云音乐</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加搜索功能"><span class="nav-number">5.17.</span> <span class="nav-text">添加搜索功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SEO优化"><span class="nav-number">5.18.</span> <span class="nav-text">SEO优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#项目主页添加README"><span class="nav-number">5.18.1.</span> <span class="nav-text">项目主页添加README</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化主题next头像"><span class="nav-number">5.19.</span> <span class="nav-text">优化主题next头像</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义页面样式"><span class="nav-number">6.</span> <span class="nav-text">自定义页面样式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#我的css"><span class="nav-number">6.1.</span> <span class="nav-text">我的css</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网站部署"><span class="nav-number">7.</span> <span class="nav-text">网站部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">7.1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成SSH"><span class="nav-number">7.2.</span> <span class="nav-text">生成SSH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置SSH"><span class="nav-number">7.3.</span> <span class="nav-text">配置SSH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试通过git-bash链接到Git"><span class="nav-number">7.4.</span> <span class="nav-text">测试通过git bash链接到Git</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署到Github"><span class="nav-number">8.</span> <span class="nav-text">部署到Github</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+       <div id="music163player">
+	   <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=27928457&auto=0&height=66">
+	   </iframe>
+       </div>
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
   
-  <entry>
-    <title>Git学习笔记(2)</title>
-    <link href="http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2/"/>
-    <id>http://yjscloud.com/2017/04/25/Git学习笔记-2/</id>
-    <published>2017-04-25T15:27:29.000Z</published>
-    <updated>2017-05-02T03:43:15.000Z</updated>
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<script type="text/javascript">
+  var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cspan id='cnzz_stat_icon_1261789938'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261789938' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+&nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/baidusitemap.xml">百度网站地图</a></span>
+
+  </span>
+</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+&nbsp;&nbsp;|&nbsp;&nbsp;您是第 <span id="busuanzi_value_site_uv"></span> 位访客
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
     
-    <content type="html"><![CDATA[<h1 id="工作区和暂存区"><a href="#工作区和暂存区" class="headerlink" title="工作区和暂存区"></a>工作区和暂存区</h1><p>我们在testgit文件夹下创建一个文件test_02.txt</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# ls</div><div class="line"></div><div class="line">test_01.txt  test_02.txt</div></pre></td></tr></table></figure>
-<p>库版本：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。<br>Git的版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。</p>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B03.png" alt="git笔记3"></p>
-<p>前面讲了我们把文件往Git版本库里添加的时候，是分两步执行的：<br>第一步是用git add把文件添加进去，实际上就是把文件修改添加到暂存区；<br>第二步是用git commit提交更改，实际上就是把暂存区的所有内容提交到当前分支。<br>因为我们创建Git版本库时，Git自动为我们创建了唯一一个master分支，所以，现在，git commit就是往master分支上提交更改。<br>你可以简单理解为，需要提交的文件修改通通放到暂存区，然后，一次性提交暂存区的所有修改。<br>现在，我们再练习一遍，先对test_01.txt做个修改，加上一行内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# cat test_01.txt </div><div class="line"></div><div class="line">Git is a distributed version control system.</div><div class="line"></div><div class="line">Git is free software distributed under the GPL.</div><div class="line"></div><div class="line">Git has a mutable index called stage.</div></pre></td></tr></table></figure>
-<p>然后，在工作区新增的test_02.txt文本文件随便随便写点东西。<br>用git status查看一下状态：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"># On branch master</div><div class="line"># Changes not staged for commit:</div><div class="line">#   (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</div><div class="line">#   (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)</div><div class="line">#</div><div class="line">#    modified:   test_01.txt</div><div class="line">#</div><div class="line"># Untracked files:</div><div class="line">#   (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)</div><div class="line">#</div><div class="line">#    test_02.txt</div><div class="line">no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</div></pre></td></tr></table></figure>
-<p>Git告诉我们，test_01.txt被修改了，而test_02.txt还从来没有被添加过，所以它的状态是Untracked。<br>现在，使用两次命令git add，把test_01.txt和test_02.txt都添加后，用git status再查看一下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git add test_01.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git add test_02.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git status</div><div class="line"></div><div class="line"># On branch master</div><div class="line"></div><div class="line"># Changes to be committed:</div><div class="line"></div><div class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line">#    modified:   test_01.txt</div><div class="line"></div><div class="line">#    new file:   test_02.txt</div><div class="line"></div><div class="line">#</div></pre></td></tr></table></figure>
-<p>现在暂存区的状态变成了这样：</p>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B04.png" alt="git笔记4"></p>
-<p>所以，git add命令实际上就是把要提交的所有修改放到暂存区（Stage），然后，执行git commit就可以一次性把暂存区的所有修改提交到分支。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git commit -m &quot;undeestand how stage works&quot;</div><div class="line"></div><div class="line">[master 10820b3] undeestand how stage works</div><div class="line"></div><div class="line"> 2 files changed, 2 insertions(+)</div><div class="line"></div><div class="line"> create mode 100644 test_02.txt</div></pre></td></tr></table></figure>
-<p>现在再来查看工作区，就会发现什么都没有了</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"># On branch master</div><div class="line">nothing to commit, working directory clean</div></pre></td></tr></table></figure>
-<h1 id="管理修改"><a href="#管理修改" class="headerlink" title="管理修改"></a>管理修改</h1><p>Git的优秀之处在于他的跟踪并管理的是修改，而非文件。什么是修改？修改就是你对文件内容增删改都叫修改，甚至创建文件夹也算修改，我们通过实验来证明这一点。<br>我们对文件test_01.txt进行如下修改</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# cat test_01.txt </div><div class="line">Git is a distributed version control system.</div><div class="line">Git is free software distributed under the GPL.</div><div class="line">Git has a mutable index called stage.</div><div class="line">Git tracks changes.</div></pre></td></tr></table></figure>
-<p>然后添加：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git add test_01.txt</div><div class="line">[root@xwq testgit]# git status</div><div class="line"># On branch master</div><div class="line"># Changes to be committed:</div><div class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line">#</div><div class="line">#    modified:   test_01.txt</div><div class="line">#</div></pre></td></tr></table></figure>
-<p>再次对test_01.txt文件进行修改：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# cat test_01.txt </div><div class="line">Git is a distributed version control system.</div><div class="line">Git is free software distributed under the GPL.</div><div class="line">Git has a mutable index called stage.</div><div class="line">Git tracks changes of files.</div></pre></td></tr></table></figure>
-<p>提交：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git commit -m &quot;git tracks changes&quot;</div><div class="line">[master d65f079] git tracks changes</div><div class="line"> 1 file changed, 1 insertion(+)</div></pre></td></tr></table></figure>
-<p>查看状态：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"># On branch master</div><div class="line"># Changes not staged for commit:</div><div class="line">#   (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</div><div class="line">#   (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)</div><div class="line">#</div><div class="line">#    modified:   test_01.txt</div><div class="line">#</div><div class="line">no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)</div></pre></td></tr></table></figure>
-<p>我们发现第二次修改并没有被提交，我们查看一下操作流程：<br>第一次修改 -&gt; git add -&gt; 第二次修改 -&gt; git commit<br>前面我们说到Git管理的是修改，当你用git add命令后，在工作区的第一次修改被放入暂存区，准备提交，但是，在工作区的第二次修改并没有放入暂存区，所以，git commit只负责把暂存区的修改提交了，也就是第一次的修改被提交了，第二次的修改不会被提交。<br>提交后，用git diff HEAD – readme.txt命令可以查看工作区和版本库里面最新版本的区别：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@xwq testgit]# git add test_01.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git diff HEAD -- test_01.txt</div><div class="line"></div><div class="line">diff --git a/test_01.txt b/test_01.txt</div><div class="line"></div><div class="line">index a9c5755..9520f67 100644</div><div class="line"></div><div class="line">--- a/test_01.txt</div><div class="line"></div><div class="line">+++ b/test_01.txt</div><div class="line"></div><div class="line">@@ -1,4 +1,4 @@</div><div class="line"></div><div class="line"> Git is a distributed version control system.</div><div class="line"></div><div class="line"> Git is free software distributed under the GPL.</div><div class="line"></div><div class="line"> Git has a mutable index called stage.</div><div class="line"></div><div class="line">-Git tracks changes.</div><div class="line"></div><div class="line">+Git tracks changes of files.</div></pre></td></tr></table></figure>
-<h1 id="撤销修改"><a href="#撤销修改" class="headerlink" title="撤销修改"></a>撤销修改</h1><p>假如你对test_01.txt进行了如下修改：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# cat test_01.txt </div><div class="line"></div><div class="line">Git is a distributed version control system.</div><div class="line"></div><div class="line">Git is free software distributed under the GPL.</div><div class="line"></div><div class="line">Git has a mutable index called stage.</div><div class="line"></div><div class="line">Git tracks changes of files.</div><div class="line"></div><div class="line">My stupid boss still prefers SVN.</div></pre></td></tr></table></figure>
-<p>要如何撤销修改呢？我们用git status命令查看一下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"></div><div class="line"># On branch master</div><div class="line"></div><div class="line"># Changes to be committed:</div><div class="line"></div><div class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line">#    modified:   test_01.txt</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line"># Changes not staged for commit:</div><div class="line"></div><div class="line">#   (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</div><div class="line"></div><div class="line">#   (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line">#    modified:   test_01.txt</div><div class="line"></div><div class="line">#</div></pre></td></tr></table></figure>
-<p>其实Git已经告诉你如何撤销修改了，我们只要在命令行输入git checkout – test_01.txt就可以撤销修改：<br>命令git checkout – test_01.txt意思就是，把test_01.txt文件在工作区的修改全部撤销，这里有两种情况：<br>一种是test_01txt自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态；<br>一种是test_01.txt已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态.总之，就是让这个文件回到最近一次git commit或git add时的状态。</p>
-<p>我们现在来查看一下test_01.txt文件内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">root@xwq testgit]# git checkout -- test_01.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# cat test_01.txt</div><div class="line"></div><div class="line">Git is a distributed version control system.</div><div class="line"></div><div class="line">Git is free software distributed under the GPL.</div><div class="line"></div><div class="line">Git has a mutable index called stage.</div><div class="line"></div><div class="line">Git tracks changes of files</div></pre></td></tr></table></figure>
-<p>假如你不小心把文件已经用git add提交到暂存区了又该怎么办？<br>我们查看一下状态：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"></div><div class="line"># On branch master</div><div class="line"></div><div class="line"># Changes to be committed:</div><div class="line"></div><div class="line">#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)</div><div class="line"></div><div class="line">#</div><div class="line"></div><div class="line">#    modified:   test_01.txt</div><div class="line"></div><div class="line">#</div></pre></td></tr></table></figure>
-<p>同样Git也告诉了我们如何做，用命令git reset HEAD file可以把暂存区的修改撤销掉（unstage），重新放回工作区：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git reset HEAD test_01.txt</div><div class="line"></div><div class="line">Unstaged changes after reset:</div><div class="line"></div><div class="line">M    test_01.txt</div></pre></td></tr></table></figure>
-<p>git reset命令既可以回退版本，也可以把暂存区的修改回退到工作区。当我们用HEAD时，表示最新的版本。</p>
-<h1 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h1><p>如何在Git删除一个文件呢？ 我们创建一个文件来实验一下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# vim test_03.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git add test_03.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git commit -m &quot;add test_03.txt&quot;</div><div class="line"></div><div class="line">[master 436a7c1] add test_03.txt</div><div class="line"></div><div class="line"> 1 file changed, 1 insertion(+)</div><div class="line"></div><div class="line"> create mode 100644 test_03.txt</div></pre></td></tr></table></figure>
-<p>我们可以用命令git rm test_03.txt直接删除</p>
-<h1 id="远程仓库"><a href="#远程仓库" class="headerlink" title="远程仓库"></a>远程仓库</h1><p>Git有一个杀手级的功能，就是远程仓库！！！没有之一！！！说他是世界最强也不为过！！！</p>
-<p>要想使用这个功能我们首先要注册一个GitHub账号。由于本地Git仓库和GitHub仓库之间的传输是通过SSH加密的，所以，需要一点设置：</p>
-<p>第1步：创建SSH Key。在用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有id_rsa和id_rsa.pub这两个文件，如果已经有了，可直接跳到下一步。如果没有，打开Shell（Windows下打开Git Bash），创建SSH Key：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# ssh-keygen -t rsa -C &quot;1303460512@qq.com&quot;</div><div class="line"></div><div class="line">Generating public/private rsa key pair.</div><div class="line"></div><div class="line">Enter file in which to save the key (/root/.ssh/id_rsa):</div><div class="line"></div><div class="line">Created directory &apos;/root/.ssh&apos;.</div><div class="line"></div><div class="line">Enter passphrase (empty for no passphrase):</div><div class="line"></div><div class="line">Enter same passphrase again:</div><div class="line"></div><div class="line">Your identification has been saved in /root/.ssh/id_rsa.</div><div class="line"></div><div class="line">Your public key has been saved in /root/.ssh/id_rsa.pub.</div><div class="line"></div><div class="line">The key fingerprint is:</div><div class="line"></div><div class="line">02:58:bd:65:5c:dc:12:78:4f:fe:bf:6e:5e:e9:84:79 1303460512@qq.com</div><div class="line"></div><div class="line">The key&apos;s randomart image is:</div><div class="line"></div><div class="line">+--[ RSA 2048]----+</div><div class="line"></div><div class="line">|    .. . +oo     |</div><div class="line"></div><div class="line">|   o  . = + o    |</div><div class="line"></div><div class="line">|  . .  + . =     |</div><div class="line"></div><div class="line">|     ..     o    |</div><div class="line"></div><div class="line">|      . S    .   |</div><div class="line"></div><div class="line">|       .      + .|</div><div class="line"></div><div class="line">|             o E.|</div><div class="line"></div><div class="line">|              +.o|</div><div class="line"></div><div class="line">|              +=.|</div><div class="line"></div><div class="line">+-----------------+</div></pre></td></tr></table></figure>
-<p>输入命令一路回车即可，保持默认即可<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">如果一切顺利的话，可以在用户主目录里找到.ssh目录，里面有id_rsa和id_rsa.pub两个文件，这两个就是SSH Key的秘钥对，id_rsa是私钥，不能泄露出去，id_rsa.pub是公钥，可以放心地告诉任何人。</div><div class="line"></div><div class="line">第2步：登陆GitHub，打开GitHub添加key页面：https://github.com/settings/keys</div><div class="line"></div><div class="line">![git笔记5](http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B05.png)</div><div class="line">![git笔记6](http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B06.png)</div><div class="line"></div><div class="line">为什么要添加ssh key呢？不解释自行谷歌</div></pre></td></tr></table></figure></p>
-<h1 id="添加远程库"><a href="#添加远程库" class="headerlink" title="添加远程库"></a>添加远程库</h1><p>现在我们既有了本地仓库又有了github里远程仓库，问题来了如何把本地仓里文件备份到远程库里呢？</p>
-<p>第一步：我们登陆github，然后我们创建一个新的仓库<br><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B07.png" alt="git笔记7"><br><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B08.png" alt="git笔记8"></p>
-<p>接下来我们按照github的提示将我们本地库添加到远程库里，运行如下命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git remote add origin https://github.com/wenqiuan/test_01.git</div><div class="line"></div><div class="line">[root@xwq testgit]# git push -u origin master</div><div class="line"></div><div class="line">Username for &apos;https://github.com&apos;: wenqiuan</div><div class="line"></div><div class="line">Password for &apos;https://wenqiuan@github.com&apos;: </div><div class="line"></div><div class="line">fatal: unable to access &apos;https://github.com/wenqiuan/test_01.git/&apos;: Empty reply from server</div></pre></td></tr></table></figure>
-<p>发现无法上传文件，我们把linux的防火墙关闭~~~</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# systemctl status firewalld（查看linux防火墙状态）</div><div class="line"></div><div class="line">firewalld.service - firewalld - dynamic firewall daemon</div><div class="line"></div><div class="line">  Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled)</div><div class="line"></div><div class="line">  Active: active (running) since Thu 2017-04-13 19:31:06 EDT; 2h 48min ago</div><div class="line"></div><div class="line">Main PID: 1047 (firewalld)</div><div class="line"></div><div class="line">  CGroup: /system.slice/firewalld.service</div><div class="line"></div><div class="line">          └─1047 /usr/bin/python -Es /usr/sbin/firewalld --nofork --nopid</div><div class="line"></div><div class="line">Apr 13 19:31:06 xwq systemd[1]: Started firewalld - dynamic firewall daemon.</div><div class="line"></div><div class="line">[root@xwq testgit]# systemctl stop firewalld（关闭防火墙）</div><div class="line"></div><div class="line">[root@xwq testgit]# systemctl disable firewalld（永久关闭防火墙）</div><div class="line"></div><div class="line">rm &apos;/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service&apos;</div><div class="line"></div><div class="line">rm &apos;/etc/systemd/system/basic.target.wants/firewalld.service&apos;</div></pre></td></tr></table></figure>
-<p>再次运行上传命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git remote rm origin</div><div class="line">[root@xwq testgit]# git remote add origin https://github.com/wenqiuan/test_01.git</div><div class="line">[root@xwq testgit]# git push -u origin master</div><div class="line">Username for &apos;https://github.com&apos;: wenqiuan</div><div class="line">Password for &apos;https://wenqiuan@github.com&apos;: </div><div class="line">Counting objects: 28, done.</div><div class="line">Delta compression using up to 2 threads.</div><div class="line">Compressing objects: 100% (22/22), done.</div><div class="line">Writing objects: 100% (28/28), 2.20 KiB | 0 bytes/s, done.</div><div class="line">Total 28 (delta 7), reused 0 (delta 0)</div><div class="line">remote: Resolving deltas: 100% (7/7), done.</div><div class="line">To https://github.com/wenqiuan/test_01.git</div><div class="line"> * [new branch]      master -&gt; master</div><div class="line">Branch master set up to track remote branch master from origin.</div></pre></td></tr></table></figure>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B09.png" alt="git笔记9"></p>
-<p>成功的把本地库推送到远程库<br>从现在起，只要本地作了提交，就可以通过命令：git push origin master<br>把本地master分支的最新修改推送至GitHub，现在，你就拥有了真正的分布式版本库！</p>
-<h1 id="从远程库克隆"><a href="#从远程库克隆" class="headerlink" title="从远程库克隆"></a>从远程库克隆</h1><p>现在我们有了本地库也有了远程库，我们现在来聊一下如何克隆远程库<br>第一步：登陆GitHub,创建一个新的仓库，名字就叫test_clone</p>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B010.png" alt="git笔记10"><br><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B011.png" alt="git笔记11"></p>
-<p>现在我们有了远程库了，接下来我们把远程库克隆下了，用如下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git clone git@github.com:wenqiuan/test_clone.git</div><div class="line"></div><div class="line">Cloning into &apos;test_clone&apos;...</div><div class="line"></div><div class="line">The authenticity of host &apos;github.com (192.30.255.113)&apos; can&apos;t be established.</div><div class="line"></div><div class="line">RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.</div><div class="line"></div><div class="line">Are you sure you want to continue connecting (yes/no)? yes</div><div class="line"></div><div class="line">Warning: Permanently added &apos;github.com,192.30.255.113&apos; (RSA) to the list of known hosts.</div><div class="line"></div><div class="line">remote: Counting objects: 3, done.</div><div class="line"></div><div class="line">remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0</div><div class="line"></div><div class="line">Receiving objects: 100% (3/3), done.</div><div class="line"></div><div class="line">[root@xwq testgit]# cd test_clone/</div><div class="line"></div><div class="line">[root@xwq test_clone]# ls</div><div class="line"></div><div class="line">README.md</div></pre></td></tr></table></figure>
-<p>成功克隆！！！</p>
-]]></content>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
     
-    <summary type="html">
-    
-      &lt;h1 id=&quot;工作区和暂存区&quot;&gt;&lt;a href=&quot;#工作区和暂存区&quot; class=&quot;headerlink&quot; title=&quot;工作区和暂存区&quot;&gt;&lt;/a&gt;工作区和暂存区&lt;/h1&gt;&lt;p&gt;我们在testgit文件夹下创建一个文件test_02.txt&lt;/p&gt;
-&lt;figure class=
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Git学习" scheme="http://yjscloud.com/tags/Git%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
+
+  </div>
+
   
-  <entry>
-    <title>如何在redhat 7上安装VNC服务器</title>
-    <link href="http://yjscloud.com/2017/04/25/%E5%A6%82%E4%BD%95%E5%9C%A8redhat-7%E4%B8%8A%E5%AE%89%E8%A3%85VNC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-    <id>http://yjscloud.com/2017/04/25/如何在redhat-7上安装VNC服务器/</id>
-    <published>2017-04-25T00:05:55.000Z</published>
-    <updated>2017-05-02T03:46:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器</p>
-<a id="more"></a>
-<h1 id="安装VNC-Server：yum-y-install-vnc-server"><a href="#安装VNC-Server：yum-y-install-vnc-server" class="headerlink" title="安装VNC Server：yum -y install vnc-server"></a>安装VNC Server：yum -y install vnc-server</h1><p><img src="http://oovxjr0mr.bkt.clouddn.com/vnc%E9%85%8D%E7%BD%AE%EF%BC%881%EF%BC%89.png" alt=""></p>
-<h1 id="复制vnc-server的配置模板："><a href="#复制vnc-server的配置模板：" class="headerlink" title="复制vnc server的配置模板："></a>复制vnc server的配置模板：</h1><p>参考命令：cp  vncserver@.service   vncserver@:1.service</p>
-<pre><code>[root@xwq ~]# cd /lib/systemd/system
-[root@xwq system]# cp  vncserver@.service   vncserver@:1.service
-</code></pre><p> 注：VNC 服务本身使用的是5900端口。鉴于有不同的用户使用 VNC ，每个人的连接都会获得不同的端口。配置文件名里面的数字告诉 VNC 服务器把服务运行在5900的子端口上。在我们这个例子里，第一个 VNC 服务会运行在5901（5900 + 1）端口上，之后的依次增加，运行在5900 + x 号端口上。其中 x 是指之后用户的配置文件名 vncserver@:x.service 里面的 x 。<br>如果要用更多的用户连接，需要创建配置文件和端口，添加一个新的用户和端口。你需要创建 vncserver@:2.service 并替换配置文件里的用户名和之后步骤里相应的文件名、端口号。请确保你登录 VNC 服务器用的是你之前配置 VNC 密码的时候使用的那个用户名。</p>
-<h1 id="编辑配置模板："><a href="#编辑配置模板：" class="headerlink" title="编辑配置模板："></a>编辑配置模板：</h1><p>参考命令:vim vncserver@:1.service</p>
-<p>把root用户加入登陆用户中，以及修改登陆后的vnc分辨率</p>
-<p>修改前：</p>
-<pre><code>[Unit]
-Description=Remote desktop service (VNC)
-After=syslog.target network.target
 
-[Service]
-Type=forking
-# Clean any existing files in /tmp/.X11-unix environment
-ExecStartPre=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
-ExecStart=/usr/sbin/runuser -l &lt;USER&gt; -c &quot;/usr/bin/vncserver %i&quot;
-PIDFile=/home/&lt;USER&gt;/.vnc/%H%i.pid
-ExecStop=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
 
-[Install]
-WantedBy=multi-user.target
-</code></pre><p>修改后：</p>
-<pre><code>[Unit]
-Description=Remote desktop service (VNC)
-After=syslog.target network.target
 
-[Service]
-Type=forking
-# Clean any existing files in /tmp/.X11-unix environment
-ExecStartPre=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
-ExecStart=/usr/sbin/runuser -l root -c &quot;/usr/bin/vncserver %i -geometry 1376x730&quot;
-PIDFile=/home/root/.vnc/%H%i.pid
-ExecStop=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
 
-[Install]
-WantedBy=multi-user.target
-</code></pre><h1 id="配置VNC远程用户"><a href="#配置VNC远程用户" class="headerlink" title="配置VNC远程用户"></a>配置VNC远程用户</h1><p>（1）重新载入 systemd，扫描新的或有变动的单元：systemctl daemon-reload</p>
-<pre><code>[root@xwq system]# systemctl daemon-reload
-</code></pre><p>（2）为登陆的root用户添加一个密码</p>
-<pre><code>[root@xwq system]# vncpasswd root
 
-Password:输入你的密码
 
-Verify:再次输入你的密码
-</code></pre><p>（3）启动vnc桌面</p>
-<pre><code>[root@xwq system]# vncserver :1
 
-You will require a password to access your desktops.
 
-Password:输入你的密码
 
-Verify:再次输入你的密码
 
-xauth:  file /root/.Xauthority does not exist
-
-xauth: (stdin):1:  bad display name &quot;xwq:1&quot; in &quot;add&quot; command
-
-New &apos;xwq:1 (root)&apos; desktop is xwq:1
-
-Creating default startup script /root/.vnc/xstartup
-
-Starting applications specified in /root/.vnc/xstartup
-
-Log file is /root/.vnc/xwq:1.log
-</code></pre><p>（4）用下面的命令（永久的）开启服务</p>
-<pre><code>[root@xwq system]# systemctl enable vncserver@:1.service
-</code></pre><p>如果输入systemctl enable vncserver@:1.service命令输出了如下代码，</p>
-<pre><code>[root@xwq system]# systemctl enable vncserver@:1.service
-
-ln -s &apos;/usr/lib/systemd/system/vncserver@:1.service&apos; &apos;/etc/systemd/system/multi-user.target.wants/vncserver@:1.service&apos;
-</code></pre><p>  请在终端输入这行命令：echo “127.0.0.1 xwq”&gt; /etc/hosts</p>
-<p>  （5）输入以下命令配置防火墙规则：</p>
-<pre><code>[root@xwq ~]# firewall-cmd --permanent --zone=public --add-port=5901/tcp
-
-success
-
-[root@xwq ~]# firewall-cmd --reload
-
-success
-</code></pre><h1 id="访问redhat"><a href="#访问redhat" class="headerlink" title="访问redhat"></a>访问redhat</h1><p>使用windows端安装vnc viewer访问redhat，可以成功访问。<br><img src="http://oovxjr0mr.bkt.clouddn.com/VNC%E9%85%8D%E7%BD%AE%EF%BC%882%EF%BC%89.png" alt=""></p>
-<h1 id="其他命令"><a href="#其他命令" class="headerlink" title="其他命令"></a>其他命令</h1><p>关闭vnc服务：systemctl stop vncserver@:1.service</p>
-<p>禁止 VNC 服务开机启动：systemctl disable vncserver@:1.service</p>
-<p>关闭防火墙：systemctl stop firewalld.service</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
   
-  <entry>
-    <title>Git学习笔记（1）</title>
-    <link href="http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    <id>http://yjscloud.com/2017/04/25/Git学习笔记/</id>
-    <published>2017-04-24T23:15:57.000Z</published>
-    <updated>2017-05-02T03:41:31.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Git是什么？</p>
-<p>Git是目前世界上最先进的分布式版本控制系统（没有之一）。</p>
-<p>Git有什么特点？简单来说就是：高端大气上档次！</p>
-<p>Git是所有程序最爱的分布式控制系统！</p>
-<p>Git有是世界上最活跃的开源社区！</p>
-<p>Git上有这无数的开源项目！</p>
-<a id="more"></a>
-<h1 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git:"></a>安装Git:</h1><p>在linux下安装：yum install git</p>
-<p>其他系统安装在这里略去~~~</p>
-<p>安装完成后，需要设置一下，在命令行输入以下命令：</p>
-<pre><code>[root@xwq ~]# git config --global user.name &quot;your name&quot;
 
-[root@xwq ~]# git config --global user.email &quot;your email&quot;
-</code></pre><p>注意git config命令的–global参数，用了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置，当然也可以对某个仓库指定不同的用户名和Email地址。</p>
-<h1 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h1><p>创建版本库很简单，找到一个合适的地方，创建一个空目录：</p>
-<pre><code>[root@xwq ~]# mkdir testgit
 
-[root@xwq ~]# cd testgit/
 
-[root@xwq testgit]# pwd
 
-/root/testgit
-</code></pre><p>如果你是在window下运行git，请确保文件路径没有中文！</p>
-<p>通过git init命令把这个目录变成Git可以管理的仓库：</p>
-<pre><code>[root@xwq testgit]# git init
 
-Initialized empty Git repository in /root/testgit/.git/
-</code></pre><p>接着我们在仓库目录下创建一个txt文件：test_01.txt</p>
-<pre><code>[root@xwq testgit]# vim test_01.txt
-</code></pre><p>在里面输入以下内容：</p>
-<p>Git is a version control system.</p>
-<p>Git is free software.</p>
-<p>用命令git add告诉Git，把文件添加到仓库：<br>[root@xwq testgit]# git add test_01.txt<br>执行上面的命令，没有任何显示，这就对了，Unix的哲学是“没有消息就是好消息”，说明添加成功。</p>
-<p>用命令git commit告诉Git，把文件提交到仓库：</p>
-<pre><code>[root@xwq testgit]# git commit -m &quot;wrote a readme file&quot;
 
-[master (root-commit) 7347c20] wrote a readme file
 
-1 file changed, 2 insertions(+)
 
-create mode 100644 test_01.txt
-</code></pre><p>简单解释一下git commit命令，-m后面输入的是本次提交的说明，可以输入任意内容，当然最好是有意义的，这样你就能从历史记录里方便地找到改动记录。<br>嫌麻烦不想输入-m “xxx”行不行？确实有办法可以这么干，但是强烈不建议你这么干，因为输入说明对自己对别人阅读都很重要。<br>git commit命令执行成功后会告诉你，1个文件被改动（我们新添加的test_01.txt文件），插入了两行内容（test_01.txt有两行内容）</p>
-<h1 id="撤销命令"><a href="#撤销命令" class="headerlink" title="撤销命令"></a>撤销命令</h1><p>我们将test_01.txt文件的内容改为如下内容：</p>
-<p>Git is a distributed version control system.</p>
-<p>Git is free software.</p>
-<p>运行git status命令查看结果：</p>
-<pre><code>[root@xwq testgit]# git status
 
-#On branch master
 
-#Changes not staged for commit:
 
-#(use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
 
-#(use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
-
-
-
-  modified:   test_01.txt
-
-
-
-#no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
-</code></pre><p>git status命令可以让我们时刻掌握仓库当前的状态，上面的命令告诉我们，text_01.txt被修改过了，但还没有准备提交的修改。<br>虽然Git告诉我们test_01.txt被修改了，如果想查看被修改了什么内容可以用git diff命令查看：</p>
-<pre><code>[root@xwq testgit]# git diff test_01.txt
-
-diff --git a/test_01.txt b/test_01.txt
-
-index 46d49bf..9247db6 100644
-
---- a/test_01.txt
-
-+++ b/test_01.txt
-
-@@ -1,2 +1,2 @@
-
--Git is a version control system.
-
-+Git is a distributed version control system.
-
-Git is free software.
-</code></pre><p>我们知道被修改的内容后就可以放心的文件提交到仓库了，接下来我们用git add :</p>
-<pre><code>[root@xwq testgit]# git add test_01.txt
-</code></pre><p> 同样没有返回任何信息就是好结果</p>
-<p>我们在用git status查看当前仓库的状态：</p>
-<p>[root@xwq testgit]# git status</p>
-<pre><code># On branch master
-
-# Changes to be committed:
-
-#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
-
-#
-
-#    modified:   test_01.txt
-
-#
-</code></pre><p>git status 告诉我们将要被提交的修改包括test_01.txt，下一步，就可以放心地提交了：</p>
-<pre><code>[root@xwq testgit]# git commit -m &quot;add distributed&quot;
-
-[master 6c90823] add distributed
-
-1 file changed, 1 insertion(+), 1 deletion(-)
-</code></pre><h1 id="版本回退"><a href="#版本回退" class="headerlink" title="版本回退"></a>版本回退</h1><p>我们再次对test_01.txt文件进行修改，修改内容如下：</p>
-<p>Git is a distributed version control system.</p>
-<p>Git is free software distributed under the GPL.</p>
-<p>然后提交：</p>
-<pre><code>[root@xwq testgit]# git add test_01.txt
-
-[root@xwq testgit]# git commit -m &quot;append GPL&quot;
-
-[master ee985a6] append GPL
-
-1 file changed, 1 insertion(+), 1 deletion(-)
-</code></pre><p>Git每当你觉得文件修改到一定程度的时候，就可以“保存一个快照”，这个快照在Git中被称为commit。一旦你把文件改乱了，或者误删了文件，还可以从最近的一个commit恢复，然后继续工作，而不是把几个月的工作成果全部丢失。<br>现在，我们回顾一下test_01.txt文件一共有几个版本被提交到Git仓库里了：<br>版本1：wrote a readme file</p>
-<p>Git is a version control system.</p>
-<p>Git is free software.</p>
-<p>版本2：add distributed</p>
-<p>Git is a distributed version control system.</p>
-<p>Git is free software.</p>
-<p>版本3：append GPL</p>
-<p>Git is a distributed version control system.</p>
-<p>Git is free software distributed under the GPL.</p>
-<p>在实际工作中，我们脑子里怎么可能记得一个几千行的文件每次都改了什么内容，不然要版本控制系统干什么。版本控制系统肯定有某个命令可以告诉我们历史记录，在Git中，我们用git log命令查看：</p>
-<pre><code>[root@xwq testgit]# git log
-
-commit ee985a69fecf94482280769949290b240b7a0329
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 11:45:14 2017 -0400
-
-  append GPL
-
-commit 6c9082366df03ee9a47f2bcd18be0105fa1fae86
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 11:33:34 2017 -0400
-
-   add distributed
-
-commit 7347c2023929935a58f147168a50ce9bf51a2478
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 09:48:56 2017 -0400
-
-   wrote a readme file
-</code></pre><p>git log命令显示从最近到最远的提交日志，我们可以看到3次提交，最近的一次是append GPL，上一次是add distributed，最早的一次是wrote a readme file。</p>
-<p>如果嫌输出信息太多，看得眼花缭乱的，可以试试加上–pretty=oneline参数：</p>
-<pre><code>[root@xwq testgit]# git log --pretty=oneline
-
-ee985a69fecf94482280769949290b240b7a0329 append GPL
-
-6c9082366df03ee9a47f2bcd18be0105fa1fae86 add distributed
-
-7347c2023929935a58f147168a50ce9bf51a2478 wrote a readme file
-</code></pre><p>注：类似这些数据ee985a69fecf94482280769949290b240b7a0329的是commit id（版本号）<br>那么问题来了我们要如何回退版本呢？其实很简单，首先，Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交ee985a69fecf94482280769949290b240b7a0329，上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。</p>
-<p>现在，我们要把当前版本“append GPL”回退到上一个版本“add distributed”，就可以使用git reset命令：</p>
-<pre><code>[root@xwq testgit]# git reset --hard HEAD^
-
-HEAD is now at 6c90823 add distributed
-</code></pre><p>现在我们查看一下test_01.txt的内容是不是add distributed:</p>
-<pre><code>[root@xwq testgit]# cat test_01.txt
-
-Git is a distributed version control system.
-
-Git is free software.
-
-[root@xwq testgit]# git log
-
-commit 6c9082366df03ee9a47f2bcd18be0105fa1fae86
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 11:33:34 2017 -0400
-
- add distributed
-
-commit 7347c2023929935a58f147168a50ce9bf51a2478
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 09:48:56 2017 -0400
-
- wrote a readme file
-</code></pre><p> 很显然我们已经回退到上一个版本了</p>
-<p>现在我又想回到最新版本的append GPL了怎么办？这个我们可以用git reflog命令就可以轻松的办到，命令git reflog用来记录你的每一次命令：</p>
-<pre><code>[root@xwq testgit]# git reflog
-
-6c90823 HEAD@{0}: reset: moving to HEAD^
-
-ee985a6 HEAD@{1}: commit: append GPL
-
-6c90823 HEAD@{2}: commit: add distributed
-
-7347c20 HEAD@{3}: commit (initial): wrote a readme file
-</code></pre><p>接下来我们只用输入命令 git reset –hard ee985a6(append GPL的id)就可以回到最新的版本了</p>
-<pre><code>[root@xwq testgit]# git reset --hard ee985a6
-
-HEAD is now at ee985a6 append GPL
-
-[root@xwq testgit]# cat test_01.txt
-
-Git is a distributed version control system.
-
-Git is free software distributed under the GPL.
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Git是什么？&lt;/p&gt;
-&lt;p&gt;Git是目前世界上最先进的分布式版本控制系统（没有之一）。&lt;/p&gt;
-&lt;p&gt;Git有什么特点？简单来说就是：高端大气上档次！&lt;/p&gt;
-&lt;p&gt;Git是所有程序最爱的分布式控制系统！&lt;/p&gt;
-&lt;p&gt;Git有是世界上最活跃的开源社区！&lt;/p&gt;
-&lt;p&gt;Git上有这无数的开源项目！&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Git学习" scheme="http://yjscloud.com/tags/Git%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
   
-</feed>
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <!-- 小红心 -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+</body>
+</html>

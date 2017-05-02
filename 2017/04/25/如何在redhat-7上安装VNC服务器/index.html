@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Linux学习笔记," />
+  <meta name="keywords" content="Linux技术," />
 
 
 
@@ -93,7 +93,7 @@
 
 
 <meta name="description" content="平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器">
-<meta name="keywords" content="Linux学习笔记">
+<meta name="keywords" content="Linux技术">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何在redhat 7上安装VNC服务器">
 <meta property="og:url" content="http://yjscloud.com/2017/04/25/如何在redhat-7上安装VNC服务器/index.html">
@@ -101,7 +101,7 @@
 <meta property="og:description" content="平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器">
 <meta property="og:image" content="http://oovxjr0mr.bkt.clouddn.com/vnc%E9%85%8D%E7%BD%AE%EF%BC%881%EF%BC%89.png">
 <meta property="og:image" content="http://oovxjr0mr.bkt.clouddn.com/VNC%E9%85%8D%E7%BD%AE%EF%BC%882%EF%BC%89.png">
-<meta property="og:updated_time" content="2017-04-25T23:26:28.000Z">
+<meta property="og:updated_time" content="2017-05-02T03:46:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何在redhat 7上安装VNC服务器">
 <meta name="twitter:description" content="平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器">
@@ -416,7 +416,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  867
+                  861
                 </span>
               
 
@@ -452,12 +452,12 @@
       
         <p>平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器</p>
 <a id="more"></a>
-<h1 id="1、安装VNC-Server：yum-y-install-vnc-server"><a href="#1、安装VNC-Server：yum-y-install-vnc-server" class="headerlink" title="1、安装VNC Server：yum -y install vnc-server"></a>1、安装VNC Server：yum -y install vnc-server</h1><p><img src="http://oovxjr0mr.bkt.clouddn.com/vnc%E9%85%8D%E7%BD%AE%EF%BC%881%EF%BC%89.png" alt=""></p>
-<h1 id="2、复制vnc-server的配置模板："><a href="#2、复制vnc-server的配置模板：" class="headerlink" title="2、复制vnc server的配置模板："></a>2、复制vnc server的配置模板：</h1><p>参考命令：cp  vncserver@.service   vncserver@:1.service</p>
+<h1 id="安装VNC-Server：yum-y-install-vnc-server"><a href="#安装VNC-Server：yum-y-install-vnc-server" class="headerlink" title="安装VNC Server：yum -y install vnc-server"></a>安装VNC Server：yum -y install vnc-server</h1><p><img src="http://oovxjr0mr.bkt.clouddn.com/vnc%E9%85%8D%E7%BD%AE%EF%BC%881%EF%BC%89.png" alt=""></p>
+<h1 id="复制vnc-server的配置模板："><a href="#复制vnc-server的配置模板：" class="headerlink" title="复制vnc server的配置模板："></a>复制vnc server的配置模板：</h1><p>参考命令：cp  vncserver@.service   vncserver@:1.service</p>
 <pre><code>[root@xwq ~]# cd /lib/systemd/system
 [root@xwq system]# cp  vncserver@.service   vncserver@:1.service
 </code></pre><p> 注：VNC 服务本身使用的是5900端口。鉴于有不同的用户使用 VNC ，每个人的连接都会获得不同的端口。配置文件名里面的数字告诉 VNC 服务器把服务运行在5900的子端口上。在我们这个例子里，第一个 VNC 服务会运行在5901（5900 + 1）端口上，之后的依次增加，运行在5900 + x 号端口上。其中 x 是指之后用户的配置文件名 vncserver@:x.service 里面的 x 。<br>如果要用更多的用户连接，需要创建配置文件和端口，添加一个新的用户和端口。你需要创建 vncserver@:2.service 并替换配置文件里的用户名和之后步骤里相应的文件名、端口号。请确保你登录 VNC 服务器用的是你之前配置 VNC 密码的时候使用的那个用户名。</p>
-<h1 id="3、编辑配置模板："><a href="#3、编辑配置模板：" class="headerlink" title="3、编辑配置模板："></a>3、编辑配置模板：</h1><p>参考命令:vim vncserver@:1.service</p>
+<h1 id="编辑配置模板："><a href="#编辑配置模板：" class="headerlink" title="编辑配置模板："></a>编辑配置模板：</h1><p>参考命令:vim vncserver@:1.service</p>
 <p>把root用户加入登陆用户中，以及修改登陆后的vnc分辨率</p>
 <p>修改前：</p>
 <pre><code>[Unit]
@@ -489,7 +489,7 @@ ExecStop=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1
 
 [Install]
 WantedBy=multi-user.target
-</code></pre><h1 id="4、配置VNC远程用户"><a href="#4、配置VNC远程用户" class="headerlink" title="4、配置VNC远程用户"></a>4、配置VNC远程用户</h1><p>（1）重新载入 systemd，扫描新的或有变动的单元：systemctl daemon-reload</p>
+</code></pre><h1 id="配置VNC远程用户"><a href="#配置VNC远程用户" class="headerlink" title="配置VNC远程用户"></a>配置VNC远程用户</h1><p>（1）重新载入 systemd，扫描新的或有变动的单元：systemctl daemon-reload</p>
 <pre><code>[root@xwq system]# systemctl daemon-reload
 </code></pre><p>（2）为登陆的root用户添加一个密码</p>
 <pre><code>[root@xwq system]# vncpasswd root
@@ -532,8 +532,8 @@ success
 [root@xwq ~]# firewall-cmd --reload
 
 success
-</code></pre><h1 id="5、访问redhat"><a href="#5、访问redhat" class="headerlink" title="5、访问redhat"></a>5、访问redhat</h1><p>使用windows端安装vnc viewer访问redhat，可以成功访问。<br><img src="http://oovxjr0mr.bkt.clouddn.com/VNC%E9%85%8D%E7%BD%AE%EF%BC%882%EF%BC%89.png" alt=""></p>
-<h1 id="6：其他命令"><a href="#6：其他命令" class="headerlink" title="6：其他命令"></a>6：其他命令</h1><p>关闭vnc服务：systemctl stop vncserver@:1.service</p>
+</code></pre><h1 id="访问redhat"><a href="#访问redhat" class="headerlink" title="访问redhat"></a>访问redhat</h1><p>使用windows端安装vnc viewer访问redhat，可以成功访问。<br><img src="http://oovxjr0mr.bkt.clouddn.com/VNC%E9%85%8D%E7%BD%AE%EF%BC%882%EF%BC%89.png" alt=""></p>
+<h1 id="其他命令"><a href="#其他命令" class="headerlink" title="其他命令"></a>其他命令</h1><p>关闭vnc服务：systemctl stop vncserver@:1.service</p>
 <p>禁止 VNC 服务开机启动：systemctl disable vncserver@:1.service</p>
 <p>关闭防火墙：systemctl stop firewalld.service</p>
 
@@ -576,7 +576,7 @@ success
       
         <div class="post-tags">
           
-            <a href="/tags/Linux学习笔记/" rel="tag"># Linux学习笔记</a>
+            <a href="/tags/Linux技术/" rel="tag"># Linux技术</a>
           
         </div>
       
@@ -675,7 +675,7 @@ success
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -697,7 +697,7 @@ success
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -795,7 +795,7 @@ success
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1、安装VNC-Server：yum-y-install-vnc-server"><span class="nav-number">1.</span> <span class="nav-text">1、安装VNC Server：yum -y install vnc-server</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2、复制vnc-server的配置模板："><span class="nav-number">2.</span> <span class="nav-text">2、复制vnc server的配置模板：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3、编辑配置模板："><span class="nav-number">3.</span> <span class="nav-text">3、编辑配置模板：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4、配置VNC远程用户"><span class="nav-number">4.</span> <span class="nav-text">4、配置VNC远程用户</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5、访问redhat"><span class="nav-number">5.</span> <span class="nav-text">5、访问redhat</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6：其他命令"><span class="nav-number">6.</span> <span class="nav-text">6：其他命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装VNC-Server：yum-y-install-vnc-server"><span class="nav-number">1.</span> <span class="nav-text">安装VNC Server：yum -y install vnc-server</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复制vnc-server的配置模板："><span class="nav-number">2.</span> <span class="nav-text">复制vnc server的配置模板：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编辑配置模板："><span class="nav-number">3.</span> <span class="nav-text">编辑配置模板：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置VNC远程用户"><span class="nav-number">4.</span> <span class="nav-text">配置VNC远程用户</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#访问redhat"><span class="nav-number">5.</span> <span class="nav-text">访问redhat</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他命令"><span class="nav-number">6.</span> <span class="nav-text">其他命令</span></a></li></ol></div>
             
 
           </div>
