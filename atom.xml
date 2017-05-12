@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-05-08T02:18:58.000Z</updated>
+  <updated>2017-05-12T00:29:28.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,112 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Web安全防御之初探WAF</title>
+    <link href="http://yjscloud.com/2017/05/12/Web%E5%AE%89%E5%85%A8%E9%98%B2%E5%BE%A1%E4%B9%8B%E5%88%9D%E6%8E%A2WAF/"/>
+    <id>http://yjscloud.com/2017/05/12/Web安全防御之初探WAF/</id>
+    <published>2017-05-11T23:44:59.000Z</published>
+    <updated>2017-05-12T00:29:28.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="了解waf"><a href="#了解waf" class="headerlink" title="了解waf"></a>了解waf</h1><h2 id="什么是WAF"><a href="#什么是WAF" class="headerlink" title="什么是WAF"></a>什么是WAF</h2><p>Web应用防护系统（也称：网站应用级入侵防御系统 。<br>英文：Web Application Firewall，简称： WAF）。<br>利用国际上公认的一种说法：Web应用 防火墙 是通过执行一系列针对HTTP/HTTPS的 安全策略 来专门为Web应用提供保护的一款产品。</p>
+<h2 id="常见的web入侵行为"><a href="#常见的web入侵行为" class="headerlink" title="常见的web入侵行为"></a>常见的web入侵行为</h2><p>###SQL注入<br>SQL注入恐怕是黑客们最为常见的入侵web站点的手段，黑客通过把SQL命令插入到Web表单提交或输入域名或页面请求的查询字符串，最终达到欺骗服务器执行恶意的SQL命令。</p>
+<h3 id="xss"><a href="#xss" class="headerlink" title="xss"></a>xss</h3><p>只要是人做出了东西都会存在或多或少的缺陷，我们的web站点也不例外，xss攻击通常指的是通过利用网页开发时留下的漏洞，通过巧妙的方法注入恶意指令代码到网页，使用户加载并执行攻击者恶意制造的网页程序。</p>
+<h3 id="不安全下载-code-backup-tar-gz-sql"><a href="#不安全下载-code-backup-tar-gz-sql" class="headerlink" title="不安全下载 code_backup.tar.gz  .sql"></a>不安全下载 code_backup.tar.gz  .sql</h3><p>这是运维工程师在网站部署时经常犯的错误，由于在部署网站是为了方便配置网站，运维工程师可能会把配置文件放在网站的根目录下，如果有人访问网站的根目录里的配置文件（类似这些：code_backup.tar.gz  .sql）那我们的整个网站将会暴露管理员的账号也可能被盗走。</p>
+<p>###隐私文件访问<br>这个原因同样是因为管理员的配置不当使网站的重要信息暴露在外（类似这些文件：.svn .git）</p>
+<h3 id="弱口令"><a href="#弱口令" class="headerlink" title="弱口令"></a>弱口令</h3><p>在当今很多地方以用户名(帐号)和口令作为鉴权的世界，口令的重要性就可想而知了。口令就相当于进入家门的钥匙，当他人有一把可以进入你家的钥匙，想想你的安全、你的财物、你的隐私……害怕了吧。因为弱口令很容易被他人猜到或破解，所以如果你使用弱口令，就像把家门钥匙放在家门口的垫子下面，是非常危险的，同理如果管理员把网站的后台密码设置的很简单那无疑是把网站拱手让给黑客</p>
+<h3 id="非授权范文"><a href="#非授权范文" class="headerlink" title="非授权范文"></a>非授权范文</h3><p>当管理员要把网站的数据库信息交给客户查看时，有时管理员可能忘记给数据库加密码这就造成了这个数据库暴露在公网，这就造成了数据泄露。</p>
+<p>###cc攻击<br>cc攻击无法避免，只能缓解,如果设置强有力的过滤规则则可能把正常的用户请求拒绝在外。其中性能cc攻击对网站可使网站直接经济服务</p>
+<h3 id="DDOS攻击"><a href="#DDOS攻击" class="headerlink" title="DDOS攻击"></a>DDOS攻击</h3><p>DDOS攻击对于那些带宽大的网站他们能做的一是扛，二是挡，带宽小的网站就比较悲剧了只能等攻击者停止攻击才能恢复网站的正常使用。网站也可以接入云清洗分散攻击流量，道高一尺魔高一丈，如果攻击者调用更多的攻击流量来打网站，网站也只能跪，我们无法杜绝DDOS攻击，为保证网站可以正常的使用我们所能做的是“扛”、“挡”、“分”。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Nginx网站可以通过配置规则来抵御cc攻击（频率限制）、不安全下载（判断后缀）、非授权访问（后缀，认证）、测试防护（根据UA）、设置ip黑名单。但是其所实现的功能及其有限，为了保证网站的正常功能我们就需要借助更为强大的工具来应对各种威胁，waf由此应运而生。</p>
+<h2 id="waf功能"><a href="#waf功能" class="headerlink" title="waf功能"></a>waf功能</h2><p>1.支持IP白名单和黑名单功能，直接将黑名单的IP访问拒绝。</p>
+<p>2.支持URL白名单，将不需要过滤的URL进行定义。</p>
+<p>3.支持User-Agent的过滤，匹配自定义规则中的条目，然后进行处理（返回403）。</p>
+<p>4.支持CC攻击防护，单个URL指定时间的访问次数，超过设定值，直接返回403。</p>
+<p>5.支持Cookie过滤，匹配自定义规则中的条目，然后进行处理（返回403）。</p>
+<p>6.支持URL过滤，匹配自定义规则中的条目，如果用户请求的URL包含这些，返回403。</p>
+<p>7.支持URL参数过滤，原理同上。</p>
+<p>8.支持日志记录，将所有拒绝的操作，记录到日志中去</p>
+<h2 id="WAF的特点"><a href="#WAF的特点" class="headerlink" title="WAF的特点"></a>WAF的特点</h2><p>###异常检测协议<br>Web应用防火墙会对HTTP的请求进行异常检测，拒绝不符合HTTP标准的请求。并且，它也可以只允许HTTP协议的部分选项通过，从而减少攻击的影响范围。甚至，一些Web应用防火墙还可以严格限定HTTP协议中那些过于松散或未被完全制定的选项。</p>
+<p>###增强的输入验证<br>增强输入验证，可以有效防止网页篡改、信息泄露、木马植入等恶意网络入侵行为。从而减小Web服务器被攻击的可能性。</p>
+<p>###及时补丁<br>修补Web安全漏洞，是Web应用开发者最头痛的问题，没人会知道下一秒有什么样的漏洞出现，会为Web应用带来什么样的危害。WAF可以为我们做这项工作了——只要有全面的漏洞信息WAF能在不到一个小时的时间内屏蔽掉这个漏洞。当然，这种屏蔽掉漏洞的方式不是非常完美的，并且没有安装对应的补丁本身就是一种安全威胁，但我们在没有选择的情况下，任何保护措施都比没有保护措施更好。</p>
+<p>###基于规则的保护和基于异常的保护<br>基于规则的保护可以提供各种Web应用的安全规则，WAF生产商会维护这个规则库，并时时为其更新。<br>用户可以按照这些规则对应用进行全方面检测。还有的产品可以基于合法应用数据建立模型，并以此为依据判断应用数据的异常。但这需要对用户企业的应用具有十分透彻的了解才可能做到，可现实中这是十分困难的一件事情。</p>
+<p>###状态管理<br>WAF能够判断用户是否是第一次访问并且将请求重定向到默认登录页面并且记录事件。通过检测用户的整个操作行为我们可以更容易识别攻击。状态管理模式还能检测出异常事件（比如登陆失败），并且在达到极限值时进行处理。这对暴力攻击的识别和响应是十分有利的。</p>
+<p>###其他防护技术<br>WAF还有一些安全增强的功能，可以用来解决WEB程序员过分信任输入数据带来的问题。比如：隐藏表单域保护、抗入侵规避技术、响应监视和信息泄露保护。</p>
+<h2 id="WAF与网络防火墙的区别"><a href="#WAF与网络防火墙的区别" class="headerlink" title="WAF与网络防火墙的区别"></a>WAF与网络防火墙的区别</h2><p>网络防火墙作为访问控制设备，主要工作在OSI模型三、四层，基于IP报文进行检测。只是对端口做限制，对TCP协议做封堵。其产品设计无需理解HTTP会话，也就决定了无法理解Web应用程序语言如HTML、SQL语言。因此，它不可能对HTTP通讯进行输入验证或攻击规则分析。针对Web网站的恶意攻击绝大部分都将封装为HTTP请求，从80或443端口顺利通过防火墙检测。一些定位比较综合、提供丰富功能的防火墙，也具备一定程度的应用层防御能力，如能根据TCP会话异常性及攻击特征阻止网络层的攻击，通过IP分拆和组合也能判断是否有攻击隐藏在多个数据包中，但从根本上说他仍然无法理解HTTP会话，难以应对如SQL注入、跨站脚本、cookie窃取、网页篡改等应用层攻击。web应用防火墙能在应用层理解分析HTTP会话，因此能有效的防止各类应用层攻击，同时他向下兼容，具备网络防火墙的功能。    </p>
+<h1 id="初探实现WAF"><a href="#初探实现WAF" class="headerlink" title="初探实现WAF"></a>初探实现WAF</h1><p>##WAF实现规划</p>
+<p>分析步骤如下：解析HTTP请求==》匹配规则==》防御动作==》记录日志<br>具体实现如下：</p>
+<p>解析http请求：协议解析模块<br>匹配规则：规则检测模块，匹配规则库<br>防御动作：return 403 或者跳转到自定义界面<br>日志记录：记录到elk中</p>
+<p>##OpenResty部署<br>安装依赖包</p>
+<pre><code>[root@nginx ~]# yum install -y readline-devel pcre-devel openssl-devel
+</code></pre><p>下载并编译安装openresty</p>
+<pre><code>[root@nginx ~]# wget https://openresty.org/download/ngx_openresty-1.9.3.2.tar.gz
+[root@nginx ~]# tar zxf ngx_openresty-1.9.3.2.tar.gz
+[root@nginx ~]# cd ngx_openresty-1.9.3.2
+[root@nginx ngx_openresty-1.9.3.2]# ./configure --prefix=/usr/local/openresty-1.9.3.2 \
+--with-luajit --with-http_stub_status_module \
+--with-pcre --with-pcre-jit
+[root@nginx ngx_openresty-1.9.3.2]# gmake &amp;&amp; gmake install
+[root@nginx ngx_openresty-1.9.3.2]#ln -s /usr/local/openresty-1.9.3.2/ /usr/local/openresty
+</code></pre><p>测试openresty安装</p>
+<pre><code>[root@nginx ngx_openresty-1.9.3.2]# vim /usr/local/openresty/nginx/conf/nginx.conf
+server {
+location /hello {
+        default_type text/html;
+        content_by_lua_block {
+            ngx.say(&quot;HelloWorld&quot;)
+        }
+    }
+}
+[root@nginx ~]# /usr/local/openresty/nginx/sbin/nginx -t
+nginx: the configuration file /usr/local/openresty-1.9.3.2/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /usr/local/openresty-1.9.3.2/nginx/conf/nginx.conf test is successful
+[root@nginx ~]# /usr/local/openresty/nginx/sbin/nginx
+</code></pre><p>关闭防火墙</p>
+<pre><code>[root@nginx ~]# systemctl stop firewalld.service
+</code></pre><p><img src="http://oovxjr0mr.bkt.clouddn.com/hello.png" alt="hello"></p>
+<h2 id="WAF部署"><a href="#WAF部署" class="headerlink" title="WAF部署"></a>WAF部署</h2><p>安装git</p>
+<pre><code>[root@nginx ~]# yum -y install git
+</code></pre><p>克隆WAF项目</p>
+<pre><code>[root@nginx ~]#git clone https://github.com/unixhot/waf.git
+</code></pre><p>把waf目录拷贝到Nginx配置目录下</p>
+<pre><code>[root@nginx ~]#cp -a ./waf/waf /usr/local/openresty/nginx/conf/
+</code></pre><p>修改Nginx的配置文件，加入以下配置。注意路径，同时WAF日志默认存放在/tmp/日期_waf.log</p>
+<pre><code>[root@nginx ~]# vim /usr/local/openresty/nginx/conf/nginx.conf
+#WAF
+lua_shared_dict limit 50m;
+lua_package_path &quot;/usr/local/openresty/nginx/conf/waf/?.lua&quot;;
+init_by_lua_file &quot;/usr/local/openresty/nginx/conf/waf/init.lua&quot;;
+access_by_lua_file &quot;/usr/local/openresty/nginx/conf/waf/access.lua&quot;;
+[root@nginx ~]# /usr/local/openresty/nginx/sbin/nginx –t
+[root@nginx ~]# /usr/local/openresty/nginx/sbin/nginx
+</code></pre><p>根据日志记录位置，创建日志目录</p>
+<pre><code>[root@nginx ~]# mkdir /tmp/waf_logs
+[root@nginx ~]# chmod 777 /tmp/waf_logs(为了测试权限直接设置为777，大家千万不要学)
+</code></pre><h2 id="学习配置模块"><a href="#学习配置模块" class="headerlink" title="学习配置模块"></a>学习配置模块</h2><p>WAF上生产之前，建议不要直接上生产，而是先记录日志，不做任何动作。确定WAF不产生误杀<br>config.lua即WAF功能详解</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line">root@nginx waf]# pwd</div><div class="line">/usr/local/openresty/nginx/conf/waf</div><div class="line">[root@nginx waf]# cat config.lua</div><div class="line"> --WAF config file,enable = &quot;on&quot;,disable = &quot;off&quot; </div><div class="line"> --waf status    </div><div class="line"> config_waf_enable = &quot;on&quot;   #是否开启配置</div><div class="line"> --log dir </div><div class="line"> config_log_dir = &quot;/tmp/waf_logs&quot;    #日志记录地址</div><div class="line"> --rule setting </div><div class="line"> config_rule_dir = &quot;/usr/local/nginx/conf/waf/rule-config&quot;        </div><div class="line">                          #匹配规则缩放地址</div><div class="line"> --enable/disable white url </div><div class="line"> config_white_url_check = &quot;on&quot;  #是否开启url检测</div><div class="line"> --enable/disable white ip </div><div class="line"> config_white_ip_check = &quot;on&quot;   #是否开启IP白名单检测</div><div class="line"> --enable/disable block ip </div><div class="line"> config_black_ip_check = &quot;on&quot;   #是否开启ip黑名单检测</div><div class="line"> --enable/disable url filtering </div><div class="line"> config_url_check = &quot;on&quot;      #是否开启url过滤</div><div class="line"> --enalbe/disable url args filtering </div><div class="line"> config_url_args_check = &quot;on&quot;   #是否开启参数检测</div><div class="line"> --enable/disable user agent filtering </div><div class="line"> config_user_agent_check = &quot;on&quot;  #是否开启ua检测</div><div class="line"> --enable/disable cookie deny filtering </div><div class="line"> config_cookie_check = &quot;on&quot;    #是否开启cookie检测</div><div class="line"> --enable/disable cc filtering </div><div class="line"> config_cc_check = &quot;on&quot;   #是否开启防cc攻击</div><div class="line"> --cc rate the xxx of xxx seconds </div><div class="line"> config_cc_rate = &quot;10/60&quot;   #允许一个ip60秒内只能访问10此</div><div class="line"> --enable/disable post filtering </div><div class="line"> config_post_check = &quot;on&quot;   #是否开启post检测</div><div class="line"> --config waf output redirect/html </div><div class="line"> config_waf_output = &quot;html&quot;  #action一个html页面，也可以选择跳转</div><div class="line"> --if config_waf_output ,setting url </div><div class="line"> config_waf_redirect_url = &quot;http://www.baidu.com&quot; </div><div class="line"> config_output_html=[[  #下面是html的内容</div><div class="line"> &lt;html&gt; </div><div class="line"> &lt;head&gt; </div><div class="line"> &lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt; </div><div class="line"> &lt;meta http-equiv=&quot;Content-Language&quot; content=&quot;zh-cn&quot; /&gt; </div><div class="line"> &lt;title&gt;网站防火墙&lt;/title&gt; </div><div class="line"> &lt;/head&gt; </div><div class="line"> &lt;body&gt; </div><div class="line"> &lt;h1 align=&quot;center&quot;&gt; # 您的行为已违反本网站相关规定，注意操作规范. </div><div class="line"> &lt;/body&gt; </div><div class="line"> &lt;/html&gt; </div><div class="line"> ]]</div></pre></td></tr></table></figure>
+<h2 id="学习access-lua的配置"><a href="#学习access-lua的配置" class="headerlink" title="学习access.lua的配置"></a>学习access.lua的配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@nginx waf]# pwd</div><div class="line">/usr/local/openresty/nginx/conf/waf</div><div class="line">[root@nginx waf]# cat access.lua</div><div class="line">require &apos;init&apos;</div><div class="line"></div><div class="line">function waf_main()</div><div class="line">    if white_ip_check() then</div><div class="line">    elseif black_ip_check() then</div><div class="line">    elseif user_agent_attack_check() then</div><div class="line">    elseif cc_attack_check() then</div><div class="line">    elseif cookie_attack_check() then</div><div class="line">    elseif white_url_check() then</div><div class="line">    elseif url_attack_check() then</div><div class="line">    elseif url_args_attack_check() then</div><div class="line">    --elseif post_attack_check() then</div><div class="line">    else</div><div class="line">        return</div><div class="line">    end</div><div class="line">end</div><div class="line"></div><div class="line">waf_main()</div></pre></td></tr></table></figure>
+<p>书写书序：先检查白名单，通过即不检测；<br>再检查黑名单，不通过即拒绝，检查UA，UA不通过即拒绝；<br>检查cookie；URL检查;URL参数检查，post检查.</p>
+<h1 id="启动WAF并测试"><a href="#启动WAF并测试" class="headerlink" title="启动WAF并测试"></a>启动WAF并测试</h1><h2 id="模拟aql注入"><a href="#模拟aql注入" class="headerlink" title="模拟aql注入"></a>模拟aql注入</h2><p>显示效果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab01_%E5%89%AF%E6%9C%AC.jpg" alt="ab_01"></p>
+<p>##使用ab压测工具模拟防cc攻击<br>yum安装Apache<br>[root@nginx ~]# yum -y install httpd<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab04_%E5%89%AF%E6%9C%AC.jpg" alt="ab-04"><br><img src="http://oovxjr0mr.bkt.clouddn.com/ab02_%E5%89%AF%E6%9C%AC.jpg" alt="ab02"></p>
+<h2 id="模拟ip黑名单"><a href="#模拟ip黑名单" class="headerlink" title="模拟ip黑名单"></a>模拟ip黑名单</h2><p>将请求ip放入ip黑名单中<br>[root@nginx rule-config]# echo “192.168.0.16”  &gt;&gt;/usr/local/openresty/nginx/conf/waf/rule-config/blackip.rule<br>显示结果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab_05_%E5%89%AF%E6%9C%AC.jpg" alt="ab05"></p>
+<h2 id="模拟ip白名单"><a href="#模拟ip白名单" class="headerlink" title="模拟ip白名单"></a>模拟ip白名单</h2><p> 将请求ip放入ip白名单中，此时将不对此ip进行任何防护措施<br> [root@nginx rule-config]# echo “192.168.0.16”  &gt;&gt;/usr/local/openresty/nginx/conf/waf/rule-config/whiteip.rule<br> 显示结果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab06_%E5%89%AF%E6%9C%AC.jpg" alt="ab06"></p>
+<h2 id="模拟URL参数检测"><a href="#模拟URL参数检测" class="headerlink" title="模拟URL参数检测"></a>模拟URL参数检测</h2><p>在浏览器输入：<a href="http://192.168.0.14/?a=select" target="_blank" rel="external">http://192.168.0.14/?a=select</a> * from table<br>显示结果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab07_%E5%89%AF%E6%9C%AC.jpg" alt="ab07"><br>详细规定在arg.rule中有规定,对请求进行了规范</p>
+<p>#总结<br>WAF它的定位就决定了只能是一款辅助性安全防御产品，无法从根本上解决产品自身存在的安全缺陷。考虑到安全与效率，WAF也不可能去拦截所有的入侵尝试，毕竟绕过WAF的奇技淫巧还是非常之多的。<br>根本性的防御措施还是需要放在安全开发流程、安全规范的落地和推行上面。<br>在众多的安全防御产品中，有的产品和方案需要花很多钱，但是收益却并不怎么明显。而WAF，在综合考量下它性价比超高，虽然治标不治本，但对于提高攻击成本、降低入侵概率还是很有帮助的。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;了解waf&quot;&gt;&lt;a href=&quot;#了解waf&quot; class=&quot;headerlink&quot; title=&quot;了解waf&quot;&gt;&lt;/a&gt;了解waf&lt;/h1&gt;&lt;h2 id=&quot;什么是WAF&quot;&gt;&lt;a href=&quot;#什么是WAF&quot; class=&quot;headerlink&quot; title=&quot;什
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
   
   <entry>
     <title>Linux文件查找-find命令</title>
