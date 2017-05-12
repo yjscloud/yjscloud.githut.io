@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-05-12T00:36:09.000Z</updated>
+  <updated>2017-05-12T00:40:14.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yjscloud.com/2017/05/12/Web%E5%AE%89%E5%85%A8%E9%98%B2%E5%BE%A1%E4%B9%8B%E5%88%9D%E6%8E%A2WAF/"/>
     <id>http://yjscloud.com/2017/05/12/Web安全防御之初探WAF/</id>
     <published>2017-05-11T23:44:59.000Z</published>
-    <updated>2017-05-12T00:36:09.000Z</updated>
+    <updated>2017-05-12T00:40:14.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="了解waf"><a href="#了解waf" class="headerlink" title="了解waf"></a>了解waf</h1><h2 id="什么是WAF"><a href="#什么是WAF" class="headerlink" title="什么是WAF"></a>什么是WAF</h2><p>Web应用防护系统（也称：网站应用级入侵防御系统 。<br>英文：Web Application Firewall，简称： WAF）。<br>利用国际上公认的一种说法：Web应用 防火墙 是通过执行一系列针对HTTP/HTTPS的 安全策略 来专门为Web应用提供保护的一款产品。</p>
 <h2 id="常见的web入侵行为"><a href="#常见的web入侵行为" class="headerlink" title="常见的web入侵行为"></a>常见的web入侵行为</h2><h3 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h3><p>SQL注入恐怕是黑客们最为常见的入侵web站点的手段，黑客通过把SQL命令插入到Web表单提交或输入域名或页面请求的查询字符串，最终达到欺骗服务器执行恶意的SQL命令。</p>
@@ -100,9 +100,15 @@ access_by_lua_file &quot;/usr/local/openresty/nginx/conf/waf/access.lua&quot;;
 <h2 id="学习access-lua的配置"><a href="#学习access-lua的配置" class="headerlink" title="学习access.lua的配置"></a>学习access.lua的配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">root@nginx waf]# pwd</div><div class="line">/usr/local/openresty/nginx/conf/waf</div><div class="line">[root@nginx waf]# cat access.lua</div><div class="line">require &apos;init&apos;</div><div class="line"></div><div class="line">function waf_main()</div><div class="line">    if white_ip_check() then</div><div class="line">    elseif black_ip_check() then</div><div class="line">    elseif user_agent_attack_check() then</div><div class="line">    elseif cc_attack_check() then</div><div class="line">    elseif cookie_attack_check() then</div><div class="line">    elseif white_url_check() then</div><div class="line">    elseif url_attack_check() then</div><div class="line">    elseif url_args_attack_check() then</div><div class="line">    --elseif post_attack_check() then</div><div class="line">    else</div><div class="line">        return</div><div class="line">    end</div><div class="line">end</div><div class="line"></div><div class="line">waf_main()</div></pre></td></tr></table></figure>
 <p>书写书序：先检查白名单，通过即不检测；<br>再检查黑名单，不通过即拒绝，检查UA，UA不通过即拒绝；<br>检查cookie；URL检查;URL参数检查，post检查.</p>
 <h1 id="启动WAF并测试"><a href="#启动WAF并测试" class="headerlink" title="启动WAF并测试"></a>启动WAF并测试</h1><h2 id="模拟aql注入"><a href="#模拟aql注入" class="headerlink" title="模拟aql注入"></a>模拟aql注入</h2><p>显示效果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab01_%E5%89%AF%E6%9C%AC.jpg" alt="ab_01"></p>
-<p>##使用ab压测工具模拟防cc攻击<br>yum安装Apache<br>[root@nginx ~]# yum -y install httpd<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab04_%E5%89%AF%E6%9C%AC.jpg" alt="ab-04"><br><img src="http://oovxjr0mr.bkt.clouddn.com/ab02_%E5%89%AF%E6%9C%AC.jpg" alt="ab02"></p>
-<h2 id="模拟ip黑名单"><a href="#模拟ip黑名单" class="headerlink" title="模拟ip黑名单"></a>模拟ip黑名单</h2><p>将请求ip放入ip黑名单中<br>[root@nginx rule-config]# echo “192.168.0.16”  &gt;&gt;/usr/local/openresty/nginx/conf/waf/rule-config/blackip.rule<br>显示结果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab_05_%E5%89%AF%E6%9C%AC.jpg" alt="ab05"></p>
-<h2 id="模拟ip白名单"><a href="#模拟ip白名单" class="headerlink" title="模拟ip白名单"></a>模拟ip白名单</h2><p> 将请求ip放入ip白名单中，此时将不对此ip进行任何防护措施<br> [root@nginx rule-config]# echo “192.168.0.16”  &gt;&gt;/usr/local/openresty/nginx/conf/waf/rule-config/whiteip.rule<br> 显示结果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab06_%E5%89%AF%E6%9C%AC.jpg" alt="ab06"></p>
+<p>##使用ab压测工具模拟防cc攻击<br>yum安装Apache</p>
+<pre><code>[root@nginx ~]# yum -y install httpd
+</code></pre><p><img src="http://oovxjr0mr.bkt.clouddn.com/ab04_%E5%89%AF%E6%9C%AC.jpg" alt="ab-04"><br><img src="http://oovxjr0mr.bkt.clouddn.com/ab02_%E5%89%AF%E6%9C%AC.jpg" alt="ab02"></p>
+<h2 id="模拟ip黑名单"><a href="#模拟ip黑名单" class="headerlink" title="模拟ip黑名单"></a>模拟ip黑名单</h2><p>将请求ip放入ip黑名单中</p>
+<pre><code>[root@nginx rule-config]# echo &quot;192.168.0.16&quot;  &gt;&gt;/usr/local/openresty/nginx/conf/waf/rule-config/blackip.rule
+</code></pre><p>显示结果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab_05_%E5%89%AF%E6%9C%AC.jpg" alt="ab05"></p>
+<h2 id="模拟ip白名单"><a href="#模拟ip白名单" class="headerlink" title="模拟ip白名单"></a>模拟ip白名单</h2><p> 将请求ip放入ip白名单中，此时将不对此ip进行任何防护措施</p>
+<pre><code>[root@nginx rule-config]# echo &quot;192.168.0.16&quot;  &gt;&gt;/usr/local/openresty/nginx/conf/waf/rule-config/whiteip.rule
+</code></pre><p> 显示结果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab06_%E5%89%AF%E6%9C%AC.jpg" alt="ab06"></p>
 <h2 id="模拟URL参数检测"><a href="#模拟URL参数检测" class="headerlink" title="模拟URL参数检测"></a>模拟URL参数检测</h2><p>在浏览器输入：<a href="http://192.168.0.14/?a=select" target="_blank" rel="external">http://192.168.0.14/?a=select</a> * from table<br>显示结果如下：<br><img src="http://oovxjr0mr.bkt.clouddn.com/ab07_%E5%89%AF%E6%9C%AC.jpg" alt="ab07"><br>详细规定在arg.rule中有规定,对请求进行了规范</p>
 <h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><p>WAF它的定位就决定了只能是一款辅助性安全防御产品，无法从根本上解决产品自身存在的安全缺陷。考虑到安全与效率，WAF也不可能去拦截所有的入侵尝试，毕竟绕过WAF的奇技淫巧还是非常之多的。<br>根本性的防御措施还是需要放在安全开发流程、安全规范的落地和推行上面。<br>在众多的安全防御产品中，有的产品和方案需要花很多钱，但是收益却并不怎么明显。而WAF，在综合考量下它性价比超高，虽然治标不治本，但对于提高攻击成本、降低入侵概率还是很有帮助的。</p>
 ]]></content>
