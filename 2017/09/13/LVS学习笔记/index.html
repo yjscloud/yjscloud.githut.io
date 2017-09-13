@@ -92,21 +92,21 @@
 
 
 
-<meta name="description" content="LVS简介   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。  LVS是Linux Virtual Server的简称，也就是Linux虚拟服务器, 用现在的观点来看就是个4层（传输层tcp/udp）的负责均衡器">
+<meta name="description" content="LVS简介   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。">
 <meta name="keywords" content="Linux学习笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LVS学习笔记">
 <meta property="og:url" content="http://yjscloud.com/2017/09/13/LVS学习笔记/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="LVS简介   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。  LVS是Linux Virtual Server的简称，也就是Linux虚拟服务器, 用现在的观点来看就是个4层（传输层tcp/udp）的负责均衡器">
+<meta property="og:description" content="LVS简介   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。">
 <meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/VS:NAT.png">
 <meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/TUNNEL.png">
 <meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/VS:DR.png">
 <meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/find.png">
-<meta property="og:updated_time" content="2017-09-13T06:27:41.000Z">
+<meta property="og:updated_time" content="2017-09-13T06:36:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LVS学习笔记">
-<meta name="twitter:description" content="LVS简介   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。  LVS是Linux Virtual Server的简称，也就是Linux虚拟服务器, 用现在的观点来看就是个4层（传输层tcp/udp）的负责均衡器">
+<meta name="twitter:description" content="LVS简介   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。">
 <meta name="twitter:image" content="http://ow78pfxd9.bkt.clouddn.com/VS:NAT.png">
 
 
@@ -453,8 +453,8 @@
 
       
         <h2 id="LVS简介"><a href="#LVS简介" class="headerlink" title="LVS简介"></a>LVS简介</h2><p>   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。</p>
-<p> LVS是Linux Virtual Server的简称，也就是Linux虚拟服务器, 用现在的观点来看就是个4层（传输层tcp/udp）的负责均衡器。 它是一个由章文嵩博士发起的自由软件项目，它的官方站点是www.linuxvirtualserver.org。现在LVS已经是 Linux标准内核的一部分，在Linux2.4内核以前，使用LVS时必须要重新编译内核以支持LVS功能模块，但是从Linux2.4内核以后，已经完全内置了LVS的各个功能模块，无需给内核打任何补丁，可以直接使用LVS提供的各种功能。</p>
  <a id="more"></a>
+<p> LVS是Linux Virtual Server的简称，也就是Linux虚拟服务器, 用现在的观点来看就是个4层（传输层tcp/udp）的负责均衡器。 它是一个由章文嵩博士发起的自由软件项目，它的官方站点是www.linuxvirtualserver.org。现在LVS已经是 Linux标准内核的一部分，在Linux2.4内核以前，使用LVS时必须要重新编译内核以支持LVS功能模块，但是从Linux2.4内核以后，已经完全内置了LVS的各个功能模块，无需给内核打任何补丁，可以直接使用LVS提供的各种功能。</p>
 <p>LVS技术要达到的目标是：通过LVS提供的负载均衡技术和Linux操作系统实现一个高性能、高可用的服务器群集，它具有良好可靠性、可扩展性和可操作性。从而以低廉的成本实现最优的服务性能。<br>LVS自从1998年开始，发展到现在已经是一个比较成熟的技术项目了。可以利用LVS技术实现高可伸缩的、高可用的网络服务，例如WWW服务、Cache服务、DNS服务、FTP服务、MAIL服务、视频/音频点播服务等等，有许多比较著名网站和组织都在使用LVS架设的集群系统，例如：Linux的门户网站（www.linux.com）、向RealPlayer提供音频视频服务而闻名的Real公司（www.real.com）、全球最大的开源网站（sourceforge.net）等。  </p>
 <h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><h4 id="功能特性"><a href="#功能特性" class="headerlink" title="功能特性"></a>功能特性</h4><p>1、抗负载能力强、是工作在网络4层之上仅作分发之用，没有流量的产生；<br>2、配置性比较低，这是一个缺点也是一个优点，因为没有可太多配置的东西，所以并不需要太多接触，大大减少了人为出错的几率；<br>3、工作稳定，自身有完整的双机热备方案；<br>4、无流量，保证了均衡器IO的性能不会收到大流量的影响；<br>5、应用范围比较广，可以对所有应用做负载均衡； </p>
 <h4 id="高可用性"><a href="#高可用性" class="headerlink" title="高可用性"></a>高可用性</h4><p>LVS是一个基于内核级别的应用软件，因此具有很高的处理性能，用LVS构架的负载均衡集群系统具有优秀的处理能力，每个服务节点的故障不会影响整个系统的正常使用，同时又实现负载的合理均衡，使应用具有超高负荷的服务能力，可支持上百万个并发连接请求。如配置百兆网卡，采用VS/TUN或VS/DR调度技术，整个集群系统的吞吐量可高达1Gbits/s；如配置千兆网卡，则系统的最大吞吐量可接近10Gbits/s。</p>

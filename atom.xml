@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-09-13T06:27:41.000Z</updated>
+  <updated>2017-09-13T06:36:04.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -20,11 +20,11 @@
     <link href="http://yjscloud.com/2017/09/13/LVS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     <id>http://yjscloud.com/2017/09/13/LVS学习笔记/</id>
     <published>2017-09-13T02:47:43.000Z</published>
-    <updated>2017-09-13T06:27:41.000Z</updated>
+    <updated>2017-09-13T06:36:04.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="LVS简介"><a href="#LVS简介" class="headerlink" title="LVS简介"></a>LVS简介</h2><p>   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。</p>
-<p> LVS是Linux Virtual Server的简称，也就是Linux虚拟服务器, 用现在的观点来看就是个4层（传输层tcp/udp）的负责均衡器。 它是一个由章文嵩博士发起的自由软件项目，它的官方站点是www.linuxvirtualserver.org。现在LVS已经是 Linux标准内核的一部分，在Linux2.4内核以前，使用LVS时必须要重新编译内核以支持LVS功能模块，但是从Linux2.4内核以后，已经完全内置了LVS的各个功能模块，无需给内核打任何补丁，可以直接使用LVS提供的各种功能。</p>
  <a id="more"></a>
+<p> LVS是Linux Virtual Server的简称，也就是Linux虚拟服务器, 用现在的观点来看就是个4层（传输层tcp/udp）的负责均衡器。 它是一个由章文嵩博士发起的自由软件项目，它的官方站点是www.linuxvirtualserver.org。现在LVS已经是 Linux标准内核的一部分，在Linux2.4内核以前，使用LVS时必须要重新编译内核以支持LVS功能模块，但是从Linux2.4内核以后，已经完全内置了LVS的各个功能模块，无需给内核打任何补丁，可以直接使用LVS提供的各种功能。</p>
 <p>LVS技术要达到的目标是：通过LVS提供的负载均衡技术和Linux操作系统实现一个高性能、高可用的服务器群集，它具有良好可靠性、可扩展性和可操作性。从而以低廉的成本实现最优的服务性能。<br>LVS自从1998年开始，发展到现在已经是一个比较成熟的技术项目了。可以利用LVS技术实现高可伸缩的、高可用的网络服务，例如WWW服务、Cache服务、DNS服务、FTP服务、MAIL服务、视频/音频点播服务等等，有许多比较著名网站和组织都在使用LVS架设的集群系统，例如：Linux的门户网站（www.linux.com）、向RealPlayer提供音频视频服务而闻名的Real公司（www.real.com）、全球最大的开源网站（sourceforge.net）等。  </p>
 <h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><h4 id="功能特性"><a href="#功能特性" class="headerlink" title="功能特性"></a>功能特性</h4><p>1、抗负载能力强、是工作在网络4层之上仅作分发之用，没有流量的产生；<br>2、配置性比较低，这是一个缺点也是一个优点，因为没有可太多配置的东西，所以并不需要太多接触，大大减少了人为出错的几率；<br>3、工作稳定，自身有完整的双机热备方案；<br>4、无流量，保证了均衡器IO的性能不会收到大流量的影响；<br>5、应用范围比较广，可以对所有应用做负载均衡； </p>
 <h4 id="高可用性"><a href="#高可用性" class="headerlink" title="高可用性"></a>高可用性</h4><p>LVS是一个基于内核级别的应用软件，因此具有很高的处理性能，用LVS构架的负载均衡集群系统具有优秀的处理能力，每个服务节点的故障不会影响整个系统的正常使用，同时又实现负载的合理均衡，使应用具有超高负荷的服务能力，可支持上百万个并发连接请求。如配置百兆网卡，采用VS/TUN或VS/DR调度技术，整个集群系统的吞吐量可高达1Gbits/s；如配置千兆网卡，则系统的最大吞吐量可接近10Gbits/s。</p>
@@ -103,7 +103,6 @@
     <summary type="html">
     
       &lt;h2 id=&quot;LVS简介&quot;&gt;&lt;a href=&quot;#LVS简介&quot; class=&quot;headerlink&quot; title=&quot;LVS简介&quot;&gt;&lt;/a&gt;LVS简介&lt;/h2&gt;&lt;p&gt;   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。&lt;/p&gt;
-&lt;p&gt; LVS是Linux Virtual Server的简称，也就是Linux虚拟服务器, 用现在的观点来看就是个4层（传输层tcp/udp）的负责均衡器。 它是一个由章文嵩博士发起的自由软件项目，它的官方站点是www.linuxvirtualserver.org。现在LVS已经是 Linux标准内核的一部分，在Linux2.4内核以前，使用LVS时必须要重新编译内核以支持LVS功能模块，但是从Linux2.4内核以后，已经完全内置了LVS的各个功能模块，无需给内核打任何补丁，可以直接使用LVS提供的各种功能。&lt;/p&gt;
     
     </summary>
     
@@ -1159,7 +1158,7 @@ fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。�
     <link href="http://yjscloud.com/2017/05/01/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/"/>
     <id>http://yjscloud.com/2017/05/01/hexo博客搭建指南/</id>
     <published>2017-05-01T11:14:56.000Z</published>
-    <updated>2017-05-02T06:01:54.000Z</updated>
+    <updated>2017-09-13T06:37:15.000Z</updated>
     
     <content type="html"><![CDATA[<p>自己在腾讯云买了一个域名半年来都不知道做什么（学生党购买腾讯云只要1块钱！！！），Hexo优雅整洁深深的把我给吸引住了，于是动手搭了一个博客出来，在搭建博客的过程中碰到很多问题，我在参考别人的博文的基础上整理此文，一是方便其他搭建自己的人博客，二是给自己的学习之旅做个总结。</p>
 <p>我的博客地址：<a href="http://yjscloud.com/">yjscloud.com</a></p>
@@ -1271,7 +1270,7 @@ fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。�
 <p>添加站点地图插件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm install hexo-generator-sitmap --save</div></pre></td></tr></table></figure>
 <h3 id="添加网易云音乐"><a href="#添加网易云音乐" class="headerlink" title="添加网易云音乐"></a>添加网易云音乐</h3><p>在知道了页面的结构之后，你就可以将你的播放器添加在页面的任意位置，开始我是放在了首页，然后发现一上来就自动播放太吵了，于是就放在了侧边栏，想要听得朋友可以手动点击播放，<br>我们可以直接在网易云音乐中搜索我们想要插入的音乐，然后点击生成外链播放器,然后可以根据你得设置生成相应的html代码，将获得的html代码插入到你想要插入的位置即可</p>
-<p>我放在了侧边栏，所以对应的修改layout_macro\sidebar.swig 文件</p>
+<p>我放在了侧边栏，所以对应的修改layout\_macro\sidebar.swig 文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;div id=&quot;music163player&quot;&gt;</div><div class="line">    &lt;iframe frameborder=&quot;no&quot; border=&quot;0&quot; marginwidth=&quot;0&quot; marginheight=&quot;0&quot; width=280 height=86 src=&quot;//music.163.com/outchain/player?type=2&amp;id=38358214&amp;auto=0&amp;height=66&quot;&gt;</div><div class="line">    &lt;/iframe&gt;</div><div class="line">&lt;/div&gt;</div></pre></td></tr></table></figure>
 <h3 id="添加搜索功能"><a href="#添加搜索功能" class="headerlink" title="添加搜索功能"></a>添加搜索功能</h3><p>next支持Swiftype 、微搜索和Local Search</p>
 <p>Swiftype （收费的没有免费版，进可以使用15天）是为网站和移动应用提供内部搜索的工具，点击进入Swiftype注册页面 ，注册之后需要填写自己的博客的网址</p>
