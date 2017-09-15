@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yjscloud.com/2017/05/01/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/</loc>
+    <loc>http://yjscloud.com/2017/09/15/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/</loc>
     
-    <lastmod>2017-09-13T06:37:15.000Z</lastmod>
+    <lastmod>2017-09-15T05:00:20.000Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://yjscloud.com/2017/09/13/LVS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     
-    <lastmod>2017-09-13T06:36:04.000Z</lastmod>
+    <lastmod>2017-09-15T04:51:52.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yjscloud.com/2017/05/01/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/</loc>
+    
+    <lastmod>2017-09-13T06:37:15.000Z</lastmod>
     
   </url>
   

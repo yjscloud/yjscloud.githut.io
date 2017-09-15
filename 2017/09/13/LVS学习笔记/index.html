@@ -103,7 +103,7 @@
 <meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/TUNNEL.png">
 <meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/VS:DR.png">
 <meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/find.png">
-<meta property="og:updated_time" content="2017-09-13T06:36:04.000Z">
+<meta property="og:updated_time" content="2017-09-15T04:51:52.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LVS学习笔记">
 <meta name="twitter:description" content="LVS简介   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。">
@@ -489,7 +489,7 @@
 <h4 id="VS-DR"><a href="#VS-DR" class="headerlink" title="VS/DR"></a>VS/DR</h4><p>即（Virtual Server via Direct Routing）<br>也就是用直接路由技术实现虚拟服务器。它的连接调度和管理与VS/NAT和VS/TUN中的一样，但它的报文转发方法又有不同，VS/DR通过改写请求报文的MAC地址，将请求发送到Real Server，而Real Server将响应直接返回给客户，免去了VS/TUN中的IP隧道开销。这种方式是三种负载调度机制中性能最高最好的，但是必须要求Director Server与Real Server都有一块网卡连在同一物理网段上。</p>
 <p><img src="http://ow78pfxd9.bkt.clouddn.com/VS:DR.png" alt="VS/DR"></p>
 <h5 id="VS-DR转发过程"><a href="#VS-DR转发过程" class="headerlink" title="VS/DR转发过程"></a>VS/DR转发过程</h5><p>（1）客户端发起请求到load balancer的虚拟ip<br>（2）load banlancer把客户发送的包，修改源mac地址为vip的，目的mac地址为real server的，然后发送给real server<br>（3）real server接受请求,并处理，然后把结果通过vip直接返回给客户端。<br>（4）客户端接受real server的响应。<br>注意<br>（a）load balancer和 real server 使用相同的vip<br>（b）load balancer和real server必须在同一个网络，因为load balancer需要知道real server的mac地址。    </p>
-<p>#####VS/DR特点<br>DR仅请求报文经由director，响应报文时由RS直接响应client,它通过修改请求报文的目标mac地址进行转发.</p>
+<h5 id="VS-DR特点"><a href="#VS-DR特点" class="headerlink" title="VS/DR特点"></a>VS/DR特点</h5><p>DR仅请求报文经由director，响应报文时由RS直接响应client,它通过修改请求报文的目标mac地址进行转发.</p>
 <p>(1）保证前端路由器将目标IP为VIP的请求报文发给Director</p>
 <pre><code>解决方案：
    静态绑定
@@ -581,6 +581,10 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/09/15/CloudStack搭建指南/" rel="next" title="CloudStack搭建指南">
+                <i class="fa fa-chevron-left"></i> CloudStack搭建指南
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
@@ -663,7 +667,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -674,7 +678,7 @@
             
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -783,7 +787,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LVS简介"><span class="nav-number">1.</span> <span class="nav-text">LVS简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">1.1.</span> <span class="nav-text">优点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#功能特性"><span class="nav-number">1.1.1.</span> <span class="nav-text">功能特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高可用性"><span class="nav-number">1.1.2.</span> <span class="nav-text">高可用性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高可靠性"><span class="nav-number">1.1.3.</span> <span class="nav-text">高可靠性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#适用环境"><span class="nav-number">1.1.4.</span> <span class="nav-text">适用环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">1.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LVS原理"><span class="nav-number">2.</span> <span class="nav-text">LVS原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工作模式"><span class="nav-number">2.1.</span> <span class="nav-text">工作模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三种转发机制介绍"><span class="nav-number">2.2.</span> <span class="nav-text">三种转发机制介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VS-NAT"><span class="nav-number">2.2.1.</span> <span class="nav-text">VS/NAT</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-NAT转发过程"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">VS/NAT转发过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-NAT特点"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">VS/NAT特点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文中简写字母备注-同下"><span class="nav-number">2.2.2.</span> <span class="nav-text">文中简写字母备注(同下)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VS-TUN"><span class="nav-number">2.2.3.</span> <span class="nav-text">VS/TUN</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-TUN转发过程"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">VS/TUN转发过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-TUN特点"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">VS/TUN特点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VS-DR"><span class="nav-number">2.2.4.</span> <span class="nav-text">VS/DR</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-DR转发过程"><span class="nav-number">2.2.4.1.</span> <span class="nav-text">VS/DR转发过程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三种转发机制的优缺点"><span class="nav-number">2.2.5.</span> <span class="nav-text">三种转发机制的优缺点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LVS的调度算法"><span class="nav-number">3.</span> <span class="nav-text">LVS的调度算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipvsadm命令的使用"><span class="nav-number">4.</span> <span class="nav-text">ipvsadm命令的使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LVS简介"><span class="nav-number">1.</span> <span class="nav-text">LVS简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">1.1.</span> <span class="nav-text">优点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#功能特性"><span class="nav-number">1.1.1.</span> <span class="nav-text">功能特性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高可用性"><span class="nav-number">1.1.2.</span> <span class="nav-text">高可用性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高可靠性"><span class="nav-number">1.1.3.</span> <span class="nav-text">高可靠性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#适用环境"><span class="nav-number">1.1.4.</span> <span class="nav-text">适用环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">1.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LVS原理"><span class="nav-number">2.</span> <span class="nav-text">LVS原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工作模式"><span class="nav-number">2.1.</span> <span class="nav-text">工作模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三种转发机制介绍"><span class="nav-number">2.2.</span> <span class="nav-text">三种转发机制介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#VS-NAT"><span class="nav-number">2.2.1.</span> <span class="nav-text">VS/NAT</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-NAT转发过程"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">VS/NAT转发过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-NAT特点"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">VS/NAT特点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文中简写字母备注-同下"><span class="nav-number">2.2.2.</span> <span class="nav-text">文中简写字母备注(同下)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VS-TUN"><span class="nav-number">2.2.3.</span> <span class="nav-text">VS/TUN</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-TUN转发过程"><span class="nav-number">2.2.3.1.</span> <span class="nav-text">VS/TUN转发过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-TUN特点"><span class="nav-number">2.2.3.2.</span> <span class="nav-text">VS/TUN特点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VS-DR"><span class="nav-number">2.2.4.</span> <span class="nav-text">VS/DR</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-DR转发过程"><span class="nav-number">2.2.4.1.</span> <span class="nav-text">VS/DR转发过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#VS-DR特点"><span class="nav-number">2.2.4.2.</span> <span class="nav-text">VS/DR特点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三种转发机制的优缺点"><span class="nav-number">2.2.5.</span> <span class="nav-text">三种转发机制的优缺点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LVS的调度算法"><span class="nav-number">3.</span> <span class="nav-text">LVS的调度算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ipvsadm命令的使用"><span class="nav-number">4.</span> <span class="nav-text">ipvsadm命令的使用</span></a></li></ol></div>
             
 
           </div>
