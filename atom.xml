@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-09-15T05:00:20.000Z</updated>
+  <updated>2017-09-15T05:28:25.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yjscloud.com/2017/09/15/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/"/>
     <id>http://yjscloud.com/2017/09/15/CloudStack搭建指南/</id>
     <published>2017-09-15T02:49:46.000Z</published>
-    <updated>2017-09-15T05:00:20.000Z</updated>
+    <updated>2017-09-15T05:28:25.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="理论基础"><a href="#理论基础" class="headerlink" title="理论基础"></a>理论基础</h1><h2 id="云计算的出现"><a href="#云计算的出现" class="headerlink" title="云计算的出现"></a>云计算的出现</h2><p>基本上，云计算只是一种把 IT 资源当作服务来提供的手段。几乎所有 IT 资源都可以作为云服务来提供：应用程序、计算能力、存储容量、联网、编程工具，以至于通信服务和协作工具。<br>云计算最早为 Google、Amazon 等其他扩建基础设施的大型互联网服务提供商所采用。于是产生一种架构：大规模扩展、水平分布的系统资源，抽象为虚拟 IT 服务，并作为持续配置、合用的资源进行管理。</p>
 <a id="more"></a>
@@ -40,7 +40,8 @@
 <p>集群（Clusters）：<br>Cluster 是多个主机组成的一个集群。<br>同一个cluster中的主机有相同的硬件，相同的 Hypervisor，和共用同样的存储。同一个 cluster 中的虚拟机，可以实现无中断服务地从一个主机迁移到另外一个上。<br>集群由一个或多个宿主机和一个或多个主要存储服务器构成。集群的大小取决于下层虚拟机软件。大多数情况下基本无建议。当使用VMware时，每个VMware集群都被vCenter 服务器管理。管理员必须在本产品中登记vCenter。每个zone下可以有多个vCenter服务器。每个vCenter服务器可能管理多个VMware集群</p>
 <p>主机（Hosts）：<br>Host 就是运行的虚拟机（VM）主机。<br>宿主机就是个独立的计算机。宿主机运行来宾虚拟机并提供其相应的计算资源。每个宿主机都装有虚拟机软件来运行来宾虚拟机。比如一个开启了kvm支持的服务器，一个思杰XenServer服务器，或者一个ESXi服务器都可以作为宿主机。<br>宿主机在CloudStack部署中属于最小的组织单元。宿主机包含于集群中，集群又属于提供点，而区域中包含提供点（就是在逻辑概念上zone&gt;pod&gt;cluster&gt;host），新增的宿主机可以随时添加以提供更多资源给来宾虚拟机，CloudStack自动探测宿主机的cpu数量和内存资源。宿主机对终端用户不可见。终端用户不能决定他们的虚拟机被分配到哪台宿主机。</p>
 <p>CloudStack 中存在两种存储：<br>Primary storage：一级存储与 cluster 关联，它为该 cluster 中的主机的全部虚拟机提供磁盘卷。一个 cluster 至少有一个一级存储，且在部署时位置要临近主机以提供高性能。<br>Secondary storage：二级存储与 zone 关联，它存储模板文件，ISO 镜像和磁盘卷快照。</p>
-<h1 id="部署安装"><a href="#部署安装" class="headerlink" title="部署安装"></a>部署安装</h1><h2 id="cloudstack-安装前的准备"><a href="#cloudstack-安装前的准备" class="headerlink" title="cloudstack 安装前的准备"></a>cloudstack 安装前的准备</h2><p>VMWARE Workstation虚拟机为实验平台，我的个节点硬件资源分配情况</p>
+<h1 id="部署安装"><a href="#部署安装" class="headerlink" title="部署安装"></a>部署安装</h1><p>cloudstack 安装前的准备</p>
+<p>VMWARE Workstation虚拟机为实验平台，我的个节点硬件资源分配情况</p>
 <pre><code>master1 : 2G内存+40G硬盘+双核6600k
 agent1 :  6G内存+40G硬盘+双核6600k
 agent2 : 6G内存+40G硬盘+双核6600k
@@ -48,54 +49,79 @@ agent3 : 6G内存+40G硬盘+双核6600k
 NFS : 1G内存+40G硬盘+双核6600k+500G硬盘+500G硬盘
 系统：CentOS-6-x86_64（6.8）
 网络选择：桥接
-软件包选择：Basic Server。
-关闭iptables和SELinux。
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">## 配置nfs服务器</div><div class="line">### 安装ntp服务</div><div class="line">为了同步云平台中主机的时间，需要配置NTP，但NTP默认没有安装。因此需要先安装NTP，然后进行配置。通过以下命令进行安装：</div><div class="line"></div><div class="line">```yum -y install ntp</div></pre></td></tr></table></figure>
-
-
-实际上默认配置项即可满足的需求，仅需启用NTP并设置为开机启动，如下所示：
-</code></pre><p>chkconfig ntpd on<br>service ntpd start<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">### NFS服务安装</div><div class="line">本文档将配置的环境使用NFS做为主存储和辅助存储，需配置两个NFS共享目录，在此之前需先安装nfs-utils：</div><div class="line"></div><div class="line">```yum -y install nfs-utils</div></pre></td></tr></table></figure></p>
-<p>接下来需配置NFS提供两个不同的挂载点。通过编辑/etc/exports文件即可简单实现。确保这个文件中包含下面内容：</p>
+</code></pre><h2 id="配置nfs服务器"><a href="#配置nfs服务器" class="headerlink" title="配置nfs服务器"></a>配置nfs服务器</h2><h3 id="安装ntp服务"><a href="#安装ntp服务" class="headerlink" title="安装ntp服务"></a>安装ntp服务</h3><p>为了同步云平台中主机的时间，需要配置NTP，但NTP默认没有安装。因此需要先安装NTP，然后进行配置。通过以下命令进行安装：</p>
+<pre><code>yum -y install ntp
+</code></pre><p>实际上默认配置项即可满足的需求，仅需启用NTP并设置为开机启动，如下所示：</p>
+<pre><code>chkconfig ntpd on
+service ntpd start
+</code></pre><h3 id="NFS服务安装"><a href="#NFS服务安装" class="headerlink" title="NFS服务安装"></a>NFS服务安装</h3><p>本文档将配置的环境使用NFS做为主存储和辅助存储，需配置两个NFS共享目录，在此之前需先安装nfs-utils：</p>
+<pre><code>yum -y install nfs-utils
+</code></pre><p>接下来需配置NFS提供两个不同的挂载点。通过编辑/etc/exports文件即可简单实现。确保这个文件中包含下面内容：</p>
 <pre><code>/export/secondary *(rw,async,no_root_squash,no_subtree_check)
 /export/primary *(rw,async,no_root_squash,no_subtree_check)
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">注意配置文件中指定了系统中两个并不存在的目录，下面需要创建这些目录并设置合适的权限，对应的命令如下所示：</div><div class="line"></div><div class="line">```mkdir -p /export/primarymkdir –p /export/secondary</div></pre></td></tr></table></figure>
-
-
-### 格式化硬盘
-
-查看磁盘：
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">fdisk  -l</div></pre></td></tr></table></figure>
-
-
-格式化磁盘：
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mkfs.ext4  /dev/sdb mkfs.ext4  /dev/sdc</div></pre></td></tr></table></figure>
-
-
-为格式化好的磁盘添加开机自动挂载:
-</code></pre><p>echo “/dev/sdb  /export/secondary  ext4 defaults 0 0”  &gt;&gt; /etc/fstab<br>echo “/dev/sdc  /export/primary  ext4 defaults 0 0”  &gt;&gt; /etc/fstab</p>
-<pre><code>
-### 配置防火墙
-
-CentOS 6.x 版本默认使用NFSv4设置为以下内容：
-在/etc/sysconfig/nfs文件中取消如下选项的注释：
-</code></pre><p>LOCKD_TCPPORT=32803<br>LOCKD_UDPPORT=32769<br>MOUNTD_PORT=892<br>RQUOTAD_PORT=875<br>STATD_PORT=662<br>STATD_OUTGOING_PORT=2020<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">接下来还需配置防火墙策略，允许NFS客户端访问。编辑文件/etc/sysconfig/iptables</div><div class="line"></div><div class="line">```-A INPUT -m state --state NEW -p udp --dport 111 -j ACCEPT-A INPUT -m state --state NEW -p tcp --dport 111 -j ACCEPT-A INPUT -m state --state NEW -p tcp --dport 2049 -j ACCEPT-A INPUT -m state --state NEW -p tcp --dport 32803 -j ACCEPT-A INPUT -m state --state NEW -p udp --dport 32769 -j ACCEPT-A INPUT -m state --state NEW -p tcp --dport 892 -j ACCEPT-A INPUT -m state --state NEW -p tcp --dport 892 -j ACCEPT-A INPUT -m state --state NEW -p udp --dport 892 -j ACCEPT-A INPUT -m state --state NEW -p tcp --dport 875 -j ACCEPT-A INPUT -m state --state NEW -p udp --dport 875 -j ACCEPT-A INPUT -m state --state NEW -p tcp --dport 662 -j ACCEPT-A INPUT -m state --state NEW -p udp --dport 662 -j ACCEPT-A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT</div></pre></td></tr></table></figure></p>
-<p>通过以下命令重新启动iptables服务：</p>
+</code></pre><p>注意配置文件中指定了系统中两个并不存在的目录，下面需要创建这些目录并设置合适的权限，对应的命令如下所示：</p>
+<pre><code>mkdir -p /export/primary
+mkdir –p /export/secondary
+</code></pre><h3 id="格式化硬盘"><a href="#格式化硬盘" class="headerlink" title="格式化硬盘"></a>格式化硬盘</h3><p>查看磁盘：</p>
+<pre><code>fdisk  -l
+</code></pre><p>格式化磁盘：</p>
+<pre><code>mkfs.ext4  /dev/sdb 
+mkfs.ext4  /dev/sdc
+</code></pre><p>为格式化好的磁盘添加开机自动挂载:</p>
+<pre><code>echo &quot;/dev/sdb  /export/secondary  ext4 defaults 0 0&quot;  &gt;&gt; /etc/fstab
+echo &quot;/dev/sdc  /export/primary  ext4 defaults 0 0&quot;  &gt;&gt; /etc/fstab
+</code></pre><h3 id="配置防火墙"><a href="#配置防火墙" class="headerlink" title="配置防火墙"></a>配置防火墙</h3><p>CentOS 6.x 版本默认使用NFSv4设置为以下内容：<br>在/etc/sysconfig/nfs文件中取消如下选项的注释：</p>
+<pre><code>LOCKD_TCPPORT=32803
+LOCKD_UDPPORT=32769
+MOUNTD_PORT=892
+RQUOTAD_PORT=875
+STATD_PORT=662
+STATD_OUTGOING_PORT=2020
+</code></pre><p>接下来还需配置防火墙策略，允许NFS客户端访问。编辑文件/etc/sysconfig/iptables</p>
+<pre><code>-A INPUT -m state --state NEW -p udp --dport 111 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp --dport 111 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp --dport 2049 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp --dport 32803 -j ACCEPT
+-A INPUT -m state --state NEW -p udp --dport 32769 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp --dport 892 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp --dport 892 -j ACCEPT
+-A INPUT -m state --state NEW -p udp --dport 892 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp --dport 875 -j ACCEPT
+-A INPUT -m state --state NEW -p udp --dport 875 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp --dport 662 -j ACCEPT
+-A INPUT -m state --state NEW -p udp --dport 662 -j ACCEPT
+-A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
+</code></pre><p>通过以下命令重新启动iptables服务：</p>
 <pre><code>service iptables restart
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">您也可以直接关闭防火墙：</div><div class="line"></div><div class="line">```service iptables stop (关闭防火墙)chkconfig iptables off（禁止防火墙开机自起）service iptables status（查看防火墙状态）</div><div class="line">```然后需要配置NFS服务为开机自启动，执行如下命令：</div><div class="line"></div><div class="line">```service rpcbind startservice nfs startchkconfig rpcbind onchkconfig nfs on</div></pre></td></tr></table></figure>
-
-
-最后可以在agent1上安装nfs-utils软件，测试您的nfs服务是否搭建成功showmount -e  192.168.0.20测试master1的nfs服务是否配置成功！
-
-![nfs-2.1](http://owawy15xy.bkt.clouddn.com/nfs-2.1.png)
-
-## 管理服务器安装
-
-### 网络配置
-
-安装好自己的虚拟机为自己的虚拟机设置网络，以下是我的所有虚拟机ip设置如下：
-</code></pre><p>master1: 192.168.0.20<br>agent1:192.168.0.21<br>agent2:192.168.0.22<br>agent3:192.168.0.23<br>NFS: 192.168.0.24<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">默认情况下新安装的机器并未启用网络，在root权限下使用命令ifup eth0激活你的网卡，并用命令setup开启图形化界面固定你的ip，或这用vim /etc/sysconfig/network-scripts/ifcfg-eth0修改网卡配置文件， 根据您需求修改配置文件，指定IP地址，网络掩码等信息，例：</div><div class="line"></div><div class="line">```DEVICE=eth0HWADDR=52:54:00:B9:A6:C0NM_CONTROLLED=noONBOOT=yesBOOTPROTO=noneIPADDR=192.168.0.20NETMASK=255.255.255.0GATEWAY=192.168.0.1DNS1=192.168.0.1</div></pre></td></tr></table></figure></p>
-<h3 id="修改主机名"><a href="#修改主机名" class="headerlink" title="修改主机名"></a>修改主机名</h3><p>需要修改两处：一处是/etc/sysconfig/network，另一处是/etc/hosts，只修改任一处会导致系统启动异常。<br>（1）修改：/etc/sysconfig/network</p>
+</code></pre><p>您也可以直接关闭防火墙：</p>
+<pre><code>service iptables stop (关闭防火墙)
+chkconfig iptables off（禁止防火墙开机自起）
+service iptables status（查看防火墙状态）
+</code></pre><p>然后需要配置NFS服务为开机自启动，执行如下命令：</p>
+<pre><code>service rpcbind start
+service nfs start
+chkconfig rpcbind on
+chkconfig nfs on
+</code></pre><p>最后可以在agent1上安装nfs-utils软件，测试您的nfs服务是否搭建成功showmount -e  192.168.0.20测试master1的nfs服务是否配置成功！</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/nfs-2.1.png" alt="nfs-2.1"></p>
+<h2 id="管理服务器安装"><a href="#管理服务器安装" class="headerlink" title="管理服务器安装"></a>管理服务器安装</h2><h3 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h3><p>安装好自己的虚拟机为自己的虚拟机设置网络，以下是我的所有虚拟机ip设置如下：</p>
+<pre><code>master1: 192.168.0.20
+agent1:192.168.0.21
+agent2:192.168.0.22
+agent3:192.168.0.23
+NFS: 192.168.0.24
+</code></pre><p>默认情况下新安装的机器并未启用网络，在root权限下使用命令ifup eth0激活你的网卡，并用命令setup开启图形化界面固定你的ip，或这用vim /etc/sysconfig/network-scripts/ifcfg-eth0修改网卡配置文件， </p>
+<p>根据您需求修改配置文件，指定IP地址，网络掩码等信息，例：</p>
+<pre><code>DEVICE=eth0
+HWADDR=52:54:00:B9:A6:C0
+NM_CONTROLLED=no
+ONBOOT=yes
+BOOTPROTO=none
+IPADDR=192.168.0.20
+NETMASK=255.255.255.0
+GATEWAY=192.168.0.1
+DNS1=192.168.0.1
+</code></pre><h3 id="修改主机名"><a href="#修改主机名" class="headerlink" title="修改主机名"></a>修改主机名</h3><p>需要修改两处：一处是/etc/sysconfig/network，另一处是/etc/hosts，只修改任一处会导致系统启动异常。<br>（1）修改：/etc/sysconfig/network</p>
 <p>用vimi编辑器，里面有一行 HOSTNAME=localhost.localdomain (如果是默认的话），修改 localhost.localdomain 为你的主机名。例：<br><img src="http://owawy15xy.bkt.clouddn.com/2.2.1.png" alt="2.2.1"></p>
 <p>（2）修改：/etc/hosts</p>
 <p>打开该文件，会有一行 127.0.0.1 localhost.localdomain localhost 。其中 127.0.0.1 是本地环路地址， localhost.localdomain 是主机名(hostname)，也就是你待修改的。localhost 是主机名的别名（alias）。将第二项修改为你的主机名，第三项可选。例：</p>
@@ -105,18 +131,23 @@ CentOS 6.x 版本默认使用NFSv4设置为以下内容：
 <p>通过hostname –fqdn命令重新检查主机名 。</p>
 <h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a>关闭selinux</h3><p>关闭selinux</p>
 <pre><code>sed -i &apos;s/SELINUX=enforcing/SELINUX=disabled/&apos; /etc/selinux/config
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">也可以用vi 直接编辑修改</div><div class="line">### 安装epel 源</div><div class="line"> cloudstack  yum源有部分包依赖 epel 源</div><div class="line"> </div><div class="line"> ``` yum -y install epel-release </div><div class="line"> ```### 安装 cloudstack 源</div><div class="line">添加CloudStack软件仓库，创建/etc/yum.repos.d/cloudstack.repo文件，并添加如下信息。</div><div class="line">```[cloudstack]name=cloudstackbaseurl=http://cloudstack.apt-get.eu/centos/6/4.8/enabled=1gpgcheck=0</div></pre></td></tr></table></figure>
-
-
-或者把安装包下载到本地，然后上传到合适的文件夹，我上传到了opt/目录下，这样编译安装会快很多。
-
-![2.2.5](http://owawy15xy.bkt.clouddn.com/2.2.5.png)
-
-### 安装NTP
-
-为了同步云平台中主机的时间，需要配置NTP，但NTP默认没有安装。因此需要先安装NTP，然后进行配置。通过以下命令进行安装：
-</code></pre><p>yum -y install ntp<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">实际上默认配置项即可满足的需求，仅需启用NTP并设置为开机启动，如下所示：</div><div class="line"></div><div class="line">```chkconfig ntpd onservice ntpd start</div></pre></td></tr></table></figure></p>
-<p>接下来进行CloudStack管理节点和相关工具的安装。</p>
+</code></pre><p>也可以用vi 直接编辑修改</p>
+<h3 id="安装epel-源"><a href="#安装epel-源" class="headerlink" title="安装epel 源"></a>安装epel 源</h3><p>cloudstack  yum源有部分包依赖 epel 源</p>
+<pre><code>yum -y install epel-release 
+</code></pre><h3 id="安装-cloudstack-源"><a href="#安装-cloudstack-源" class="headerlink" title="安装 cloudstack 源"></a>安装 cloudstack 源</h3><p>添加CloudStack软件仓库，创建/etc/yum.repos.d/cloudstack.repo文件，并添加如下信息。</p>
+<pre><code>[cloudstack]
+name=cloudstack
+baseurl=http://cloudstack.apt-get.eu/centos/6/4.8/
+enabled=1
+gpgcheck=0
+</code></pre><p>或者把安装包下载到本地，然后上传到合适的文件夹，我上传到了opt/目录下，这样编译安装会快很多。</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.2.5.png" alt="2.2.5"></p>
+<h3 id="安装NTP"><a href="#安装NTP" class="headerlink" title="安装NTP"></a>安装NTP</h3><p>为了同步云平台中主机的时间，需要配置NTP，但NTP默认没有安装。因此需要先安装NTP，然后进行配置。通过以下命令进行安装：</p>
+<pre><code>yum -y install ntp
+</code></pre><p>实际上默认配置项即可满足的需求，仅需启用NTP并设置为开机启动，如下所示：</p>
+<pre><code>chkconfig ntpd on
+service ntpd start
+</code></pre><p>接下来进行CloudStack管理节点和相关工具的安装。</p>
 <h3 id="安装管理端"><a href="#安装管理端" class="headerlink" title="安装管理端"></a>安装管理端</h3><p>现在进入您放cloudstack软件包的文件件，使用如下命令安装管理服务器。</p>
 <pre><code>yum -y install cloudstack-management-4.8.0-1.el6.x86_64.rpm cloudstack-common-4.8.0-1.el6.x86_64.rpm
 </code></pre><h3 id="数据库安装和配置"><a href="#数据库安装和配置" class="headerlink" title="数据库安装和配置"></a>数据库安装和配置</h3><p>首先安装MySQL，并对它进行配置，以确保CloudStack运行正常。<br>运行如下命令安装：</p>
@@ -127,73 +158,124 @@ innodb_lock_wait_timeout=600
 max_connections=350
 log-bin=mysql-bin
 binlog-format = &apos;ROW&apos;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">正确配置MySQL后，启动它并配置为开机自启动：</div><div class="line"></div><div class="line">```service mysqld startchkconfig mysqld on</div></pre></td></tr></table></figure>
-
-
-设置mysql 密码及范围权限
-</code></pre><p>mysqladmin -uroot password 123456<br>mysql -uroot  -p123456 -e “GRANT ALL PRIVILEGES ON <em>.</em> TO root@’%’ IDENTIFIED BY ‘123456’”;</p>
-<pre><code>### 系统初始化
-
-在程序执行完毕后，需初始化数据库，通过如下命令和选项完成：
-</code></pre><p>cloudstack-setup-databases cloud:123456@localhost –deploy-as=root:123456<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">当该过程结束后，您应该可以看到类似信息：”CloudStack has successfully initialized the database.”。数据库创建后，最后一步是配置管理服务器，执行如下命令：</div><div class="line"></div><div class="line">```cloudstack-setup-management</div></pre></td></tr></table></figure></p>
-<h3 id="上传系统模板"><a href="#上传系统模板" class="headerlink" title="上传系统模板"></a>上传系统模板</h3><p>CloudStack通过一系列系统虚拟机提供功能，如访问虚拟机控制台，如提供各类网络服务，以及管理辅助存储的中的各类资源。该步骤会获取系统虚拟机模板，用于云平台引导后系统虚拟机的部署。<br>然后需要下载系统虚拟机模板，并把这些模板部署于刚才创建的辅助存储中；管理服务器包含一个脚本可以正确的操作这些系统虚拟机模板：</p>
+</code></pre><p>正确配置MySQL后，启动它并配置为开机自启动：</p>
+<pre><code>service mysqld start
+chkconfig mysqld on
+</code></pre><p>设置mysql 密码及范围权限 </p>
+<pre><code>mysqladmin -uroot password 123456
+mysql -uroot  -p123456 -e &quot;GRANT ALL PRIVILEGES ON *.* TO root@&apos;%&apos;     IDENTIFIED BY &apos;123456&apos;&quot;;
+</code></pre><h3 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h3><p>在程序执行完毕后，需初始化数据库，通过如下命令和选项完成：</p>
+<pre><code>cloudstack-setup-databases cloud:123456@localhost --deploy-as=root:123456
+</code></pre><p>当该过程结束后，您应该可以看到类似信息：”CloudStack has successfully initialized the database.”。<br>数据库创建后，最后一步是配置管理服务器，执行如下命令：</p>
+<pre><code>cloudstack-setup-management
+</code></pre><h3 id="上传系统模板"><a href="#上传系统模板" class="headerlink" title="上传系统模板"></a>上传系统模板</h3><p>CloudStack通过一系列系统虚拟机提供功能，如访问虚拟机控制台，如提供各类网络服务，以及管理辅助存储的中的各类资源。该步骤会获取系统虚拟机模板，用于云平台引导后系统虚拟机的部署。<br>然后需要下载系统虚拟机模板，并把这些模板部署于刚才创建的辅助存储中；管理服务器包含一个脚本可以正确的操作这些系统虚拟机模板：</p>
 <pre><code>/usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m /export/secondary/ -f /opt/systemvm64template-4.6.0-kvm.qcow2.bz2 -h kvm -F
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">### 访问用户界面</div><div class="line">要访问CloudStack的WEB界面，仅需在浏览器访问 http://XXX.XXX.XXX:8080/client ，使用默认用户’admin’和密码’password’来登录。第一次登录可以看到欢迎界面。</div><div class="line">![2.2.11](http://owawy15xy.bkt.clouddn.com/2.2.11.png)</div><div class="line"></div><div class="line"></div><div class="line">## 安装agent节点及配置</div><div class="line">### 先决条件</div><div class="line">本文档描述的环境使用管理服务器同时作为计算节点，这意味着很多先决步骤已经在搭建管理服务器时完成；但为了清晰起见，仍然列出相关步骤：</div><div class="line">(1)网络配置</div><div class="line">(2)主机名</div><div class="line">(3)SELinux</div><div class="line">(4)NTP</div><div class="line">(5)配置ClouStack软件库</div><div class="line">你不需要在管理节点上执行这些操作，当然，如果您需要添加额外的主机以上步骤仍然需要执行。</div><div class="line">### Agent 安装</div><div class="line">安装KVM代理仅仅需要一条简单的命令，但之后我们需要进行一些配置。</div><div class="line"></div><div class="line">```yum -y install cloudstack-common-4.8.0-1.el6.x86_64.rpm cloudstack-agent-4.8.0-1.el6.x86_64.rpm</div></pre></td></tr></table></figure>
-
-
-### 虚拟化配置
-
-配置KVM
-
-KVM中我们有两部分需要进行配置, libvirt和QEMU.
-
-配置QEMU
-
-KVM的配置项相对简单，仅需配置一项。编辑QEMU VNC配置文件/etc/libvirt/qemu.conf并取消如下行的注释。同时注释 security_driver=&quot;none&quot;
-</code></pre><p>vnc_listen=0.0.0.0</p>
-<h1 id="security-driver-”none”"><a href="#security-driver-”none”" class="headerlink" title="security_driver=”none”"></a>security_driver=”none”</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">配置LibvirtCloudStack使用libvirt管理虚拟机。因此正确的配置libvirt至关重要。Libvirt属于cloudstack-agent的依赖组件，应提前安装好。</div><div class="line">为了实现动态迁移，libvirt需要监听使用非加密的TCP连接。还需要关闭libvirts尝试使用组播DNS进行广播。这些都是在 /etc/libvirt/libvirtd.conf文件中进行配置。</div><div class="line">设置下列参数：</div><div class="line"></div><div class="line">```listen_tls = 0listen_tcp = 1tcp_port = &quot;16059&quot;auth_tcp = &quot;none&quot;mdns_adv = 0</div></pre></td></tr></table></figure>
-<p>仅仅在libvirtd.conf中启用”listen_tcp”还不够，我们还必须修改/etc/sysconfig/libvirtd中的参数:</p>
+</code></pre><h3 id="访问用户界面"><a href="#访问用户界面" class="headerlink" title="访问用户界面"></a>访问用户界面</h3><p>要访问CloudStack的WEB界面，仅需在浏览器访问 <a href="http://XXX.XXX.XXX:8080/client" target="_blank" rel="external">http://XXX.XXX.XXX:8080/client</a> ，使用默认用户’admin’和密码’password’来登录。第一次登录可以看到欢迎界面。<br><img src="http://owawy15xy.bkt.clouddn.com/2.2.11.png" alt="2.2.11"></p>
+<h2 id="安装agent节点及配置"><a href="#安装agent节点及配置" class="headerlink" title="安装agent节点及配置"></a>安装agent节点及配置</h2><h3 id="先决条件"><a href="#先决条件" class="headerlink" title="先决条件"></a>先决条件</h3><p>本文档描述的环境使用管理服务器同时作为计算节点，这意味着很多先决步骤已经在搭建管理服务器时完成；但为了清晰起见，仍然列出相关步骤：</p>
+<p>(1)网络配置</p>
+<p>(2)主机名</p>
+<p>(3)SELinux</p>
+<p>(4)NTP</p>
+<p>(5)配置ClouStack软件库</p>
+<p>你不需要在管理节点上执行这些操作，当然，如果您需要添加额外的主机以上步骤仍然需要执行。</p>
+<h3 id="Agent-安装"><a href="#Agent-安装" class="headerlink" title="Agent 安装"></a>Agent 安装</h3><p>安装KVM代理仅仅需要一条简单的命令，但之后我们需要进行一些配置。</p>
+<pre><code>yum -y install cloudstack-common-4.8.0-1.el6.x86_64.rpm cloudstack-agent-4.8.0-1.el6.x86_64.rpm
+</code></pre><h3 id="虚拟化配置"><a href="#虚拟化配置" class="headerlink" title="虚拟化配置"></a>虚拟化配置</h3><p>配置KVM</p>
+<p>KVM中我们有两部分需要进行配置, libvirt和QEMU.</p>
+<p>配置QEMU</p>
+<p>KVM的配置项相对简单，仅需配置一项。编辑QEMU VNC配置文件/etc/libvirt/qemu.conf并取消如下行的注释。同时注释 security_driver=”none”</p>
+<pre><code>vnc_listen=0.0.0.0
+# security_driver=&quot;none&quot;
+</code></pre><p>配置Libvirt<br>CloudStack使用libvirt管理虚拟机。因此正确的配置libvirt至关重要。Libvirt属于cloudstack-agent的依赖组件，应提前安装好。</p>
+<p>为了实现动态迁移，libvirt需要监听使用非加密的TCP连接。还需要关闭libvirts尝试使用组播DNS进行广播。这些都是在 /etc/libvirt/libvirtd.conf文件中进行配置。</p>
+<p>设置下列参数：</p>
+<pre><code>listen_tls = 0
+listen_tcp = 1
+tcp_port = &quot;16059&quot;
+auth_tcp = &quot;none&quot;
+mdns_adv = 0
+</code></pre><p>仅仅在libvirtd.conf中启用”listen_tcp”还不够，我们还必须修改/etc/sysconfig/libvirtd中的参数:</p>
 <p>更改</p>
 <pre><code>LIBVIRTD_ARGS=&quot;-1&quot;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">重启libvirt服务</div><div class="line"></div><div class="line">```service libvirtd restart</div></pre></td></tr></table></figure>
-
-
-KVM配置完成
-
-For the sake of completeness you should check if KVM is running OK on your machine:
-</code></pre><p>lsmod | grep kvm<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">输入lsmod | grep kvm命令后输出的信息</div><div class="line"></div><div class="line">```kvm_intel              55496  0kvm                   337772  1 kvm_intel</div></pre></td></tr></table></figure></p>
-<h2 id="系统配置"><a href="#系统配置" class="headerlink" title="系统配置"></a>系统配置</h2><h3 id="登陆到用户界面"><a href="#登陆到用户界面" class="headerlink" title="登陆到用户界面"></a>登陆到用户界面</h3><p>CloudStack提供一个基于web的UI，管理员和终端用户能够使用这个界面。</p>
+</code></pre><p>重启libvirt服务</p>
+<pre><code>service libvirtd restart
+</code></pre><p>KVM配置完成</p>
+<p>For the sake of completeness you should check if KVM is running OK on your machine:</p>
+<pre><code>lsmod | grep kvm
+</code></pre><p>输入lsmod | grep kvm命令后输出的信息</p>
+<pre><code>kvm_intel              55496  0
+kvm                   337772  1 kvm_intel
+</code></pre><h2 id="系统配置"><a href="#系统配置" class="headerlink" title="系统配置"></a>系统配置</h2><h3 id="登陆到用户界面"><a href="#登陆到用户界面" class="headerlink" title="登陆到用户界面"></a>登陆到用户界面</h3><p>CloudStack提供一个基于web的UI，管理员和终端用户能够使用这个界面。</p>
 <pre><code>http://&lt;management-server-ip-address&gt;:8080/client（后台管理网站）
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">如果管理服务器是全新的安装,。那么会出现一个安装向导。在稍后的访问中,你将看到一个登录界面,你需要通过用户名和密码登入来查看你的仪表盘.</div><div class="line"></div><div class="line">```用户名 -&gt; 你账号的用户ID。默认用户名是admin。密码 -&gt; 用户ID对应的密码。默认用户名的密码是password。域 -&gt; 如果你是root用户，此处留空即可。</div></pre></td></tr></table></figure>
-
-
-### 根管理员界面的概述
-
-在管理服务器软件安装并且运行后, 你就可以运行CloudStack的用户界面.了。在这里通过UI，可以供给、查看并管理你的云基础架构。
-
-打开你自己喜欢的浏览器并访问这个URL。请把IP地址替换成你自己的管理服务器的IP。
-
-http://&lt;management-server-ip-address&gt;:8080/client
-
-初次登录管理服务器时，会出现一个向导启动画面。后续访问时，您会直接进入控制面板。
-如果你看到第一次的向导屏幕, 可以选择下面步骤之一进行。
-**继续执行基本安装。**如果你仅仅是想体验CloudStack，请选择这个，并且这样你可以马上开始跟着向导进行简单的配置。我们将帮助你建立一个有以下功能的云：一个运行CloudStack软件的机器和使用NFS协议的存储；一个运行VMs的XenServer或KVM hypervisor的服务器；一个共享的公有网络。安装向导的提示会给你需要的所有信息。但如果你需要更多的详细信息，你可以按照试用安装向导进行.
-
-我之前用过CloudStack。 如果您已经完成设计阶段，计划部署一个复杂CloudStack云，或是准备对用基础安装向导搭建的试验云进行扩展，请选择此项。在管理员UI中，您可以使用CloudStack中更强大的功能，例如高级VLAN网络、高可用、负载均衡器和防火墙等额外网络设备，以及支持Citrix XenServer、KVM、VMware vSphere等多种虚拟化平台。
-
-根管理员的仪表盘显示出来:
-在云的安装及后续管理过程中，您需要用根管理员登录UI。根管理员账号管理着CloudStack的部署以及物理设施。根管理员可以修改系统配置，改变基本功能，创建和删除用户账号，以及其他仅限于已授权人员执行的操作。在初始安CloudStack时，请务必修改默认密码为新的较独特的密码。
-打开你自己喜欢的浏览器并访问这个URL。请把IP地址替换成你自己的管理服务器的IP。
-</code></pre><p>http://<management-server-ip-address>:8080/client<br>使用当前root用户的ID和口令登录UI。缺省为admin，pawword。<br>点击帐户。<br>点击管理员帐号名。<br>点击查看用户。<br>点击管理员用户名。<br>点击更改密码按钮。<br>输入新密码，然后点击确认。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### 初始化配置</div><div class="line">选择“基础架构 --&gt; 添加区域”按照截图进行配置.</div><div class="line"></div><div class="line">![2.4.1](http://owawy15xy.bkt.clouddn.com/2.4.1.png)</div><div class="line"></div><div class="line">![2.4.2](http://owawy15xy.bkt.clouddn.com/2.4.2.png)</div><div class="line">名称：zone		dns1：172.16.2.1		dns2：192.168.0.1（这些内容包括下面的填写仅为参考值。可根据实际情况进行修改）</div><div class="line"></div><div class="line">![2.4.3](http://owawy15xy.bkt.clouddn.com/2.4.3.png)</div><div class="line"></div><div class="line">物理网卡名称可以保持默认，改一下名也可以我改名为eth0</div><div class="line"></div><div class="line">![2.4.4](http://owawy15xy.bkt.clouddn.com/2.4.4.png)</div><div class="line"></div><div class="line">提供名称：pod		预留网关：192.168.0.1 	预留掩码：255.255.255.0起始IP：192.168.0.31	结束IP：192.168.0.50![2.4.5](http://owawy15xy.bkt.clouddn.com/2.4.5.png)</div><div class="line"></div><div class="line">来宾网关：192.168.0.1	 掩码：255.255.255.0	 起始IP:192.168.0.51  结束IP：192.168.0.80![2.4.6](http://owawy15xy.bkt.clouddn.com/2.4.6.png)</div><div class="line"></div><div class="line">集群名称我取名为cluster![2.4.7](http://owawy15xy.bkt.clouddn.com/2.4.7.png)</div><div class="line"></div><div class="line">主机名称：192.168.0.21		用户名：root	密码：*******（这里用户名和密码，填写被添加主机的root用户和密码）</div><div class="line"></div><div class="line">![2.4.8](http://owawy15xy.bkt.clouddn.com/2.4.8.png)</div><div class="line">名称：primary   协议：选择nfs		服务器：192.168.0.24   路径：/export/primary</div><div class="line"></div><div class="line">![2.4.9](http://owawy15xy.bkt.clouddn.com/2.4.9.png)</div><div class="line"></div><div class="line">NFS服务器：192.168.0.24		路径：/export/secondary![2.4.10](http://owawy15xy.bkt.clouddn.com/2.4.10.png)</div><div class="line"></div><div class="line">![2.4.11](http://owawy15xy.bkt.clouddn.com/2.4.11.png)</div><div class="line"></div><div class="line">单击“是”启动区域！</div><div class="line">查看系统VM。大约5-10分钟启动成功，如果启动失败，查看日志文件进行改进！</div><div class="line">如果配置错误在可以在这里启动区域或禁用区域</div><div class="line"></div><div class="line">![2.4.12](http://owawy15xy.bkt.clouddn.com/2.4.12.png)</div><div class="line">![2.4.13](http://owawy15xy.bkt.clouddn.com/2.4.13.png)</div><div class="line"></div><div class="line">这里我的资源域已经启动了。</div><div class="line">如果以上步骤均没有问题，则会显示如上图所示的界面，除了虚拟路由器数目仍旧为0，系统VM数目为2之外，其他所有组件的数目均为1。</div><div class="line">系统VM是否启动成功可以查看其状态是否为Running：</div><div class="line"></div><div class="line">![2.4.14](http://owawy15xy.bkt.clouddn.com/2.4.14.png)</div><div class="line"></div><div class="line">系统VM是不同于主机上创建的普通虚拟机的，他们是CloudStack云平台自带的用于完成自身的一些任务的虚拟机。</div><div class="line">Secondary Storage VM：简称为SSVM，用于管理二级存储的相关操作，如模板跟镜像文件的上传与下载，快照，volumes的存放，第一次创建虚拟机时从二级存储拷贝模板到一级存储并且自动创建快照，每一个资源域可以有多个SSVM，当SSVM被删除或停止，它会自动被重建并启动。</div><div class="line">Console Proxy VM：用于在web 界面上展示控制台。</div><div class="line">虚拟路由器将会在第一个实例启动后自动创建。</div><div class="line"></div><div class="line">![2.4.15](http://owawy15xy.bkt.clouddn.com/2.4.15.png)</div><div class="line"></div><div class="line"></div><div class="line">## 启动虚拟机实例</div><div class="line">### 搭建一个http 服务器搭建http 服务主要用来管理ISO系统和镜像模板</div><div class="line">在master 节点安装 nginx </div><div class="line"></div><div class="line">```yum  -y install nginx</div></pre></td></tr></table></figure></management-server-ip-address></p>
-<p>防火墙中加入允许80 端口访问</p>
+</code></pre><p>如果管理服务器是全新的安装,。那么会出现一个安装向导。在稍后的访问中,你将看到一个登录界面,你需要通过用户名和密码登入来查看你的仪表盘.</p>
+<pre><code>用户名 -&gt; 你账号的用户ID。默认用户名是admin。
+密码 -&gt; 用户ID对应的密码。默认用户名的密码是password。
+域 -&gt; 如果你是root用户，此处留空即可。
+</code></pre><h3 id="根管理员界面的概述"><a href="#根管理员界面的概述" class="headerlink" title="根管理员界面的概述"></a>根管理员界面的概述</h3><p>在管理服务器软件安装并且运行后, 你就可以运行CloudStack的用户界面.了。在这里通过UI，可以供给、查看并管理你的云基础架构。</p>
+<p>打开你自己喜欢的浏览器并访问这个URL。请把IP地址替换成你自己的管理服务器的IP。</p>
+<p>http://<management-server-ip-address>:8080/client</management-server-ip-address></p>
+<p>初次登录管理服务器时，会出现一个向导启动画面。后续访问时，您会直接进入控制面板。<br>如果你看到第一次的向导屏幕, 可以选择下面步骤之一进行。<br><strong>继续执行基本安装。</strong>如果你仅仅是想体验CloudStack，请选择这个，并且这样你可以马上开始跟着向导进行简单的配置。我们将帮助你建立一个有以下功能的云：一个运行CloudStack软件的机器和使用NFS协议的存储；一个运行VMs的XenServer或KVM hypervisor的服务器；一个共享的公有网络。安装向导的提示会给你需要的所有信息。但如果你需要更多的详细信息，你可以按照试用安装向导进行.</p>
+<p>我之前用过CloudStack。 如果您已经完成设计阶段，计划部署一个复杂CloudStack云，或是准备对用基础安装向导搭建的试验云进行扩展，请选择此项。在管理员UI中，您可以使用CloudStack中更强大的功能，例如高级VLAN网络、高可用、负载均衡器和防火墙等额外网络设备，以及支持Citrix XenServer、KVM、VMware vSphere等多种虚拟化平台。</p>
+<p>根管理员的仪表盘显示出来:<br>在云的安装及后续管理过程中，您需要用根管理员登录UI。根管理员账号管理着CloudStack的部署以及物理设施。根管理员可以修改系统配置，改变基本功能，创建和删除用户账号，以及其他仅限于已授权人员执行的操作。在初始安CloudStack时，请务必修改默认密码为新的较独特的密码。<br>打开你自己喜欢的浏览器并访问这个URL。请把IP地址替换成你自己的管理服务器的IP。</p>
+<pre><code>http://&lt;management-server-ip-address&gt;:8080/client
+使用当前root用户的ID和口令登录UI。缺省为admin，pawword。
+点击帐户。
+点击管理员帐号名。
+点击查看用户。
+点击管理员用户名。
+点击更改密码按钮。 
+输入新密码，然后点击确认。
+</code></pre><h3 id="初始化配置"><a href="#初始化配置" class="headerlink" title="初始化配置"></a>初始化配置</h3><p>选择“基础架构 –&gt; 添加区域”按照截图进行配置.</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.1.png" alt="2.4.1"></p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.2.png" alt="2.4.2"><br>名称：zone        dns1：172.16.2.1        dns2：192.168.0.1（这些内容包括下面的填写仅为参考值。可根据实际情况进行修改）</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.3.png" alt="2.4.3"></p>
+<p>物理网卡名称可以保持默认，改一下名也可以我改名为eth0</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.4.png" alt="2.4.4"></p>
+<p>提供名称：pod        预留网关：192.168.0.1     预留掩码：255.255.255.0<br>起始IP：192.168.0.31    结束IP：192.168.0.50</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.5.png" alt="2.4.5"></p>
+<p>来宾网关：192.168.0.1     掩码：255.255.255.0     起始IP:192.168.0.51  结束IP：192.168.0.80</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.6.png" alt="2.4.6"></p>
+<p>集群名称我取名为cluster</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.7.png" alt="2.4.7"></p>
+<p>主机名称：192.168.0.21        用户名：root    密码：<strong><em>*</em></strong>（这里用户名和密码，填写被添加主机的root用户和密码）</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.8.png" alt="2.4.8"><br>名称：primary   协议：选择nfs        服务器：192.168.0.24   路径：/export/primary</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.9.png" alt="2.4.9"></p>
+<p>NFS服务器：192.168.0.24        路径：/export/secondary</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.10.png" alt="2.4.10"></p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.11.png" alt="2.4.11"></p>
+<p>单击“是”启动区域！</p>
+<p>查看系统VM。大约5-10分钟启动成功，如果启动失败，查看日志文件进行改进！</p>
+<p>如果配置错误在可以在这里启动区域或禁用区域</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.12.png" alt="2.4.12"><br><img src="http://owawy15xy.bkt.clouddn.com/2.4.13.png" alt="2.4.13"></p>
+<p>这里我的资源域已经启动了。</p>
+<p>如果以上步骤均没有问题，则会显示如上图所示的界面，除了虚拟路由器数目仍旧为0，系统VM数目为2之外，其他所有组件的数目均为1。</p>
+<p>系统VM是否启动成功可以查看其状态是否为Running：</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.14.png" alt="2.4.14"></p>
+<p>系统VM是不同于主机上创建的普通虚拟机的，他们是CloudStack云平台自带的用于完成自身的一些任务的虚拟机。</p>
+<p>Secondary Storage VM：简称为SSVM，用于管理二级存储的相关操作，如模板跟镜像文件的上传与下载，快照，volumes的存放，第一次创建虚拟机时从二级存储拷贝模板到一级存储并且自动创建快照，每一个资源域可以有多个SSVM，当SSVM被删除或停止，它会自动被重建并启动。</p>
+<p>Console Proxy VM：用于在web 界面上展示控制台。</p>
+<p>虚拟路由器将会在第一个实例启动后自动创建。</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.15.png" alt="2.4.15"></p>
+<h2 id="启动虚拟机实例"><a href="#启动虚拟机实例" class="headerlink" title="启动虚拟机实例"></a>启动虚拟机实例</h2><h3 id="搭建一个http-服务器"><a href="#搭建一个http-服务器" class="headerlink" title="搭建一个http 服务器"></a>搭建一个http 服务器</h3><p>搭建http 服务主要用来管理ISO系统和镜像模板</p>
+<p>在master 节点安装 nginx </p>
+<pre><code>yum  -y install nginx
+</code></pre><p>防火墙中加入允许80 端口访问</p>
 <p>也可以直接关闭防火墙！在master管理节点不建议关闭防火墙！</p>
 <pre><code>-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">编辑 /etc/nginx/nginx.conf  配置文件，能够使访问目录</div><div class="line"></div><div class="line">```autoindex on;# 显示目录autoindex_exact_size on;# 显示文件大小autoindex_localtime on;# 显示文件时间</div></pre></td></tr></table></figure>
-
-
-到 /usr/share/nginx/html  目录 删除所有文件 ，启动nginx
-</code></pre><p>/etc/init.d/nginx restart<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">上传ISO 到 /usr/share/nginx/html</div><div class="line">看到如下界面</div><div class="line"></div><div class="line">![2.5.1](http://owawy15xy.bkt.clouddn.com/2.5.1.png)</div><div class="line">修改全局设置  secstorage.allowed 设置 ，二级存储ISO镜像和模板可以下载，IP网段改为0.0.0.0/0![2.5.2](http://owawy15xy.bkt.clouddn.com/2.5.2.png)</div><div class="line"></div><div class="line">### 制作模板Cloudstack模版支持两种模式：</div><div class="line"></div><div class="line">```一种是通过KVM 制作的qcow2或raw文件另外就是直接上传ISO文件作为模版文件</div></pre></td></tr></table></figure></p>
-<p>先在Cloudstack的模板注册中，添加ISO镜像文件，然后启动实例，选择从ISO启动，然后安装系统。</p>
+</code></pre><p>编辑 /etc/nginx/nginx.conf  配置文件，能够使访问目录</p>
+<pre><code>autoindex on;# 显示目录
+autoindex_exact_size on;# 显示文件大小
+autoindex_localtime on;# 显示文件时间
+</code></pre><p>到 /usr/share/nginx/html  目录 删除所有文件 ，启动nginx</p>
+<pre><code>/etc/init.d/nginx restart
+</code></pre><p>上传ISO 到 /usr/share/nginx/html</p>
+<p>看到如下界面</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.1.png" alt="2.5.1"><br>修改全局设置  secstorage.allowed 设置 ，二级存储ISO镜像和模板可以下载，IP网段改为0.0.0.0/0</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.2.png" alt="2.5.2"></p>
+<h3 id="制作模板"><a href="#制作模板" class="headerlink" title="制作模板"></a>制作模板</h3><p>Cloudstack模版支持两种模式：</p>
+<pre><code>一种是通过KVM 制作的qcow2或raw文件    
+另外就是直接上传ISO文件作为模版文件
+</code></pre><p>先在Cloudstack的模板注册中，添加ISO镜像文件，然后启动实例，选择从ISO启动，然后安装系统。</p>
 <p><img src="http://owawy15xy.bkt.clouddn.com/2.5.3.png" alt="2.5.3"><br>URL 输入下载ISO的地址</p>
 <p><img src="http://owawy15xy.bkt.clouddn.com/2.5.4.png" alt="2.5.4"></p>
 <p>完成后，已就绪状态是 “YES”</p>
@@ -212,21 +294,26 @@ http://&lt;management-server-ip-address&gt;:8080/client
 TYPE=Ethernet
 BOOTPROTO=dhcp
 ONBOOT=yes
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">移除udev持久设备规则</div><div class="line"></div><div class="line">```rm -f /etc/udev/rules.d/70*rm -f /var/lib/dhclient/*</div></pre></td></tr></table></figure>
-
-
-移除SSH Keys
-
-这步是为了确认所有要作为模板的VMs的SSH Keys都不相同，否则这样会降低虚拟机的安全性。
-</code></pre><p>rm -f /etc/ssh/<em>key</em><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">清除日志文件</div><div class="line">从主模板移除旧的日志文件是一个好习惯。</div><div class="line"></div><div class="line">```cat /dev/null &gt; /var/log/audit/audit.log 2&gt;/dev/nullcat /dev/null &gt; /var/log/wtmp 2&gt;/dev/nulllogrotate -f /etc/logrotate.conf 2&gt;/dev/nullrm -f /var/log/*-* /var/log/*.gz 2&gt;/dev/null</div></pre></td></tr></table></figure></p>
-<p>清除用户历史</p>
+</code></pre><p>移除udev持久设备规则</p>
+<pre><code>rm -f /etc/udev/rules.d/70*
+rm -f /var/lib/dhclient/*
+</code></pre><p>移除SSH Keys</p>
+<p>这步是为了确认所有要作为模板的VMs的SSH Keys都不相同，否则这样会降低虚拟机的安全性。</p>
+<pre><code>rm -f /etc/ssh/*key*
+</code></pre><p>清除日志文件</p>
+<p>从主模板移除旧的日志文件是一个好习惯。</p>
+<pre><code>cat /dev/null &gt; /var/log/audit/audit.log 2&gt;/dev/null
+cat /dev/null &gt; /var/log/wtmp 2&gt;/dev/null
+logrotate -f /etc/logrotate.conf 2&gt;/dev/null
+rm -f /var/log/*-* /var/log/*.gz 2&gt;/dev/null
+</code></pre><p>清除用户历史</p>
 <p>下一步来清除你曾经运行过的bash命令。</p>
 <pre><code>history -c
 unset HISTFILE
 </code></pre><p>关闭VM</p>
 <p>现在你可以关闭你的主模板并且创建模板了！</p>
-<p>halt -p</p>
-<p>创建模板！</p>
+<pre><code>halt -p
+</code></pre><p>创建模板！</p>
 <p><img src="http://owawy15xy.bkt.clouddn.com/2.5.10.png" alt="2.5.10"></p>
 <p>成功后从模板列表中，可以看出</p>
 <p><img src="http://owawy15xy.bkt.clouddn.com/2.5.11.png" alt="2.5.11"></p>
