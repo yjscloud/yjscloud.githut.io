@@ -1,0 +1,1154 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux技术," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="此篇文章为《CloudStack搭建指南》的补充部分，主要讲的是如何优雅的把GlusterFS分布式文件系统部署到CloudStack云计算平台，如果您还不能优雅的搭建CloudStack云计算平台请您参阅《CloudStack搭建指南》，感谢您的支持！">
+<meta name="keywords" content="Linux技术">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CloudStack搭建指南（续）">
+<meta property="og:url" content="http://yjscloud.com/2017/09/17/CloudStack搭建指南（续）/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="此篇文章为《CloudStack搭建指南》的补充部分，主要讲的是如何优雅的把GlusterFS分布式文件系统部署到CloudStack云计算平台，如果您还不能优雅的搭建CloudStack云计算平台请您参阅《CloudStack搭建指南》，感谢您的支持！">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs-1.1.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs-1.2.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs-1.3.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs-1.4.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs-1.5.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs-1.6.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs01.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs02.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs03.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs04.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs05.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs06.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs07.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/tree02.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/tree03.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs-add01.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/remove-gfs.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/gfs-ag01.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/cs01.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/cs02.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/cs3.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/cs04.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/cs05.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/cs06.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/cs07.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/cs08.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/lose01.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/lost02.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/lost03.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/lost04.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/men3.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/lost05.png">
+<meta property="og:image" content="http://owawy15xy.bkt.clouddn.com/lost~~~.png">
+<meta property="og:updated_time" content="2017-09-17T13:34:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CloudStack搭建指南（续）">
+<meta name="twitter:description" content="此篇文章为《CloudStack搭建指南》的补充部分，主要讲的是如何优雅的把GlusterFS分布式文件系统部署到CloudStack云计算平台，如果您还不能优雅的搭建CloudStack云计算平台请您参阅《CloudStack搭建指南》，感谢您的支持！">
+<meta name="twitter:image" content="http://owawy15xy.bkt.clouddn.com/gfs-1.1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2017/09/17/CloudStack搭建指南（续）/"/>
+
+
+
+
+
+  <title>CloudStack搭建指南（续） | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/09/17/CloudStack搭建指南（续）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                CloudStack搭建指南（续）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-17T20:14:12+08:00">
+                2017-09-17
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/技术分享/" itemprop="url" rel="index">
+                    <span itemprop="name">技术分享</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/09/17/CloudStack搭建指南（续）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,405
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>此篇文章为《CloudStack搭建指南》的补充部分，主要讲的是如何优雅的把GlusterFS分布式文件系统部署到CloudStack云计算平台，如果您还不能优雅的搭建CloudStack云计算平台请您参阅<a href="http://yjscloud.com/2017/09/15/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/">《CloudStack搭建指南》</a>，感谢您的支持！</p>
+<a id="more"></a>
+<h1 id="GlusterFS介绍"><a href="#GlusterFS介绍" class="headerlink" title="GlusterFS介绍"></a>GlusterFS介绍</h1><h2 id="什么是GlusterFS？"><a href="#什么是GlusterFS？" class="headerlink" title="什么是GlusterFS？"></a>什么是GlusterFS？</h2><p>GlusterFS是定义在用户空间中使用的分布式文件系统，在用户空间即文件系统（FUSE）。 它是一个基于软件的文件系统，它考虑到自己的灵活性功能。</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.1.png" alt="gfs-1.1"></p>
+<p>看看下图，它示意性地表示了分层模型中GlusterFS的位置。 默认情况下，GlusterFS将使用TCP协议。</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.2.png" alt="gfs-1.2"></p>
+<h2 id="GlusterFS的优点"><a href="#GlusterFS的优点" class="headerlink" title="GlusterFS的优点"></a>GlusterFS的优点</h2><p>(1)创新 -它消除了元数据，并能dramtically提高性能，这将有助于我们统一的数据和对象。</p>
+<p>(2)    弹性 -适应于经济增长和减少数据的大小。</p>
+<p>(3)    线性扩展 -它具有可用性高数量和超越。</p>
+<p>(4)    简单 -在用户空间运行时，它易于管理和独立于内核。</p>
+<h2 id="什么使Gluster在其他分布式文件系统中脱颖而出？"><a href="#什么使Gluster在其他分布式文件系统中脱颖而出？" class="headerlink" title="什么使Gluster在其他分布式文件系统中脱颖而出？"></a>什么使Gluster在其他分布式文件系统中脱颖而出？</h2><p>(1)    出售 -缺乏一个元数据服务器提供了一个更快的文件系统。</p>
+<p>(2)    实惠的 -它可以部署在商品硬件。</p>
+<p>(3)    灵活的 -正如我刚才所说，GlusterFS是一个纯软件的文件系统。 这里的数据存储在本地文件系统，如ext4，xfs等。</p>
+<p>(4)    开源 -目前GlusterFS是由红帽公司是一家十亿美元的开源公司，作为维护红帽存储的一部分。</p>
+<h2 id="GlusterFS中的存储概念"><a href="#GlusterFS中的存储概念" class="headerlink" title="GlusterFS中的存储概念"></a>GlusterFS中的存储概念</h2><p>(1)砖 -砖基本上是指的是值得信赖的存储池之间共享任何目录。</p>
+<p>(2)    值得信赖的存储池 -为这些共享文件/目录，这是基于对设计方案的集合。</p>
+<p>(3)    块存储 -它们是通过该数据跨系统中的块的形式被移动设备。</p>
+<p>(4)    集群 -在红帽存储，两个群集和值得信赖的存储池传达的基础上定义的协议存储服务器协作的含义相同。</p>
+<p>(5)    分布式文件系统 -的文件系统，其中数据被分布在，用户可以在不知道该文件的实际位置访问该文件不同的节点。 用户没有体验到远程访问的感觉。</p>
+<p>(6)    FUSE -这是一个可加载的内核模块，它允许用户在不涉及任何内核代码创建上面的内核文件系统。</p>
+<p>（7)glusterd – glusterd是GlusterFS管理守护这是将在整个时间每当服务器处于活动状态运行文件系统的骨干。</p>
+<p>(8)POSIX -便携式操作系统接口（POSIX）是由IEEE作为在应用程序可编程接口（API）的形式的解决方案，以Unix的变体之间的相容性定义的标准的家庭。</p>
+<p>(9)    RAID -独立磁盘（RAID）冗余阵列是给通过冗余提高存储可靠性的技术。</p>
+<p>(10)亚体 -在同一译者由至少处理后砖。</p>
+<p>(11)译者 -译者是一段代码，它执行从安装点的用户启动的基本动作。 它连接一个或多个子卷。</p>
+<p>（12)音量 -一个体积是砖的逻辑集合。 所有操作都基于用户创建的不同类型的卷。</p>
+<h1 id="gluster的三种基本卷"><a href="#gluster的三种基本卷" class="headerlink" title="gluster的三种基本卷"></a>gluster的三种基本卷</h1><h2 id="分布式卷"><a href="#分布式卷" class="headerlink" title="分布式卷"></a>分布式卷</h2><p>分布式Glusterfs卷 - 这是默认的glusterfs卷，即，如果不指定卷的类型，则在创建卷时，默认选项是创建分布式卷。这里，文件分布在卷中的各种砖块上。所以file1可能仅存储在brick1或brick2中，而不能存储在两者中。因此，没有数据冗余。这样的存储容量的目的是容易且便宜地缩放卷大小。然而，这也意味着砖块故障将导致完全丢失数据，并且必须依靠底层硬件进行数据丢失保护<br><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.3.png" alt="gfs1.3"></p>
+<h2 id="复制卷-raid1"><a href="#复制卷-raid1" class="headerlink" title="复制卷(raid1)"></a>复制卷(raid1)</h2><p>复制Glusterfs卷 - 在本卷中，我们克服了分布式卷中面临的数据丢失问题。这些数据的完整副本保留在所有砖上。卷中的副本数可以由客户端在创建卷时决定。所以我们需要至少有两个砖块来创建一个2个副本或至少三个砖块来创建一个3个副本的卷。这样一个卷的一个主要优点是，即使一个砖失败，仍然可以从其复制的砖块访问数据。这样的卷被用于更好的可靠性和数据冗余。<br><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.4.png" alt="gfs-1.4"></p>
+<h2 id="条带卷（raid0）"><a href="#条带卷（raid0）" class="headerlink" title="条带卷（raid0）"></a>条带卷（raid0）</h2><p>条纹Glusterfs卷 - 考虑一个大型文件存储在一个砖块，许多客户端同时经常访问。这将对单个砖造成太多负载，并降低性能。在条带卷中，将数据分割成不同的条纹后，将数据存储在砖块中。因此，大文件将被分成更小的块（等于块中的块数），每个块都存储在一个砖块中。现在分配了负载，并且可以更快地获取文件，但没有提供数据冗余。<br><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.5.png" alt="gfs-1.5"></p>
+<h1 id="GlusterFS搭建与使用"><a href="#GlusterFS搭建与使用" class="headerlink" title="GlusterFS搭建与使用"></a>GlusterFS搭建与使用</h1><h2 id="Glusterfs搭建"><a href="#Glusterfs搭建" class="headerlink" title="Glusterfs搭建"></a>Glusterfs搭建</h2><p>(1)先安装epel源</p>
+<pre><code>#yum -y install epel-release
+</code></pre><p>(2)如果用yum直接安装会很慢，建议去glusterfs官网把rpm包下载下来然后把这些rpm包上传到linux服务器中。<br>然后执行如下命令：</p>
+<pre><code># yum -y install glusterfs-*
+</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.6.png" alt="gfs-1.6"></p>
+<p>(3)启动gluster :</p>
+<pre><code># service glusterd start
+</code></pre><p>(4)关闭防火墙以及selinux</p>
+<pre><code># service iptables stop
+# chkconfig iptables off
+# sed -i &apos;s/SELINUX=enforcing/SELINUX=disabled/&apos; /etc/selinux/config
+</code></pre><h2 id="GlusterFS的使用"><a href="#GlusterFS的使用" class="headerlink" title="GlusterFS的使用"></a>GlusterFS的使用</h2><p>(1)建立信任关系: </p>
+<pre><code># gluster peer probe 10.0.0.5
+</code></pre><p>(2)    查看信任状态：</p>
+<pre><code># gluster peer status
+</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs01.png" alt="gfs01"></p>
+<p>(3)创建分布式卷：</p>
+<p>gfs1: </p>
+<pre><code># mkdir -p /data/exp1
+</code></pre><p>gfs2: </p>
+<pre><code># mkdir -p /data/exp2
+</code></pre><p>gfs1: </p>
+<pre><code># gluster volume create test-volume 10.0.0.4:/data/exp1 10.0.0.5:/data/exp2 force
+</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs02.png" alt="gfs02"></p>
+<p>查看卷的详情：</p>
+<pre><code># gluster volume info
+</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs03.png" alt="gfs03"></p>
+<p>(4)创建复制卷：</p>
+<p>gfs1 :</p>
+<pre><code># mkdir /data/exp3
+</code></pre><p>gfs2 :</p>
+<pre><code># mkdir /data/exp4
+</code></pre><p>gfs1 :</p>
+<pre><code># gluster volume create repo-volume replica 2 transport tcp 10.0.0.4:/data/exp3 10.0.0.5:/data/exp4 force
+</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs04.png" alt="gfs04"></p>
+<p>查看卷的详情：</p>
+<pre><code># gluster volume info repo-volume
+</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs05.png" alt="gfs05"></p>
+<p>(5)创建条带卷： </p>
+<p>gfs1: </p>
+<pre><code># mkdir /data/exp5
+</code></pre><p>gfs2: </p>
+<pre><code># mkdir /data/exp6
+</code></pre><p>gfs1 :</p>
+<pre><code># gluster volume create raid0-volume stripe 2 transport tcp 10.0.0.4:/data/exp5 10.0.0.5:/data/exp6 force  
+</code></pre><p>(6)启动卷：</p>
+<p>默认情况下创建的卷是没有启动的我们用命令gluster volume start volume-name 启动即可<br>(7)挂载卷：</p>
+<p>创建挂载点</p>
+<p>gfs1:  </p>
+<pre><code># mkdir /mnt/g1 /mnt/g2 /mnt/g3
+</code></pre><p>挂载卷</p>
+<p>gfs1:  </p>
+<pre><code># mount.glusterfs 10.0.0.4:/test-volume /mnt/g1
+# mount.glusterfs 10.0.0.4:/repo-volume /mnt/g2
+# mount.glusterfs 10.0.0.4:/raid0-volume /mnt/g3
+</code></pre><p>查看挂载的卷：df -h</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/gfs06.png" alt="gfs06"></p>
+<p>(8)创建分布式复制卷：</p>
+<p>gfs1: </p>
+<pre><code># mkdir /exp1 /exp2
+</code></pre><p>gfs2: </p>
+<pre><code># mkdir /exp1 /exp2
+</code></pre><p>gfs1:</p>
+<pre><code>#gluster volume create xwq-volume replica 2 transport tcp 10.0.0.4:/exp1 10.0.0.4:/exp2 10.0.0.5:/exp1 10.0.0.5:/exp2 force
+</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs07.png" alt="gfs07"></p>
+<p>启动卷：</p>
+<pre><code># gluster volume start xwq-volume
+</code></pre><p>创建挂载点：</p>
+<pre><code># mkdir /mnt/g5
+</code></pre><p>挂载：</p>
+<pre><code># mount.glusterfs 10.0.0.4:/xwq-volume /mnt/g5
+</code></pre><p>数据写入测试：</p>
+<pre><code># man tcp &gt; /mnt/g5/tcp1.txt
+# man tcp &gt; /mnt/g5/tcp2.txt
+# man tcp &gt; /mnt/g5/tcp3.txt
+# man tcp &gt; /mnt/g5/tcp4.txt
+</code></pre><p>查看数据情况：</p>
+<pre><code># tree /exp* 
+</code></pre><p>数据分布和我们想象中的有点不一样，这与你添加卷的顺序有关）</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/tree02.png" alt="gfs"><br><img src="http://owawy15xy.bkt.clouddn.com/tree03.png" alt="gfs"></p>
+<p>(9)扩展卷 为分布式添加扩展卷 </p>
+<p>gfs1:</p>
+<pre><code># mkdir /data/exp9
+</code></pre><p>gfs1:</p>
+<pre><code># gluster volume add-brick test-volume 10.0.0.4:/data/exp9 force
+</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs-add01.png" alt=""></p>
+<p>均衡卷中的数据：</p>
+<pre><code># gluster volume rebalance test-volume start
+</code></pre><p>(10)删除卷：                    </p>
+<p>gfs1：</p>
+<pre><code># gluster volume remove-brick test-volume 10.0.0.4:/data/exp9 force
+</code></pre><p>数据可能会丢失，数据并不会删除!</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/remove-gfs.png" alt=""></p>
+<p>更多详细内容请参阅<a href="http://docs.gluster.org" target="_blank" rel="external">官方文档</a></p>
+<h1 id="GlusterFS在cloudstack中的应用"><a href="#GlusterFS在cloudstack中的应用" class="headerlink" title="GlusterFS在cloudstack中的应用"></a>GlusterFS在cloudstack中的应用</h1><h2 id="在master端删库重新配置cloudstack-management"><a href="#在master端删库重新配置cloudstack-management" class="headerlink" title="在master端删库重新配置cloudstack-management"></a>在master端删库重新配置cloudstack-management</h2><p>（1）先停止管理服务器：</p>
+<pre><code># /etc/init.d/cloudstack-management stop
+</code></pre><p>（2）删库：<br>进入数据库：</p>
+<pre><code># mysql -uroot -p123456
+</code></pre><p>删库：</p>
+<pre><code># drop database cloud;
+# drop database cloud_usage;
+</code></pre><h2 id="在agent端配置"><a href="#在agent端配置" class="headerlink" title="在agent端配置"></a>在agent端配置</h2><p>(1)在之前安装agent的时候会自动安装glusterfs但是某些依赖库并没有安装完全，要卸载重装；</p>
+<p>卸载命令：</p>
+<pre><code># yum remove glusterfs*
+</code></pre><p>上传rpm到合适的目录执行</p>
+<pre><code># yum -y install glusterfs-*
+</code></pre><p>或：安装</p>
+<pre><code># yum install -y centos-release-gluster37.noarch
+</code></pre><p>然后再执行如下命令：</p>
+<pre><code># yum --enablerepo=centos-gluster*-test install glusterfs-server glusterfs-cli glusterfs-geo-replication
+</code></pre><p>(2) 删除agent1节点 /export/primary目录下的镜像：</p>
+<pre><code># rm -rf *
+</code></pre><p>启动glusterfs服务：</p>
+<pre><code># service glusterd start 
+# chkconfig glusterd on 
+</code></pre><p>(3)然后以agent1为模板克隆一台虚拟机，改名为agent2并对网卡和主机名进行更改</p>
+<p>(4)    添加信任池</p>
+<p>[1]先关闭agent1和agent2的防火墙：</p>
+<pre><code># /etc/init.d/iptables stop
+</code></pre><p>[2]在agent1节点添加信任：</p>
+<pre><code># gluster peer probe 192.168.0.32
+</code></pre><p>可用gluster peer status查看链接状态</p>
+<p>（5）添加磁盘、格式化、挂载~此处略</p>
+<p>（6）因为刚才安装glusterfs的时候把agent给卸载，现在重新安装回去</p>
+<pre><code># yum -y install cloudstack-common-4.8.0-1.el6.x86_64.rpm cloudstack-agent-4.8.0-1.el6.x86_64.rpm
+</code></pre><p>（7）创建分布式复制卷 </p>
+<p>创建：</p>
+<pre><code># gluster volume create gv2 replica 2 agnet1:/export/primary agent2:/export/primary force
+</code></pre><p>启动卷：</p>
+<pre><code># gluster volume start gv2    
+</code></pre><p>查看卷：</p>
+<pre><code># gluster volume info
+</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs-ag01.png" alt="gsf-ag01"></p>
+<h2 id="在master端进行库的初始化"><a href="#在master端进行库的初始化" class="headerlink" title="在master端进行库的初始化"></a>在master端进行库的初始化</h2><p>（1）初始化：</p>
+<pre><code># cloudstack-setup-databases cloud:123456@localhost --deploy-as=root:123456
+</code></pre><p>（2）启动cloudstack：</p>
+<pre><code># cloudstack-setup-management
+</code></pre><p>（3）上传模板：</p>
+<pre><code># /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m /export/secondary/ -f /opt/systemvm64template-4.6.0-kvm.qcow2.bz2 -h kvm –F
+</code></pre><h1 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h1><p>登陆cloudstack后天web界面创建资源域，步骤和之前创建资源域大致相同；<br>配置步骤如下：</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/cs01.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs02.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs3.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs04.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs05.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs06.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs07.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs08.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/lose01.png" alt=""></p>
+<p>启动资源域后报错，可以通过查看日志来排错，这里我们直接进入“基础架构”进行添加主机</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/lost02.png" alt=""></p>
+<p>添加主存储</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/lost03.png" alt=""></p>
+<p>添加二级存储<br><img src="http://owawy15xy.bkt.clouddn.com/lost04.png" alt=""></p>
+<p>添加好后我们到“全局设置”修改一下配置，设置内存超峰</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/men3.png" alt=""></p>
+<p>然后启用资源域，如果系统vm顺利启动则说明你的cloudstack平台搭建成功！<br><img src="http://owawy15xy.bkt.clouddn.com/lost05.png" alt=""></p>
+<p>完成效果图：</p>
+<p><img src="http://owawy15xy.bkt.clouddn.com/lost~~~.png" alt=""></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux技术/" rel="tag"># Linux技术</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/15/CloudStack搭建指南/" rel="prev" title="CloudStack搭建指南">
+                CloudStack搭建指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GlusterFS介绍"><span class="nav-number">1.</span> <span class="nav-text">GlusterFS介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是GlusterFS？"><span class="nav-number">1.1.</span> <span class="nav-text">什么是GlusterFS？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GlusterFS的优点"><span class="nav-number">1.2.</span> <span class="nav-text">GlusterFS的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么使Gluster在其他分布式文件系统中脱颖而出？"><span class="nav-number">1.3.</span> <span class="nav-text">什么使Gluster在其他分布式文件系统中脱颖而出？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GlusterFS中的存储概念"><span class="nav-number">1.4.</span> <span class="nav-text">GlusterFS中的存储概念</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gluster的三种基本卷"><span class="nav-number">2.</span> <span class="nav-text">gluster的三种基本卷</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式卷"><span class="nav-number">2.1.</span> <span class="nav-text">分布式卷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复制卷-raid1"><span class="nav-number">2.2.</span> <span class="nav-text">复制卷(raid1)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#条带卷（raid0）"><span class="nav-number">2.3.</span> <span class="nav-text">条带卷（raid0）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GlusterFS搭建与使用"><span class="nav-number">3.</span> <span class="nav-text">GlusterFS搭建与使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Glusterfs搭建"><span class="nav-number">3.1.</span> <span class="nav-text">Glusterfs搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GlusterFS的使用"><span class="nav-number">3.2.</span> <span class="nav-text">GlusterFS的使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GlusterFS在cloudstack中的应用"><span class="nav-number">4.</span> <span class="nav-text">GlusterFS在cloudstack中的应用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在master端删库重新配置cloudstack-management"><span class="nav-number">4.1.</span> <span class="nav-text">在master端删库重新配置cloudstack-management</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在agent端配置"><span class="nav-number">4.2.</span> <span class="nav-text">在agent端配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在master端进行库的初始化"><span class="nav-number">4.3.</span> <span class="nav-text">在master端进行库的初始化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#系统管理"><span class="nav-number">5.</span> <span class="nav-text">系统管理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<script type="text/javascript">
+  var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cspan id='cnzz_stat_icon_1261789938'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261789938' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+&nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/baidusitemap.xml">百度网站地图</a></span>
+
+  </span>
+</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+&nbsp;&nbsp;|&nbsp;&nbsp;您是第 <span id="busuanzi_value_site_uv"></span> 位访客
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <!-- 小红心 -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+</body>
+</html>
