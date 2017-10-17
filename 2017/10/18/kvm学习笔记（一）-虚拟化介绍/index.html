@@ -92,17 +92,37 @@
 
 
 
-<meta name="description" content="Linux正则表达式grep : 最早的文本匹配程序，使用POSIX定义的基本正则表达式（BRE）来匹配文本。 egrep : 扩展式grep，其使用扩展式正规表达式（ERE）来匹配文本。 fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。并且是唯一可   grep：      作用：文本过滤，文本搜索工具，根据用户指定的模式对目标文本进行匹配检查，打印匹配结果      模式：由">
+<meta name="description" content="什么是系统虚拟化系统虚拟化是将底层物理设备与上层操作系统、软件分离的一种去耦合技术，在一台物理机器上逻辑的划分出多台机器。虚拟化的目标是实现IT资源利用效率和灵活性的最大化  多个系统融合在一台服务器上——资源利用率高 资源利用率高应用系统不再依赖特定的硬件——系统维护灵活">
 <meta name="keywords" content="Linux学习笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="linux正则表达式">
-<meta property="og:url" content="http://yjscloud.com/2017/05/02/linux正则表达式/index.html">
+<meta property="og:title" content="kvm学习笔记（一）——虚拟化介绍">
+<meta property="og:url" content="http://yjscloud.com/2017/10/18/kvm学习笔记（一）-虚拟化介绍/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="Linux正则表达式grep : 最早的文本匹配程序，使用POSIX定义的基本正则表达式（BRE）来匹配文本。 egrep : 扩展式grep，其使用扩展式正规表达式（ERE）来匹配文本。 fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。并且是唯一可   grep：      作用：文本过滤，文本搜索工具，根据用户指定的模式对目标文本进行匹配检查，打印匹配结果      模式：由">
-<meta property="og:updated_time" content="2017-05-02T03:13:58.000Z">
+<meta property="og:description" content="什么是系统虚拟化系统虚拟化是将底层物理设备与上层操作系统、软件分离的一种去耦合技术，在一台物理机器上逻辑的划分出多台机器。虚拟化的目标是实现IT资源利用效率和灵活性的最大化  多个系统融合在一台服务器上——资源利用率高 资源利用率高应用系统不再依赖特定的硬件——系统维护灵活">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.1.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.2.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.3.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.4.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.5.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.6.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.7.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.8.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.9.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.10.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.11.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.12.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.13.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.14.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.15.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.16.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.17.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.18.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.19.png">
+<meta property="og:updated_time" content="2017-10-17T19:49:46.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="linux正则表达式">
-<meta name="twitter:description" content="Linux正则表达式grep : 最早的文本匹配程序，使用POSIX定义的基本正则表达式（BRE）来匹配文本。 egrep : 扩展式grep，其使用扩展式正规表达式（ERE）来匹配文本。 fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。并且是唯一可   grep：      作用：文本过滤，文本搜索工具，根据用户指定的模式对目标文本进行匹配检查，打印匹配结果      模式：由">
+<meta name="twitter:title" content="kvm学习笔记（一）——虚拟化介绍">
+<meta name="twitter:description" content="什么是系统虚拟化系统虚拟化是将底层物理设备与上层操作系统、软件分离的一种去耦合技术，在一台物理机器上逻辑的划分出多台机器。虚拟化的目标是实现IT资源利用效率和灵活性的最大化  多个系统融合在一台服务器上——资源利用率高 资源利用率高应用系统不再依赖特定的硬件——系统维护灵活">
+<meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/1.1.png">
 
 
 
@@ -130,13 +150,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2017/05/02/linux正则表达式/"/>
+  <link rel="canonical" href="http://yjscloud.com/2017/10/18/kvm学习笔记（一）-虚拟化介绍/"/>
 
 
 
 
 
-  <title>linux正则表达式 | 戏子登台</title>
+  <title>kvm学习笔记（一）——虚拟化介绍 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -310,7 +330,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/05/02/linux正则表达式/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/10/18/kvm学习笔记（一）-虚拟化介绍/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -331,7 +351,7 @@
             
             
               
-                linux正则表达式
+                kvm学习笔记（一）——虚拟化介绍
               
             
           </h1>
@@ -346,8 +366,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-02T10:54:46+08:00">
-                2017-05-02
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-18T03:04:16+08:00">
+                2017-10-18
               </time>
             
 
@@ -390,7 +410,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/05/02/linux正则表达式/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2017/10/18/kvm学习笔记（一）-虚拟化介绍/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -413,7 +433,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,442
+                  1,826
                 </span>
               
 
@@ -429,7 +449,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  6
+                  7
                 </span>
               
             </div>
@@ -447,160 +467,75 @@
       
 
       
-        <h2 id="Linux正则表达式"><a href="#Linux正则表达式" class="headerlink" title="Linux正则表达式"></a>Linux正则表达式</h2><pre><code>grep : 最早的文本匹配程序，使用POSIX定义的基本正则表达式（BRE）来匹配文本。
-egrep : 扩展式grep，其使用扩展式正规表达式（ERE）来匹配文本。
-fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。并且是唯一可
+        <h2 id="什么是系统虚拟化"><a href="#什么是系统虚拟化" class="headerlink" title="什么是系统虚拟化"></a>什么是系统虚拟化</h2><p>系统虚拟化是将底层物理设备与上层操作系统、软件分离的一种去耦合技术，在一台物理机器上逻辑的划分出多台机器。虚拟化的目标是实现IT资源利用效率和灵活性的最大化</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.1.png" alt="1.1"></p>
+<p>多个系统融合在一台服务器上——资源利用率高 资源利用率高<br>应用系统不再依赖特定的硬件——系统维护灵活</p>
+<a id="more"></a>
+<h2 id="虚拟化基础架构"><a href="#虚拟化基础架构" class="headerlink" title="虚拟化基础架构"></a>虚拟化基础架构</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.2.png" alt="1.2"></p>
+<h2 id="虚拟化"><a href="#虚拟化" class="headerlink" title="虚拟化"></a>虚拟化</h2><p>在一台物理主机上虚拟出多个虚拟计算机（虚拟机，Virtual Machine，VM），其上能同时运行多个独立的操作系统，这些客户操作系统（Guest OS）通过虚拟机管理器（Virtual Machine Monitor，VMM，也称作Hypervisor）访问实际的物理资源。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.3.png" alt="1.3"></p>
+<h2 id="为什么需要使用虚拟化"><a href="#为什么需要使用虚拟化" class="headerlink" title="为什么需要使用虚拟化"></a>为什么需要使用虚拟化</h2><p>公司服务器越来越多</p>
+<p>   – 充分利用是个问题</p>
+<p>   – 统一运维管理是个问题</p>
+<ul>
+<li>浪费时间</li>
+<li>操作繁琐</li>
+<li>机器闲置时间较多</li>
+</ul>
+<p>计算系统利用率不高！</p>
+<p>  “多数用户承认，计算系统平均利用率只有25%～30%”</p>
+<h2 id="为什么客户要选择服务器虚拟化？"><a href="#为什么客户要选择服务器虚拟化？" class="headerlink" title="为什么客户要选择服务器虚拟化？"></a>为什么客户要选择服务器虚拟化？</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.4.png" alt="1.4"></p>
+<ol>
+<li>打破“一台服务器对应一套应用”的模式，将物理服务器进行整合，提升利用率</li>
+<li>服务器和相关IT硬件更少，节省了机房空间，也减少了散热和电力需求</li>
+<li>具备灵活数据备份和应用迁移机制，保障服务永不中断</li>
+<li>资源动态调配和模板化部署，应用系统快速上线，及时响应业务变化</li>
+</ol>
+<h2 id="虚拟化技术分类"><a href="#虚拟化技术分类" class="headerlink" title="虚拟化技术分类"></a>虚拟化技术分类</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.5.png" alt="1.5"></p>
+<h2 id="什么是桌面虚拟化？"><a href="#什么是桌面虚拟化？" class="headerlink" title="什么是桌面虚拟化？"></a>什么是桌面虚拟化？</h2><p>桌面虚拟化（MS：Remote Desktop、Citrix：XenDesktop、Vmware：View）</p>
+<p>   − 将原本在本地电脑安装的桌面系统统一在后端数据中心进行部署和管理；</p>
+<p>   − 用户可以通过任何设备，在任何地点，任何时间访问属于自己的桌面系统环境。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.6.png" alt="1.6"></p>
+<h2 id="服务器虚拟化"><a href="#服务器虚拟化" class="headerlink" title="服务器虚拟化"></a>服务器虚拟化</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.7.png" alt="1.7"></p>
+<h2 id="cpu"><a href="#cpu" class="headerlink" title="cpu"></a>cpu</h2><p>【1】无虚拟化</p>
+<p>   – CPU一般设为四个Ring</p>
+<p>   – Kernel Mode一般跑在Ring 0上</p>
+<p>   – User Mode一般跑在Ring 3上</p>
+<p>   – 对于一个普通的传统的Linux系统没有问题</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.8.png" alt="1.8"></p>
+<p>【2】虚拟化</p>
+<p>   – 在Guest机器和Host机器中间加一层Hypervisor</p>
+<p>   – Host机器看它像跑在自己上面的程序</p>
+<p>   – Guest机器看它像自己所运行的硬件</p>
+<p>   – 如果Host机器和Guest机器都跑相同的Linux，它们的Kernel都想运行在Ring 0，可怎么办？</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.9.png" alt="1.9"></p>
+<p>【3】传统cpu工作模式</p>
+<p>   – X86 操作系统是设计在直接运行在裸硬件设备上的，因此它们自动认为它们完全占有计算机硬件。x86 架构提供四个特权级别给操作系统和应用程序来访问硬件。 Ring 是指 CPU 的运行级别，Ring 0是最高级别，Ring1次之，Ring2更次之…… 就 Linux+x86 来说，</p>
+<p>   – 操作系统（内核）需要直接访问硬件和内存，因此它的代码需要运行在最高运行级别 Ring0上，这样它可以使用特权指令，控制中断、修改页表、访问设备等等。</p>
+<p>   – 应用程序的代码运行在最低运行级别上ring3上，不能做受控操作。如果要做，比如要访问磁盘，写文件，那就要通过执行系统调用（函数），执行系统调用的时候，CPU的运行级别会发生从ring3到ring0的切换，并跳转到系统调用对应的内核代码位置执行，这样内核就为你完成了设备访问，完成之后再从ring0返回ring3。这个过程也称作用户态和内核态的切换。</p>
+<p>【4】为什么需要 为什么需要 CPU 虚拟化</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.10.png" alt="1.10"></p>
+<h2 id="虚拟化分类"><a href="#虚拟化分类" class="headerlink" title="虚拟化分类"></a>虚拟化分类</h2><p>   虚拟化在这里就遇到了一个难题，因为宿主操作系统是工作在 ring0 的，客户操作系统就不能也在 ring0 了，但是它不知道这一点，以前执行什么指令，现在还是执行什么指令，但是没有执行权限是会出错的。所以这时候虚拟机管理程序（VMM）需要避免这件事情发生。 虚机怎么通过 VMM 实现 Guest CPU 对硬件的访问，根据其原理不同有三种实现技术：</p>
+<p>【1】基于二进制翻译的全虚拟化（Full Virtualization with Binary Translation）</p>
+<p>   客户操作系统运行在 Ring 1，它在执行特权指令时，会触发异常（CPU的机制，没权限的指令会触发异常），然后 VMM捕获这个异常，在异常里面做翻译，模拟，最后返回到客户操作系统内，客户操作系统认为自己的特权指令工作正常，继续运行。但是这个性能损耗，就非常的大， 简单的一条指令，执行完，了事，现在却要通过复杂的异常处理过程</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.11.png" alt="1.11"></p>
+<p>异常 “捕获（trap）-翻译（handle）-模拟（emulate）” 过程：</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.12.png" alt="1.12"></p>
+<p>【2】 超虚拟化（或者半虚拟化/操作系统辅助虚拟化 Paravirtualization）</p>
+<p>   半虚拟化的思想就是，修改操作系统内核，替换掉不能虚拟化的指令，通过超级调用（hypercall）直接和底层的虚拟化层hypervisor来通讯，hypervisor 同时也提供了超级调用接口来满足其他关键内核操作，比如内存管理、中断和时间保持。这种做法省去了全虚拟化中的捕获和模拟，大大提高了效率。所以像XEN这种半虚拟化技术，客户机操作系统都是有一个专门的定制内核版本，和x86、mips、arm这些内核版本等价。这样以来，就不会有捕获异常、翻译、模拟的过程了，性能损耗非常低。这就是XEN这种半虚拟化架构的优势。这也是为什么XEN只支持虚拟化Linux，无法虚拟化windows原因，微软不改代码啊。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.13.png" alt="1.13"></p>
+<p>【3】硬件辅助的全虚拟化</p>
+<p>   2005年后，CPU厂商Intel 和 AMD 开始支持虚拟化了。Intel 引入了 Intel-VT （Virtualization Technology）技术。这种 CPU，有 VMX root operation 和 VMX non-root operation两种模式，两种模式都支持Ring 0 ~ Ring 3 共 4个运行级别。这样，VMM 可以运行在 VMX root operation模式下，客户 OS 运行在VMX non-root operation模式下。也就说，硬件这层就做了些区分，这样全虚拟化下，那些靠“捕获异常-翻译-模拟”的实现就不需要了。而且CPU厂商，支持虚拟化的力度越来越大，靠硬件辅助的全虚拟化技术的性能逐渐逼近半虚拟化，再加上全虚拟化不需要修改客户操作系统这一优势，全虚拟化技术应该是未来的发展趋势</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.14.png" alt="1.14"></p>
+<h2 id="三种虚拟化技术的比较"><a href="#三种虚拟化技术的比较" class="headerlink" title="三种虚拟化技术的比较"></a>三种虚拟化技术的比较</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.15.png" alt="1.15"></p>
+<h2 id="全虚拟化-vs-半虚拟化"><a href="#全虚拟化-vs-半虚拟化" class="headerlink" title="全虚拟化 vs 半虚拟化"></a>全虚拟化 vs 半虚拟化</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.16.png" alt="1.16"></p>
+<h2 id="服务器虚拟化方法"><a href="#服务器虚拟化方法" class="headerlink" title="服务器虚拟化方法"></a>服务器虚拟化方法</h2><p>【1】全虚拟化(Full-Virtulization)：无需修改操作系统， VM ESXi、Linux KVM</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.17.png" alt="1.17"></p>
+<p>【2】半虚拟化(Para-Virtulization)：集成半虚拟化代码，直接运行特权指令，性能接近物理机，需要修改操作系统，MS Hyper-V、 Ctrix Xen、IBM PowerVM</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.18.png" alt="1.18"></p>
+<p>【3】操作系统层虚拟化：开发、测试环境，VM Workstation、VM Server、Oracle VitrualBox</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.19.png" alt="1.19"></p>
 
- grep：
-     作用：文本过滤，文本搜索工具，根据用户指定的模式对目标文本进行匹配检查，打印匹配结果
-     模式：由正则表达式字符及文本所填写的过滤条件，
-     正则表达式有两类：
-         基本正则表达式：BRE
-         扩展正则表达式：ERE
-             表达式：grep [OPTIONS] PATTERN [FILE...]
-                 选项：
-                     --color=auto:对匹配到的文本着色显示
-                     -v: 显示不能够被pattern匹配到的行
-                     -i:忽略字符大小写
-                     -o:仅显示匹配到的字符串
-                     -s:不显示错误信息，通常与-q并用
-                     -q:静默模式，不输出任何信息
-                     -A #：after ,后#行
-                     -B #：before，前#行
-                     -C #：context,前后各#行
-</code></pre><h2 id="基本正则表达式介绍"><a href="#基本正则表达式介绍" class="headerlink" title="基本正则表达式介绍"></a>基本正则表达式介绍</h2><h3 id="正则表达式组成"><a href="#正则表达式组成" class="headerlink" title="正则表达式组成"></a>正则表达式组成</h3><pre><code>一般字符：没有特殊意义的字符
-元字符（meta字符）：在正则表达式中有特殊意义
-</code></pre><h3 id="元字符匹配"><a href="#元字符匹配" class="headerlink" title="元字符匹配"></a>元字符匹配</h3><pre><code> .:匹配任意单个字符；
- \：通常用于打开或关闭后续字符的特殊含义，如\(...\)与{...\}
- []:匹配指定范围内的任意单个字符；
- [^]:匹配指定范围外的任意单个字符；
- 匹配次数:用在要指定次数的字符后面，用于指定前面的字符要出现的次数；
- *：匹配前面的字符任意次；
-     例如：grep &quot;x*y&quot;
-             abxy
-             xay
- .*：任意长度的任意字符；
- + : 匹配前面正则表达式的一个或多个扩展
-? : 匹配前面正则表达式的零个或一个扩展
-| : 匹配|符号前或后的正则表达式
-( ) : 匹配方括号括起来的正则表达式群
- \?：匹配其前面的字符0或1次，即前面的可有可无；
-     例如：x\?y
-         xy,y,ay
- \+：匹配其前面的字符至少1次；
- \{m\}:匹配前面的字符m次；
-     例如：x\{2\}y
-         xy,xxy,y,xxxxy,xyy
- \{m,n\}:匹配前面的字符至少m次，至多n次；
-     例如：x\{2,5\}y
-         xy,y,xxy
-     \{0，n\}:匹配前面的字符至多n次
-     \{m,\}:匹配前面的字符至少m次
-</code></pre><h3 id="字符集-：："><a href="#字符集-：：" class="headerlink" title="字符集[：：]"></a>字符集[：：]</h3><pre><code>[:alnum:]:数字字符
-[:digit:] : 数字字符
-[:punct:] : 标点符号字符
-[:alpha:] : 字母字符
-[:graph:] : 非空格字符
-[:space:] : 空格字符
-[:blank:] : 空格与定位字符
-[:lower:] : 小写字母字符
-[:upper:] : 大写字母字符
-[:cntrl:] : 控制字符
-[:print:] : 可显示的字符
-[:xdigit:] : 16进制数字
-</code></pre><h3 id="位置锚定"><a href="#位置锚定" class="headerlink" title="位置锚定"></a>位置锚定</h3><pre><code>位置锚定：
-   ^: 行首锚定；
-       写在模式最左侧
-   $: 行尾锚定：
-       写在模式最右侧
-       ^$: 空白行
-
-       不包含特殊字符的连续字符组成的串叫单词：
-       \&lt;或\b: 词首，出现于单词左侧,
-       \&gt;或\b: 词尾，出现于单词右侧,
-       \&lt;PATTERN\&gt;:匹配整个单词：
-</code></pre><h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><pre><code>\(\)：将一个或多个字符捆绑在一起，当做一个整体进行处理；
-    例如：\(ab\)*
-        分组中的模式匹配到的内容，可由正则表达式引擎记忆在内存中，之后可被引用
-</code></pre><h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><pre><code>例如\(ab\(x\)y\).*\(mn\)
-    有编号：自左而后的左括号，以及与其匹配右括号
-    \(a\(b\(c\)\)mn\(x\)\).*\1
-
-    \#: 引用第n个括号所匹配到的内容，而非模式本身
-        例如：
-            \(ab\?c\).*\1
-                abcmnaaa
-                abcmnabc
-                abcmnac
-                acxyac
-</code></pre><h3 id="练习（1）"><a href="#练习（1）" class="headerlink" title="练习（1）"></a>练习（1）</h3><pre><code>1、显示/proc/meminfo文件中以大写或小写S开头的行；
-    grep -i &apos;^s&apos; /proc/meninfo
-    grep &apos;^[Ss]&apos; /proc/meninfo
-2、显示/etc/passwd文件中不以/bin/bash结尾的行；
-    grep -v &apos;/bin/bash$&apos; /etc/passwd
-3、显示/etc/passwd文件中ID号最大的用户名；
-    sort -t: -k3 -n /etc/passwd | tail -1 | cut -d: -f1
-4、如果用户root存在，显示其默认的shell程序；
-    id root &amp;&gt; /dev/null &amp;&amp; grep &quot;^root\&gt;&quot; /etc/passwd | cut -d: -f7
-5、找出/etc/passwd中的两位或三位数；
-    grep &quot;\&lt;[0-9]\{2,3\}\&gt;&quot; /etc/passwd
-6、显示/etc/grub2.cfg文件中，至少以一个空白字符开头的且后面存在空白字符的行；
-    grep &quot;^[[:space:]]\+[^[:space:]]&quot; /etc/grub2.cfg
-7、找出”netstat -tan&quot;命令的结果中以&apos;LISTEN&apos;后跟0、1或多个空白字符结尾的行；
-    netstat -tan | grep &quot;[LISTEN[[:space:]]*$&quot;
-8、添加用户bash、testbash、basher以及nologin(其shell为sbin/nologin);而后找出/etc/passwd文件中用户名同shell名的行，
-    useradd bash
-    useradd basher
-    useradd testbash
-    useradd -s /sbin/nologin nologin
-    grep &quot;^\([[:alnum:]]\+\&gt;\).*\1$&quot; /etc/passwd
-</code></pre><h3 id="练习-2"><a href="#练习-2" class="headerlink" title="练习(2)"></a>练习(2)</h3><pre><code>1、写一个脚本，实现如下功能
-    如果user1用户存在，就显示其存在，否则加之；
-    显示添加的用户的id号等信息；
-    #!/bin/bash
-   id user1 &amp;&gt; /dev/null &amp;&amp; echo &quot;user1 exists.&quot; || useradd user1
-   id user1
-
-
-2、写一个脚本，完成如下功能
-    如果root用户登陆了当前系统，就显示root用户在线；否则说明其未登陆
-    w | grep &quot;^root\&gt;&quot; &amp;&gt; /dev/null &amp;&amp; echo &quot;root logged&quot; || echo &quot;root not logged.&quot;
-</code></pre><h3 id="egrep及扩展的正则表达式"><a href="#egrep及扩展的正则表达式" class="headerlink" title="egrep及扩展的正则表达式"></a>egrep及扩展的正则表达式</h3><p>egrep = grep -E</p>
-<pre><code>egrep [OPTIONS] PATTERN [FILE...]
-
- 扩展正则表达式的元字符：
-     字符匹配：
-         .
-         []
-         [^]
-     次数匹配：
-         *
-         ？：0或1次
-         +：1次或多次
-         {m}:匹配m次
-         {m,n}:至少m,至多n次
-     锚定：
-         ^
-         $
-        \&lt;,\b
-        \&gt;,\b
-    分组：
-        （）
-
-        后向引用：\1,\2.....
-    或者：
-        a|b
-            （C|c)at:C或cat
-</code></pre><h3 id="练习-3"><a href="#练习-3" class="headerlink" title="练习(3)"></a>练习(3)</h3><pre><code>1、显示当前系统root、centos或user1用户的默认shell和UID
-            grep -E &apos;^(root|centos|user1)\&gt;&apos; /etc/passwd | cut -d: -f1,3,7
-
-2、找出/etc/rc.d/init.d/funtions文件（centos）中某单词后面跟一个小括号的行
-           grep -E -o &quot;^[_[:alpha:]]+(\)&quot; /etc/rc.d/init.d/funtions
-
-3、使用echo输出一绝对路径，使用egrep取出其基名
-           echo &quot;/mmt/sdc&quot; | grep -E -o &quot;[^/]+/?$&quot; | cut -d&quot;/&quot; -f1
-       进一步使用egrep取出路径的目录名，类似于dirname命令的结果
-</code></pre><h3 id="fgrep-不支持正则表达式搜索"><a href="#fgrep-不支持正则表达式搜索" class="headerlink" title="fgrep :不支持正则表达式搜索"></a>fgrep :不支持正则表达式搜索</h3>
       
     </div>
 
@@ -653,18 +588,14 @@ fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/02/bash基础特性/" rel="next" title="bash基础特性">
-                <i class="fa fa-chevron-left"></i> bash基础特性
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/01/hexo博客搭建指南/" rel="prev" title="hexo博客搭建指南">
-                hexo博客搭建指南 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/09/19/CloudStack搭建指南（三）/" rel="prev" title="CloudStack搭建指南（三）">
+                CloudStack搭建指南（三） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -859,7 +790,7 @@ fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux正则表达式"><span class="nav-number">1.</span> <span class="nav-text">Linux正则表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本正则表达式介绍"><span class="nav-number">2.</span> <span class="nav-text">基本正则表达式介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式组成"><span class="nav-number">2.1.</span> <span class="nav-text">正则表达式组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#元字符匹配"><span class="nav-number">2.2.</span> <span class="nav-text">元字符匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符集-：："><span class="nav-number">2.3.</span> <span class="nav-text">字符集[：：]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位置锚定"><span class="nav-number">2.4.</span> <span class="nav-text">位置锚定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组"><span class="nav-number">2.5.</span> <span class="nav-text">分组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用"><span class="nav-number">2.6.</span> <span class="nav-text">引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习（1）"><span class="nav-number">2.7.</span> <span class="nav-text">练习（1）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习-2"><span class="nav-number">2.8.</span> <span class="nav-text">练习(2)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#egrep及扩展的正则表达式"><span class="nav-number">2.9.</span> <span class="nav-text">egrep及扩展的正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习-3"><span class="nav-number">2.10.</span> <span class="nav-text">练习(3)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fgrep-不支持正则表达式搜索"><span class="nav-number">2.11.</span> <span class="nav-text">fgrep :不支持正则表达式搜索</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是系统虚拟化"><span class="nav-number">1.</span> <span class="nav-text">什么是系统虚拟化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟化基础架构"><span class="nav-number">2.</span> <span class="nav-text">虚拟化基础架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟化"><span class="nav-number">3.</span> <span class="nav-text">虚拟化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么需要使用虚拟化"><span class="nav-number">4.</span> <span class="nav-text">为什么需要使用虚拟化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么客户要选择服务器虚拟化？"><span class="nav-number">5.</span> <span class="nav-text">为什么客户要选择服务器虚拟化？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟化技术分类"><span class="nav-number">6.</span> <span class="nav-text">虚拟化技术分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是桌面虚拟化？"><span class="nav-number">7.</span> <span class="nav-text">什么是桌面虚拟化？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器虚拟化"><span class="nav-number">8.</span> <span class="nav-text">服务器虚拟化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cpu"><span class="nav-number">9.</span> <span class="nav-text">cpu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟化分类"><span class="nav-number">10.</span> <span class="nav-text">虚拟化分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三种虚拟化技术的比较"><span class="nav-number">11.</span> <span class="nav-text">三种虚拟化技术的比较</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#全虚拟化-vs-半虚拟化"><span class="nav-number">12.</span> <span class="nav-text">全虚拟化 vs 半虚拟化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务器虚拟化方法"><span class="nav-number">13.</span> <span class="nav-text">服务器虚拟化方法</span></a></li></ol></div>
             
 
           </div>
