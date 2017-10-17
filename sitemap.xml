@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89-%E8%99%9A%E6%8B%9F%E5%8C%96%E4%BB%8B%E7%BB%8D/</loc>
+    
+    <lastmod>2017-10-17T20:05:18.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yjscloud.com/about/index.html</loc>
     
     <lastmod>2017-10-17T20:00:51.000Z</lastmod>
@@ -9,9 +16,16 @@
   </url>
   
   <url>
-    <loc>http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89-%E8%99%9A%E6%8B%9F%E5%8C%96%E4%BB%8B%E7%BB%8D/</loc>
+    <loc>http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-KVM%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</loc>
     
-    <lastmod>2017-10-17T19:49:46.000Z</lastmod>
+    <lastmod>2017-10-17T14:28:14.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yjscloud.com/2017/05/01/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/</loc>
+    
+    <lastmod>2017-10-17T13:25:39.000Z</lastmod>
     
   </url>
   
@@ -40,13 +54,6 @@
     <loc>http://yjscloud.com/2017/09/13/LVS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
     
     <lastmod>2017-09-15T04:51:52.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yjscloud.com/2017/05/01/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/</loc>
-    
-    <lastmod>2017-09-13T06:37:15.000Z</lastmod>
     
   </url>
   

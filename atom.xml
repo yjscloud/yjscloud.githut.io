@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-10-17T19:49:46.000Z</updated>
+  <updated>2017-10-17T14:28:14.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -16,11 +16,219 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>kvm学习笔记（二）-KVM基础学习</title>
+    <link href="http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-KVM%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://yjscloud.com/2017/10/18/kvm学习笔记（二）-KVM基础学习/</id>
+    <published>2017-10-17T20:06:18.000Z</published>
+    <updated>2017-10-17T14:28:14.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="kvm简绍"><a href="#kvm简绍" class="headerlink" title="kvm简绍"></a>kvm简绍</h1><p>KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的一个内核模块，该内核模块使得 Linux 变成了一个 Hypervisor：</p>
+<ul>
+<li>它由 Quramnet 开发，该公司于 2008年被 Red Hat 收购。</li>
+<li>它支持 x86 (32 and 64 位), s390, Powerpc 等 CPU。</li>
+<li>它从 Linux 2.6.20 起就作为一模块被包含在 Linux 内核中。</li>
+<li>它需要支持虚拟化扩展的 CPU。</li>
+<li>它是完全开源的。</li>
+</ul>
+<p>（1）KVM特性</p>
+<p>嵌入到Linux正式Kernel（提高兼容性），代码级资源调用（提高性能），虚拟机就是一个进程（内存易于管理）</p>
+<p>（2）KVM虚拟化架构</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.20.png" alt="1.20"></p>
+<p>（3)KVM CPU性能优化</p>
+<ul>
+<li>一个 KVM 虚机即一个 Linux qemu-kvm 进程，与其他Linux 进程一样被Linux 进程调度器调度。</li>
+<li>KVM 虚机包括虚拟内存、虚拟CPU和虚机 I/O设备，其中，内存和 CPU 的虚拟化由 KVM 内核模块负责实现，I/O 设备的虚拟化由 QEMU 负责实现。</li>
+<li>KVM户机系统的内存是 qumu-kvm 进程的地址空间的一部分。</li>
+<li><p>KVM 虚机的 vCPU 作为 线程运行在 qemu-kvm 进程的上下文中。</p>
+<p>CPU虚拟化<br><img src="http://oxysobnip.bkt.clouddn.com/1.21.png" alt="1.21"></p>
+</li>
+</ul>
+<h1 id="KVM安装"><a href="#KVM安装" class="headerlink" title="KVM安装"></a>KVM安装</h1><h2 id="检查主机是否支持虚拟化"><a href="#检查主机是否支持虚拟化" class="headerlink" title="检查主机是否支持虚拟化"></a>检查主机是否支持虚拟化</h2><p>   打开您的虚拟机的虚拟化引擎</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.22.png" alt="1.22"></p>
+<pre><code># egrep -c &apos;(vmx|svm)&apos; /proc/cpuinfo
+</code></pre><p>命令结果大于0表示cpu支持虚拟化</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.23.png" alt="1.23"></p>
+<p>最好关闭防火墙和关闭selinux</p>
+<pre><code># systemctl stop firewalld
+# systemctl disable firewalld
+# vim /etc/selinux/config
+    将enforcing改为disabled
+</code></pre><h2 id="配置本地yum源"><a href="#配置本地yum源" class="headerlink" title="配置本地yum源"></a>配置本地yum源</h2><p>替换CentOS默认源，默认生产环境上不了外网，所以你得想办法用自己的内部Yum源，如果没有，需要搭建一个。让系统上网，然后运行下面命令：</p>
+<pre><code># cd /etc/yum.repos.d
+# rm -rf *
+# wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+# wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
+</code></pre><p>在我的实验环境中我已经搭好了本地yum源，在这里我直接使用本地yum源，下面是我的yum配置文件</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.24.png" alt="1.24"></p>
+<h2 id="安装kvm以及相应的依赖包"><a href="#安装kvm以及相应的依赖包" class="headerlink" title="安装kvm以及相应的依赖包"></a>安装kvm以及相应的依赖包</h2><p>安装依赖包</p>
+<pre><code># yum -y groupinstall &quot;Virtualization Host&quot;
+# yum -y install virt-{install,viewer,manager} 
+</code></pre><p>相关组件介绍</p>
+<p>【1】libvirt：操作和管理KVM虚机的虚拟化 API，使用 C 语言编写，可以由 Python,Ruby, Perl, PHP, Java 等语言调用。可以操作包括 KVM，vmware，XEN，Hyper-v, LXC 等 Hypervisor。</p>
+<p>【2】Virsh：基于 libvirt 的 命令行工具 （CLI）</p>
+<p>【3】Virt-Manager：基于 libvirt 的 GUI 工具</p>
+<p>kvm内核模块</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.25.png" alt="1.25"></p>
+<h2 id="配置网卡为桥接模式"><a href="#配置网卡为桥接模式" class="headerlink" title="配置网卡为桥接模式"></a>配置网卡为桥接模式</h2><pre><code># cd /etc/sysconfig/network-scripts/
+# cp ifcfg-eno16777736 ifcfg-br0
+</code></pre><p>我的配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@kvm network-scripts]# cat ifcfg-eno16777736 TYPE=&quot;Ethernet&quot;DEVICE=&quot;eno16777736&quot;NAME=&quot;eno16777736&quot;BRIDGE=br0[root@kvm network-scripts]# cat ifcfg-br0 TYPE=BridgeNAME=br0DEVICE=br0IPADDR=172.31.129.95NETMASK=255.255.255.0GATEWAY=172.31.129.254</div><div class="line">```## 创建虚拟机硬盘</div><div class="line"></div><div class="line">	# qemu-img create -f qcow2 /mnt/vm-test/iso/centos-7.2.qcow2 10G	# chown qemu:qemu /image/centos.qcow2 -R## 创建虚拟机</div></pre></td></tr></table></figure>
+<p>[root@kvm kvm]# virt-install –virt-type kvm –name centos-7.2 –ram 512 \    # name 是自己取得</p>
+<blockquote>
+<p>–vcpus 1 \        #指定cpu核数<br>–cdrom=CentOS-7-x86_64-DVD-1511.iso \  #指定镜像<br>–disk centos-7.2.qcow2,format=qcow2 \    #disk参数为上面创建的磁盘<br>–network network=default \  #网络设置为默认网络（NAT）<br>–graphics vnc,listen=0.0.0.0 –noautoconsole \ #运行所有网段远程，远程方式采用vnc<br>–os-type=linux –os-variant=rhel7 #指定系统类型<br>```</p>
+</blockquote>
+<p>桥接网卡位置<br>    virt-install –virt-type kvm –name centos-7.2 –ram 512 –vcpus 1 –cdrom=CentOS-7-x86_64-DVD-1511.iso –disk centos7.2.qcow2,format=qcow2 –network bridge=virbr0 –vnc –vncport=5910 –vnclisten=0.0.0.0  –os-type=linux –os-variant=rhel7</p>
+<h2 id="远程虚拟机"><a href="#远程虚拟机" class="headerlink" title="远程虚拟机"></a>远程虚拟机</h2><p>查看端口：netstat –natp</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.26.png" alt="1.26"></p>
+<p>在vnc输入172.31.129.95:5900即可远程虚拟机</p>
+<h1 id="KVM命令介绍"><a href="#KVM命令介绍" class="headerlink" title="KVM命令介绍"></a>KVM命令介绍</h1><h2 id="virsh"><a href="#virsh" class="headerlink" title="virsh"></a>virsh</h2><p>virsh:虚拟化交互式终端<br><img src="http://oxysobnip.bkt.clouddn.com/1.27.png" alt="1.27"></p>
+<ul>
+<li>virsh list  # 显示本地活动虚拟机</li>
+<li>virsh start kvm_name # 启动非活动虚拟机, kvm_name为你的虚拟机名字</li>
+<li>virsh create kvm_name.xml  # 创建虚拟机（创建后，虚拟机立即执行，成为活动主机）</li>
+<li>virsh suspend kvm_name # 暂停虚拟机</li>
+<li>virsh resume kvm_name # 启动暂停的虚拟机</li>
+<li>virsh shutdown kvm_name # 正常关闭虚拟机</li>
+<li>virsh destroy kvm_name # 强制关闭虚拟机</li>
+<li>virsh dominfo kvm_name # 显示虚拟机的基本信息</li>
+<li>virsh dumpxml kvm_name # 显示虚拟机的当前配置文件</li>
+<li>virsh setmem kvm_name 51200 # 给不活动虚拟机设置内存大小</li>
+<li>virsh setvcpus kvm_name 4  # 给不活动虚拟机设置cpu个数</li>
+<li><p>virsh edit kvm_name # 编辑配置文件（一般用在刚定义完VM）</p>
+<p>虚拟机配置文件路径：/etc/libvirt/qemu</p>
+</li>
+</ul>
+<h2 id="虚拟化vcpu操作"><a href="#虚拟化vcpu操作" class="headerlink" title="虚拟化vcpu操作"></a>虚拟化vcpu操作</h2><pre><code># yum -y install numactl
+</code></pre><ul>
+<li>nodeinfo #查看节点配置信息</li>
+<li>dominfo    #查看虚拟机节点配置信息</li>
+<li>numactl –hardware #查看节点硬件信息</li>
+<li>numastat –c qemu-kvm</li>
+<li>virsh<ul>
+<li>vcpuinfo kvm_name #查看运行在那个逻辑cpu上</li>
+<li>emulatorpin kvm_name #查看可以调度逻辑cpu</li>
+<li>emulatorpin kvm_name 1-2 –live #限制可以调度逻辑cpu(重启生效)<br><img src="http://oxysobnip.bkt.clouddn.com/1.28.png" alt="1.28"></li>
+</ul>
+</li>
+</ul>
+<p>虚拟机cpu优化</p>
+<p>vcpu单独强制绑定</p>
+<ul>
+<li>vcpupin kvm_name 0 1</li>
+<li>vcpupin kvm_name 1 2</li>
+<li>vcpuinfo</li>
+<li>dumpxml kvm_name</li>
+</ul>
+<p>命令使用参考文章：<br><a href="http://hl914.blog.51cto.com/4128173/1557615/" target="_blank" rel="external">CPU性能监控之二—–Numa架构下进程与CPU绑定</a></p>
+<p><a href="http://blog.csdn.net/shaoyunzhe/article/details/53606584" target="_blank" rel="external">numa总结</a></p>
+<h2 id="安装acpid"><a href="#安装acpid" class="headerlink" title="安装acpid"></a>安装acpid</h2><p>默认情况下virsh工具不能对linux虚拟机进行关机操作，linux操作系统需要开启与启动acpid服务。在安装KVM linux虚拟机必须配置此服务。 </p>
+<pre><code># yum install -y acpid
+# systemctl enable acpid
+</code></pre><h2 id="克隆虚拟机"><a href="#克隆虚拟机" class="headerlink" title="克隆虚拟机"></a>克隆虚拟机</h2><ol>
+<li>根据模板文件修改</li>
+</ol>
+<ul>
+<li>进入对应目录拷贝模板文件</li>
+</ul>
+<pre><code># cd /etc/libvirt/qemu
+# cp centos-7.2.xml clone-1.xml
+</code></pre><ul>
+<li>修改虚拟名称</li>
+<li>删除uuid</li>
+</ul>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.29.png" alt="1.29"></p>
+<ul>
+<li>指定disk</li>
+</ul>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.30.png" alt="1.30"></p>
+<ul>
+<li>删除mac</li>
+</ul>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.31.png" alt="1.31"></p>
+<ul>
+<li>修改vnc远程允许端口（可选）</li>
+</ul>
+<p>如果您上面选择桥接模式创建虚拟机且指定了端口5910，请您把5910改为5911，这样可以避免与centos7.3的端口冲突</p>
+<ol>
+<li><p>复制qcow2文件</p>
+<pre><code># cp centos-7.2.qcow2 clone-1.qcow2
+</code></pre></li>
+<li><p>virsh define 模板文件路径</p>
+<pre><code># virsh define /etc/libvirt/qemu/clone-1.xml
+</code></pre></li>
+<li><p>启动虚拟机</p>
+<pre><code># virsh start clone-1
+</code></pre></li>
+<li><p>删除克隆的虚拟机</p>
+<pre><code># virsh shutdown clone-1
+# virsh undefine clone-1
+# rm –rf /mnt/vm-test/clone-1.qcow2
+</code></pre></li>
+<li><p>一个小坑</p>
+</li>
+</ol>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.32.png" alt="1.32"></p>
+<p>这一行位置在第86行，修改配置文件时一定要删除，不知道为什么，它会出现在CentOS7.2版本的系统中，而在CentOS7.3版本的系统中不会出现这一行代码！</p>
+<h2 id="虚拟机快照snapshot"><a href="#虚拟机快照snapshot" class="headerlink" title="虚拟机快照snapshot"></a>虚拟机快照snapshot</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">virsh # snapshot-create-as centos-7.2 kuaizhao #创建虚拟机centos-7.2的快照，快照名字为kuaizhaoDomain snapshot kuaizhao createdvirsh # snapshot-list centos-7.2 #显示虚拟机快照的名称 Name                 Creation Time             State------------------------------------------------------------ kuaizhao             2017-10-17 09:53:49 +0800 shutoffvirsh # snapshot-revert centos-7.2 kuaizhao #恢复快照</div><div class="line">```## 添加磁盘</div><div class="line">1. 创建磁盘</div><div class="line">		# qemu-img create -f qcow2 /mnt/vm-test/ios/testadd.qcow2 10G</div><div class="line"></div><div class="line">2. 修改配置文件		# virsh edit centos-7.2添加以下内容并保存配置文件</div><div class="line"></div><div class="line">```&lt;disk type=&apos;file&apos; device=&apos;disk&apos;&gt;    &lt;driver name=&apos;qemu&apos; type=&apos;qcow2&apos;/&gt;    &lt;source file=&apos;/mnt/vm-test/ios/testadd.qcow2&apos;/&gt;    &lt;target dev=&apos;vdb&apos; bus=&apos;virtio&apos;/&gt;&lt;/disk&gt;</div></pre></td></tr></table></figure>
+<pre><code># virsh create /etc/libvirt/qemu/centos-7.2.xml
+# virsh destroy centos-7.2
+# virsh start centos-7.2
+</code></pre><p>重启后进入虚拟机查看</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.33.png" alt="1.33"></p>
+<h2 id="kvm虚拟机的网络模式"><a href="#kvm虚拟机的网络模式" class="headerlink" title="kvm虚拟机的网络模式"></a>kvm虚拟机的网络模式</h2><ol>
+<li>nat网络模式</li>
+</ol>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.34.png" alt="1.34"></p>
+<ol>
+<li>桥接模式</li>
+</ol>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.35.png" alt="1.35"></p>
+<ol>
+<li><p>添加NAT网络</p>
+<p>定义一个虚拟网络</p>
+<h1 id="virsh-net-define-usr-share-libvirt-networks-default-xml"><a href="#virsh-net-define-usr-share-libvirt-networks-default-xml" class="headerlink" title="virsh net-define /usr/share/libvirt/networks/default.xml"></a>virsh net-define /usr/share/libvirt/networks/default.xml</h1></li>
+</ol>
+<p>添加内容</p>
+<p>```    </p>
+<p><network><br>     <name>default</name><br>     <bridge name="virbr0"><br>     <forward><br>   <ip address="192.168.122.1" netmask="255.255.255.0"><br>       <dhcp><br>        <range start="192.168.122.2" end="192.168.122.254"><br>    </range></dhcp><br>  </ip><br></forward></bridge></network><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">设置为自动启动</div><div class="line">	# virsh net-autostart default</div><div class="line">查看网络</div><div class="line">	# brctl show修改/etc/sysctl.conf中参数，允许ip转发	# net.ipv4.ip_forward=1</div><div class="line"></div><div class="line">修改虚拟机配置文件</div><div class="line">	# virsh edit centos-7.2</div><div class="line">修改网卡链接模式	</div><div class="line">桥接</div><div class="line"></div><div class="line">```	&lt;interface type=&apos;bridge&apos;&gt;      &lt;source bridge=&apos;br0&apos;/&gt;      &lt;model type=&apos;virtio&apos;/&gt;      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x02&apos; function=&apos;0x0&apos;/&gt;    &lt;/interface&gt; ```nat</div><div class="line"></div><div class="line">```&lt;interface type=&apos;network&apos;&gt;      &lt;source network=&apos;default&apos;/&gt;      &lt;model type=&apos;virtio&apos;/&gt;      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x03&apos; function=&apos;0x0&apos;/&gt;    &lt;/interface&gt;</div></pre></td></tr></table></figure></p>
+<p>修改完之后，保存退出。</p>
+<pre><code># virsh create /etc/libvirt/qemu/centos-7.2.xml
+</code></pre><ol>
+<li><p>修改桥接后nat不能上网问题</p>
+<p>默认配置文件：（virsh交互界面）</p>
+</li>
+</ol>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.36.png" alt="1.36"></p>
+<p>将默认配置文件修改为：</p>
+<pre><code># vim /etc/libvirt/qemu/networks/default.xml
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.37.png" alt="1.37"></p>
+<p>然后再执行如下命令</p>
+<pre><code>virsh # net-define /etc/libvirt/qemu/networks/default.xml
+virsh # net-destroy default
+virsh # net-start default
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;kvm简绍&quot;&gt;&lt;a href=&quot;#kvm简绍&quot; class=&quot;headerlink&quot; title=&quot;kvm简绍&quot;&gt;&lt;/a&gt;kvm简绍&lt;/h1&gt;&lt;p&gt;KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="KVM" scheme="http://yjscloud.com/tags/KVM/"/>
+    
+  </entry>
+  
+  <entry>
     <title>kvm学习笔记（一）——虚拟化介绍</title>
     <link href="http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89-%E8%99%9A%E6%8B%9F%E5%8C%96%E4%BB%8B%E7%BB%8D/"/>
     <id>http://yjscloud.com/2017/10/18/kvm学习笔记（一）-虚拟化介绍/</id>
     <published>2017-10-17T19:04:16.000Z</published>
-    <updated>2017-10-17T19:49:46.000Z</updated>
+    <updated>2017-10-17T20:05:18.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="什么是系统虚拟化"><a href="#什么是系统虚拟化" class="headerlink" title="什么是系统虚拟化"></a>什么是系统虚拟化</h2><p>系统虚拟化是将底层物理设备与上层操作系统、软件分离的一种去耦合技术，在一台物理机器上逻辑的划分出多台机器。虚拟化的目标是实现IT资源利用效率和灵活性的最大化</p>
 <p><img src="http://oxysobnip.bkt.clouddn.com/1.1.png" alt="1.1"></p>
@@ -104,6 +312,8 @@
     
     
       <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="KVM" scheme="http://yjscloud.com/tags/KVM/"/>
     
   </entry>
   
@@ -1953,7 +2163,7 @@ fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。�
     <link href="http://yjscloud.com/2017/05/01/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/"/>
     <id>http://yjscloud.com/2017/05/01/hexo博客搭建指南/</id>
     <published>2017-05-01T11:14:56.000Z</published>
-    <updated>2017-09-13T06:37:15.000Z</updated>
+    <updated>2017-10-17T13:25:39.000Z</updated>
     
     <content type="html"><![CDATA[<p>自己在腾讯云买了一个域名半年来都不知道做什么（学生党购买腾讯云只要1块钱！！！），Hexo优雅整洁深深的把我给吸引住了，于是动手搭了一个博客出来，在搭建博客的过程中碰到很多问题，我在参考别人的博文的基础上整理此文，一是方便其他搭建自己的人博客，二是给自己的学习之旅做个总结。</p>
 <p>我的博客地址：<a href="http://yjscloud.com/">yjscloud.com</a></p>
