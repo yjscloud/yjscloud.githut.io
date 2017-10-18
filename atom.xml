@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-10-18T05:18:00.000Z</updated>
+  <updated>2017-10-18T10:16:39.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-KVM%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/"/>
     <id>http://yjscloud.com/2017/10/18/kvm学习笔记（二）-KVM基础学习/</id>
     <published>2017-10-17T20:06:18.000Z</published>
-    <updated>2017-10-18T05:18:00.000Z</updated>
+    <updated>2017-10-18T10:16:39.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="kvm简绍"><a href="#kvm简绍" class="headerlink" title="kvm简绍"></a>kvm简绍</h1><p>KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的一个内核模块，该内核模块使得 Linux 变成了一个 Hypervisor：</p>
 <ul>
@@ -238,29 +238,18 @@ virsh # snapshot-list centos-7.2 #显示虚拟机快照的名称
 virsh # snapshot-revert centos-7.2 kuaizhao #恢复快照
 </pre>
 
-<h2 id="添加磁盘"><a href="#添加磁盘" class="headerlink" title="添加磁盘"></a>添加磁盘</h2><ol>
-<li>创建磁盘</li>
-</ol>
+<h2 id="添加磁盘"><a href="#添加磁盘" class="headerlink" title="添加磁盘"></a>添加磁盘</h2><p>(1)创建磁盘</p>
 <pre>
 # qemu-img create -f qcow2 /mnt/vm-test/ios/testadd.qcow2 10G
 </pre>
 
-<ol>
-<li>修改配置文件</li>
-</ol>
+<p>(2)修改配置文件</p>
 <pre>
 # virsh edit centos-7.2
 </pre>
 
 <p>添加以下内容并保存配置文件</p>
-<pre>
-<disk type="file" device="disk">
-    <driver name="qemu" type="qcow2">
-    <source file="/mnt/vm-test/ios/testadd.qcow2">
-    <target dev="vdb" bus="virtio">
-</target></driver></disk>
-</pre>    
-
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">disk</span> <span class="attr">type</span>=<span class="string">'file'</span> <span class="attr">device</span>=<span class="string">'disk'</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">driver</span> <span class="attr">name</span>=<span class="string">'qemu'</span> <span class="attr">type</span>=<span class="string">'qcow2'</span>/&gt;</span></div><div class="line">   	<span class="tag">&lt;<span class="name">source</span> <span class="attr">file</span>=<span class="string">'/mnt/vm-test/ios/testadd.qcow2'</span>/&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">target</span> <span class="attr">dev</span>=<span class="string">'vdb'</span> <span class="attr">bus</span>=<span class="string">'virtio'</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">disk</span>&gt;</span></div></pre></td></tr></table></figure>
 <pre>
 # virsh create /etc/libvirt/qemu/centos-7.2.xml
 # virsh destroy centos-7.2
@@ -280,17 +269,8 @@ virsh # snapshot-revert centos-7.2 kuaizhao #恢复快照
 </pre>
 
 <p>添加内容</p>
-<pre><code>&lt;network&gt;
-     &lt;name&gt;default&lt;/name&gt;
-     &lt;bridge name=&quot;virbr0&quot; /&gt;
-     &lt;forward/&gt;
-  &lt;ip address=&quot;192.168.122.1&quot; netmask=&quot;255.255.255.0&quot;&gt;
-       &lt;dhcp&gt;
-        &lt;range start=&quot;192.168.122.2&quot; end=&quot;192.168.122.254&quot; /&gt;
-    &lt;/dhcp&gt;
-  &lt;/ip&gt;
-&lt;/network&gt;
-</code></pre><p>设置为自动启动</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">network</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>default<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bridge</span> <span class="attr">name</span>=<span class="string">"virbr0"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">forward</span>/&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">ip</span> <span class="attr">address</span>=<span class="string">"192.168.122.1"</span> <span class="attr">netmask</span>=<span class="string">"255.255.255.0"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">dhcp</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">range</span> <span class="attr">start</span>=<span class="string">"192.168.122.2"</span> <span class="attr">end</span>=<span class="string">"192.168.122.254"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">dhcp</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">ip</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">network</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>设置为自动启动</p>
 <pre>
 # virsh net-autostart default
 </pre>
@@ -313,16 +293,16 @@ virsh # snapshot-revert centos-7.2 kuaizhao #恢复快照
 <p>修改网卡链接模式</p>
 <p>桥接模式</p>
 <pre><code>&lt;interface type=&apos;bridge&apos;&gt;
-  &lt;source bridge=&apos;br0&apos;/&gt;
-  &lt;model type=&apos;virtio&apos;/&gt;
-  &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x02&apos; function=&apos;0x0&apos;/&gt;
+    &lt;source bridge=&apos;br0&apos;/&gt;
+    &lt;model type=&apos;virtio&apos;/&gt;
+    &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x02&apos; function=&apos;0x0&apos;/&gt;
 &lt;/interface&gt;
 </code></pre><p>nat模式</p>
 <pre><code>&lt;interface type=&apos;network&apos;&gt;
-      &lt;source network=&apos;default&apos;/&gt;
-      &lt;model type=&apos;virtio&apos;/&gt;
-      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x03&apos; function=&apos;0x0&apos;/&gt;
-    &lt;/interface&gt; 
+    &lt;source network=&apos;default&apos;/&gt;
+    &lt;model type=&apos;virtio&apos;/&gt;
+    &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x03&apos; function=&apos;0x0&apos;/&gt;
+&lt;/interface&gt; 
 </code></pre><p>修改完之后，保存退出。</p>
 <pre>
 # virsh create /etc/libvirt/qemu/centos-7.2.xml
@@ -520,7 +500,7 @@ virsh # net-start default
     <link href="http://yjscloud.com/2017/09/19/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%EF%BC%88%E4%B8%89%EF%BC%89/"/>
     <id>http://yjscloud.com/2017/09/19/CloudStack搭建指南（三）/</id>
     <published>2017-09-19T06:11:56.000Z</published>
-    <updated>2017-09-19T07:14:48.000Z</updated>
+    <updated>2017-10-18T05:30:13.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Open-vSwitch简介"><a href="#Open-vSwitch简介" class="headerlink" title="Open vSwitch简介"></a>Open vSwitch简介</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Open vSwitch的官方定义：Open vSwitch是一个具有工业级质量的多层虚拟交换机。通过可编程扩展，可以实现大规模网络的自动化（配置、管理、维护）。它支持现有标准管理接口和协议（比如netFlow，sFlow，SPAN，RSPAN，CLI，LACP，802.1ag等，熟悉物理网络维护的管理员可以毫不费力地通过Open vSwitch转向虚拟网络管理）。</p>
 <a id="more"></a>
@@ -685,6 +665,8 @@ libvirt.vif.driver=com.cloud.hypervisor.kvm.resource.OvsVifDriver
     
       <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
     
+      <category term="CloudStack" scheme="http://yjscloud.com/tags/CloudStack/"/>
+    
   </entry>
   
   <entry>
@@ -692,7 +674,7 @@ libvirt.vif.driver=com.cloud.hypervisor.kvm.resource.OvsVifDriver
     <link href="http://yjscloud.com/2017/09/17/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
     <id>http://yjscloud.com/2017/09/17/CloudStack搭建指南（二）/</id>
     <published>2017-09-17T12:14:12.000Z</published>
-    <updated>2017-09-19T06:16:43.000Z</updated>
+    <updated>2017-10-18T05:30:28.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="GlusterFS介绍"><a href="#GlusterFS介绍" class="headerlink" title="GlusterFS介绍"></a>GlusterFS介绍</h1><h2 id="什么是GlusterFS？"><a href="#什么是GlusterFS？" class="headerlink" title="什么是GlusterFS？"></a>什么是GlusterFS？</h2><p>GlusterFS是定义在用户空间中使用的分布式文件系统，在用户空间即文件系统（FUSE）。 它是一个基于软件的文件系统，它考虑到自己的灵活性功能。</p>
 <p><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.1.png" alt="gfs-1.1"></p>
@@ -900,6 +882,8 @@ libvirt.vif.driver=com.cloud.hypervisor.kvm.resource.OvsVifDriver
     
       <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
     
+      <category term="CloudStack" scheme="http://yjscloud.com/tags/CloudStack/"/>
+    
   </entry>
   
   <entry>
@@ -907,7 +891,7 @@ libvirt.vif.driver=com.cloud.hypervisor.kvm.resource.OvsVifDriver
     <link href="http://yjscloud.com/2017/09/15/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%EF%BC%88%E4%B8%80%EF%BC%89/"/>
     <id>http://yjscloud.com/2017/09/15/CloudStack搭建指南（一）/</id>
     <published>2017-09-15T02:49:46.000Z</published>
-    <updated>2017-09-19T07:19:38.000Z</updated>
+    <updated>2017-10-18T05:29:56.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="理论基础"><a href="#理论基础" class="headerlink" title="理论基础"></a>理论基础</h1><h2 id="云计算的出现"><a href="#云计算的出现" class="headerlink" title="云计算的出现"></a>云计算的出现</h2><p>基本上，云计算只是一种把 IT 资源当作服务来提供的手段。几乎所有 IT 资源都可以作为云服务来提供：应用程序、计算能力、存储容量、联网、编程工具，以至于通信服务和协作工具。<br>云计算最早为 Google、Amazon 等其他扩建基础设施的大型互联网服务提供商所采用。于是产生一种架构：大规模扩展、水平分布的系统资源，抽象为虚拟 IT 服务，并作为持续配置、合用的资源进行管理。<br><a id="more"></a><br>就最终用户而言，云计算意味着没有硬件购置成本、没有需要管理的软件许可证或升级、不需要雇佣新的员工或咨询人员、不需要租赁设施、没有任何种类的基建投资，而且还没有隐性成本。只是一种用仪表测量出来的、根据使用情况支付的订购费或固定的订购费。只是用您所需的量，而且只按使用量付费。</p>
 <p>云计算体系结构图如下：</p>
@@ -1215,6 +1199,8 @@ ONBOOT=yes
     
     
       <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="CloudStack" scheme="http://yjscloud.com/tags/CloudStack/"/>
     
   </entry>
   

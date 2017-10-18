@@ -117,7 +117,7 @@
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.35.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.36.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.37.png">
-<meta property="og:updated_time" content="2017-10-18T05:18:00.000Z">
+<meta property="og:updated_time" content="2017-10-18T10:16:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kvm学习笔记（二）-KVM基础学习">
 <meta name="twitter:description" content="kvm简绍KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的一个内核模块，该内核模块使得 Linux 变成了一个 Hypervisor：  它由 Quramnet 开发，该公司于 2008年被 Red Hat 收购。 它支持 x86 (32 and 64 位), s390, Powerpc 等 CPU。 它从 Linux 2.6.2">
@@ -432,7 +432,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,957
+                  1,983
                 </span>
               
 
@@ -682,29 +682,18 @@ virsh # snapshot-list centos-7.2 #显示虚拟机快照的名称
 virsh # snapshot-revert centos-7.2 kuaizhao #恢复快照
 </pre>
 
-<h2 id="添加磁盘"><a href="#添加磁盘" class="headerlink" title="添加磁盘"></a>添加磁盘</h2><ol>
-<li>创建磁盘</li>
-</ol>
+<h2 id="添加磁盘"><a href="#添加磁盘" class="headerlink" title="添加磁盘"></a>添加磁盘</h2><p>(1)创建磁盘</p>
 <pre>
 # qemu-img create -f qcow2 /mnt/vm-test/ios/testadd.qcow2 10G
 </pre>
 
-<ol>
-<li>修改配置文件</li>
-</ol>
+<p>(2)修改配置文件</p>
 <pre>
 # virsh edit centos-7.2
 </pre>
 
 <p>添加以下内容并保存配置文件</p>
-<pre>
-<disk type="file" device="disk">
-    <driver name="qemu" type="qcow2">
-    <source file="/mnt/vm-test/ios/testadd.qcow2">
-    <target dev="vdb" bus="virtio">
-</target></driver></disk>
-</pre>    
-
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">disk</span> <span class="attr">type</span>=<span class="string">'file'</span> <span class="attr">device</span>=<span class="string">'disk'</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">driver</span> <span class="attr">name</span>=<span class="string">'qemu'</span> <span class="attr">type</span>=<span class="string">'qcow2'</span>/&gt;</span></div><div class="line">   	<span class="tag">&lt;<span class="name">source</span> <span class="attr">file</span>=<span class="string">'/mnt/vm-test/ios/testadd.qcow2'</span>/&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">target</span> <span class="attr">dev</span>=<span class="string">'vdb'</span> <span class="attr">bus</span>=<span class="string">'virtio'</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">disk</span>&gt;</span></div></pre></td></tr></table></figure>
 <pre>
 # virsh create /etc/libvirt/qemu/centos-7.2.xml
 # virsh destroy centos-7.2
@@ -724,17 +713,8 @@ virsh # snapshot-revert centos-7.2 kuaizhao #恢复快照
 </pre>
 
 <p>添加内容</p>
-<pre><code>&lt;network&gt;
-     &lt;name&gt;default&lt;/name&gt;
-     &lt;bridge name=&quot;virbr0&quot; /&gt;
-     &lt;forward/&gt;
-  &lt;ip address=&quot;192.168.122.1&quot; netmask=&quot;255.255.255.0&quot;&gt;
-       &lt;dhcp&gt;
-        &lt;range start=&quot;192.168.122.2&quot; end=&quot;192.168.122.254&quot; /&gt;
-    &lt;/dhcp&gt;
-  &lt;/ip&gt;
-&lt;/network&gt;
-</code></pre><p>设置为自动启动</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">network</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>default<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bridge</span> <span class="attr">name</span>=<span class="string">"virbr0"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">forward</span>/&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">ip</span> <span class="attr">address</span>=<span class="string">"192.168.122.1"</span> <span class="attr">netmask</span>=<span class="string">"255.255.255.0"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">dhcp</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">range</span> <span class="attr">start</span>=<span class="string">"192.168.122.2"</span> <span class="attr">end</span>=<span class="string">"192.168.122.254"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">dhcp</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">ip</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">network</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>设置为自动启动</p>
 <pre>
 # virsh net-autostart default
 </pre>
@@ -757,16 +737,16 @@ virsh # snapshot-revert centos-7.2 kuaizhao #恢复快照
 <p>修改网卡链接模式</p>
 <p>桥接模式</p>
 <pre><code>&lt;interface type=&apos;bridge&apos;&gt;
-  &lt;source bridge=&apos;br0&apos;/&gt;
-  &lt;model type=&apos;virtio&apos;/&gt;
-  &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x02&apos; function=&apos;0x0&apos;/&gt;
+    &lt;source bridge=&apos;br0&apos;/&gt;
+    &lt;model type=&apos;virtio&apos;/&gt;
+    &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x02&apos; function=&apos;0x0&apos;/&gt;
 &lt;/interface&gt;
 </code></pre><p>nat模式</p>
 <pre><code>&lt;interface type=&apos;network&apos;&gt;
-      &lt;source network=&apos;default&apos;/&gt;
-      &lt;model type=&apos;virtio&apos;/&gt;
-      &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x03&apos; function=&apos;0x0&apos;/&gt;
-    &lt;/interface&gt; 
+    &lt;source network=&apos;default&apos;/&gt;
+    &lt;model type=&apos;virtio&apos;/&gt;
+    &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x03&apos; function=&apos;0x0&apos;/&gt;
+&lt;/interface&gt; 
 </code></pre><p>修改完之后，保存退出。</p>
 <pre>
 # virsh create /etc/libvirt/qemu/centos-7.2.xml
@@ -949,7 +929,7 @@ virsh # net-start default
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
