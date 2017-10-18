@@ -556,9 +556,9 @@
             let var-=1
                 let var--
 </code></pre><h3 id="练习-1）：写一个脚本"><a href="#练习-1）：写一个脚本" class="headerlink" title="练习(1）：写一个脚本"></a>练习(1）：写一个脚本</h3><p>  计算/etc/passwd文件中的第10个用户和第20用户的ID之和</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">	#!/bin/bash</div><div class="line">userid1=$(head -n 10 /etc/passwd | tail -n 1 | cut -d: -f3)</div><div class="line">userid2=$(head -n 20 /etc/passwd | tail -n 1 | cut -d: -f3)</div><div class="line">useridsum=$[$userid1+userid2]</div><div class="line">echo &quot;uid sum:$useridsum&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">	<span class="comment">#!/bin/bash</span></div><div class="line">userid1=<span class="variable">$(head -n 10 /etc/passwd | tail -n 1 | cut -d: -f3)</span></div><div class="line">userid2=<span class="variable">$(head -n 20 /etc/passwd | tail -n 1 | cut -d: -f3)</span></div><div class="line">useridsum=$[$userid1+userid2]</div><div class="line">echo <span class="string">"uid sum:$useridsum"</span></div></pre></td></tr></table></figure>
 <h3 id="练习-2-：写一个脚本"><a href="#练习-2-：写一个脚本" class="headerlink" title="练习(2)：写一个脚本"></a>练习(2)：写一个脚本</h3><p> 传递两个文件路径作为参数给脚本，计算着两个文件中所有空白行之和</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#!/bin/bash</div><div class="line">spaceline1=$(grep &quot;^[[:space:]]*$&quot; $1 | wc -l)</div><div class="line">spaceline2=$(grep &quot;^[[:space:]]*$&quot; $2 | wc -l)</div><div class="line">echo &quot;the sum of space line:$[$spaceline1+$spaceline2]&quot;</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">spaceline1=$(grep <span class="string">"^[[:space:]]*$"</span> <span class="variable">$1</span> | wc <span class="_">-l</span>)</div><div class="line">spaceline2=$(grep <span class="string">"^[[:space:]]*$"</span> <span class="variable">$2</span> | wc <span class="_">-l</span>)</div><div class="line"><span class="built_in">echo</span> <span class="string">"the sum of space line:$[<span class="variable">$spaceline1</span>+<span class="variable">$spaceline2</span>]"</span></div></pre></td></tr></table></figure>
 <h2 id="bash测试"><a href="#bash测试" class="headerlink" title="bash测试"></a>bash测试</h2><p> 条件测试：<br>     判断某需求是否满足，需要由测试机制来实现</p>
 <pre><code>Note：专用的测试表达式需要由测试命令辅助完成测试过程
 
@@ -810,6 +810,10 @@
             
           
         </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
 
         
         
