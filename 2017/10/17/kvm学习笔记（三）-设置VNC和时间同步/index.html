@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content=" Linux, Python " />
+  <meta name="keywords" content="Linux学习笔记,KVM," />
 
 
 
@@ -92,16 +92,25 @@
 
 
 
-<meta name="description" content="独孤九剑，剑指运维！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="categories">
-<meta property="og:url" content="http://yjscloud.com/categories/index.html">
+<meta name="description" content="设置VNC这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。">
+<meta name="keywords" content="Linux学习笔记,KVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kvm学习笔记（三）-设置VNC和时间同步">
+<meta property="og:url" content="http://yjscloud.com/2017/10/17/kvm学习笔记（三）-设置VNC和时间同步/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="独孤九剑，剑指运维！">
-<meta property="og:updated_time" content="2017-04-23T11:38:54.000Z">
+<meta property="og:description" content="设置VNC这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.38.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.39.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.40.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.41.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.42.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.43.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.44.png">
+<meta property="og:updated_time" content="2017-10-17T15:23:27.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="categories">
-<meta name="twitter:description" content="独孤九剑，剑指运维！">
+<meta name="twitter:title" content="kvm学习笔记（三）-设置VNC和时间同步">
+<meta name="twitter:description" content="设置VNC这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。">
+<meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/1.38.png">
 
 
 
@@ -129,13 +138,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/categories/"/>
+  <link rel="canonical" href="http://yjscloud.com/2017/10/17/kvm学习笔记（三）-设置VNC和时间同步/"/>
 
 
 
 
 
-  <title>categories | 戏子登台</title>
+  <title>kvm学习笔记（三）-设置VNC和时间同步 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -165,7 +174,7 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -300,25 +309,262 @@
             
 
   <div id="posts" class="posts-expand">
-  <header class="post-header">
+    
 
-	<h1 class="post-title" itemprop="name headline">categories</h1>
+  
 
+  
+  
+  
 
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/10/17/kvm学习笔记（三）-设置VNC和时间同步/">
 
-</header>
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
 
     
-    
-      <div class="category-all-page">
-        <div class="category-all-title">
-            目前共计 2 个分类
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                kvm学习笔记（三）-设置VNC和时间同步
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-17T22:54:34+08:00">
+                2017-10-17
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/10/17/kvm学习笔记（三）-设置VNC和时间同步/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  574
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  2
+                </span>
+              
+            </div>
+          
+
+          
+
         </div>
-        <div class="category-all">
-          <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/学习笔记/">学习笔记</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技术分享/">技术分享</a><span class="category-list-count">3</span></li></ul>
-        </div>
-      </div>
+      </header>
     
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="设置VNC"><a href="#设置VNC" class="headerlink" title="设置VNC"></a>设置VNC</h1><p>这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。</p>
+<a id="more"></a>
+<h2 id="修改qemu-conf"><a href="#修改qemu-conf" class="headerlink" title="修改qemu.conf"></a>修改qemu.conf</h2><pre><code># vim  /etc/libvirt/qemu.conf
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.38.png" alt="1.38"></p>
+<p>去掉第12行的注释，保存退出</p>
+<p>注意：vnclisten 默认绑定127.0.0.1 在配置文件里指定VNC 绑定0.0.0.0的IP,就不用在安装kvm虚拟机时指定vnclisten参数了。在虚拟主机上有很多个虚拟机的时候，需要指定每个虚拟机的端口，否则将会很乱。</p>
+<h2 id="修改虚拟机配置文件"><a href="#修改虚拟机配置文件" class="headerlink" title="修改虚拟机配置文件"></a>修改虚拟机配置文件</h2><pre><code># virsh edit clone-1
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.39.png" alt="1.39"></p>
+<p>配置VNC的配置文件,port是指定端口号,autoport是自动分配端口号。</p>
+<h2 id="启动虚拟机并测试VNC"><a href="#启动虚拟机并测试VNC" class="headerlink" title="启动虚拟机并测试VNC"></a>启动虚拟机并测试VNC</h2><p>启动虚拟机</p>
+<pre><code># virsh start clone-1
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.40.png" alt="1.40"></p>
+<p>使用vnc工具登陆</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.41.png" alt="1.41"></p>
+<p>登陆成功</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.42.png" alt="1.42"></p>
+<hr>
+<h1 id="kvm虚拟机时间配置"><a href="#kvm虚拟机时间配置" class="headerlink" title="kvm虚拟机时间配置"></a>kvm虚拟机时间配置</h1><p>在虚拟化环境中，虚拟机在长时间运行过程中，时间会变慢，通常的作法是配置ntpdate定时与时间服务器进行时间同步的计划任务。KVM虚拟机默认采用utc时间，需要专门修改，以及考虑kvm时间同步问题。</p>
+<h2 id="kvm虚拟机修改时间配置文件"><a href="#kvm虚拟机修改时间配置文件" class="headerlink" title="kvm虚拟机修改时间配置文件"></a>kvm虚拟机修改时间配置文件</h2><p>kvm虚拟机采用utc时间，需要先修改配置文件使用KVM虚拟机的时间与虚拟主机同步。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.43.png" alt="1.43"></p>
+<p>修改utc为localtime，保存退出，重启虚拟机</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.44.png" alt="1.44"></p>
+<h2 id="关于kvm虚拟机时间问题解决思路"><a href="#关于kvm虚拟机时间问题解决思路" class="headerlink" title="关于kvm虚拟机时间问题解决思路"></a>关于kvm虚拟机时间问题解决思路</h2><p>(1)虚拟机时间慢是所有虚拟化平台的一共性问题。</p>
+<p>(2)解决时间的最终解决方法就是在生产环境中配置时间服务器，kvm虚拟化服务器与kvm机均都要配置时间同步的计划任务，这才是解决这一个问题最终解决方案。</p>
+<p>示例：如果能访问互联网，最简单了，需要kvm虚拟机与主机时间同步，但是运行一段时间会慢，一定要做时间同步，特别是对时间敏感的环境。   </p>
+<pre><code># crontab -e    
+01 */3 * * * /usr/sbin/ntpdate cn.pool.ntp.org &gt;&gt; /dev/null 2&gt;&amp;1
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux学习笔记/" rel="tag"># Linux学习笔记</a>
+          
+            <a href="/tags/KVM/" rel="tag"># KVM</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/18/kvm学习笔记（一）-虚拟化介绍/" rel="next" title="kvm学习笔记（一）——虚拟化介绍">
+                <i class="fa fa-chevron-left"></i> kvm学习笔记（一）——虚拟化介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/19/CloudStack搭建指南（三）/" rel="prev" title="CloudStack搭建指南（三）">
+                CloudStack搭建指南（三） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -327,6 +573,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
 
         </div>
         
@@ -346,8 +598,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
@@ -472,6 +733,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#设置VNC"><span class="nav-number">1.</span> <span class="nav-text">设置VNC</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改qemu-conf"><span class="nav-number">1.1.</span> <span class="nav-text">修改qemu.conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改虚拟机配置文件"><span class="nav-number">1.2.</span> <span class="nav-text">修改虚拟机配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动虚拟机并测试VNC"><span class="nav-number">1.3.</span> <span class="nav-text">启动虚拟机并测试VNC</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#kvm虚拟机时间配置"><span class="nav-number">2.</span> <span class="nav-text">kvm虚拟机时间配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#kvm虚拟机修改时间配置文件"><span class="nav-number">2.1.</span> <span class="nav-text">kvm虚拟机修改时间配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于kvm虚拟机时间问题解决思路"><span class="nav-number">2.2.</span> <span class="nav-text">关于kvm虚拟机时间问题解决思路</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
