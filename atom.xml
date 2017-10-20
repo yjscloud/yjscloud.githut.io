@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-10-18T10:16:39.000Z</updated>
+  <updated>2017-10-20T00:02:48.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,124 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>kvm学习笔记（四）-kvm快照备份</title>
+    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-kvm%E5%BF%AB%E7%85%A7%E5%A4%87%E4%BB%BD/"/>
+    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（四）-kvm快照备份/</id>
+    <published>2017-10-19T23:42:15.000Z</published>
+    <updated>2017-10-20T00:02:48.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅<a href="http://www.cnblogs.com/zhangzhang/archive/2012/02/13/2348928.html" target="_blank" rel="external">KMV下磁盘模式raw和qcow2的性能比较</a></p>
+<p>下面开始kvm虚拟机快照备份的过程</p>
+<h1 id="查看现有磁盘镜像格式与转换"><a href="#查看现有磁盘镜像格式与转换" class="headerlink" title="查看现有磁盘镜像格式与转换"></a>查看现有磁盘镜像格式与转换</h1><p>(1) 查看磁盘格式</p>
+<pre><code># qemu-img info test01.img
+</code></pre><p>raw格式需要转换成qcow2</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.45.png" alt="1.45"></p>
+<p>（2）关闭虚拟机并装换磁盘</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.46.png" alt="1.46"></p>
+<p>(3) 转换磁盘格式</p>
+<pre><code># qemu-img convert -f raw -O qcow2 clone-2.img clone-2.qcow2 
+</code></pre><p>   -f  源镜像的格式</p>
+<p>   -O 目标镜像的格式<br><img src="http://oxysobnip.bkt.clouddn.com/1.47.png" alt="1.47"></p>
+<p>查看转换后的格式，已经转换成了qcow2, 这里是拷贝一份，并将格式转成qcow2</p>
+<pre><code># qemu-img info clone-2.qcow2
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.48.png" alt="1.48"></p>
+<h1 id="修改虚拟机配置文件"><a href="#修改虚拟机配置文件" class="headerlink" title="修改虚拟机配置文件"></a>修改虚拟机配置文件</h1><p>修改磁盘格式，与新qcow2格式的磁盘。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.49.png" alt="1.49"></p>
+<h1 id="对虚拟机进行快照管理"><a href="#对虚拟机进行快照管理" class="headerlink" title="对虚拟机进行快照管理"></a>对虚拟机进行快照管理</h1><p>(1) 对clone-2虚拟机创建快照</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.50.png" alt="1.50"></p>
+<p>(2) 查看虚拟机镜像快照的版本</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.51.png" alt="1.51"></p>
+<p>(3) 查看当前虚拟机镜像快照的版本</p>
+<p>   可以看到为当前最新的快照版本。</p>
+<pre><code># virsh snapshot-current clone-2
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.52.png" alt="1.52"></p>
+<p>(4) 查看当前虚拟机镜像文件</p>
+<p>  又创建了一个，快照的版本也记录在镜像文件中了。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.53.png" alt="1.53"></p>
+<p>快照配置文件在/var/lib/libvirt/qemu/snapshot/虚拟机名称/下<br><img src="http://oxysobnip.bkt.clouddn.com/1.54.png" alt="1.54"></p>
+<h1 id="恢复虚拟机快照"><a href="#恢复虚拟机快照" class="headerlink" title="恢复虚拟机快照"></a>恢复虚拟机快照</h1><p>(1) 恢复虚拟机快照必须关闭虚拟机。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.55.png" alt="1.55"></p>
+<p>(2) 确认需要恢复的快照时间，这里恢复到1508285665</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.56.png" alt="1.56"></p>
+<p>(3) 执行恢复，并确认恢复版本</p>
+<pre><code># virsh snapshot-revert clone-2 1508285665
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.57.png" alt="1.57"></p>
+<h1 id="删除虚拟机快照"><a href="#删除虚拟机快照" class="headerlink" title="删除虚拟机快照"></a>删除虚拟机快照</h1><p>(1) 查看虚拟机快照</p>
+<pre><code># qemu-img info clone-2.qcow2
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.58.png" alt="1.58"></p>
+<p>这里删除第一个快照1378579737</p>
+<p>(2) 删除快照</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.59.png" alt="1.59"></p>
+<p>到此kvm虚拟机快照测试完毕!</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅&lt;a href=&quot;http://www.cn
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="KVM" scheme="http://yjscloud.com/tags/KVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>kvm学习笔记（三）-设置VNC和时间同步</title>
+    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-%E8%AE%BE%E7%BD%AEVNC%E5%92%8C%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5/"/>
+    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（三）-设置VNC和时间同步/</id>
+    <published>2017-10-19T18:54:34.000Z</published>
+    <updated>2017-10-19T23:43:46.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="设置VNC"><a href="#设置VNC" class="headerlink" title="设置VNC"></a>设置VNC</h1><p>这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。</p>
+<a id="more"></a>
+<h2 id="修改qemu-conf"><a href="#修改qemu-conf" class="headerlink" title="修改qemu.conf"></a>修改qemu.conf</h2><pre><code># vim  /etc/libvirt/qemu.conf
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.38.png" alt="1.38"></p>
+<p>去掉第12行的注释，保存退出</p>
+<p>注意：vnclisten 默认绑定127.0.0.1 在配置文件里指定VNC 绑定0.0.0.0的IP,就不用在安装kvm虚拟机时指定vnclisten参数了。在虚拟主机上有很多个虚拟机的时候，需要指定每个虚拟机的端口，否则将会很乱。</p>
+<h2 id="修改虚拟机配置文件"><a href="#修改虚拟机配置文件" class="headerlink" title="修改虚拟机配置文件"></a>修改虚拟机配置文件</h2><pre><code># virsh edit clone-1
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.39.png" alt="1.39"></p>
+<p>配置VNC的配置文件,port是指定端口号,autoport是自动分配端口号。</p>
+<h2 id="启动虚拟机并测试VNC"><a href="#启动虚拟机并测试VNC" class="headerlink" title="启动虚拟机并测试VNC"></a>启动虚拟机并测试VNC</h2><p>启动虚拟机</p>
+<pre><code># virsh start clone-1
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.40.png" alt="1.40"></p>
+<p>使用vnc工具登陆</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.41.png" alt="1.41"></p>
+<p>登陆成功</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.42.png" alt="1.42"></p>
+<hr>
+<h1 id="kvm虚拟机时间配置"><a href="#kvm虚拟机时间配置" class="headerlink" title="kvm虚拟机时间配置"></a>kvm虚拟机时间配置</h1><p>在虚拟化环境中，虚拟机在长时间运行过程中，时间会变慢，通常的作法是配置ntpdate定时与时间服务器进行时间同步的计划任务。KVM虚拟机默认采用utc时间，需要专门修改，以及考虑kvm时间同步问题。</p>
+<h2 id="kvm虚拟机修改时间配置文件"><a href="#kvm虚拟机修改时间配置文件" class="headerlink" title="kvm虚拟机修改时间配置文件"></a>kvm虚拟机修改时间配置文件</h2><p>kvm虚拟机采用utc时间，需要先修改配置文件使用KVM虚拟机的时间与虚拟主机同步。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.43.png" alt="1.43"></p>
+<p>修改utc为localtime，保存退出，重启虚拟机</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.44.png" alt="1.44"></p>
+<h2 id="关于kvm虚拟机时间问题解决思路"><a href="#关于kvm虚拟机时间问题解决思路" class="headerlink" title="关于kvm虚拟机时间问题解决思路"></a>关于kvm虚拟机时间问题解决思路</h2><p>(1)虚拟机时间慢是所有虚拟化平台的一共性问题。</p>
+<p>(2)解决时间的最终解决方法就是在生产环境中配置时间服务器，kvm虚拟化服务器与kvm机均都要配置时间同步的计划任务，这才是解决这一个问题最终解决方案。</p>
+<p>示例：如果能访问互联网，最简单了，需要kvm虚拟机与主机时间同步，但是运行一段时间会慢，一定要做时间同步，特别是对时间敏感的环境。   </p>
+<pre><code># crontab -e    
+01 */3 * * * /usr/sbin/ntpdate cn.pool.ntp.org &gt;&gt; /dev/null 2&gt;&amp;1
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;设置VNC&quot;&gt;&lt;a href=&quot;#设置VNC&quot; class=&quot;headerlink&quot; title=&quot;设置VNC&quot;&gt;&lt;/a&gt;设置VNC&lt;/h1&gt;&lt;p&gt;这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="KVM" scheme="http://yjscloud.com/tags/KVM/"/>
+    
+  </entry>
   
   <entry>
     <title>kvm学习笔记（二）-KVM基础学习</title>
@@ -432,57 +550,6 @@ virsh # net-start default
       &lt;h2 id=&quot;什么是系统虚拟化&quot;&gt;&lt;a href=&quot;#什么是系统虚拟化&quot; class=&quot;headerlink&quot; title=&quot;什么是系统虚拟化&quot;&gt;&lt;/a&gt;什么是系统虚拟化&lt;/h2&gt;&lt;p&gt;系统虚拟化是将底层物理设备与上层操作系统、软件分离的一种去耦合技术，在一台物理机器上逻辑的划分出多台机器。虚拟化的目标是实现IT资源利用效率和灵活性的最大化&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://oxysobnip.bkt.clouddn.com/1.1.png&quot; alt=&quot;1.1&quot;&gt;&lt;/p&gt;
 &lt;p&gt;多个系统融合在一台服务器上——资源利用率高 资源利用率高&lt;br&gt;应用系统不再依赖特定的硬件——系统维护灵活&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="KVM" scheme="http://yjscloud.com/tags/KVM/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>kvm学习笔记（三）-设置VNC和时间同步</title>
-    <link href="http://yjscloud.com/2017/10/17/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-%E8%AE%BE%E7%BD%AEVNC%E5%92%8C%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5/"/>
-    <id>http://yjscloud.com/2017/10/17/kvm学习笔记（三）-设置VNC和时间同步/</id>
-    <published>2017-10-17T14:54:34.000Z</published>
-    <updated>2017-10-17T15:23:27.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="设置VNC"><a href="#设置VNC" class="headerlink" title="设置VNC"></a>设置VNC</h1><p>这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。</p>
-<a id="more"></a>
-<h2 id="修改qemu-conf"><a href="#修改qemu-conf" class="headerlink" title="修改qemu.conf"></a>修改qemu.conf</h2><pre><code># vim  /etc/libvirt/qemu.conf
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.38.png" alt="1.38"></p>
-<p>去掉第12行的注释，保存退出</p>
-<p>注意：vnclisten 默认绑定127.0.0.1 在配置文件里指定VNC 绑定0.0.0.0的IP,就不用在安装kvm虚拟机时指定vnclisten参数了。在虚拟主机上有很多个虚拟机的时候，需要指定每个虚拟机的端口，否则将会很乱。</p>
-<h2 id="修改虚拟机配置文件"><a href="#修改虚拟机配置文件" class="headerlink" title="修改虚拟机配置文件"></a>修改虚拟机配置文件</h2><pre><code># virsh edit clone-1
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.39.png" alt="1.39"></p>
-<p>配置VNC的配置文件,port是指定端口号,autoport是自动分配端口号。</p>
-<h2 id="启动虚拟机并测试VNC"><a href="#启动虚拟机并测试VNC" class="headerlink" title="启动虚拟机并测试VNC"></a>启动虚拟机并测试VNC</h2><p>启动虚拟机</p>
-<pre><code># virsh start clone-1
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.40.png" alt="1.40"></p>
-<p>使用vnc工具登陆</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.41.png" alt="1.41"></p>
-<p>登陆成功</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.42.png" alt="1.42"></p>
-<hr>
-<h1 id="kvm虚拟机时间配置"><a href="#kvm虚拟机时间配置" class="headerlink" title="kvm虚拟机时间配置"></a>kvm虚拟机时间配置</h1><p>在虚拟化环境中，虚拟机在长时间运行过程中，时间会变慢，通常的作法是配置ntpdate定时与时间服务器进行时间同步的计划任务。KVM虚拟机默认采用utc时间，需要专门修改，以及考虑kvm时间同步问题。</p>
-<h2 id="kvm虚拟机修改时间配置文件"><a href="#kvm虚拟机修改时间配置文件" class="headerlink" title="kvm虚拟机修改时间配置文件"></a>kvm虚拟机修改时间配置文件</h2><p>kvm虚拟机采用utc时间，需要先修改配置文件使用KVM虚拟机的时间与虚拟主机同步。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.43.png" alt="1.43"></p>
-<p>修改utc为localtime，保存退出，重启虚拟机</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.44.png" alt="1.44"></p>
-<h2 id="关于kvm虚拟机时间问题解决思路"><a href="#关于kvm虚拟机时间问题解决思路" class="headerlink" title="关于kvm虚拟机时间问题解决思路"></a>关于kvm虚拟机时间问题解决思路</h2><p>(1)虚拟机时间慢是所有虚拟化平台的一共性问题。</p>
-<p>(2)解决时间的最终解决方法就是在生产环境中配置时间服务器，kvm虚拟化服务器与kvm机均都要配置时间同步的计划任务，这才是解决这一个问题最终解决方案。</p>
-<p>示例：如果能访问互联网，最简单了，需要kvm虚拟机与主机时间同步，但是运行一段时间会慢，一定要做时间同步，特别是对时间敏感的环境。   </p>
-<pre><code># crontab -e    
-01 */3 * * * /usr/sbin/ntpdate cn.pool.ntp.org &gt;&gt; /dev/null 2&gt;&amp;1
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;设置VNC&quot;&gt;&lt;a href=&quot;#设置VNC&quot; class=&quot;headerlink&quot; title=&quot;设置VNC&quot;&gt;&lt;/a&gt;设置VNC&lt;/h1&gt;&lt;p&gt;这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。&lt;/p&gt;
     
     </summary>
     
