@@ -113,11 +113,12 @@
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.31.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.32.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.33.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.35-1.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.34.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.35.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.36.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.37.png">
-<meta property="og:updated_time" content="2017-10-18T10:16:39.000Z">
+<meta property="og:updated_time" content="2017-10-20T00:35:27.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kvm学习笔记（二）-KVM基础学习">
 <meta name="twitter:description" content="kvm简绍KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的一个内核模块，该内核模块使得 Linux 变成了一个 Hypervisor：  它由 Quramnet 开发，该公司于 2008年被 Red Hat 收购。 它支持 x86 (32 and 64 位), s390, Powerpc 等 CPU。 它从 Linux 2.6.2">
@@ -432,7 +433,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,983
+                  2,065
                 </span>
               
 
@@ -702,6 +703,11 @@ virsh # snapshot-revert centos-7.2 kuaizhao #恢复快照
 
 <p>重启后进入虚拟机查看</p>
 <p><img src="http://oxysobnip.bkt.clouddn.com/1.33.png" alt="1.33"></p>
+<p>(3)直接扩展qcow2磁盘</p>
+<p>qcow2格式的好处就是支持直接扩展，下面我们关闭虚拟机直接对磁盘进行扩容</p>
+<pre><code># qemu-img resize clone-3.qcow2 +10G
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.35-1.png" alt="1.35-1"></p>
+<p>经过前后对比，磁盘大小已由20G扩展到30G,已扩展,qcow2磁盘格式必须采用此方式进行扩展!</p>
 <h2 id="kvm虚拟机的网络模式"><a href="#kvm虚拟机的网络模式" class="headerlink" title="kvm虚拟机的网络模式"></a>kvm虚拟机的网络模式</h2><p>(1)nat网络模式</p>
 <p><img src="http://oxysobnip.bkt.clouddn.com/1.34.png" alt="1.34"></p>
 <p>(2)桥接模式</p>
@@ -911,7 +917,7 @@ virsh # net-start default
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-count">22</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

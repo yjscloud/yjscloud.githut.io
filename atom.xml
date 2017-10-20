@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-10-20T00:02:48.000Z</updated>
+  <updated>2017-10-20T02:15:59.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -16,14 +16,252 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>kvm学习笔记（四）-kvm快照备份</title>
-    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-kvm%E5%BF%AB%E7%85%A7%E5%A4%87%E4%BB%BD/"/>
-    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（四）-kvm快照备份/</id>
+    <title>kvm学习笔记（七）-kvm虚拟机动态迁移</title>
+    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%83%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8A%A8%E6%80%81%E8%BF%81%E7%A7%BB/"/>
+    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（七）-kvm虚拟机动态迁移/</id>
+    <published>2017-10-20T01:49:46.000Z</published>
+    <updated>2017-10-20T02:15:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="什么叫动态迁移？"><a href="#什么叫动态迁移？" class="headerlink" title="什么叫动态迁移？"></a>什么叫动态迁移？</h1><p>动态迁移（Live Migration）：也叫在线迁移（Online Migration）。就是在保证虚拟机上服务正常运行的同时，将一个虚拟机系统从一个物理主机移动到另一个物理主机的过程。该过程不会对最终用户造成明 显的影响，从而使得管理员能够在不影响用户正常使用的情况下，对物理服务器进行离线维修或者升级。与静态迁移不同的是，为了保证迁移过程中虚拟机服务的可用，迁移过程仅有非常短暂的停机时间。迁移的前面阶段，服务在源主机的虚拟机上运行，当迁移进行到一定阶段，目的主机已经具备了运行虚拟机系统的必须资源，经过一个非常短暂的切换，源主机将控制权转移到目的主机，虚拟机系统在目的主机上继续运行。对于虚拟机服务本身而言，由于切换的时间非常短暂，用户感 觉不到服务的中断，因而迁移过程对用户是透明的。动态迁移适用于对虚拟机服务可用性要求很高的场合。</p>
+<a id="more"></a>
+<p>动态迁移需要将原有的虚拟机镜像放在采用 SAN（storage area network）或 NAS（network-attached storage）之类的集中式共享外存设备,这样迁移的时候,不是迁移整个硬盘镜象,而是迁移内存的信息.所以迁移起来,速度比较快,停顿时间少。</p>
+<p>动态迁移实际上是把虚拟机的配置封装在一个文件中，然后通过高速网络，把虚拟机配置和内存运行状态从一台物理机迅速传送到另外一台物理机上，期间虚拟机一直保持运行状态。现有技术条件下，大多虚拟机软件如 VMware、Hyper-V、Xen 进行动态迁移都需要共享存储的支持。典型的共享存储包括 NFS 和 SMB/CIFS 协议的网络文件系统，或者通过 iSCSI 连接到 SAN 网络。选用哪一种网络文件系统，需要根据具体情况而定，本文使用NFS 共享存储！</p>
+<p>虚拟化平台架构</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.83.png" alt="1.83"></p>
+<h1 id="虚拟化环境介绍"><a href="#虚拟化环境介绍" class="headerlink" title="虚拟化环境介绍"></a>虚拟化环境介绍</h1><p>（1）kvm虚拟化服务器节点：kvm-1</p>
+<p>   操作系统：CentOS7.2</p>
+<p>   kvm虚拟化：自带版本</p>
+<p>   Ip地址：192.168.0.40    </p>
+<p>   nfs挂载目录：/mnt</p>
+<hr>
+<p>(2）kvm虚拟化服务器节点kvm-2</p>
+<p>   操作系统：CentOS7.2</p>
+<p>   kvm虚拟化：自带版本</p>
+<p>  ip地址：192.168.0.15    </p>
+<p>  nfs挂载目录：/mnt</p>
+<p>  测试虚拟机：share</p>
+<p>  虚拟机磁盘文件：/mnt/kvm/share.qcow2</p>
+<hr>
+<p>（3）nfs服务器</p>
+<p>   操作系统：CentOS7.2</p>
+<p>   ip地址：192.168.0.12</p>
+<p>   nfs服务目录：/home/image</p>
+<h1 id="三台虚拟机都关闭SElinux和防火墙"><a href="#三台虚拟机都关闭SElinux和防火墙" class="headerlink" title="三台虚拟机都关闭SElinux和防火墙"></a>三台虚拟机都关闭SElinux和防火墙</h1><pre><code># systemctl stop firewalld
+# systemctl disable firewalld
+# vim /etc/selinux/config
+    将enforcing改为disabled
+</code></pre><h1 id="共享存储的配置"><a href="#共享存储的配置" class="headerlink" title="共享存储的配置"></a>共享存储的配置</h1><p>（1）)NFS共享存储虚拟机安装NFS服务</p>
+<pre><code># yum –y install nfs-utils
+</code></pre><p>（2）创建并加载挂载目录</p>
+<pre><code># mkdir /home/image
+# vim /etc/exports
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.84.png" alt="1.84"></p>
+<p>（3）查看是否共享目录,并重启nfs服务</p>
+<pre>
+# exportfs -av
+# systemctl enable rpcbind.service
+# systemctl enable nfs-server.service
+# systemctl start rpcbind.service
+# systemctl start nfs-server.service
+# showmount –e
+</pre>
+
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.85.png" alt="1.85"></p>
+<p>（4）先确保两台宿主机的虚拟机全部呈关闭状态，目的是将之前的磁盘镜像目录移动到/mnt 外的其他位置，好将NFS 目录挂载到 /mnt 目录下：</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.86.png" alt="1.86"><br><img src="http://oxysobnip.bkt.clouddn.com/1.87.png" alt="1.87"></p>
+<p>(5)将kvm-2和kvm-2的虚拟机磁盘镜像目录移动到 /mnt 目录以外的地方：</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.88.png" alt="1.88"><br><img src="http://oxysobnip.bkt.clouddn.com/1.89.png" alt="1.89"></p>
+<h1 id="kvm虚拟主机配置准备"><a href="#kvm虚拟主机配置准备" class="headerlink" title="kvm虚拟主机配置准备"></a>kvm虚拟主机配置准备</h1><p>(1)节点1挂载nfs目录</p>
+<pre><code># mount -t nfs 192.168.0.12:/home/image /mnt/
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.90.png" alt="1.90"></p>
+<p>(2)节点2挂载nfs目录</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.91.png" alt="1.91"></p>
+<p>(3)将kvm-2的虚拟机磁盘镜像目录移回到NFS，因为kvm-1的虚拟机之前是静态迁移过来的，kvm-2上也有一份，所以就不移回了(如果kvm-1上有不同于kvm-2上的虚拟机，则也要移回)</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.92.png" alt="1.92"></p>
+<h1 id="kvm虚拟机迁移"><a href="#kvm虚拟机迁移" class="headerlink" title="kvm虚拟机迁移"></a>kvm虚拟机迁移</h1><p>(1)kvm-2虚拟机状态，share虚拟机开机状态</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.93.png" alt="1.93"></p>
+<p>(2) kvm-1虚拟机状态，无虚拟机运行</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.94.png" alt="1.94"></p>
+<p>(3)kvm-2上执行迁移命令</p>
+<pre><code># virsh migrate --live --verbose share  qemu+ssh://192.168.0.40/system tcp://192.168.0.40 --unsafe
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.95.png" alt="1.95"></p>
+<p>(4) 为了在验证过程中，虚拟主机不中断，我们开启ping 虚拟主机，没有出现超时状态，迁移成功。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.96.png" alt="1.96"></p>
+<p>（5）迁移完成，验证kvm-2上的share呈关闭状态</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.97.png" alt="1.97"></p>
+<p>kvm-1上,可以看到虚拟机share已经启动了。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.98.png" alt="1.98"></p>
+<p>(6) 虽然share虚拟机已经在kvm-1上启动了，但是虚拟主机上还没有share虚拟机的配置文件。所以需要创建配置文件并定义虚拟机。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.99.png" alt="1.99"></p>
+<p>Kvm-1上,通过迁移过来的虚拟机内存状态创建虚拟机配置文件，并通过xml配置文件定义虚拟机。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.100.png" alt="1.100"></p>
+<p>在kvm-1上进入虚拟机没有问题。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.101.png" alt="1.101"></p>
+<p>到此，kvm虚拟机动态迁移成功。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;什么叫动态迁移？&quot;&gt;&lt;a href=&quot;#什么叫动态迁移？&quot; class=&quot;headerlink&quot; title=&quot;什么叫动态迁移？&quot;&gt;&lt;/a&gt;什么叫动态迁移？&lt;/h1&gt;&lt;p&gt;动态迁移（Live Migration）：也叫在线迁移（Online Migration）。就是在保证虚拟机上服务正常运行的同时，将一个虚拟机系统从一个物理主机移动到另一个物理主机的过程。该过程不会对最终用户造成明 显的影响，从而使得管理员能够在不影响用户正常使用的情况下，对物理服务器进行离线维修或者升级。与静态迁移不同的是，为了保证迁移过程中虚拟机服务的可用，迁移过程仅有非常短暂的停机时间。迁移的前面阶段，服务在源主机的虚拟机上运行，当迁移进行到一定阶段，目的主机已经具备了运行虚拟机系统的必须资源，经过一个非常短暂的切换，源主机将控制权转移到目的主机，虚拟机系统在目的主机上继续运行。对于虚拟机服务本身而言，由于切换的时间非常短暂，用户感 觉不到服务的中断，因而迁移过程对用户是透明的。动态迁移适用于对虚拟机服务可用性要求很高的场合。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="KVM" scheme="http://yjscloud.com/tags/KVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>kvm学习笔记（六）-kvm虚拟机静态迁移</title>
+    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%9D%99%E6%80%81%E8%BF%81%E7%A7%BB/"/>
+    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（六）-kvm虚拟机静态迁移/</id>
+    <published>2017-10-20T01:28:43.000Z</published>
+    <updated>2017-10-20T02:16:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="什么是静态迁移？"><a href="#什么是静态迁移？" class="headerlink" title="什么是静态迁移？"></a>什么是静态迁移？</h1><p>静态迁移：也叫做常规迁移、离线迁移（Offline Migration）。就是在虚拟机关机或暂停的情况下从一台物理机迁移到另一台物理机。因为虚拟机的文件系统建立在虚拟机镜像上面，所以在虚拟机关机的 情况下，只需要简单的迁移虚拟机镜像和相应的配置文件到另外一台物理主机上；如果需要保存虚拟机迁移之前的状态，在迁移之前将虚拟机暂停，然后拷贝状态至目的主机，最后在目的主机重建虚拟机状态，恢复执行。这种方式的迁移过程需要显式的停止虚拟机的运行。从用户角度看，有明确的一段停机时间，虚拟机上的服务不可用。这种迁移方式简单易行，适用于对服务可用性要求不严格的场合。</p>
+<a id="more"></a>
+<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>(1)虚拟主机各自使用本地存储存放虚拟机磁盘文件</p>
+<p>本文实现基于本地磁盘存储虚拟机磁盘文件的迁移方式</p>
+<p>(2)虚拟主机之间使用共享存储存放虚拟机磁盘文件</p>
+<p>该方式只是在目标虚拟主机上重新定义虚拟机就可以了</p>
+<h1 id="静态迁移过程"><a href="#静态迁移过程" class="headerlink" title="静态迁移过程"></a>静态迁移过程</h1><p>(1)确定虚拟机关闭状态</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.70.png" alt="1.70"></p>
+<p>(2)准备迁移clone-3虚拟机，查看该虚拟机配置的磁盘文件</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.71.png" alt="1.71"></p>
+<p>(3)导入虚拟机配置文件</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.72.png" alt="1.72"></p>
+<p>(4)拷贝配置文件到目标虚拟主机上</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.73.png" alt="1.73"></p>
+<p>拷贝虚拟磁盘文件</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.74.png" alt="1.74"></p>
+<h1 id="目标虚拟主机"><a href="#目标虚拟主机" class="headerlink" title="目标虚拟主机"></a>目标虚拟主机</h1><p>上面已经将虚拟机磁盘文件与配置文件都已经复制到目标虚拟主机上了。下面开始配置与启动。</p>
+<p>(1)    查看目标虚拟主机环境</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.75.png" alt="1.75"></p>
+<p>如果上面没有显示虚拟主机，就需要对虚拟主机进行注册</p>
+<pre><code># virsh define /etc/libvirt/qemu/clone-3.xml
+</code></pre><p>查看虚拟机磁盘文件，目录结构与源虚拟主机一致。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.76.png" alt="1.76"></p>
+<p>(2)启动虚拟主机并确认</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.77.png" alt="1.77"></p>
+<p>成功连接</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.78.png" alt="1.78"></p>
+<p>至此虚拟机静态迁移完成。</p>
+<h1 id="kvm的那些坑"><a href="#kvm的那些坑" class="headerlink" title="kvm的那些坑"></a>kvm的那些坑</h1><p>（1）如果您遇到如下报错您可以这样处理</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.79.png" alt="1.79"></p>
+<p>查看包版本：</p>
+<pre><code># yum info device-mapper-libs         
+</code></pre><p>更新软件包：</p>
+<pre><code># yum update device-mapper-libs  
+</code></pre><p>然后运行如下命令</p>
+<pre>
+# sed -i 's/#listen_tls = 0/listen_tls = 0/g' /etc/libvirt/libvirtd.conf
+# sed -i 's/#listen_tcp = 1/listen_tcp = 1/g' /etc/libvirt/libvirtd.conf
+# sed -i 's/#auth_tcp = "sasl"/auth_tcp = "none"/g' /etc/libvirt/libvirtd.conf
+# sed -i 's/#LIBVIRTD_ARGS="--listen"/LIBVIRTD_ARGS="--listen"/g' /etc/sysconfig/libvirtd
+# systemctl restart libvirtd
+</pre>
+
+<p>（2）如果您把您的虚拟机静态迁移到不同平台（不同型号的cpu）的主机上报了如下错误</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.80.png" alt="1.80"></p>
+<p>您可以根据提示修改您的虚拟机配置文件</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.81.png" alt="1.81"></p>
+<p>Broadwell是原cpu类型，这里根据报错信息将其修改为Broadwell-noTSX</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.82.png" alt="1.82"></p>
+<p>修改后即可启动虚拟机了！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;什么是静态迁移？&quot;&gt;&lt;a href=&quot;#什么是静态迁移？&quot; class=&quot;headerlink&quot; title=&quot;什么是静态迁移？&quot;&gt;&lt;/a&gt;什么是静态迁移？&lt;/h1&gt;&lt;p&gt;静态迁移：也叫做常规迁移、离线迁移（Offline Migration）。就是在虚拟机关机或暂停的情况下从一台物理机迁移到另一台物理机。因为虚拟机的文件系统建立在虚拟机镜像上面，所以在虚拟机关机的 情况下，只需要简单的迁移虚拟机镜像和相应的配置文件到另外一台物理主机上；如果需要保存虚拟机迁移之前的状态，在迁移之前将虚拟机暂停，然后拷贝状态至目的主机，最后在目的主机重建虚拟机状态，恢复执行。这种方式的迁移过程需要显式的停止虚拟机的运行。从用户角度看，有明确的一段停机时间，虚拟机上的服务不可用。这种迁移方式简单易行，适用于对服务可用性要求不严格的场合。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="KVM" scheme="http://yjscloud.com/tags/KVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>kvm学习笔记（五）-kvm虚拟机在线扩展磁盘</title>
+    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%9C%A8%E7%BA%BF%E6%89%A9%E5%B1%95%E7%A3%81%E7%9B%98/"/>
+    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（五）-kvm虚拟机在线扩展磁盘/</id>
+    <published>2017-10-20T01:08:07.000Z</published>
+    <updated>2017-10-20T02:17:03.000Z</updated>
+    
+    <content type="html"><![CDATA[<p> kvm虚拟机也支持在线扩展磁盘功能,在线扩展有特定的使用环境，主要用于不能随便停用的生产环境中。经过测试KVM在线扩展磁盘功能只适用于RHEL/CentOS/OEL6.x环境,5.x不支持在线的扩展磁盘。</p>
+<p>本次次测试使用centos7.3的虚拟机</p>
+<p>给clone-2虚拟机在线添加磁盘</p>
+<a id="more"></a>
+<h1 id="查看现有磁盘"><a href="#查看现有磁盘" class="headerlink" title="查看现有磁盘"></a>查看现有磁盘</h1><pre><code># virsh start clone-2
+# virsh list –all 
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.60.png" alt="1.60"></p>
+<h1 id="创建一块qcow2虚拟磁盘"><a href="#创建一块qcow2虚拟磁盘" class="headerlink" title="创建一块qcow2虚拟磁盘"></a>创建一块qcow2虚拟磁盘</h1><pre><code># qemu-img create -f qcow2 add01.qcow2 10G
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.61.png" alt="1.61"></p>
+<h1 id="在线添加这台qcow2虚拟磁盘"><a href="#在线添加这台qcow2虚拟磁盘" class="headerlink" title="在线添加这台qcow2虚拟磁盘"></a>在线添加这台qcow2虚拟磁盘</h1><pre><code># virsh attach-disk clone-2 /mnt/kvm/add01.qcow2 vdb --cache=none --subdriver=qcow2
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.62.png" alt="1.62"></p>
+<h1 id="进入clone-2虚拟机查看添加磁盘情况"><a href="#进入clone-2虚拟机查看添加磁盘情况" class="headerlink" title="进入clone-2虚拟机查看添加磁盘情况"></a>进入clone-2虚拟机查看添加磁盘情况</h1><p>这里我通过vnc远程登录clone-2即可看见刚才添加到虚拟机的磁盘了</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.63.png" alt="1.63"></p>
+<p>可以看见有两个scsi存储设备</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.64.png" alt="1.64"></p>
+<blockquote>
+<p>注：再次说明只有RHEL/CentOS/OEL6.x版本在线添加磁盘，虚拟机直接可以在线识别。</p>
+</blockquote>
+<h1 id="修改虚拟机配置文件添加新增磁盘配置"><a href="#修改虚拟机配置文件添加新增磁盘配置" class="headerlink" title="修改虚拟机配置文件添加新增磁盘配置"></a>修改虚拟机配置文件添加新增磁盘配置</h1><p>1)查看当前虚拟机配置文件<br>这里查看到的虚拟机配置文件是内存中存放的配置，重启后会消失，需要将新添的磁盘配置保存到配置文件中。</p>
+<pre><code># virsh dumpxml clone-2
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.65.png" alt="1.65"></p>
+<p>2)保存新增磁盘配置</p>
+<pre><code># virsh edit clone-2
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.66.png" alt="1.66"></p>
+<h1 id="将新增磁盘并入虚拟机逻辑卷中"><a href="#将新增磁盘并入虚拟机逻辑卷中" class="headerlink" title="将新增磁盘并入虚拟机逻辑卷中"></a>将新增磁盘并入虚拟机逻辑卷中</h1><p>(1) 分区过程如下</p>
+<pre><code># fdisk /dev/vdb
+# partprobe
+</code></pre><p>(2) 创建逻辑卷过程如下</p>
+<pre>
+# pvcreate  /dev/vdb
+# vgextend cl_kvm-1 /dev/vdb
+# lvextend –l +100%FREE /dev/cl_kvm-1/root
+# xfs_growfs /dev/cl_kvm-1/root
+</pre>
+
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.67.png" alt="1.67"><br><img src="http://oxysobnip.bkt.clouddn.com/1.68.png" alt="1.68"><br><img src="http://oxysobnip.bkt.clouddn.com/1.69.png" alt="1.69"></p>
+<p>至此clone-2虚拟机在线添加磁盘并在线扩展磁盘成功。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt; kvm虚拟机也支持在线扩展磁盘功能,在线扩展有特定的使用环境，主要用于不能随便停用的生产环境中。经过测试KVM在线扩展磁盘功能只适用于RHEL/CentOS/OEL6.x环境,5.x不支持在线的扩展磁盘。&lt;/p&gt;
+&lt;p&gt;本次次测试使用centos7.3的虚拟机&lt;/p&gt;
+&lt;p&gt;给clone-2虚拟机在线添加磁盘&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="KVM" scheme="http://yjscloud.com/tags/KVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>kvm学习笔记（四）-kvm虚拟机快照备份</title>
+    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%BF%AB%E7%85%A7%E5%A4%87%E4%BB%BD/"/>
+    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（四）-kvm虚拟机快照备份/</id>
     <published>2017-10-19T23:42:15.000Z</published>
-    <updated>2017-10-20T00:02:48.000Z</updated>
+    <updated>2017-10-20T02:17:33.000Z</updated>
     
     <content type="html"><![CDATA[<p>kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅<a href="http://www.cnblogs.com/zhangzhang/archive/2012/02/13/2348928.html" target="_blank" rel="external">KMV下磁盘模式raw和qcow2的性能比较</a></p>
 <p>下面开始kvm虚拟机快照备份的过程</p>
+<a id="more"></a>
 <h1 id="查看现有磁盘镜像格式与转换"><a href="#查看现有磁盘镜像格式与转换" class="headerlink" title="查看现有磁盘镜像格式与转换"></a>查看现有磁盘镜像格式与转换</h1><p>(1) 查看磁盘格式</p>
 <pre><code># qemu-img info test01.img
 </code></pre><p>raw格式需要转换成qcow2</p>
@@ -69,7 +307,8 @@
     
     <summary type="html">
     
-      &lt;p&gt;kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅&lt;a href=&quot;http://www.cn
+      &lt;p&gt;kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅&lt;a href=&quot;http://www.cnblogs.com/zhangzhang/archive/2012/02/13/2348928.html&quot;&gt;KMV下磁盘模式raw和qcow2的性能比较&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;下面开始kvm虚拟机快照备份的过程&lt;/p&gt;
     
     </summary>
     
@@ -138,7 +377,7 @@
     <link href="http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-KVM%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/"/>
     <id>http://yjscloud.com/2017/10/18/kvm学习笔记（二）-KVM基础学习/</id>
     <published>2017-10-17T20:06:18.000Z</published>
-    <updated>2017-10-18T10:16:39.000Z</updated>
+    <updated>2017-10-20T00:35:27.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="kvm简绍"><a href="#kvm简绍" class="headerlink" title="kvm简绍"></a>kvm简绍</h1><p>KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的一个内核模块，该内核模块使得 Linux 变成了一个 Hypervisor：</p>
 <ul>
@@ -376,6 +615,11 @@ virsh # snapshot-revert centos-7.2 kuaizhao #恢复快照
 
 <p>重启后进入虚拟机查看</p>
 <p><img src="http://oxysobnip.bkt.clouddn.com/1.33.png" alt="1.33"></p>
+<p>(3)直接扩展qcow2磁盘</p>
+<p>qcow2格式的好处就是支持直接扩展，下面我们关闭虚拟机直接对磁盘进行扩容</p>
+<pre><code># qemu-img resize clone-3.qcow2 +10G
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.35-1.png" alt="1.35-1"></p>
+<p>经过前后对比，磁盘大小已由20G扩展到30G,已扩展,qcow2磁盘格式必须采用此方式进行扩展!</p>
 <h2 id="kvm虚拟机的网络模式"><a href="#kvm虚拟机的网络模式" class="headerlink" title="kvm虚拟机的网络模式"></a>kvm虚拟机的网络模式</h2><p>(1)nat网络模式</p>
 <p><img src="http://oxysobnip.bkt.clouddn.com/1.34.png" alt="1.34"></p>
 <p>(2)桥接模式</p>
@@ -2715,349 +2959,6 @@ fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。�
     
       &lt;h1 id=&quot;工作区和暂存区&quot;&gt;&lt;a href=&quot;#工作区和暂存区&quot; class=&quot;headerlink&quot; title=&quot;工作区和暂存区&quot;&gt;&lt;/a&gt;工作区和暂存区&lt;/h1&gt;&lt;p&gt;我们在testgit文件夹下创建一个文件test_02.txt&lt;/p&gt;
 &lt;figure class=
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Git学习" scheme="http://yjscloud.com/tags/Git%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如何在redhat 7上安装VNC服务器</title>
-    <link href="http://yjscloud.com/2017/04/25/%E5%A6%82%E4%BD%95%E5%9C%A8redhat-7%E4%B8%8A%E5%AE%89%E8%A3%85VNC%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
-    <id>http://yjscloud.com/2017/04/25/如何在redhat-7上安装VNC服务器/</id>
-    <published>2017-04-25T00:05:55.000Z</published>
-    <updated>2017-05-02T03:46:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器</p>
-<a id="more"></a>
-<h1 id="安装VNC-Server：yum-y-install-vnc-server"><a href="#安装VNC-Server：yum-y-install-vnc-server" class="headerlink" title="安装VNC Server：yum -y install vnc-server"></a>安装VNC Server：yum -y install vnc-server</h1><p><img src="http://oovxjr0mr.bkt.clouddn.com/vnc%E9%85%8D%E7%BD%AE%EF%BC%881%EF%BC%89.png" alt=""></p>
-<h1 id="复制vnc-server的配置模板："><a href="#复制vnc-server的配置模板：" class="headerlink" title="复制vnc server的配置模板："></a>复制vnc server的配置模板：</h1><p>参考命令：cp  vncserver@.service   vncserver@:1.service</p>
-<pre><code>[root@xwq ~]# cd /lib/systemd/system
-[root@xwq system]# cp  vncserver@.service   vncserver@:1.service
-</code></pre><p> 注：VNC 服务本身使用的是5900端口。鉴于有不同的用户使用 VNC ，每个人的连接都会获得不同的端口。配置文件名里面的数字告诉 VNC 服务器把服务运行在5900的子端口上。在我们这个例子里，第一个 VNC 服务会运行在5901（5900 + 1）端口上，之后的依次增加，运行在5900 + x 号端口上。其中 x 是指之后用户的配置文件名 vncserver@:x.service 里面的 x 。<br>如果要用更多的用户连接，需要创建配置文件和端口，添加一个新的用户和端口。你需要创建 vncserver@:2.service 并替换配置文件里的用户名和之后步骤里相应的文件名、端口号。请确保你登录 VNC 服务器用的是你之前配置 VNC 密码的时候使用的那个用户名。</p>
-<h1 id="编辑配置模板："><a href="#编辑配置模板：" class="headerlink" title="编辑配置模板："></a>编辑配置模板：</h1><p>参考命令:vim vncserver@:1.service</p>
-<p>把root用户加入登陆用户中，以及修改登陆后的vnc分辨率</p>
-<p>修改前：</p>
-<pre><code>[Unit]
-Description=Remote desktop service (VNC)
-After=syslog.target network.target
-
-[Service]
-Type=forking
-# Clean any existing files in /tmp/.X11-unix environment
-ExecStartPre=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
-ExecStart=/usr/sbin/runuser -l &lt;USER&gt; -c &quot;/usr/bin/vncserver %i&quot;
-PIDFile=/home/&lt;USER&gt;/.vnc/%H%i.pid
-ExecStop=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
-
-[Install]
-WantedBy=multi-user.target
-</code></pre><p>修改后：</p>
-<pre><code>[Unit]
-Description=Remote desktop service (VNC)
-After=syslog.target network.target
-
-[Service]
-Type=forking
-# Clean any existing files in /tmp/.X11-unix environment
-ExecStartPre=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
-ExecStart=/usr/sbin/runuser -l root -c &quot;/usr/bin/vncserver %i -geometry 1376x730&quot;
-PIDFile=/home/root/.vnc/%H%i.pid
-ExecStop=/bin/sh -c &apos;/usr/bin/vncserver -kill %i &gt; /dev/null 2&gt;&amp;1 || :&apos;
-
-[Install]
-WantedBy=multi-user.target
-</code></pre><h1 id="配置VNC远程用户"><a href="#配置VNC远程用户" class="headerlink" title="配置VNC远程用户"></a>配置VNC远程用户</h1><p>（1）重新载入 systemd，扫描新的或有变动的单元：systemctl daemon-reload</p>
-<pre><code>[root@xwq system]# systemctl daemon-reload
-</code></pre><p>（2）为登陆的root用户添加一个密码</p>
-<pre><code>[root@xwq system]# vncpasswd root
-
-Password:输入你的密码
-
-Verify:再次输入你的密码
-</code></pre><p>（3）启动vnc桌面</p>
-<pre><code>[root@xwq system]# vncserver :1
-
-You will require a password to access your desktops.
-
-Password:输入你的密码
-
-Verify:再次输入你的密码
-
-xauth:  file /root/.Xauthority does not exist
-
-xauth: (stdin):1:  bad display name &quot;xwq:1&quot; in &quot;add&quot; command
-
-New &apos;xwq:1 (root)&apos; desktop is xwq:1
-
-Creating default startup script /root/.vnc/xstartup
-
-Starting applications specified in /root/.vnc/xstartup
-
-Log file is /root/.vnc/xwq:1.log
-</code></pre><p>（4）用下面的命令（永久的）开启服务</p>
-<pre><code>[root@xwq system]# systemctl enable vncserver@:1.service
-</code></pre><p>如果输入systemctl enable vncserver@:1.service命令输出了如下代码，</p>
-<pre><code>[root@xwq system]# systemctl enable vncserver@:1.service
-
-ln -s &apos;/usr/lib/systemd/system/vncserver@:1.service&apos; &apos;/etc/systemd/system/multi-user.target.wants/vncserver@:1.service&apos;
-</code></pre><p>  请在终端输入这行命令：echo “127.0.0.1 xwq”&gt; /etc/hosts</p>
-<p>  （5）输入以下命令配置防火墙规则：</p>
-<pre><code>[root@xwq ~]# firewall-cmd --permanent --zone=public --add-port=5901/tcp
-
-success
-
-[root@xwq ~]# firewall-cmd --reload
-
-success
-</code></pre><h1 id="访问redhat"><a href="#访问redhat" class="headerlink" title="访问redhat"></a>访问redhat</h1><p>使用windows端安装vnc viewer访问redhat，可以成功访问。<br><img src="http://oovxjr0mr.bkt.clouddn.com/VNC%E9%85%8D%E7%BD%AE%EF%BC%882%EF%BC%89.png" alt=""></p>
-<h1 id="其他命令"><a href="#其他命令" class="headerlink" title="其他命令"></a>其他命令</h1><p>关闭vnc服务：systemctl stop vncserver@:1.service</p>
-<p>禁止 VNC 服务开机启动：systemctl disable vncserver@:1.service</p>
-<p>关闭防火墙：systemctl stop firewalld.service</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;平时我们基本上都是用xshell或者用putty远程我们的linux服务器，如果我们的linux服务器安装了图型化界面那我们又该如何远程使用我们的图形化界面呢？下面我们用vnc来实现远程我们的linux服务器&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git学习笔记（1）</title>
-    <link href="http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    <id>http://yjscloud.com/2017/04/25/Git学习笔记/</id>
-    <published>2017-04-24T23:15:57.000Z</published>
-    <updated>2017-05-02T03:41:31.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Git是什么？</p>
-<p>Git是目前世界上最先进的分布式版本控制系统（没有之一）。</p>
-<p>Git有什么特点？简单来说就是：高端大气上档次！</p>
-<p>Git是所有程序最爱的分布式控制系统！</p>
-<p>Git有是世界上最活跃的开源社区！</p>
-<p>Git上有这无数的开源项目！</p>
-<a id="more"></a>
-<h1 id="安装Git"><a href="#安装Git" class="headerlink" title="安装Git:"></a>安装Git:</h1><p>在linux下安装：yum install git</p>
-<p>其他系统安装在这里略去~~~</p>
-<p>安装完成后，需要设置一下，在命令行输入以下命令：</p>
-<pre><code>[root@xwq ~]# git config --global user.name &quot;your name&quot;
-
-[root@xwq ~]# git config --global user.email &quot;your email&quot;
-</code></pre><p>注意git config命令的–global参数，用了这个参数，表示你这台机器上所有的Git仓库都会使用这个配置，当然也可以对某个仓库指定不同的用户名和Email地址。</p>
-<h1 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h1><p>创建版本库很简单，找到一个合适的地方，创建一个空目录：</p>
-<pre><code>[root@xwq ~]# mkdir testgit
-
-[root@xwq ~]# cd testgit/
-
-[root@xwq testgit]# pwd
-
-/root/testgit
-</code></pre><p>如果你是在window下运行git，请确保文件路径没有中文！</p>
-<p>通过git init命令把这个目录变成Git可以管理的仓库：</p>
-<pre><code>[root@xwq testgit]# git init
-
-Initialized empty Git repository in /root/testgit/.git/
-</code></pre><p>接着我们在仓库目录下创建一个txt文件：test_01.txt</p>
-<pre><code>[root@xwq testgit]# vim test_01.txt
-</code></pre><p>在里面输入以下内容：</p>
-<p>Git is a version control system.</p>
-<p>Git is free software.</p>
-<p>用命令git add告诉Git，把文件添加到仓库：<br>[root@xwq testgit]# git add test_01.txt<br>执行上面的命令，没有任何显示，这就对了，Unix的哲学是“没有消息就是好消息”，说明添加成功。</p>
-<p>用命令git commit告诉Git，把文件提交到仓库：</p>
-<pre><code>[root@xwq testgit]# git commit -m &quot;wrote a readme file&quot;
-
-[master (root-commit) 7347c20] wrote a readme file
-
-1 file changed, 2 insertions(+)
-
-create mode 100644 test_01.txt
-</code></pre><p>简单解释一下git commit命令，-m后面输入的是本次提交的说明，可以输入任意内容，当然最好是有意义的，这样你就能从历史记录里方便地找到改动记录。<br>嫌麻烦不想输入-m “xxx”行不行？确实有办法可以这么干，但是强烈不建议你这么干，因为输入说明对自己对别人阅读都很重要。<br>git commit命令执行成功后会告诉你，1个文件被改动（我们新添加的test_01.txt文件），插入了两行内容（test_01.txt有两行内容）</p>
-<h1 id="撤销命令"><a href="#撤销命令" class="headerlink" title="撤销命令"></a>撤销命令</h1><p>我们将test_01.txt文件的内容改为如下内容：</p>
-<p>Git is a distributed version control system.</p>
-<p>Git is free software.</p>
-<p>运行git status命令查看结果：</p>
-<pre><code>[root@xwq testgit]# git status
-
-#On branch master
-
-#Changes not staged for commit:
-
-#(use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
-
-#(use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
-
-
-
-  modified:   test_01.txt
-
-
-
-#no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
-</code></pre><p>git status命令可以让我们时刻掌握仓库当前的状态，上面的命令告诉我们，text_01.txt被修改过了，但还没有准备提交的修改。<br>虽然Git告诉我们test_01.txt被修改了，如果想查看被修改了什么内容可以用git diff命令查看：</p>
-<pre><code>[root@xwq testgit]# git diff test_01.txt
-
-diff --git a/test_01.txt b/test_01.txt
-
-index 46d49bf..9247db6 100644
-
---- a/test_01.txt
-
-+++ b/test_01.txt
-
-@@ -1,2 +1,2 @@
-
--Git is a version control system.
-
-+Git is a distributed version control system.
-
-Git is free software.
-</code></pre><p>我们知道被修改的内容后就可以放心的文件提交到仓库了，接下来我们用git add :</p>
-<pre><code>[root@xwq testgit]# git add test_01.txt
-</code></pre><p> 同样没有返回任何信息就是好结果</p>
-<p>我们在用git status查看当前仓库的状态：</p>
-<p>[root@xwq testgit]# git status</p>
-<pre><code># On branch master
-
-# Changes to be committed:
-
-#   (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
-
-#
-
-#    modified:   test_01.txt
-
-#
-</code></pre><p>git status 告诉我们将要被提交的修改包括test_01.txt，下一步，就可以放心地提交了：</p>
-<pre><code>[root@xwq testgit]# git commit -m &quot;add distributed&quot;
-
-[master 6c90823] add distributed
-
-1 file changed, 1 insertion(+), 1 deletion(-)
-</code></pre><h1 id="版本回退"><a href="#版本回退" class="headerlink" title="版本回退"></a>版本回退</h1><p>我们再次对test_01.txt文件进行修改，修改内容如下：</p>
-<p>Git is a distributed version control system.</p>
-<p>Git is free software distributed under the GPL.</p>
-<p>然后提交：</p>
-<pre><code>[root@xwq testgit]# git add test_01.txt
-
-[root@xwq testgit]# git commit -m &quot;append GPL&quot;
-
-[master ee985a6] append GPL
-
-1 file changed, 1 insertion(+), 1 deletion(-)
-</code></pre><p>Git每当你觉得文件修改到一定程度的时候，就可以“保存一个快照”，这个快照在Git中被称为commit。一旦你把文件改乱了，或者误删了文件，还可以从最近的一个commit恢复，然后继续工作，而不是把几个月的工作成果全部丢失。<br>现在，我们回顾一下test_01.txt文件一共有几个版本被提交到Git仓库里了：<br>版本1：wrote a readme file</p>
-<p>Git is a version control system.</p>
-<p>Git is free software.</p>
-<p>版本2：add distributed</p>
-<p>Git is a distributed version control system.</p>
-<p>Git is free software.</p>
-<p>版本3：append GPL</p>
-<p>Git is a distributed version control system.</p>
-<p>Git is free software distributed under the GPL.</p>
-<p>在实际工作中，我们脑子里怎么可能记得一个几千行的文件每次都改了什么内容，不然要版本控制系统干什么。版本控制系统肯定有某个命令可以告诉我们历史记录，在Git中，我们用git log命令查看：</p>
-<pre><code>[root@xwq testgit]# git log
-
-commit ee985a69fecf94482280769949290b240b7a0329
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 11:45:14 2017 -0400
-
-  append GPL
-
-commit 6c9082366df03ee9a47f2bcd18be0105fa1fae86
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 11:33:34 2017 -0400
-
-   add distributed
-
-commit 7347c2023929935a58f147168a50ce9bf51a2478
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 09:48:56 2017 -0400
-
-   wrote a readme file
-</code></pre><p>git log命令显示从最近到最远的提交日志，我们可以看到3次提交，最近的一次是append GPL，上一次是add distributed，最早的一次是wrote a readme file。</p>
-<p>如果嫌输出信息太多，看得眼花缭乱的，可以试试加上–pretty=oneline参数：</p>
-<pre><code>[root@xwq testgit]# git log --pretty=oneline
-
-ee985a69fecf94482280769949290b240b7a0329 append GPL
-
-6c9082366df03ee9a47f2bcd18be0105fa1fae86 add distributed
-
-7347c2023929935a58f147168a50ce9bf51a2478 wrote a readme file
-</code></pre><p>注：类似这些数据ee985a69fecf94482280769949290b240b7a0329的是commit id（版本号）<br>那么问题来了我们要如何回退版本呢？其实很简单，首先，Git必须知道当前版本是哪个版本，在Git中，用HEAD表示当前版本，也就是最新的提交ee985a69fecf94482280769949290b240b7a0329，上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。</p>
-<p>现在，我们要把当前版本“append GPL”回退到上一个版本“add distributed”，就可以使用git reset命令：</p>
-<pre><code>[root@xwq testgit]# git reset --hard HEAD^
-
-HEAD is now at 6c90823 add distributed
-</code></pre><p>现在我们查看一下test_01.txt的内容是不是add distributed:</p>
-<pre><code>[root@xwq testgit]# cat test_01.txt
-
-Git is a distributed version control system.
-
-Git is free software.
-
-[root@xwq testgit]# git log
-
-commit 6c9082366df03ee9a47f2bcd18be0105fa1fae86
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 11:33:34 2017 -0400
-
- add distributed
-
-commit 7347c2023929935a58f147168a50ce9bf51a2478
-
-Author: wenqiuan &lt;1303460512@qq.com&gt;
-
-Date:   Thu Apr 13 09:48:56 2017 -0400
-
- wrote a readme file
-</code></pre><p> 很显然我们已经回退到上一个版本了</p>
-<p>现在我又想回到最新版本的append GPL了怎么办？这个我们可以用git reflog命令就可以轻松的办到，命令git reflog用来记录你的每一次命令：</p>
-<pre><code>[root@xwq testgit]# git reflog
-
-6c90823 HEAD@{0}: reset: moving to HEAD^
-
-ee985a6 HEAD@{1}: commit: append GPL
-
-6c90823 HEAD@{2}: commit: add distributed
-
-7347c20 HEAD@{3}: commit (initial): wrote a readme file
-</code></pre><p>接下来我们只用输入命令 git reset –hard ee985a6(append GPL的id)就可以回到最新的版本了</p>
-<pre><code>[root@xwq testgit]# git reset --hard ee985a6
-
-HEAD is now at ee985a6 append GPL
-
-[root@xwq testgit]# cat test_01.txt
-
-Git is a distributed version control system.
-
-Git is free software distributed under the GPL.
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Git是什么？&lt;/p&gt;
-&lt;p&gt;Git是目前世界上最先进的分布式版本控制系统（没有之一）。&lt;/p&gt;
-&lt;p&gt;Git有什么特点？简单来说就是：高端大气上档次！&lt;/p&gt;
-&lt;p&gt;Git是所有程序最爱的分布式控制系统！&lt;/p&gt;
-&lt;p&gt;Git有是世界上最活跃的开源社区！&lt;/p&gt;
-&lt;p&gt;Git上有这无数的开源项目！&lt;/p&gt;
     
     </summary>
     
