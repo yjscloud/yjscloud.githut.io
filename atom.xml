@@ -200,11 +200,11 @@ esac
   </entry>
   
   <entry>
-    <title>kvm学习笔记（七）-kvm虚拟机存储池配置</title>
-    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%83%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%98%E5%82%A8%E6%B1%A0%E9%85%8D%E7%BD%AE/"/>
-    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（七）-kvm虚拟机存储池配置/</id>
+    <title>kvm学习笔记（八）-kvm虚拟机存储池配置</title>
+    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%98%E5%82%A8%E6%B1%A0%E9%85%8D%E7%BD%AE/"/>
+    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（八）-kvm虚拟机存储池配置/</id>
     <published>2017-10-20T04:56:21.000Z</published>
-    <updated>2017-10-26T05:19:44.000Z</updated>
+    <updated>2017-10-26T07:34:23.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="什么是存储池"><a href="#什么是存储池" class="headerlink" title="什么是存储池"></a>什么是存储池</h1><p>KVM平台以存储池的形式对存储进行统一管理，所谓存储池可以理解为本地目录、通过远端磁盘阵列（iSCSI、NFS）分配过来磁盘或目录，当然也支持各类分布式文件系统。通过virsh中pool命令能够查看、创建、激活、注册、删除存储池。</p>
 <p>注1:KVM存储池主要是体现一种管理方式，可以通过挂载存储目录，lvm逻辑卷的方式创建存储池，虚拟机存储卷创建完成后，剩下的操作与无存储卷的方式无任何区别了。</p>
