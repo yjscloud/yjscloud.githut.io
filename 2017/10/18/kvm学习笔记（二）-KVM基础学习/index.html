@@ -118,7 +118,7 @@
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.35.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.36.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.37.png">
-<meta property="og:updated_time" content="2017-10-20T00:35:27.000Z">
+<meta property="og:updated_time" content="2017-10-26T07:32:31.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kvm学习笔记（二）-KVM基础学习">
 <meta name="twitter:description" content="kvm简绍KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的一个内核模块，该内核模块使得 Linux 变成了一个 Hypervisor：  它由 Quramnet 开发，该公司于 2008年被 Red Hat 收购。 它支持 x86 (32 and 64 位), s390, Powerpc 等 CPU。 它从 Linux 2.6.2">
@@ -433,7 +433,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  2,065
+                  2,070
                 </span>
               
 
@@ -550,11 +550,11 @@ GATEWAY=172.31.129.254
 
 <h2 id="创建虚拟机硬盘"><a href="#创建虚拟机硬盘" class="headerlink" title="创建虚拟机硬盘"></a>创建虚拟机硬盘</h2><pre>
 # qemu-img create -f qcow2 /mnt/vm-test/iso/centos-7.2.qcow2 10G
-# chown qemu:qemu /image/centos.qcow2 -R
+# chown qemu:qemu /mnt/vm-test/iso/centos-7.2.qcow2 -R
 </pre>
 
 <h2 id="创建虚拟机"><a href="#创建虚拟机" class="headerlink" title="创建虚拟机"></a>创建虚拟机</h2><pre>
-[root@kvm kvm]# virt-install --virt-type kvm --name centos-7.2 --ram 512 \    # name 是自己取得
+[root@kvm iso]# virt-install --virt-type kvm --name centos-7.2 --ram 512 \    # name 是自己取得
 > --vcpus 1 \        #指定cpu核数
 > --cdrom=CentOS-7-x86_64-DVD-1511.iso \  #指定镜像
 > --disk centos-7.2.qcow2,format=qcow2 \    #disk参数为上面创建的磁盘
@@ -917,7 +917,7 @@ virsh # net-start default
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -939,7 +939,7 @@ virsh # net-start default
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

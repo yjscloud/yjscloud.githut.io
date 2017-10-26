@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-10-20T02:15:59.000Z</updated>
+  <updated>2017-10-26T07:29:36.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,245 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>LVS + Keepalived 实现高可用Web集群</title>
+    <link href="http://yjscloud.com/2017/10/26/LVS-Keepalived-%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8Web%E9%9B%86%E7%BE%A4/"/>
+    <id>http://yjscloud.com/2017/10/26/LVS-Keepalived-实现高可用Web集群/</id>
+    <published>2017-10-26T05:23:40.000Z</published>
+    <updated>2017-10-26T07:29:36.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="高可用性技术简介"><a href="#高可用性技术简介" class="headerlink" title="高可用性技术简介"></a>高可用性技术简介</h1><p>高可用性（HighAvailability）通常是用来描述一个系统经过专门的设计，从而减少停工的时间，而保持其服务的高可用性。计算机系统的可用性定义为：MTTF/(MTTF+MTTR) * 100%，因此计算机系统的可用性定义为系统保持正常运行时间的百分比。而负载均衡服务器的高可用性是为了屏蔽负载均衡服务器的失效，需要建立一个备份机。主服务器和备份机上都运行高可用性监控程序，通过传送信息来监控对方的运行状况。当备份机不能在一定的时间里接收到从主服务器那里发送的它存活着（即它从事着主服务器的工作）的时候，备份服务器就会从主服务器那里接管器主服务器的服务IP并继续提供服务。当主服务器又开始接管服务时，它会给备份服务器发送它接管的消息，接着备份服务器就会释放服务IP地址，这样子主服务器又再一次接管了服务IP。这就实现了在主服务器失效的状况下，备份服务器可以接管主服务的工作，以此实现负载集群系统配置信息的同步与备份了。</p>
+<a id="more"></a>
+<h1 id="LVS-负载均衡技术"><a href="#LVS-负载均衡技术" class="headerlink" title="LVS 负载均衡技术"></a>LVS 负载均衡技术</h1><p>LVS即 Linux Virtual Server，是由中国一个Linux程序员章文嵩博士发起和领导的，基于Linux系统的服务器集群解决方案，其实现目标是创建一个具有良好的扩展性、高可靠性、高性能和高可用性的体系。使用LVS架设的服务器集群系统从体系结构上看是透明的，最终用户只感觉到一个虚拟服务器。物理服务器之间可以通过高速的 LAN或分布在各地的WAN相连。最前端是负载均衡器，它负责将各种服务请求分发给后面的物理服务器，让整个集群表现得像一个服务于同一IP地址的虚拟服务器。负载均衡（Load Balance）建立在现有网络结构之上，它提供了一种廉价有效透明的方法扩展网络设备和服务器的带宽、增加吞吐量、加强网络数据处理能力、提高网络的灵活性和可用性。</p>
+<p>负载均衡可以通过软件实现也可以通过硬件实现，软件负载均衡解决方案是指在一台或多台服务器相应的操作系统上安装一个或多个附加软件来实现负载均衡，它的优点是基于特定环境，配置简单，使用灵活，成本低廉，可以满足一般的负载均衡需求。而硬件负载均衡解决方案是直接在服务器和外部网络间安装负载均衡设备，这种设备我们通常称之为负载均衡器，由于专门的设备完成专门的任务，独立于操作系统，整体性能得到大量提高，加上多样化的负载均衡策略，智能化的流量管理，可达到最佳的负载均衡需求。LVS负载均衡的实现基础是IP交换，将IP层的TCP/IP请求均匀的转移到服务器池中不同的服务器上。而在 Linux平台下 IP的交换具备了一定的可扩展性,可以实现高性能、高可扩展性、易管理性等诸多特点,成为一个以负载均衡为核心的真正意义的集群系统。</p>
+<p>LVS服务器集群采用IP负载均衡技术和基于内容请求分发技术。调度器具有很好的吞吐率，将请求均衡地转移到不同的服务器上执行，且调度器自动屏蔽掉服务器的故障，从而将一组服务器构成一个高性能的、高可用的虚拟服务器。整个服务器集群的结构对客户是透明的，而且无需修改客户端和服务器端的程序。负载调度器可以运行在以下三种模式下：</p>
+<p>（1）Virtual Server via NAT（VS-NAT）：用地址翻译实现虚拟服务器。地址转换器有能被外界访问到的合法IP地址，它修改来自专有网络的流出包的地址。外界看起来包是来自 地址转换器本身，当外界包送到转换器时，它能判断出应该将包送到内部网的哪个节点。优点是节省IP 地址，能对内部进行伪装；缺点是效率低，因为返回给请求方的流量经过转换器。</p>
+<p>（2）Virtual Server via IP Tunneling （VS-TUN）：用IP隧道技术实现虚拟服务器。这种方式是在集群的节点不在同一个网段时可用的转发机制，是将IP包封装在其他网络流量中的方法。为了 安全的考虑，应该使用隧道技术中的VPN，也可使用租用专线。 集群所能提供的服务是基于TCP/IP的Web服务、Mail服务、News服务、DNS服务、Proxy服务器等。</p>
+<p>（3）Virtual Server via Direct Routing（VS-DR）：用直接路由技术实现虚拟服务器。当参与集群的计算机和作为控制管理的计算机在同一个网段时可以用此法，控制管理的计算机接 收到请求包时直接送到参与集群的节点。优点是返回给客户的流量不经过控制主机，速度快开销少。<br>LVS本身是基于IP层的负载均衡，可以说是最高效的一种方式。其中VS- DR和VS-TUN两种工作模式可以由后端机器直接对外服务，负载均衡的性能很高，对资源占用很少，通过LVS服务器集群负载均衡技术，能够以很高的性价比解决网络访问量激增带来的服务器瓶颈问题。</p>
+<h1 id="KEEPALIVED-技术"><a href="#KEEPALIVED-技术" class="headerlink" title="KEEPALIVED 技术"></a>KEEPALIVED 技术</h1><p>在 keepalived中，一个是master，其他的都是backup</p>
+<p>vrrp:实现ip地址的高可用性，将除地址之外其他的功能也转移</p>
+<p>通过状态的改变，keepalived检测到，执行相应的状态下定义的脚本，脚本中有服务的 关闭和开启的命令，来实现服务的转移。</p>
+<p>keepalived不仅提供地址的转移功能，服务启动和关闭，还有监控功能具有两个核心组件：VRRP stack 和 checkers（用来监控服务）、还有对外围监控脚本调用的实现，节点之间只通过优先级来确定资源在哪个节点上运行，需要起始配置，虚拟地址转移需通过配置脚本来启动服务转移信息状态，有个通知机制，可以发短信或者邮件给管理员（需配置邮件服务器）</p>
+<p>适用于用不到共享存储，节点少的且keepalived支持多节点，但是节点中启动服务的只能有一个节点（一主多从）让每个节点都活动起来（运行两组资源）</p>
+<p>vrrp认证：1、明文认证、配置好预共享密钥  2、md5 sha1 散列</p>
+<p>core：是keepalived的核心，复杂主进程的启动和维护，全局配置文件的加载解析等</p>
+<p>check：负责healthchecker(健康检查)，包括了各种健康检查方式，以及对应的配置的解析包括<br>LVS的配置解析</p>
+<p>vrrp：VRRPD子进程，VRRPD子进程就是来实现VRRP协议的</p>
+<p>libipfwc：iptables(ipchains)库，配置LVS会用到</p>
+<p>libipvs*：配置LVS会用到</p>
+<p>注意，keepalived和LVS完全是两码事，只不过他们各负其责相互配合而已</p>
+<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-1.png" alt="k-1"></p>
+<p>keepalived启动后会有三个进程</p>
+<p>(1)父进程：内存管理，子进程管理等等</p>
+<p>(2)子进程：VRRP子进程</p>
+<p>(3)子进程：healthchecker子进程</p>
+<h1 id="实验环境物理结构说明"><a href="#实验环境物理结构说明" class="headerlink" title="实验环境物理结构说明"></a>实验环境物理结构说明</h1><p><img src="http://ow78pfxd9.bkt.clouddn.com/k-2.png" alt="k-2"></p>
+<h1 id="keepalived测试环境安装"><a href="#keepalived测试环境安装" class="headerlink" title="keepalived测试环境安装"></a>keepalived测试环境安装</h1><p>（1）关闭防火墙和selinux</p>
+<pre><code># service iptables stop
+# chkconfig iptables off
+# vi /etc/selinux/config 
+    把enforcing改为disabled
+# setenforce 0
+</code></pre><p>（2）分别给master和backup节点安装ipvsadm和keepalived</p>
+<pre><code># yum –y install ipvsadm
+# yum –y install keepalived
+# service keepalived start
+# chkconfig keepalived on
+</code></pre><p>（3）配置 keepalived.conf</p>
+<pre><code>#  vi /etc/keeplived/keepalived.conf
+</code></pre><pre>
+! Configuration File for keepalived
+
+global_defs {
+   router_id S208                ## keepalived 服务器标识符，可以随意设定（ 貌似也是全局唯一 ）
+}
+
+vrrp_instance NW3007 {            ## 定义一个名为 NW3007 的 VRRP 实例
+    state MASTER                ## Keepalived 服务器角色，MASTER 为主、BACKUP 为备
+    interface eth0                ## 指定 HA 监测网络接口
+    virtual_router_id 51            ## 虚拟路由标识，同一个 VRRP 实例使用唯一的标识，主备必须一样
+    priority 200                    ## 节点优先级，同一 VRRP 实例中 MASTER 的优先级必须大于 BACKUP
+    advert_int 5                    ## MASTER / BACKUP 之间同步检查间隔时间，单位 秒
+    track_interface {                ##指定监听数据的网口
+        eth0
+    }
+    authentication {                ## 节点之间通信验证类型、密码 ，同一 VRRP 实例中，MASTER / BACKUP 必须使用相同的密码才可以通信
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {            ## 虚拟 IP 地址，又称漂移 IP 。可以通过 ip add 在 MASTER 上查看是否绑定
+        192.168.2.100
+    }
+}
+
+virtual_server 192.168.0.110 80 {        ## 定义虚拟服务器
+    delay_loop 3                        ## 定义健康检查时间间隔，单位 秒
+    lb_algo wlc                         ## 负载均衡调度算法，支持 rr 、wrr 、lc 、wlc 、lblc 、sh 、dh 等
+    lb_kind DR                        ## LVS 负载均衡机制，支持 NAT 、TUN 、DR
+    protocol TCP                    ## 转发协议类型，支持 TCP 、UDP
+    ha_suspend                        
+
+    real_server 192.168.0.30 80 {            ## 定义节点服务器
+        weight 3                        ## 节点权重值，数字越大权重越高，分配到的连接越多。主要用于后端节点服务器性能不统一
+        TCP_CHECK {                ## 健康检测方式，支持 HTTP_GET 、SSL_GET 、TCP_CHECK 、SMTP_CHECK 、MISC_CHECK
+            connect_timeout 3        ## 无响应超时时间，单位 秒
+        }
+    }
+
+    real_server 192.168.0.31 80 {        ## 第二台节点服务器
+        weight 3
+        TCP_CHECK {
+            connect_timeout 3
+        }
+    }
+}
+</pre>
+
+<p>在master节点配置好keepalived文件后将keepalived.conf拷贝到backup节点</p>
+<pre><code># scp /etc/keepalived/keepalived.conf  192.168.0.29:/etc/keepalived/
+</code></pre><p>然后将priority值改为100即可,最后重启keepalived服务</p>
+<pre><code># service keepalived restart
+</code></pre><p>（4）为master节点和backup节点添加vip</p>
+<p>master节点</p>
+<pre><code># ip addr add 192.168.0.110/32 dev eth0
+</code></pre><p><img src="http://ow78pfxd9.bkt.clouddn.com/k-3.png" alt="k-3"></p>
+<p>backup节点</p>
+<pre><code># ip addr add 192.168.0.110/32 dev eth0
+</code></pre><p><img src="http://ow78pfxd9.bkt.clouddn.com/k-4.png" alt="k-4"></p>
+<p>（5）验证虚拟 IP 地址是否可以正常漂移</p>
+<p>停用master节点网卡</p>
+<pre><code># ifdown eth0
+</code></pre><p>查看backup节点的日志文件</p>
+<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-5.png" alt="k-5"></p>
+<p>查看backup的网卡</p>
+<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-6.png" alt="k-6"></p>
+<p>重新激活master网卡,查看backup日志文件<br><img src="http://ow78pfxd9.bkt.clouddn.com/k-7.png" alt="k-7"></p>
+<p>虚拟ip会自动移除，虚拟ip设置正常！</p>
+<p>注意：停用master的网卡vip会自动消失需要重新为master添加vip</p>
+<pre><code># ip addr add 192.168.0.110/32 dev eth0
+</code></pre><h1 id="配置RS-1和RS-2"><a href="#配置RS-1和RS-2" class="headerlink" title="配置RS-1和RS-2"></a>配置RS-1和RS-2</h1><p>（1）关闭防火墙和selinux</p>
+<pre><code># service iptables stop
+# chkconfig iptables off
+# vi /etc/selinux/config 
+    把enforcing改为disabled
+# setenforce 0
+</code></pre><p>（2）安装httpd</p>
+<p>分别在RS-1和RS-2上进行如下操作</p>
+<pre><code># yum –y install httpd
+# service httpd start
+# chkconfig httpd on
+</code></pre><p>在RS-1</p>
+<pre><code>echo RS-1-Web11111111 &gt; /var/www/html/index.html
+</code></pre><p>在RS-2</p>
+<pre><code>echo RS-2-Web2222222 &gt; /var/www/html/index.html
+</code></pre><p>（3）RS-1创建一个脚本文件</p>
+<pre><code># vi /root/realserver.sh
+</code></pre><pre>
+#!/bin/bash
+vip=192.168.0.110
+
+case $1 in
+start)
+    echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore
+    echo 1 > /proc/sys/net/ipv4/conf/eth0/arp_ignore
+    echo 2 > /proc/sys/net/ipv4/conf/all/arp_announce
+    echo 2 > /proc/sys/net/ipv4/conf/eth0/arp_announce
+
+    ifconfig lo:0 $vip netmask 255.255.255.255 broadcast $vip up
+
+    ;;
+stop)
+    ifconfig lo:0 down
+        echo 0 > /proc/sys/net/ipv4/conf/all/arp_ignore
+        echo 0 > /proc/sys/net/ipv4/conf/eth0/arp_ignore
+        echo 0 > /proc/sys/net/ipv4/conf/all/arp_announce
+        echo 0 > /proc/sys/net/ipv4/conf/eth0/arp_announce
+    ;;
+esac
+</pre>
+
+<p>赋予运行权权限</p>
+<pre><code># chmod a+x /root/realserver.sh
+</code></pre><p>将脚本拷贝到RS-2</p>
+<pre><code># scp /root/realserver.sh 192.168.0.31:/root/
+</code></pre><p>在RS-1和RS-2执行脚本</p>
+<pre><code># ./realserver start
+</code></pre><h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>服务器之间可以自由调度</p>
+<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-9.png" alt="k-9"></p>
+<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-8.png" alt="k-8"></p>
+<p>停用mater网卡也可以自由调度RS-1和RS-2，实验到此结束</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;高可用性技术简介&quot;&gt;&lt;a href=&quot;#高可用性技术简介&quot; class=&quot;headerlink&quot; title=&quot;高可用性技术简介&quot;&gt;&lt;/a&gt;高可用性技术简介&lt;/h1&gt;&lt;p&gt;高可用性（HighAvailability）通常是用来描述一个系统经过专门的设计，从而减少停工的时间，而保持其服务的高可用性。计算机系统的可用性定义为：MTTF/(MTTF+MTTR) * 100%，因此计算机系统的可用性定义为系统保持正常运行时间的百分比。而负载均衡服务器的高可用性是为了屏蔽负载均衡服务器的失效，需要建立一个备份机。主服务器和备份机上都运行高可用性监控程序，通过传送信息来监控对方的运行状况。当备份机不能在一定的时间里接收到从主服务器那里发送的它存活着（即它从事着主服务器的工作）的时候，备份服务器就会从主服务器那里接管器主服务器的服务IP并继续提供服务。当主服务器又开始接管服务时，它会给备份服务器发送它接管的消息，接着备份服务器就会释放服务IP地址，这样子主服务器又再一次接管了服务IP。这就实现了在主服务器失效的状况下，备份服务器可以接管主服务的工作，以此实现负载集群系统配置信息的同步与备份了。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://yjscloud.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="keepalived" scheme="http://yjscloud.com/tags/keepalived/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>kvm学习笔记（七）-kvm虚拟机存储池配置</title>
+    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%83%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%98%E5%82%A8%E6%B1%A0%E9%85%8D%E7%BD%AE/"/>
+    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（七）-kvm虚拟机存储池配置/</id>
+    <published>2017-10-20T04:56:21.000Z</published>
+    <updated>2017-10-26T05:19:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="什么是存储池"><a href="#什么是存储池" class="headerlink" title="什么是存储池"></a>什么是存储池</h1><p>KVM平台以存储池的形式对存储进行统一管理，所谓存储池可以理解为本地目录、通过远端磁盘阵列（iSCSI、NFS）分配过来磁盘或目录，当然也支持各类分布式文件系统。通过virsh中pool命令能够查看、创建、激活、注册、删除存储池。</p>
+<p>注1:KVM存储池主要是体现一种管理方式，可以通过挂载存储目录，lvm逻辑卷的方式创建存储池，虚拟机存储卷创建完成后，剩下的操作与无存储卷的方式无任何区别了。</p>
+<p>注2:KVM存储池也要用于虚拟机迁移任务。</p>
+<h1 id="存储池配置步骤"><a href="#存储池配置步骤" class="headerlink" title="存储池配置步骤"></a>存储池配置步骤</h1><h2 id="创建基于文件夹的存储池（目录）"><a href="#创建基于文件夹的存储池（目录）" class="headerlink" title="创建基于文件夹的存储池（目录）"></a>创建基于文件夹的存储池（目录）</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.102.png" alt="1.102"></p>
+<h2 id="定义存储池与其目录"><a href="#定义存储池与其目录" class="headerlink" title="定义存储池与其目录"></a>定义存储池与其目录</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.103.png" alt="1.103"></p>
+<h2 id="创建已定义的存储池"><a href="#创建已定义的存储池" class="headerlink" title="创建已定义的存储池"></a>创建已定义的存储池</h2><p>(1)创建已定义的存储池</p>
+<pre><code># virsh pool-build vmdisk
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.104.png" alt="1.104"></p>
+<p>(2)查看已定义的存储池，存储池不激活无法使用。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.105.png" alt="1.105"></p>
+<h2 id="激活并自动启动已定义的存储池"><a href="#激活并自动启动已定义的存储池" class="headerlink" title="激活并自动启动已定义的存储池"></a>激活并自动启动已定义的存储池</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.106.png" alt="1.106"></p>
+<p>这里vmdisk存储池就已经创建好了，可以直接在这个存储池中创建虚拟磁盘文件了。</p>
+<h2 id="在存储池中创建虚拟机存储卷"><a href="#在存储池中创建虚拟机存储卷" class="headerlink" title="在存储池中创建虚拟机存储卷"></a>在存储池中创建虚拟机存储卷</h2><p>(1)在存储池中创建虚拟机存储卷</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.107.png" alt="1.107"></p>
+<p>(2)根据创建的虚拟机存储卷安装虚拟机</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/1.108.png" alt="1.108"></p>
+<p>安装过程略！</p>
+<p>说明：KVM存储池主要是体现一种管理方式，可以通过挂载存储目录，lvm逻辑卷的方式创建存储池，虚拟机存储卷创建完成后，剩下的操作与无存储卷的方式无任何区别了。KVM存储池也要用于虚拟机迁移任务。</p>
+<h2 id="存储池相关管理命令"><a href="#存储池相关管理命令" class="headerlink" title="存储池相关管理命令"></a>存储池相关管理命令</h2><p>(1)在存储池中删除虚拟机存储卷</p>
+<pre><code># virsh vol-delete --pool vmdisk test-01.qcow2
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.109.png" alt="1.109"></p>
+<p>(2)取消激活存储池</p>
+<pre><code># virsh pool-destroy vmdisk
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.110.png" alt="1.110"></p>
+<p>(3)删除存储池定义的目录/mnt/vmfs</p>
+<pre><code># virsh pool-delete vmdisk
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.111.png" alt="1.111"></p>
+<p>(4)取消定义存储池</p>
+<pre><code># virsh pool-undefine vmdisk
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.112.png" alt="1.112"></p>
+<p>到此kvm存储池配置与管理操作完毕。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;什么是存储池&quot;&gt;&lt;a href=&quot;#什么是存储池&quot; class=&quot;headerlink&quot; title=&quot;什么是存储池&quot;&gt;&lt;/a&gt;什么是存储池&lt;/h1&gt;&lt;p&gt;KVM平台以存储池的形式对存储进行统一管理，所谓存储池可以理解为本地目录、通过远端磁盘阵列（iSCSI、NF
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="KVM" scheme="http://yjscloud.com/tags/KVM/"/>
+    
+  </entry>
   
   <entry>
     <title>kvm学习笔记（七）-kvm虚拟机动态迁移</title>
@@ -377,7 +616,7 @@
     <link href="http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-KVM%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/"/>
     <id>http://yjscloud.com/2017/10/18/kvm学习笔记（二）-KVM基础学习/</id>
     <published>2017-10-17T20:06:18.000Z</published>
-    <updated>2017-10-20T00:35:27.000Z</updated>
+    <updated>2017-10-26T07:32:31.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="kvm简绍"><a href="#kvm简绍" class="headerlink" title="kvm简绍"></a>kvm简绍</h1><p>KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的一个内核模块，该内核模块使得 Linux 变成了一个 Hypervisor：</p>
 <ul>
@@ -462,11 +701,11 @@ GATEWAY=172.31.129.254
 
 <h2 id="创建虚拟机硬盘"><a href="#创建虚拟机硬盘" class="headerlink" title="创建虚拟机硬盘"></a>创建虚拟机硬盘</h2><pre>
 # qemu-img create -f qcow2 /mnt/vm-test/iso/centos-7.2.qcow2 10G
-# chown qemu:qemu /image/centos.qcow2 -R
+# chown qemu:qemu /mnt/vm-test/iso/centos-7.2.qcow2 -R
 </pre>
 
 <h2 id="创建虚拟机"><a href="#创建虚拟机" class="headerlink" title="创建虚拟机"></a>创建虚拟机</h2><pre>
-[root@kvm kvm]# virt-install --virt-type kvm --name centos-7.2 --ram 512 \    # name 是自己取得
+[root@kvm iso]# virt-install --virt-type kvm --name centos-7.2 --ram 512 \    # name 是自己取得
 > --vcpus 1 \        #指定cpu核数
 > --cdrom=CentOS-7-x86_64-DVD-1511.iso \  #指定镜像
 > --disk centos-7.2.qcow2,format=qcow2 \    #disk参数为上面创建的磁盘
@@ -1520,7 +1759,7 @@ ONBOOT=yes
     <link href="http://yjscloud.com/2017/09/13/LVS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     <id>http://yjscloud.com/2017/09/13/LVS学习笔记/</id>
     <published>2017-09-13T02:47:43.000Z</published>
-    <updated>2017-09-15T04:51:52.000Z</updated>
+    <updated>2017-10-26T07:29:29.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="LVS简介"><a href="#LVS简介" class="headerlink" title="LVS简介"></a>LVS简介</h2><p>   负载均衡技术有很多实现方案，有基于DNS域名轮流解析的方法、有基于客户端调度访问的方法、有基于应用层系统负载的调度方法，还有基于IP地址的调度方法。本文介绍LVS目前有三种IP负载均衡技术（VS/NAT、VS/TUN和VS/DR）。</p>
  <a id="more"></a>
@@ -1610,6 +1849,8 @@ ONBOOT=yes
     
     
       <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="keepalived" scheme="http://yjscloud.com/tags/keepalived/"/>
     
   </entry>
   
@@ -2836,136 +3077,6 @@ fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。�
     
     
       <category term="hexo" scheme="http://yjscloud.com/tags/hexo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>redhat 7安装CentOS 7 yum源</title>
-    <link href="http://yjscloud.com/2017/04/26/redhat-7%E5%AE%89%E8%A3%85CentOS-7-yum%E6%BA%90/"/>
-    <id>http://yjscloud.com/2017/04/26/redhat-7安装CentOS-7-yum源/</id>
-    <published>2017-04-25T23:36:38.000Z</published>
-    <updated>2017-05-02T03:38:49.000Z</updated>
-    
-    <content type="html"><![CDATA[<p> 由于redhat 的更新包只对注册的用户生效，所以需要自己手动更改成CentOS 的更新包，<br>CentOS几乎和redhat是一样的，所以无需担心软件包是否可安装，下面是安装步骤。</p>
-<a id="more"></a>
-<h1 id="首先查看redhat-7-0系统本身所安装的那些yum-软件包："><a href="#首先查看redhat-7-0系统本身所安装的那些yum-软件包：" class="headerlink" title="首先查看redhat 7.0系统本身所安装的那些yum 软件包："></a>首先查看redhat 7.0系统本身所安装的那些yum 软件包：</h1><figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# rpm -qa | grep yum</div><div class="line">yum-utils<span class="number">-1.1</span><span class="number">.31</span><span class="number">-24.</span>el7.noarch</div><div class="line">yum-langpacks<span class="number">-0.4</span><span class="number">.2</span><span class="number">-3.</span>el7.noarch</div><div class="line">yum-metadata-parser<span class="number">-1.1</span><span class="number">.4</span><span class="number">-10.</span>el7.x86_64</div><div class="line">yum-rhn-plugin<span class="number">-2.0</span><span class="number">.1</span><span class="number">-4.</span>el7.noarch</div><div class="line">PackageKit-yum<span class="number">-0.8</span><span class="number">.9</span><span class="number">-11.</span>el7.x86_64</div><div class="line">yum<span class="number">-3.4</span><span class="number">.3</span><span class="number">-118.</span>el7.noarch</div></pre></td></tr></table></figure>
-<h1 id="卸载这些软件包："><a href="#卸载这些软件包：" class="headerlink" title="卸载这些软件包："></a>卸载这些软件包：</h1><figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@pan ~]</span># <span class="selector-tag">rpm</span> <span class="selector-tag">-e</span> <span class="selector-tag">yum-3</span><span class="selector-class">.4</span><span class="selector-class">.3-118</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span> <span class="selector-tag">--nodeps</span></div><div class="line"><span class="selector-attr">[root@pan ~]</span># <span class="selector-tag">rpm</span> <span class="selector-tag">-e</span> <span class="selector-tag">yum-utils-1</span><span class="selector-class">.1</span><span class="selector-class">.31-24</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span> <span class="selector-tag">--nodeps</span></div><div class="line"><span class="selector-attr">[root@pan ~]</span># <span class="selector-tag">rpm</span> <span class="selector-tag">-e</span> <span class="selector-tag">yum-rhn-plugin-2</span><span class="selector-class">.0</span><span class="selector-class">.1-4</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span> <span class="selector-tag">--nodeps</span></div><div class="line"><span class="selector-attr">[root@pan ~]</span># <span class="selector-tag">rpm</span> <span class="selector-tag">-e</span> <span class="selector-tag">yum-metadata-parser-1</span><span class="selector-class">.1</span><span class="selector-class">.4-10</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span> <span class="selector-tag">--nodeps</span></div><div class="line"><span class="selector-attr">[root@pan ~]</span># <span class="selector-tag">rpm</span> <span class="selector-tag">-e</span> <span class="selector-tag">yum-langpacks-0</span><span class="selector-class">.4</span><span class="selector-class">.2-3</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span> <span class="selector-tag">--nodeps</span></div><div class="line"><span class="selector-attr">[root@pan ~]</span># <span class="selector-tag">rpm</span> <span class="selector-tag">-e</span> <span class="selector-tag">PackageKit-yum-0</span><span class="selector-class">.8</span><span class="selector-class">.9-11</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span> <span class="selector-tag">--nodeps</span></div></pre></td></tr></table></figure>
-<h1 id="保证本机电脑能上网"><a href="#保证本机电脑能上网" class="headerlink" title="保证本机电脑能上网:"></a>保证本机电脑能上网:</h1><figure class="highlight applescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]<span class="comment"># ping www.baidu.com</span></div><div class="line">PING www.a.shifen.com (<span class="number">163.177</span><span class="number">.151</span><span class="number">.110</span>) <span class="number">56</span>(<span class="number">84</span>) bytes <span class="keyword">of</span> data.</div><div class="line"><span class="number">64</span> bytes <span class="keyword">from</span> <span class="number">163.177</span><span class="number">.151</span><span class="number">.110</span>: icmp_seq=<span class="number">1</span> ttl=<span class="number">49</span> <span class="built_in">time</span>=<span class="number">13.1</span> ms</div><div class="line"><span class="number">64</span> bytes <span class="keyword">from</span> <span class="number">163.177</span><span class="number">.151</span><span class="number">.110</span>: icmp_seq=<span class="number">2</span> ttl=<span class="number">49</span> <span class="built_in">time</span>=<span class="number">6.80</span> ms</div><div class="line"><span class="number">64</span> bytes <span class="keyword">from</span> <span class="number">163.177</span><span class="number">.151</span><span class="number">.110</span>: icmp_seq=<span class="number">3</span> ttl=<span class="number">49</span> <span class="built_in">time</span>=<span class="number">6.77</span> ms</div><div class="line">^C</div><div class="line"><span class="comment">--- www.a.shifen.com ping statistics ---</span></div><div class="line"><span class="number">3</span> packets transmitted, <span class="number">3</span> received, <span class="number">0</span>% packet loss, <span class="built_in">time</span> <span class="number">2007</span>ms</div><div class="line">rtt min/avg/max/mdev = <span class="number">6.777</span>/<span class="number">8.917</span>/<span class="number">13.168</span>/<span class="number">3.006</span> ms</div></pre></td></tr></table></figure>
-<p>进入以下网站上面查看软件包的版本是否升级或者找到自己系统所对应的文件包版本更新；</p>
-<p>网易163网络源地址：<a href="http://mirrors.163.com/" target="_blank" rel="external">http://mirrors.163.com/</a><br>CentOS网络源地址：<a href="http://centos.ustc.edu.cn/centos/" target="_blank" rel="external">http://centos.ustc.edu.cn/centos/</a></p>
-<h1 id="找到自己所需要的版本下载："><a href="#找到自己所需要的版本下载：" class="headerlink" title="找到自己所需要的版本下载："></a>找到自己所需要的版本下载：</h1><figure class="highlight awk"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">wget http:<span class="regexp">//mi</span>rrors.<span class="number">163</span>.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/yum</span>-<span class="number">3.4</span>.<span class="number">3</span>-<span class="number">150</span>.el7.centos.noarch.rpm</div><div class="line">wget http:<span class="regexp">//mi</span>rrors.<span class="number">163</span>.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/yum</span>-metadata-parser-<span class="number">1.1</span>.<span class="number">4</span>-<span class="number">10</span>.el7.x86_64.rpm</div><div class="line">wget http:<span class="regexp">//mi</span>rrors.<span class="number">163</span>.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/yum</span>-utils-<span class="number">1.1</span>.<span class="number">31</span>-<span class="number">40</span>.el7.noarch.rpm</div><div class="line">wget http:<span class="regexp">//mi</span>rrors.<span class="number">163</span>.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/yum</span>-updateonboot-<span class="number">1.1</span>.<span class="number">31</span>-<span class="number">40</span>.el7.noarch.rpm</div><div class="line">wget http:<span class="regexp">//mi</span>rrors.<span class="number">163</span>.com<span class="regexp">/centos/</span><span class="number">7</span><span class="regexp">/os/</span>x86_64<span class="regexp">/Packages/yum</span>-plugin-fastestmirror-<span class="number">1.1</span>.<span class="number">31</span>-<span class="number">40</span>.el7.noarch.rpm</div></pre></td></tr></table></figure>
-<p>查看下载完成结果；</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@pan ~]</span># <span class="selector-tag">ls</span></div><div class="line"><span class="selector-tag">anaconda-ks</span><span class="selector-class">.cfg</span>                              <span class="selector-tag">yum-plugin-fastestmirror-1</span><span class="selector-class">.1</span><span class="selector-class">.31-40</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span></div><div class="line"><span class="selector-tag">initial-setup-ks</span><span class="selector-class">.cfg</span>                         <span class="selector-tag">yum-updateonboot-1</span><span class="selector-class">.1</span><span class="selector-class">.31-40</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span></div><div class="line"><span class="selector-tag">yum-3</span><span class="selector-class">.4</span><span class="selector-class">.3-150</span><span class="selector-class">.el7</span><span class="selector-class">.centos</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span>          <span class="selector-tag">yum-utils-1</span><span class="selector-class">.1</span><span class="selector-class">.31-40</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span></div><div class="line"><span class="selector-tag">yum-metadata-parser-1</span><span class="selector-class">.1</span><span class="selector-class">.4-10</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span><span class="selector-class">.rpm</span></div></pre></td></tr></table></figure>
-<h1 id="安装软件包："><a href="#安装软件包：" class="headerlink" title="安装软件包："></a>安装软件包：</h1><figure class="highlight subunit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# rpm -ivh yum-*</div><div class="line">warning: yum<span class="string">-3</span>.4.3<span class="string">-150</span>.el7.centos.noarch.rpm: Header V3 RSA/SHA256 Signature, key ID f4a80eb5: NOKEY</div><div class="line"><span class="keyword">error: </span>Failed dependencies:</div><div class="line">        python-urlgrabber &gt;= 3.10<span class="string">-8</span> is needed by yum<span class="string">-3</span>.4.3<span class="string">-150</span>.el7.centos.noarch</div></pre></td></tr></table></figure>
-<p>这里出现了一个小问题：<br>安装的python-urlgrabber版本不符合您尝试安装的RPM的依赖关系，我目前没有能力解决这个问题的办法，后来想了一个折中的办法，FQ去一个国外的yum源网站下载上面这五个较低版本的安装包，在来安装就不会有问题了<br>在这里附上链接各位可以FQ出去下载对应版本的rpm包<br>链接：<a href="http://rpm.pbone.net/" target="_blank" rel="external">http://rpm.pbone.net/</a><br>不报错版本安装包：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-tag">yum-3</span><span class="selector-class">.4</span><span class="selector-class">.3-132</span><span class="selector-class">.el7</span><span class="selector-class">.centos</span><span class="selector-class">.0</span><span class="selector-class">.1</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span></div><div class="line"><span class="selector-tag">yum-metadata-parser-1</span><span class="selector-class">.1</span><span class="selector-class">.4-10</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span><span class="selector-class">.rpm</span></div><div class="line"><span class="selector-tag">yum-plugin-fastestmirror-1</span><span class="selector-class">.1</span><span class="selector-class">.31-34</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span></div><div class="line"><span class="selector-tag">yum-updateonboot-1</span><span class="selector-class">.1</span><span class="selector-class">.31-34</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span></div><div class="line"><span class="selector-tag">yum-utils-1</span><span class="selector-class">.1</span><span class="selector-class">.31-34</span><span class="selector-class">.el7</span><span class="selector-class">.noarch</span><span class="selector-class">.rpm</span></div></pre></td></tr></table></figure>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/yum%E5%AE%89%E8%A3%851.png" alt="yum安装1"><br><img src="http://oozms7qtq.bkt.clouddn.com/yum%E5%AE%89%E8%A3%852.png" alt="yum安装2"></p>
-<p>我把这五个rpm包下载到我的windows电脑里，然后用WinSCP这个软件上传到redhat 7 系统里，WinSCP这个软件的使用方法就不在这里赘述了</p>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/yum%E5%AE%89%E8%A3%853.png" alt="yum安装3"></p>
-<h1 id="下载好后重新安装："><a href="#下载好后重新安装：" class="headerlink" title="下载好后重新安装："></a>下载好后重新安装：</h1><figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# ls</div><div class="line">yum<span class="number">-3.4</span><span class="number">.3</span><span class="number">-132.</span>el7.centos<span class="number">.0</span><span class="number">.1</span>.noarch.rpm            yum-updateonboot<span class="number">-1.1</span><span class="number">.31</span><span class="number">-34.</span>el7.noarch.rpm</div><div class="line">yum-metadata-parser<span class="number">-1.1</span><span class="number">.4</span><span class="number">-10.</span>el7.x86_64.rpm        yum-utils<span class="number">-1.1</span><span class="number">.31</span><span class="number">-34.</span>el7.noarch.rpm</div><div class="line">yum-plugin-fastestmirror<span class="number">-1.1</span><span class="number">.31</span><span class="number">-34.</span>el7.noarch.rpm</div><div class="line">[root@pan ~]# rpm -ivh yum-*</div><div class="line">warning: yum<span class="number">-3.4</span><span class="number">.3</span><span class="number">-132.</span>el7.centos<span class="number">.0</span><span class="number">.1</span>.noarch.rpm: Header V3 RSA/SHA256 Signature, key ID f4a80eb5: NOKEY</div><div class="line">Preparing...                          ################################# [<span class="number">100</span>%]</div><div class="line">Updating / installing...</div><div class="line">   <span class="number">1</span>:yum-metadata-parser<span class="number">-1.1</span><span class="number">.4</span><span class="number">-10.</span>el7 ################################# [ <span class="number">20</span>%]</div><div class="line">   <span class="number">2</span>:yum-plugin-fastestmirror<span class="number">-1.1</span><span class="number">.31</span><span class="number">-3</span>################################# [ <span class="number">40</span>%]</div><div class="line">   <span class="number">3</span>:yum<span class="number">-3.4</span><span class="number">.3</span><span class="number">-132.</span>el7.centos<span class="number">.0</span><span class="number">.1</span>     ################################# [ <span class="number">60</span>%]</div><div class="line">   <span class="number">4</span>:yum-updateonboot<span class="number">-1.1</span><span class="number">.31</span><span class="number">-34.</span>el7   ################################# [ <span class="number">80</span>%]</div><div class="line">   <span class="number">5</span>:yum-utils<span class="number">-1.1</span><span class="number">.31</span><span class="number">-34.</span>el7          ################################# [<span class="number">100</span>%]</div><div class="line">[root@pan ~]#</div></pre></td></tr></table></figure>
-<p>这次没有报错了，安装完成！！！</p>
-<h1 id="新建repo-配置文件："><a href="#新建repo-配置文件：" class="headerlink" title="新建repo 配置文件："></a>新建repo 配置文件：</h1><figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="section"></span></div><div class="line">[root@pan ~]<span class="comment"># vim /etc/yum.repos.d/CentOS-Base.repo</span></div><div class="line"></div><div class="line"><span class="comment">#CentOS-Base.repo</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># The mirror system uses the connecting IP address of the client and the</span></div><div class="line"><span class="comment"># update status of each mirror to pick mirrors that are updated to and</span></div><div class="line"><span class="comment"># geographically close to the client.  You should use this for CentOS updates</span></div><div class="line"><span class="comment"># unless you are manually picking other mirrors.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment"># If the mirrorlist= does not work for you, as a fall back you can try the</span></div><div class="line"><span class="comment"># remarked out baseurl= line instead.</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="comment">#</span></div><div class="line"><span class="section">[base]</span></div><div class="line"><span class="attr">name</span>=CentOS-<span class="variable">$7</span> - Base - <span class="number">163</span>.com</div><div class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$7&amp;arch=$basearch&amp;repo=os</span></div><div class="line"><span class="attr">baseurl</span>=http://mirrors.<span class="number">163</span>.com/centos/<span class="number">7</span>/os/<span class="variable">$basearch</span>/</div><div class="line"><span class="attr">gpgcheck</span>=<span class="number">1</span></div><div class="line"><span class="attr">gpgkey</span>=http://mirrors.<span class="number">163</span>.com/centos/RPM-GPG-KEY-CentOS-<span class="number">7</span></div><div class="line"></div><div class="line"><span class="comment">#released updates</span></div><div class="line"><span class="section">[updates]</span></div><div class="line"><span class="attr">name</span>=CentOS-<span class="variable">$7</span> - Updates - <span class="number">163</span>.com</div><div class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$7&amp;arch=$basearch&amp;repo=updates</span></div><div class="line"><span class="attr">baseurl</span>=http://mirrors.<span class="number">163</span>.com/centos/<span class="number">7</span>/updates/<span class="variable">$basearch</span>/</div><div class="line"><span class="attr">gpgcheck</span>=<span class="number">1</span></div><div class="line"><span class="attr">gpgkey</span>=http://mirrors.<span class="number">163</span>.com/centos/RPM-GPG-KEY-CentOS-<span class="number">7</span></div><div class="line"></div><div class="line"><span class="comment">#additional packages that may be useful</span></div><div class="line"><span class="section">[extras]</span></div><div class="line"><span class="attr">name</span>=CentOS-<span class="variable">$7</span> - Extras - <span class="number">163</span>.com</div><div class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$7&amp;arch=$basearch&amp;repo=extras</span></div><div class="line"><span class="attr">baseurl</span>=http://mirrors.<span class="number">163</span>.com/centos/<span class="number">7</span>/extras/<span class="variable">$basearch</span>/</div><div class="line"><span class="attr">gpgcheck</span>=<span class="number">1</span></div><div class="line"><span class="attr">gpgkey</span>=http://mirrors.<span class="number">163</span>.com/centos/RPM-GPG-KEY-CentOS-<span class="number">7</span></div><div class="line"></div><div class="line"><span class="comment">#additional packages that extend functionality of existing packages</span></div><div class="line"><span class="section">[centosplus]</span></div><div class="line"><span class="attr">name</span>=CentOS-<span class="variable">$7</span> - Plus - <span class="number">163</span>.com</div><div class="line"><span class="attr">baseurl</span>=http://mirrors.<span class="number">163</span>.com/centos/<span class="number">7</span>/centosplus/<span class="variable">$basearch</span>/</div><div class="line"><span class="attr">gpgcheck</span>=<span class="number">1</span></div><div class="line"><span class="attr">enabled</span>=<span class="number">0</span></div><div class="line"><span class="attr">gpgkey</span>=http://mirrors.<span class="number">163</span>.com/centos/RPM-GPG-KEY-CentOS-<span class="number">7</span></div></pre></td></tr></table></figure>
-<h1 id="清除缓存："><a href="#清除缓存：" class="headerlink" title="清除缓存："></a>清除缓存：</h1><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# yum clean <span class="keyword">all</span></div><div class="line">Loaded plugin<span class="variable">s:</span> fastestmirror, product-id, subscription-manager</div><div class="line">This <span class="built_in">system</span> <span class="keyword">is</span> not registered <span class="keyword">to</span> Red Hat Subscription Management. You can use subscription-manager <span class="keyword">to</span> register.</div><div class="line">Cleaning repo<span class="variable">s:</span> base extras updates</div><div class="line">Cleaning <span class="keyword">up</span> everything</div></pre></td></tr></table></figure>
-<h1 id="测试安装是否正常；"><a href="#测试安装是否正常；" class="headerlink" title="测试安装是否正常；"></a>测试安装是否正常；</h1><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# yum -y install lftp</div><div class="line">Loaded plugins: fastestmirror, product-id, subscription-manager</div><div class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</div><div class="line">base                                                                                            | 3.6 kB  00:00:00    </div><div class="line">extras                                                                                          | 3.4 kB  00:00:00    </div><div class="line">updates                                                                                         | 3.4 kB  00:00:00    </div><div class="line">(1/4): extras/x86<span class="emphasis">_64/primary_</span>db                                                                 | 139 kB  00:00:00    </div><div class="line">(2/4): base/x86<span class="emphasis">_64/group_</span>gz                                                                     | 155 kB  00:00:00    </div><div class="line">(3/4): updates/x86<span class="emphasis">_64/primary_</span>db                                                                | 3.9 MB  00:00:01    </div><div class="line">(4/4): base/x86<span class="emphasis">_64/primary_</span>db                                                                   | 5.6 MB  00:00:02    </div><div class="line">Determining fastest mirrors</div><div class="line">Resolving Dependencies</div><div class="line">--&gt; Running transaction check</div><div class="line">---&gt; Package lftp.x86<span class="emphasis">_64 0:4.4.8-8.el7_</span>3.2 will be installed</div><div class="line">--&gt; Finished Dependency Resolution</div><div class="line"></div><div class="line">Dependencies Resolved</div><div class="line"></div><div class="line">=======================================================================================================================</div><div class="line">Package                 Arch                      Version                            Repository                  Size</div><div class="line">=======================================================================================================================</div><div class="line">Installing:</div><div class="line">lftp                    x86<span class="emphasis">_64                    4.4.8-8.el7_</span>3.2                    updates                    751 k</div><div class="line"></div><div class="line"><span class="section">Transaction Summary</span></div><div class="line">=======================================================================================================================</div><div class="line">Install  1 Package</div><div class="line"></div><div class="line">~~~~~此处省略安装输出内容~~~~</div><div class="line">Installed:</div><div class="line"><span class="code">  lftp.x86_64 0:4.4.8-8.el7_3.2                                                                                       </span></div><div class="line"></div><div class="line">Complete!</div></pre></td></tr></table></figure>
-<p>到这里安装完成，以后安装所需包，可以不用本地yum源了，直接使用网络yum源。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt; 由于redhat 的更新包只对注册的用户生效，所以需要自己手动更改成CentOS 的更新包，&lt;br&gt;CentOS几乎和redhat是一样的，所以无需担心软件包是否可安装，下面是安装步骤。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Git学习笔记(2)</title>
-    <link href="http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2/"/>
-    <id>http://yjscloud.com/2017/04/25/Git学习笔记-2/</id>
-    <published>2017-04-25T15:27:29.000Z</published>
-    <updated>2017-05-02T03:43:15.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="工作区和暂存区"><a href="#工作区和暂存区" class="headerlink" title="工作区和暂存区"></a>工作区和暂存区</h1><p>我们在testgit文件夹下创建一个文件test_02.txt</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@xwq testgit]</span># <span class="selector-tag">ls</span></div><div class="line"></div><div class="line"><span class="selector-tag">test_01</span><span class="selector-class">.txt</span>  <span class="selector-tag">test_02</span><span class="selector-class">.txt</span></div></pre></td></tr></table></figure>
-<p>库版本：工作区有一个隐藏目录.git，这个不算工作区，而是Git的版本库。<br>Git的版本库里存了很多东西，其中最重要的就是称为stage（或者叫index）的暂存区，还有Git为我们自动创建的第一个分支master，以及指向master的一个指针叫HEAD。</p>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B03.png" alt="git笔记3"></p>
-<p>前面讲了我们把文件往Git版本库里添加的时候，是分两步执行的：<br>第一步是用git add把文件添加进去，实际上就是把文件修改添加到暂存区；<br>第二步是用git commit提交更改，实际上就是把暂存区的所有内容提交到当前分支。<br>因为我们创建Git版本库时，Git自动为我们创建了唯一一个master分支，所以，现在，git commit就是往master分支上提交更改。<br>你可以简单理解为，需要提交的文件修改通通放到暂存区，然后，一次性提交暂存区的所有修改。<br>现在，我们再练习一遍，先对test_01.txt做个修改，加上一行内容：</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# <span class="keyword">cat</span> test_01.txt </div><div class="line"></div><div class="line">Git <span class="keyword">is</span> <span class="keyword">a</span> distributed <span class="keyword">version</span> control <span class="built_in">system</span>.</div><div class="line"></div><div class="line">Git <span class="keyword">is</span> free software distributed under the GPL.</div><div class="line"></div><div class="line">Git <span class="built_in">has</span> <span class="keyword">a</span> mutable <span class="built_in">index</span> called stage.</div></pre></td></tr></table></figure>
-<p>然后，在工作区新增的test_02.txt文本文件随便随便写点东西。<br>用git status查看一下状态：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"><span class="meta">#</span><span class="bash"> On branch master</span></div><div class="line"><span class="meta">#</span><span class="bash"> Changes not staged <span class="keyword">for</span> commit:</span></div><div class="line"><span class="meta">#</span><span class="bash">   (use <span class="string">"git add &lt;file&gt;..."</span> to update what will be committed)</span></div><div class="line"><span class="meta">#</span><span class="bash">   (use <span class="string">"git checkout -- &lt;file&gt;..."</span> to discard changes <span class="keyword">in</span> working directory)</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash">    modified:   test_01.txt</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash"> Untracked files:</span></div><div class="line"><span class="meta">#</span><span class="bash">   (use <span class="string">"git add &lt;file&gt;..."</span> to include <span class="keyword">in</span> what will be committed)</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash">    test_02.txt</span></div><div class="line">no changes added to commit (use "git add" and/or "git commit -a")</div></pre></td></tr></table></figure>
-<p>Git告诉我们，test_01.txt被修改了，而test_02.txt还从来没有被添加过，所以它的状态是Untracked。<br>现在，使用两次命令git add，把test_01.txt和test_02.txt都添加后，用git status再查看一下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git add test_01.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git add test_02.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git status</div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> On branch master</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> Changes to be committed:</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">   (use <span class="string">"git reset HEAD &lt;file&gt;..."</span> to unstage)</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">    modified:   test_01.txt</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">    new file:   test_02.txt</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"></span></div></pre></td></tr></table></figure>
-<p>现在暂存区的状态变成了这样：</p>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B04.png" alt="git笔记4"></p>
-<p>所以，git add命令实际上就是把要提交的所有修改放到暂存区（Stage），然后，执行git commit就可以一次性把暂存区的所有修改提交到分支。</p>
-<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git commit -m <span class="string">"undeestand how stage works"</span></div><div class="line"></div><div class="line">[master <span class="number">10820</span>b3] undeestand how stage works</div><div class="line"></div><div class="line"> <span class="number">2</span> files <span class="section">changed</span>, <span class="number">2</span> insertions(+)</div><div class="line"></div><div class="line"> create mode <span class="number">100644</span> test_02.txt</div></pre></td></tr></table></figure>
-<p>现在再来查看工作区，就会发现什么都没有了</p>
-<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@xwq</span> testgit]<span class="meta"># git status</span></div><div class="line"><span class="meta"># On branch master</span></div><div class="line">nothing <span class="keyword">to</span> commit, working directory clean</div></pre></td></tr></table></figure>
-<h1 id="管理修改"><a href="#管理修改" class="headerlink" title="管理修改"></a>管理修改</h1><p>Git的优秀之处在于他的跟踪并管理的是修改，而非文件。什么是修改？修改就是你对文件内容增删改都叫修改，甚至创建文件夹也算修改，我们通过实验来证明这一点。<br>我们对文件test_01.txt进行如下修改</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# <span class="keyword">cat</span> test_01.txt </div><div class="line">Git <span class="keyword">is</span> <span class="keyword">a</span> distributed <span class="keyword">version</span> control <span class="built_in">system</span>.</div><div class="line">Git <span class="keyword">is</span> free software distributed under the GPL.</div><div class="line">Git <span class="built_in">has</span> <span class="keyword">a</span> mutable <span class="built_in">index</span> called stage.</div><div class="line">Git tracks <span class="keyword">changes</span>.</div></pre></td></tr></table></figure>
-<p>然后添加：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git add test_01.txt</div><div class="line">[root@xwq testgit]# git status</div><div class="line"><span class="meta">#</span><span class="bash"> On branch master</span></div><div class="line"><span class="meta">#</span><span class="bash"> Changes to be committed:</span></div><div class="line"><span class="meta">#</span><span class="bash">   (use <span class="string">"git reset HEAD &lt;file&gt;..."</span> to unstage)</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash">    modified:   test_01.txt</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div></pre></td></tr></table></figure>
-<p>再次对test_01.txt文件进行修改：</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# <span class="keyword">cat</span> test_01.txt </div><div class="line">Git <span class="keyword">is</span> <span class="keyword">a</span> distributed <span class="keyword">version</span> control <span class="built_in">system</span>.</div><div class="line">Git <span class="keyword">is</span> free software distributed under the GPL.</div><div class="line">Git <span class="built_in">has</span> <span class="keyword">a</span> mutable <span class="built_in">index</span> called stage.</div><div class="line">Git tracks <span class="keyword">changes</span> of <span class="keyword">files</span>.</div></pre></td></tr></table></figure>
-<p>提交：</p>
-<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]<span class="comment"># git commit -m "git tracks changes"</span></div><div class="line">[<span class="keyword">master</span> <span class="title">d65f079</span>] git tracks changes</div><div class="line"> <span class="number">1</span> file changed, <span class="number">1</span> insertion(+)</div></pre></td></tr></table></figure>
-<p>查看状态：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"><span class="meta">#</span><span class="bash"> On branch master</span></div><div class="line"><span class="meta">#</span><span class="bash"> Changes not staged <span class="keyword">for</span> commit:</span></div><div class="line"><span class="meta">#</span><span class="bash">   (use <span class="string">"git add &lt;file&gt;..."</span> to update what will be committed)</span></div><div class="line"><span class="meta">#</span><span class="bash">   (use <span class="string">"git checkout -- &lt;file&gt;..."</span> to discard changes <span class="keyword">in</span> working directory)</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line"><span class="meta">#</span><span class="bash">    modified:   test_01.txt</span></div><div class="line"><span class="meta">#</span><span class="bash"></span></div><div class="line">no changes added to commit (use "git add" and/or "git commit -a")</div></pre></td></tr></table></figure>
-<p>我们发现第二次修改并没有被提交，我们查看一下操作流程：<br>第一次修改 -&gt; git add -&gt; 第二次修改 -&gt; git commit<br>前面我们说到Git管理的是修改，当你用git add命令后，在工作区的第一次修改被放入暂存区，准备提交，但是，在工作区的第二次修改并没有放入暂存区，所以，git commit只负责把暂存区的修改提交了，也就是第一次的修改被提交了，第二次的修改不会被提交。<br>提交后，用git diff HEAD – readme.txt命令可以查看工作区和版本库里面最新版本的区别：</p>
-<figure class="highlight diff"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@xwq testgit]# git add test_01.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# git diff HEAD -- test_01.txt</div><div class="line"></div><div class="line">diff --git a/test_01.txt b/test_01.txt</div><div class="line"></div><div class="line">index a9c5755..9520f67 100644</div><div class="line"></div><div class="line"><span class="comment">--- a/test_01.txt</span></div><div class="line"></div><div class="line"><span class="comment">+++ b/test_01.txt</span></div><div class="line"></div><div class="line"><span class="meta">@@ -1,4 +1,4 @@</span></div><div class="line"></div><div class="line"> Git is a distributed version control system.</div><div class="line"></div><div class="line"> Git is free software distributed under the GPL.</div><div class="line"></div><div class="line"> Git has a mutable index called stage.</div><div class="line"></div><div class="line"><span class="deletion">-Git tracks changes.</span></div><div class="line"></div><div class="line"><span class="addition">+Git tracks changes of files.</span></div></pre></td></tr></table></figure>
-<h1 id="撤销修改"><a href="#撤销修改" class="headerlink" title="撤销修改"></a>撤销修改</h1><p>假如你对test_01.txt进行了如下修改：</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# <span class="keyword">cat</span> test_01.txt </div><div class="line"></div><div class="line">Git <span class="keyword">is</span> <span class="keyword">a</span> distributed <span class="keyword">version</span> control <span class="built_in">system</span>.</div><div class="line"></div><div class="line">Git <span class="keyword">is</span> free software distributed under the GPL.</div><div class="line"></div><div class="line">Git <span class="built_in">has</span> <span class="keyword">a</span> mutable <span class="built_in">index</span> called stage.</div><div class="line"></div><div class="line">Git tracks <span class="keyword">changes</span> of <span class="keyword">files</span>.</div><div class="line"></div><div class="line">My stupid boss still prefers SVN.</div></pre></td></tr></table></figure>
-<p>要如何撤销修改呢？我们用git status命令查看一下</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> On branch master</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> Changes to be committed:</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">   (use <span class="string">"git reset HEAD &lt;file&gt;..."</span> to unstage)</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">    modified:   test_01.txt</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> Changes not staged <span class="keyword">for</span> commit:</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">   (use <span class="string">"git add &lt;file&gt;..."</span> to update what will be committed)</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">   (use <span class="string">"git checkout -- &lt;file&gt;..."</span> to discard changes <span class="keyword">in</span> working directory)</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">    modified:   test_01.txt</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"></span></div></pre></td></tr></table></figure>
-<p>其实Git已经告诉你如何撤销修改了，我们只要在命令行输入git checkout – test_01.txt就可以撤销修改：<br>命令git checkout – test_01.txt意思就是，把test_01.txt文件在工作区的修改全部撤销，这里有两种情况：<br>一种是test_01txt自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态；<br>一种是test_01.txt已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态.总之，就是让这个文件回到最近一次git commit或git add时的状态。</p>
-<p>我们现在来查看一下test_01.txt文件内容：</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">root@xwq testgit]# git checkout -- test_01.txt</div><div class="line"></div><div class="line">[root@xwq testgit]# <span class="keyword">cat</span> test_01.txt</div><div class="line"></div><div class="line">Git <span class="keyword">is</span> <span class="keyword">a</span> distributed <span class="keyword">version</span> control <span class="built_in">system</span>.</div><div class="line"></div><div class="line">Git <span class="keyword">is</span> free software distributed under the GPL.</div><div class="line"></div><div class="line">Git <span class="built_in">has</span> <span class="keyword">a</span> mutable <span class="built_in">index</span> called stage.</div><div class="line"></div><div class="line">Git tracks <span class="keyword">changes</span> of <span class="keyword">files</span></div></pre></td></tr></table></figure>
-<p>假如你不小心把文件已经用git add提交到暂存区了又该怎么办？<br>我们查看一下状态：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git status</div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> On branch master</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"> Changes to be committed:</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">   (use <span class="string">"git reset HEAD &lt;file&gt;..."</span> to unstage)</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"></span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash">    modified:   test_01.txt</span></div><div class="line"><span class="meta"></span></div><div class="line">#<span class="bash"></span></div></pre></td></tr></table></figure>
-<p>同样Git也告诉了我们如何做，用命令git reset HEAD file可以把暂存区的修改撤销掉（unstage），重新放回工作区：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@xwq testgit]</span># <span class="selector-tag">git</span> <span class="selector-tag">reset</span> <span class="selector-tag">HEAD</span> <span class="selector-tag">test_01</span><span class="selector-class">.txt</span></div><div class="line"></div><div class="line"><span class="selector-tag">Unstaged</span> <span class="selector-tag">changes</span> <span class="selector-tag">after</span> <span class="selector-tag">reset</span>:</div><div class="line"></div><div class="line"><span class="selector-tag">M</span>    <span class="selector-tag">test_01</span><span class="selector-class">.txt</span></div></pre></td></tr></table></figure>
-<p>git reset命令既可以回退版本，也可以把暂存区的修改回退到工作区。当我们用HEAD时，表示最新的版本。</p>
-<h1 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h1><p>如何在Git删除一个文件呢？ 我们创建一个文件来实验一下：</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="selector-attr">[root@xwq testgit]</span># <span class="selector-tag">vim</span> <span class="selector-tag">test_03</span><span class="selector-class">.txt</span></div><div class="line"></div><div class="line"><span class="selector-attr">[root@xwq testgit]</span># <span class="selector-tag">git</span> <span class="selector-tag">add</span> <span class="selector-tag">test_03</span><span class="selector-class">.txt</span></div><div class="line"></div><div class="line"><span class="selector-attr">[root@xwq testgit]</span># <span class="selector-tag">git</span> <span class="selector-tag">commit</span> <span class="selector-tag">-m</span> "<span class="selector-tag">add</span> <span class="selector-tag">test_03</span><span class="selector-class">.txt</span>"</div><div class="line"></div><div class="line"><span class="selector-attr">[master 436a7c1]</span> <span class="selector-tag">add</span> <span class="selector-tag">test_03</span><span class="selector-class">.txt</span></div><div class="line"></div><div class="line"> 1 <span class="selector-tag">file</span> <span class="selector-tag">changed</span>, 1 <span class="selector-tag">insertion</span>(+)</div><div class="line"></div><div class="line"> <span class="selector-tag">create</span> <span class="selector-tag">mode</span> 100644 <span class="selector-tag">test_03</span><span class="selector-class">.txt</span></div></pre></td></tr></table></figure>
-<p>我们可以用命令git rm test_03.txt直接删除</p>
-<h1 id="远程仓库"><a href="#远程仓库" class="headerlink" title="远程仓库"></a>远程仓库</h1><p>Git有一个杀手级的功能，就是远程仓库！！！没有之一！！！说他是世界最强也不为过！！！</p>
-<p>要想使用这个功能我们首先要注册一个GitHub账号。由于本地Git仓库和GitHub仓库之间的传输是通过SSH加密的，所以，需要一点设置：</p>
-<p>第1步：创建SSH Key。在用户主目录下，看看有没有.ssh目录，如果有，再看看这个目录下有没有id_rsa和id_rsa.pub这两个文件，如果已经有了，可直接跳到下一步。如果没有，打开Shell（Windows下打开Git Bash），创建SSH Key：</p>
-<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line">[root<span class="meta">@xwq</span> testgit]<span class="comment"># ssh-keygen -t rsa -C "1303460512@qq.com"</span></div><div class="line"></div><div class="line">Generating public/private rsa key pair.</div><div class="line"></div><div class="line">Enter file in which to save the key (/root/.ssh/id_rsa):</div><div class="line"></div><div class="line">Created directory '/root/.ssh'.</div><div class="line"></div><div class="line">Enter passphrase (empty for no passphrase):</div><div class="line"></div><div class="line">Enter same passphrase again:</div><div class="line"></div><div class="line">Your identification has been saved in /root/.ssh/id_rsa.</div><div class="line"></div><div class="line">Your public key has been saved in /root/.ssh/id_rsa.pub.</div><div class="line"></div><div class="line">The key fingerprint is:</div><div class="line"></div><div class="line">02:58:bd:65:5c:dc:12:78:4f:fe:bf:6e:5e:e9:84:79 1303460512<span class="meta">@qq.com</span></div><div class="line"></div><div class="line">The key's randomart image is:</div><div class="line"></div><div class="line">+--[ RSA 2048]----+</div><div class="line"></div><div class="line">|<span class="string">    .. . +oo     </span>|</div><div class="line"></div><div class="line">|<span class="string">   o  . = + o    </span>|</div><div class="line"></div><div class="line">|<span class="string">  . .  + . =     </span>|</div><div class="line"></div><div class="line">|<span class="string">     ..     o    </span>|</div><div class="line"></div><div class="line">|<span class="string">      . S    .   </span>|</div><div class="line"></div><div class="line">|<span class="string">       .      + .</span>|</div><div class="line"></div><div class="line">|<span class="string">             o E.</span>|</div><div class="line"></div><div class="line">|<span class="string">              +.o</span>|</div><div class="line"></div><div class="line">|<span class="string">              +=.</span>|</div><div class="line"></div><div class="line">+-----------------+</div></pre></td></tr></table></figure>
-<p>输入命令一路回车即可，保持默认即可<figure class="highlight markdown"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">如果一切顺利的话，可以在用户主目录里找到.ssh目录，里面有id<span class="emphasis">_rsa和id_</span>rsa.pub两个文件，这两个就是SSH Key的秘钥对，id<span class="emphasis">_rsa是私钥，不能泄露出去，id_</span>rsa.pub是公钥，可以放心地告诉任何人。</div><div class="line"></div><div class="line">第2步：登陆GitHub，打开GitHub添加key页面：https://github.com/settings/keys</div><div class="line"></div><div class="line">![<span class="string">git笔记5</span>](<span class="link">http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B05.png</span>)</div><div class="line">![<span class="string">git笔记6</span>](<span class="link">http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B06.png</span>)</div><div class="line"></div><div class="line">为什么要添加ssh key呢？不解释自行谷歌</div></pre></td></tr></table></figure></p>
-<h1 id="添加远程库"><a href="#添加远程库" class="headerlink" title="添加远程库"></a>添加远程库</h1><p>现在我们既有了本地仓库又有了github里远程仓库，问题来了如何把本地仓里文件备份到远程库里呢？</p>
-<p>第一步：我们登陆github，然后我们创建一个新的仓库<br><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B07.png" alt="git笔记7"><br><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B08.png" alt="git笔记8"></p>
-<p>接下来我们按照github的提示将我们本地库添加到远程库里，运行如下命令</p>
-<figure class="highlight livescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]<span class="comment"># git remote add origin https://github.com/wenqiuan/test_01.git</span></div><div class="line"></div><div class="line">[root@xwq testgit]<span class="comment"># git push -u origin master</span></div><div class="line"></div><div class="line">Username <span class="keyword">for</span> <span class="string">'https://github.com'</span>: wenqiuan</div><div class="line"></div><div class="line">Password <span class="keyword">for</span> <span class="string">'https://wenqiuan@github.com'</span>: </div><div class="line"></div><div class="line">fatal: unable <span class="keyword">to</span> access <span class="string">'https://github.com/wenqiuan/test_01.git/'</span>: Empty reply <span class="keyword">from</span> server</div></pre></td></tr></table></figure>
-<p>发现无法上传文件，我们把linux的防火墙关闭~~~</p>
-<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]<span class="comment"># systemctl status firewalld（查看linux防火墙状态）</span></div><div class="line"></div><div class="line">firewalld.service - firewalld - dynamic firewall daemon</div><div class="line"></div><div class="line">  Loaded: loaded <span class="params">(/usr/lib/systemd/system/firewalld.service; enabled)</span></div><div class="line"></div><div class="line">  Active: active <span class="params">(running)</span> since Thu 2017-04-13 19<span class="function">:31</span><span class="function">:06</span> EDT; 2h 48min ago</div><div class="line"></div><div class="line">Main PID: 1047 <span class="params">(firewalld)</span></div><div class="line"></div><div class="line">  CGroup: <span class="string">/system.slice/firewalld.service</span></div><div class="line"></div><div class="line">          └─1047 <span class="string">/usr/bin/python</span> -Es <span class="string">/usr/sbin/firewalld</span> <span class="params">--nofork</span> <span class="params">--nopid</span></div><div class="line"></div><div class="line">Apr 13 19<span class="function">:31</span><span class="function">:06</span> xwq systemd[1]: Started firewalld - dynamic firewall daemon.</div><div class="line"></div><div class="line">[root@xwq testgit]<span class="comment"># systemctl stop firewalld（关闭防火墙）</span></div><div class="line"></div><div class="line">[root@xwq testgit]<span class="comment"># systemctl disable firewalld（永久关闭防火墙）</span></div><div class="line"></div><div class="line">rm '<span class="string">/etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service</span>'</div><div class="line"></div><div class="line">rm '<span class="string">/etc/systemd/system/basic.target.wants/firewalld.service</span>'</div></pre></td></tr></table></figure>
-<p>再次运行上传命令：</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]# git remote rm origin</div><div class="line">[root@xwq testgit]# git remote <span class="built_in">add</span> origin http<span class="variable">s:</span>//github.<span class="keyword">com</span>/wenqiuan/test_01.git</div><div class="line">[root@xwq testgit]# git push -<span class="keyword">u</span> origin master</div><div class="line">Username <span class="keyword">for</span> <span class="string">'https://github.com'</span>: wenqiuan</div><div class="line">Password <span class="keyword">for</span> <span class="string">'https://wenqiuan@github.com'</span>: </div><div class="line">Counting object<span class="variable">s:</span> <span class="number">28</span>, done.</div><div class="line">Delta compression using <span class="keyword">up</span> <span class="keyword">to</span> <span class="number">2</span> threads.</div><div class="line">Compressing object<span class="variable">s:</span> <span class="number">100</span>% (<span class="number">22</span>/<span class="number">22</span>), done.</div><div class="line">Writing object<span class="variable">s:</span> <span class="number">100</span>% (<span class="number">28</span>/<span class="number">28</span>), <span class="number">2.20</span> KiB | <span class="number">0</span> bytes/s, done.</div><div class="line">Total <span class="number">28</span> (delta <span class="number">7</span>), reused <span class="number">0</span> (delta <span class="number">0</span>)</div><div class="line">remote: Resolving delta<span class="variable">s:</span> <span class="number">100</span>% (<span class="number">7</span>/<span class="number">7</span>), done.</div><div class="line">To http<span class="variable">s:</span>//github.<span class="keyword">com</span>/wenqiuan/test_01.git</div><div class="line"> * [<span class="keyword">new</span> branch]      master -&gt; master</div><div class="line">Branch master <span class="keyword">set</span> <span class="keyword">up</span> <span class="keyword">to</span> track remote branch master from origin.</div></pre></td></tr></table></figure>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B09.png" alt="git笔记9"></p>
-<p>成功的把本地库推送到远程库<br>从现在起，只要本地作了提交，就可以通过命令：git push origin master<br>把本地master分支的最新修改推送至GitHub，现在，你就拥有了真正的分布式版本库！</p>
-<h1 id="从远程库克隆"><a href="#从远程库克隆" class="headerlink" title="从远程库克隆"></a>从远程库克隆</h1><p>现在我们有了本地库也有了远程库，我们现在来聊一下如何克隆远程库<br>第一步：登陆GitHub,创建一个新的仓库，名字就叫test_clone</p>
-<p><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B010.png" alt="git笔记10"><br><img src="http://oozms7qtq.bkt.clouddn.com/git%E7%AC%94%E8%AE%B011.png" alt="git笔记11"></p>
-<p>现在我们有了远程库了，接下来我们把远程库克隆下了，用如下命令：</p>
-<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">[root@xwq testgit]<span class="meta"># git clone git@github.com:wenqiuan/test_clone.git</span></div><div class="line"></div><div class="line">Cloning <span class="keyword">into</span> <span class="comment">'test_clone'...</span></div><div class="line"></div><div class="line">The authenticity <span class="keyword">of</span> host <span class="comment">'github.com (192.30.255.113)' can't be established.</span></div><div class="line"></div><div class="line">RSA <span class="keyword">key</span> fingerprint <span class="keyword">is</span> <span class="number">16</span>:<span class="number">27</span>:ac:a5:<span class="number">76</span>:<span class="number">28</span>:<span class="number">2</span>d:<span class="number">36</span>:<span class="number">63</span>:<span class="number">1</span>b:<span class="number">56</span>:<span class="number">4</span>d:eb:df:a6:<span class="number">48.</span></div><div class="line"></div><div class="line">Are you sure you want <span class="keyword">to</span> <span class="keyword">continue</span> connecting (yes/no)? yes</div><div class="line"></div><div class="line">Warning: Permanently added <span class="comment">'github.com,192.30.255.113' (RSA) to the list of known hosts.</span></div><div class="line"></div><div class="line">remote: Counting objects: <span class="number">3</span>, done.</div><div class="line"></div><div class="line">remote: Total <span class="number">3</span> (delta <span class="number">0</span>), reused <span class="number">0</span> (delta <span class="number">0</span>), pack-reused <span class="number">0</span></div><div class="line"></div><div class="line">Receiving objects: <span class="number">100</span>% (<span class="number">3</span>/<span class="number">3</span>), done.</div><div class="line"></div><div class="line">[root@xwq testgit]<span class="meta"># cd test_clone/</span></div><div class="line"></div><div class="line">[root@xwq test_clone]<span class="meta"># ls</span></div><div class="line"></div><div class="line">README.md</div></pre></td></tr></table></figure>
-<p>成功克隆！！！</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;工作区和暂存区&quot;&gt;&lt;a href=&quot;#工作区和暂存区&quot; class=&quot;headerlink&quot; title=&quot;工作区和暂存区&quot;&gt;&lt;/a&gt;工作区和暂存区&lt;/h1&gt;&lt;p&gt;我们在testgit文件夹下创建一个文件test_02.txt&lt;/p&gt;
-&lt;figure class=
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Git学习" scheme="http://yjscloud.com/tags/Git%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
