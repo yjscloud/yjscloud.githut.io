@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%AD%98%E5%82%A8%E6%B1%A0%E9%85%8D%E7%BD%AE/</loc>
+    <lastmod>2017-10-26T07:34:23.000Z</lastmod>
+    <data>
+        <display>
+        <title>kvm学习笔记（八）-kvm虚拟机存储池配置</title>
+        <pubTime>2017-10-20T04:56:21.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>KVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-KVM%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/</loc>
+    <lastmod>2017-10-26T07:32:31.000Z</lastmod>
+    <data>
+        <display>
+        <title>kvm学习笔记（二）-KVM基础学习</title>
+        <pubTime>2017-10-17T20:06:18.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>KVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/10/26/LVS-Keepalived-%E5%AE%9E%E7%8E%B0%E9%AB%98%E5%8F%AF%E7%94%A8Web%E9%9B%86%E7%BE%A4/</loc>
+    <lastmod>2017-10-26T07:29:36.000Z</lastmod>
+    <data>
+        <display>
+        <title>LVS + Keepalived 实现高可用Web集群</title>
+        <pubTime>2017-10-26T05:23:40.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>keepalived</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术分享" url="http://yjscloud.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/09/13/LVS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2017-10-26T07:29:29.000Z</lastmod>
+    <data>
+        <display>
+        <title>LVS学习笔记</title>
+        <pubTime>2017-09-13T02:47:43.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>keepalived</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%BF%AB%E7%85%A7%E5%A4%87%E4%BB%BD/</loc>
+    <lastmod>2017-10-20T02:17:33.000Z</lastmod>
+    <data>
+        <display>
+        <title>kvm学习笔记（四）-kvm虚拟机快照备份</title>
+        <pubTime>2017-10-19T23:42:15.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>KVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%9C%A8%E7%BA%BF%E6%89%A9%E5%B1%95%E7%A3%81%E7%9B%98/</loc>
+    <lastmod>2017-10-20T02:17:03.000Z</lastmod>
+    <data>
+        <display>
+        <title>kvm学习笔记（五）-kvm虚拟机在线扩展磁盘</title>
+        <pubTime>2017-10-20T01:08:07.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>KVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%9D%99%E6%80%81%E8%BF%81%E7%A7%BB/</loc>
+    <lastmod>2017-10-20T02:16:33.000Z</lastmod>
+    <data>
+        <display>
+        <title>kvm学习笔记（六）-kvm虚拟机静态迁移</title>
+        <pubTime>2017-10-20T01:28:43.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>KVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%83%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%8A%A8%E6%80%81%E8%BF%81%E7%A7%BB/</loc>
+    <lastmod>2017-10-20T02:15:59.000Z</lastmod>
+    <data>
+        <display>
+        <title>kvm学习笔记（七）-kvm虚拟机动态迁移</title>
+        <pubTime>2017-10-20T01:49:46.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>KVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-%E8%AE%BE%E7%BD%AEVNC%E5%92%8C%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5/</loc>
+    <lastmod>2017-10-19T23:43:46.000Z</lastmod>
+    <data>
+        <display>
+        <title>kvm学习笔记（三）-设置VNC和时间同步</title>
+        <pubTime>2017-10-19T18:54:34.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>KVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/09/17/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%EF%BC%88%E4%BA%8C%EF%BC%89/</loc>
+    <lastmod>2017-10-18T05:30:28.000Z</lastmod>
+    <data>
+        <display>
+        <title>CloudStack搭建指南（二）</title>
+        <pubTime>2017-09-17T12:14:12.000Z</pubTime>
+        
+        <tag>Linux技术</tag>
+         
+        <tag>CloudStack</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术分享" url="http://yjscloud.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/09/19/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%EF%BC%88%E4%B8%89%EF%BC%89/</loc>
+    <lastmod>2017-10-18T05:30:13.000Z</lastmod>
+    <data>
+        <display>
+        <title>CloudStack搭建指南（三）</title>
+        <pubTime>2017-09-19T06:11:56.000Z</pubTime>
+        
+        <tag>Linux技术</tag>
+         
+        <tag>CloudStack</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术分享" url="http://yjscloud.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/09/15/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
+    <lastmod>2017-10-18T05:29:56.000Z</lastmod>
+    <data>
+        <display>
+        <title>CloudStack搭建指南（一）</title>
+        <pubTime>2017-09-15T02:49:46.000Z</pubTime>
+        
+        <tag>Linux技术</tag>
+         
+        <tag>CloudStack</tag>
+         
+         
+           
+             
+              <breadCrumb title="技术分享" url="http://yjscloud.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89-%E8%99%9A%E6%8B%9F%E5%8C%96%E4%BB%8B%E7%BB%8D/</loc>
+    <lastmod>2017-10-17T20:05:18.000Z</lastmod>
+    <data>
+        <display>
+        <title>kvm学习笔记（一）——虚拟化介绍</title>
+        <pubTime>2017-10-17T19:04:16.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+        <tag>KVM</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+  <url>
+    <loc>http://yjscloud.com/2017/05/01/hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97/</loc>
+    <lastmod>2017-10-17T13:25:39.000Z</lastmod>
+    <data>
+        <display>
+        <title>hexo博客搭建指南</title>
+        <pubTime>2017-05-01T11:14:56.000Z</pubTime>
+        
+        <tag>hexo</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/05/08/Linux%E7%A3%81%E7%9B%98%E5%88%92%E5%88%86/</loc>
+    <lastmod>2017-05-12T05:22:03.000Z</lastmod>
+    <data>
+        <display>
+        <title>Linux磁盘划分</title>
+        <pubTime>2017-05-08T14:25:09.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/05/12/Web%E5%AE%89%E5%85%A8%E9%98%B2%E5%BE%A1%E4%B9%8B%E5%88%9D%E6%8E%A2WAF/</loc>
+    <lastmod>2017-05-12T01:10:22.000Z</lastmod>
+    <data>
+        <display>
+        <title>Web安全防御之初探WAF</title>
+        <pubTime>2017-05-11T23:44:59.000Z</pubTime>
+        
+        <tag>Linux技术</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/05/08/Linux%E6%96%87%E4%BB%B6%E6%9F%A5%E6%89%BE-find%E5%91%BD%E4%BB%A4/</loc>
+    <lastmod>2017-05-08T02:18:58.000Z</lastmod>
+    <data>
+        <display>
+        <title>Linux文件查找-find命令</title>
+        <pubTime>2017-05-08T01:31:19.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/05/03/vim%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B/</loc>
+    <lastmod>2017-05-03T14:01:23.000Z</lastmod>
+    <data>
+        <display>
+        <title>vim入门教程</title>
+        <pubTime>2017-05-03T13:09:05.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/04/25/%E5%A6%82%E4%BD%95%E5%9C%A8redhat-7%E4%B8%8A%E5%AE%89%E8%A3%85VNC%E6%9C%8D%E5%8A%A1%E5%99%A8/</loc>
+    <lastmod>2017-05-02T03:46:49.000Z</lastmod>
+    <data>
+        <display>
+        <title>如何在redhat 7上安装VNC服务器</title>
+        <pubTime>2017-04-25T00:05:55.000Z</pubTime>
+        
+        <tag>Linux技术</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-2/</loc>
+    <lastmod>2017-05-02T03:43:15.000Z</lastmod>
+    <data>
+        <display>
+        <title>Git学习笔记(2)</title>
+        <pubTime>2017-04-25T15:27:29.000Z</pubTime>
+        
+        <tag>Git学习</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/04/25/Git%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</loc>
+    <lastmod>2017-05-02T03:41:31.000Z</lastmod>
+    <data>
+        <display>
+        <title>Git学习笔记（1）</title>
+        <pubTime>2017-04-24T23:15:57.000Z</pubTime>
+        
+        <tag>Git学习</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/04/26/redhat-7%E5%AE%89%E8%A3%85CentOS-7-yum%E6%BA%90/</loc>
+    <lastmod>2017-05-02T03:38:49.000Z</lastmod>
+    <data>
+        <display>
+        <title>redhat 7安装CentOS 7 yum源</title>
+        <pubTime>2017-04-25T23:36:38.000Z</pubTime>
+        
+        <tag>Linux技术</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/05/02/bash%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/</loc>
+    <lastmod>2017-05-02T03:36:31.000Z</lastmod>
+    <data>
+        <display>
+        <title>bash基础特性</title>
+        <pubTime>2017-05-02T03:16:28.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2017/05/02/linux%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</loc>
+    <lastmod>2017-05-02T03:13:58.000Z</lastmod>
+    <data>
+        <display>
+        <title>linux正则表达式</title>
+        <pubTime>2017-05-02T02:54:46.000Z</pubTime>
+        
+        <tag>Linux学习笔记</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习笔记" url="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+</urlset>
