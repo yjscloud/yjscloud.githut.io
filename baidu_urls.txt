@@ -13,6 +13,7 @@ http://yjscloud.com/2017/09/17/CloudStack搭建指南（二）/
 http://yjscloud.com/2017/09/15/CloudStack搭建指南（一）/
 http://yjscloud.com/2017/09/13/LVS学习笔记/
 http://yjscloud.com/2017/05/12/Web安全防御之初探WAF/
+http://yjscloud.com/2017/05/09/Linux学习笔记（九）-LVM/
 http://yjscloud.com/2017/05/08/Linux学习笔记（八）-防火墙/
 http://yjscloud.com/2017/05/07/Linux学习笔记（七）-守护进程/
 http://yjscloud.com/2017/05/06/Linux学习笔记（六）-SELinux/

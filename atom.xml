@@ -1992,6 +1992,195 @@ access_by_lua_file &quot;/usr/local/openresty/nginx/conf/waf/access.lua&quot;;
   </entry>
   
   <entry>
+    <title>Linux学习笔记（九）-LVM</title>
+    <link href="http://yjscloud.com/2017/05/09/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B9%9D%EF%BC%89-LVM/"/>
+    <id>http://yjscloud.com/2017/05/09/Linux学习笔记（九）-LVM/</id>
+    <published>2017-05-09T12:14:57.000Z</published>
+    <updated>2017-12-02T12:59:05.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="为什么要使用LVM"><a href="#为什么要使用LVM" class="headerlink" title="为什么要使用LVM"></a>为什么要使用LVM</h1><p>问题：</p>
+<p>(1) Windows系统中常常出现的问题：</p>
+<p>电脑使用久了，某个分区（特别是C盘）不够用了。</p>
+<p>解决方案：使用特殊的工具软件，进行调整，或者再加一个硬盘，然后再创建一个大一点的分区，并把数据复制过去。总之，非常麻烦、耗时！</p>
+<p>(2) Linux系统中也存在类似问题：</p>
+<p>使用一段时间后，/home对应的分区不够用了，导致不能再在这个目录内添加数据，甚至不能创建用户。</p>
+<p>解决方案：和Windows类似，创建1个更大的分区，然后进行复制。</p>
+<p>分析：以上问题的根本原因，在于分区的大小不能改变！分区太小了不够用，太大了又浪费。</p>
+<p>解决方案：   </p>
+<p>使用LVM（逻辑卷管理器）</p>
+<p>LVM，可以弹性的调整文件系统的容量</p>
+<p>LVM，可以调整“分区”（实际上是“逻辑卷”）的大小</p>
+<h1 id="LVM的概念"><a href="#LVM的概念" class="headerlink" title="LVM的概念"></a>LVM的概念</h1><p>理解：逻辑卷，如果荆轲刺秦是使用的画卷，可以随意变长变短。</p>
+<p>基础概念：</p>
+<p>(1)物理卷（PV）</p>
+<p>Physical Volume</p>
+<p>LVM中最底层的就是物理卷PV</p>
+<p>原来的物理分区，需要转换为物理卷PV（把分区的分区类型编码改为8e即可）</p>
+<p>(2)卷组 / 卷用户组（VG）</p>
+<p>多个PV组成一个VG</p>
+<p>VG相当于标准分区中的“磁盘”</p>
+<p>VG最多可包含65534个PE，但是PE大小可调整</p>
+<p>(3)物理扩展块 / 物理区域（PE）</p>
+<p>Physical Extend</p>
+<p>是PV中可用于分配的最小存储单元</p>
+<p>PE相当于标准分区中的“扇区”</p>
+<p>PE的大小在创建VG时指定，默认为4MiB（可调整），一旦确定后不能修改。</p>
+<p>同一VG中的所有PE大小必须一致，新的PV加入到vg后，PE的大小自动更改为VG中定义的PE大小。</p>
+<p>(4)逻辑卷（LV）</p>
+<p>1个VG可“切”成多个LV</p>
+<p>LV的设备文件名一般取“/dev/VG的名称/LV的名称”</p>
+<p>LV在功能上，相当于标准分区中的物理分区。</p>
+<p>注意：LV中包含多个PE, 有的已经使用，有的还没有使用，但不存在“空闲”的PE, 其中的PE都属于该LV,PV中包含多个PE, 可分配给多个不同的LV, 还没有分配给LV的，就称为“空间“(free)的PE</p>
+<p>(5)逻辑扩展块 / 逻辑区域（LE）</p>
+<p>LE是LV中可用于分配的最小存储单元，</p>
+<p>LE的大小取决于LV所在VG中的PE大小（大小相等）</p>
+<p>原理图示</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/2.11.png" alt="2.11"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/2.12.png" alt="2.12"></p>
+<p>小结:LVM可实现，在不影响已有数据的情况下，动态方便地改变文件系统的容量。</p>
+<h1 id="LVM的使用"><a href="#LVM的使用" class="headerlink" title="LVM的使用"></a>LVM的使用</h1><p>（1）准备物理设备</p>
+<p>即使用fdisk或gdisk创建一个物理分区，并把分区的类型设置为8e（MBR分区）或8e00(GPT分区)</p>
+<pre><code># fdisk  /dev/vda
+</code></pre><p>（2）创建PV</p>
+<p>把物理分区，“转换”为物理卷PV</p>
+<pre><code># pvcreate     /dev/vda1    /dev/vda2
+</code></pre><p>或：</p>
+<pre><code># pvcreate   /dev/vda1  
+</code></pre><p>pvcreate命令可同时对多个分区进行转换。</p>
+<p>（3）创建VG（卷组 / 卷用户组）</p>
+<p>一个VG可包含多个PV</p>
+<p>可创建多个VG .</p>
+<pre><code># vgcreate   vg-alpha   /dev/vda1    /dev/vda2
+</code></pre><p>创建了一个卷组，名为vg-alpha,  该卷组中包含两个PV（/dev/sda1和/dev/sda2）</p>
+<p>注意： 物理分区和物理卷，都使用相同的 设备文件名，比如  /dev/sda1</p>
+<p>（4）创建LV</p>
+<p>从卷组vg中可“切割“出多个LV</p>
+<pre><code># lvcreate    -n  lv1   -L   100M   vg-alpha
+</code></pre><p>从卷组vg-alpha中，创建一个LV, 名称为lv1,  大小为100MiB</p>
+<p>lv1对应设备文件名为：  /dev/vg-alpha/lv1</p>
+<pre><code># lvcreate  -n  lv2   -l   10   vg-alpha
+</code></pre><p>从卷组vg-alpha中，创建一个LV, 名称为lv2,  大小为10个PE</p>
+<p>lv2对应设备文件名为：  /dev/vg-alpha/lv2</p>
+<p>逻辑卷的对应的设备名（又称path）： /dev/卷组名/逻辑卷名  </p>
+<p>（5）格式化LV</p>
+<p>和格式化物理分区的方式相同。</p>
+<pre><code># mkfs  -t   xfs   /dev/vg-alpha/lv1
+</code></pre><p>（6)挂载LV</p>
+<p>和挂载物理分区的方式相同。</p>
+<pre><code># mkdir   /mnt/data1 
+# mount   /dev/vg-alpha/lv1    /mnt/data1
+</code></pre><p>(7)永久挂载</p>
+<p>在/etc/fstab中添加：</p>
+<pre><code>/dev/vg-alpha/lv1       /mnt/data1      xfs      defaults    1    3
+
+# mount  -a
+</code></pre><p>(8)删除LV</p>
+<p>和删除物理分区的方式类似。</p>
+<p>删除准备：</p>
+<p>1）先把需要保留的数据移动到另一个文件系统。</p>
+<p>2) 卸载该LV</p>
+<pre><code># umount   /mnt/data1
+</code></pre><p>删除LV:</p>
+<pre><code># lvremove  /dev/vg-alpha/lv1
+</code></pre><p>注意：删除LV后，该LV中包含的PE，可分配给已有的LV或新的LV</p>
+<p>(9)删除VG</p>
+<pre><code># vgremove   vg-alpha
+</code></pre><p>说明：删除VG后，该VG中包含的PV，并没有被删除，可分配给已有的VG或新的VG。</p>
+<p>(10)删除PV</p>
+<p>PV和对应的物理分区，使用相同的设备文件名。</p>
+<p>删除PV, 是指删除它的PV属性，“还原”为原来的特性，比如为“物理分区”</p>
+<p>删除 PV后， 该PV就不存在了，但是所来所对应的物理分区还存在！</p>
+<pre><code># pvremove   /dev/vda1     /dev/vda2
+</code></pre><p>(11)查看LVM的状态信息</p>
+<p>1）查看物理卷的信息（pvdisplay）</p>
+<pre><code># pvdisplay    /dev/vda2
+</code></pre><p>查看指定物理卷/dev/vda2的状态信息。</p>
+<pre><code># pvdisplay    
+</code></pre><p>查看所有物理卷的状态信息。</p>
+<p>2）查看卷组的信息（vgdisplay）</p>
+<pre><code>#  vgdisplay     vg-alpha
+</code></pre><p>查看指定卷组的信息</p>
+<pre><code>#  vgdisplay
+</code></pre><p>查看所有卷组的信息</p>
+<p>3）查看逻辑卷的信息 （lvdisplay）</p>
+<pre><code>#  lvdisplay    /dev/vg-alpha/lv1
+</code></pre><p>查看指定逻辑卷的信息。</p>
+<pre><code># lvdisplay 
+</code></pre><p>查看所有逻辑卷的信息</p>
+<p>（12）扩展/缩减卷组VG </p>
+<p>扩展VG</p>
+<p>把额外的物理卷PV添加到VG， 使得该VG有更多的PE分配给逻辑卷LV</p>
+<pre><code>#fdisk  /dev/vdb
+</code></pre><p>准备好一个PV, 可创建一个新的分区再转换为PV，或者使用已有的不使用的PV</p>
+<pre><code># vgextend   vg-alpha    /dev/vdb2
+</code></pre><p>把物理卷/dev/vdb2添加到卷组vg-alpha中。</p>
+<pre><code># vgdisplay   vg-alpha
+</code></pre><p>扩展后，检查VG是否增加可用的PE (free  PE字段)</p>
+<p>缩减VG</p>
+<p>把物理卷PV从VG中删除</p>
+<p>需要两个步骤：</p>
+<p>步骤1）把该PV上的所有PE移动（实质是“复制”）到该VG中（或该VG中指定的）含有空闲PE的PV中</p>
+<p>方式1：</p>
+<pre><code># pvmove    /dev/vdb2
+</code></pre><p>把物理卷/dev/vdb2中的所有PE移动（实质是“复制”）到该VG中含有空闲PE的PV中</p>
+<p>方式2：</p>
+<pre><code># pvmove    /dev/vdb2    /dev/vdb1
+</code></pre><p>把物理卷/dev/vdb2中的所有PE移动（实质是“复制”）到该VG中的物理卷vdb1</p>
+<p>步骤2）把PV从VG中删除</p>
+<pre><code># vgreduce     vg-alpha   /dev/vdb2
+</code></pre><p>把物理卷/dev/vdb2从卷组vg-alpha中删除，但是该物理卷本身并不删除。</p>
+<p>3）补充</p>
+<p>PV从VG中删除后，成为未使用的PV, 该PV可添加到其他的VG中，</p>
+<p>也可以删除它的PV属性，“还原”为原来的特性，比如为“物理分区”。</p>
+<pre><code># pvremove     /dev/vdb2
+</code></pre><p>把物理卷/dev/vdb2的PV属性删除，成为原来的物理分区。</p>
+<p>（13）扩展逻辑卷LV </p>
+<p>扩展LV</p>
+<p>扩展LV需要3个步骤：</p>
+<p>1） 检查LV所在的VG中是否还有空闲的PE</p>
+<pre><code>#  vgdisplay   vg-alpha
+</code></pre><p>检查 Free  PE字段</p>
+<p>如果还有足够的PE，才能扩展LV，</p>
+<p>如果没有足够的PE, 那应该先扩展VG</p>
+<p>2）扩展LV</p>
+<pre><code># lvextend   -L   +300M   /dev/vg-alpha/lv1
+</code></pre><p>把逻辑卷lv1增加 300MiB空间。</p>
+<p>选项用法：</p>
+<pre><code>-L   +300M    增加300MiB
+-L   300M      设置为300MB
+-l    +100      增加100个PE
+-l    100        设置为100个PE
+-l    +50%FREE    增加VG中可用空间的50%
+</code></pre><p>3） 扩展文件系统</p>
+<p>即，需要把扩展后的LV对应的文件系统（挂载点）进行“更新”一下。</p>
+<p>否则LV扩展了，但是对应的文件系统并不会扩展。</p>
+<p>有两种方式：</p>
+<p>方式1：（适用于XFS文件系统）</p>
+<pre><code>#  xfs_growfs      /mnt/data1
+</code></pre><p>xfs_growfs的参数为lv的挂载点。</p>
+<p>方式2：（适用于ext4文件系统）</p>
+<pre><code>#  resize2fs    /dev/vg-alpha/lv1
+</code></pre><p>resize2fs的参数为逻辑卷的完整设备文件名</p>
+<p>补充：查看分区、逻辑卷的的文件系统格式</p>
+<pre><code># df  -T 
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;为什么要使用LVM&quot;&gt;&lt;a href=&quot;#为什么要使用LVM&quot; class=&quot;headerlink&quot; title=&quot;为什么要使用LVM&quot;&gt;&lt;/a&gt;为什么要使用LVM&lt;/h1&gt;&lt;p&gt;问题：&lt;/p&gt;
+&lt;p&gt;(1) Windows系统中常常出现的问题：&lt;/p&gt;
+&lt;p&gt;电
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Linux学习笔记（八）-防火墙</title>
     <link href="http://yjscloud.com/2017/05/08/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89-%E9%98%B2%E7%81%AB%E5%A2%99/"/>
     <id>http://yjscloud.com/2017/05/08/Linux学习笔记（八）-防火墙/</id>
@@ -2627,173 +2816,6 @@ s/要查找的内容/替换为的内容/修饰符
     <summary type="html">
     
       &lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;p&gt;Vim（Vi[Improved]）编辑器是功能强大的跨平台文本文件编辑工具，继承自Unix系统的Vi编辑器，支持Linux/Mac OS X
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux学习笔记（四）-bash基础特性</title>
-    <link href="http://yjscloud.com/2017/05/04/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-bash%E5%9F%BA%E7%A1%80%E7%89%B9%E6%80%A7/"/>
-    <id>http://yjscloud.com/2017/05/04/Linux学习笔记（四）-bash基础特性/</id>
-    <published>2017-05-04T03:16:28.000Z</published>
-    <updated>2017-12-02T09:44:07.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="bash中的变量类型："><a href="#bash中的变量类型：" class="headerlink" title="bash中的变量类型："></a>bash中的变量类型：</h2><p> 根据变量的生效范围等标准：</p>
-<pre><code>本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效
-环境变量：生效范围当前shell进程和子进程
-局部变量：生效范围为当前shell进程中某代码片段（通常指函数）
-位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数
-特殊变量：$?,$0,$*,$#,$@
-</code></pre><h3 id="本地变量"><a href="#本地变量" class="headerlink" title="本地变量"></a>本地变量</h3><p>  变量赋值：name=’value’</p>
-<pre><code>可以使用引用：
-    value:
-         (1）可以是直接字符;name=&quot;username&quot;
-        （2）变量引用：name=&quot;$username&quot;
-         (3)命令引用：name=`COMMAND` ,name=$(COMMAND)
-        变量引用：${name},$name
-            &quot;&quot;:弱引用，其中的变量引用会被替换为变量值；
-            &apos;&apos;:强引用，其中的变量引用不会被替换为变量值，而保持原字符串；
-        显示已定义的所有变量
-            set
-        销毁变量
-            unset name
-</code></pre><h3 id="环境变量："><a href="#环境变量：" class="headerlink" title="环境变量："></a>环境变量：</h3><pre><code> 变量声明、赋值：
-     export name=VALUE
-     declare -x name=VALUE
-     变量引用：$name,${name}
-     显示所有环境变量：
-         export
-         env
-         printenv
-     销毁：
-         unset name
-
-     bash有许多内建的环境变量：PATH,SHELL,UID,HISISZE,HOME,PWD,OLD
-
-变量命名法则：
-     1、不能使程序中的保留字，例如if ，for；
-     2、只能使用数字、字母及下划线，且不能一以数字开头
-     3、见名知义：驼峰命名法（尽量不要用大写字母）
-
- 只读变量：
-     readonly name
-     declare -r name
-</code></pre><h3 id="位置变量："><a href="#位置变量：" class="headerlink" title="位置变量："></a>位置变量：</h3><pre><code>在脚本代码中调用通过命令行传递给脚本参数
-    $1,$2,...:对应调用第1、第2等参数
-    $0:命令本身
-    $*：传递给脚本的所有参数
-    $@:传递给脚本的所有参数
-  $#:传递给脚本的参数的个数
-
-实例：判段给出的文件的行数
-    #!/bin/bash
-    linecount=&quot;$(wc -1 $1| cut -d&apos;&apos; -f1)&quot;
-    echo &quot;$1 has $linecount line.&quot;
-</code></pre><h2 id="bash的配置文件："><a href="#bash的配置文件：" class="headerlink" title="bash的配置文件："></a>bash的配置文件：</h2><pre><code>按生效范围划分，存在两类：
-    全局配置：
-        /etc/profile
-            /etc/profile.d/*.sh
-        /etc/bashrc
-    个人配置：        
-        ~/.bash_profile
-        ~./bashrc
-
-按功能划分，存在两类：
-    profile类：为交互式登陆的shell提供配置
-        全局：/etc/profile,/ect/profile.d/*.sh
-        个人：~/.bash_profile
-        功用：
-            （1）用于定义环境变量
-            （2）运行命令或脚本
-    bashrc类：为非交互式登陆的shell提供配置
-      全局： /etc/bashrc
-      个人：~/.bashrc
-
-      功用：
-          （1）定义命令别名
-           (2）定义本地变量
-</code></pre><h2 id="shell登录："><a href="#shell登录：" class="headerlink" title="shell登录："></a>shell登录：</h2><h3 id="交互式登录："><a href="#交互式登录：" class="headerlink" title="交互式登录："></a>交互式登录：</h3><pre><code>直接通过终端输入账号密码登录；
-    使用“su - UserName&quot;或”su -l UserName&quot;切换的用户
-
-    /etc/profile --&gt; /etc/profile.d/*.sh --&gt; ~/.bash_profile --&gt;~/.bashrc --&gt; /etc/bashrc
-</code></pre><h3 id="非交互式登陆"><a href="#非交互式登陆" class="headerlink" title="非交互式登陆:"></a>非交互式登陆:</h3><pre><code> su UserName
-     图型界面下打开的终端
-     执行脚本
-
-     ~/.bashrc --&gt; /etc/basgrc --&gt; /etc/profile.d/*.sh
-
-编辑配置文件定义的新配置的生效方式：
-    （1）重新启动shell进程
-    （2）使用source或.命令进程
-</code></pre><h2 id="bash中的算术运算"><a href="#bash中的算术运算" class="headerlink" title="bash中的算术运算"></a>bash中的算术运算</h2><pre><code>+，-，*，/，%，**，
-
-实现算术运算：
-    （1）let var=算术表达式
-    （2）var=$[算术表达式]
-    （3）var=$((算术表达式))
-    （4）var=$(expr arg1 arg2 arg3 ...)
-        乘法符号有时候需要转义
-        bash有内建的随机数生成器：$RANDOM
-
-        增强型赋值：
-            +=，-=，*=，/=，%=
-
-            let varOPERvalue
-                例如：let count+=1
-
-        自增，自减：
-            let var+=1
-                let var++
-            let var-=1
-                let var--
-</code></pre><h3 id="练习-1）：写一个脚本"><a href="#练习-1）：写一个脚本" class="headerlink" title="练习(1）：写一个脚本"></a>练习(1）：写一个脚本</h3><p>  计算/etc/passwd文件中的第10个用户和第20用户的ID之和</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">	<span class="comment">#!/bin/bash</span></div><div class="line">userid1=<span class="variable">$(head -n 10 /etc/passwd | tail -n 1 | cut -d: -f3)</span></div><div class="line">userid2=<span class="variable">$(head -n 20 /etc/passwd | tail -n 1 | cut -d: -f3)</span></div><div class="line">useridsum=$[$userid1+userid2]</div><div class="line">echo <span class="string">"uid sum:$useridsum"</span></div></pre></td></tr></table></figure>
-<h3 id="练习-2-：写一个脚本"><a href="#练习-2-：写一个脚本" class="headerlink" title="练习(2)：写一个脚本"></a>练习(2)：写一个脚本</h3><p> 传递两个文件路径作为参数给脚本，计算着两个文件中所有空白行之和</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">spaceline1=$(grep <span class="string">"^[[:space:]]*$"</span> <span class="variable">$1</span> | wc <span class="_">-l</span>)</div><div class="line">spaceline2=$(grep <span class="string">"^[[:space:]]*$"</span> <span class="variable">$2</span> | wc <span class="_">-l</span>)</div><div class="line"><span class="built_in">echo</span> <span class="string">"the sum of space line:$[<span class="variable">$spaceline1</span>+<span class="variable">$spaceline2</span>]"</span></div></pre></td></tr></table></figure>
-<h2 id="bash测试"><a href="#bash测试" class="headerlink" title="bash测试"></a>bash测试</h2><p> 条件测试：<br>     判断某需求是否满足，需要由测试机制来实现</p>
-<pre><code>Note：专用的测试表达式需要由测试命令辅助完成测试过程
-
-测试命令：
-    test EXPRESSION
-    [ EXPRESSION ]
-    [[ EXPRESSION ]]
-    Note:EXPRESSION前后必须有空白字符：
-
-    bash的测试类型：
-        数值测试：
-            -gt:是否大于
-            -ge：是否大于等于
-            -eq:是否等于
-            -ne:是否不等于
-            -lt：是否小于
-            -le：是否小于等于
-    字符串测试：
-            ==/=：是否等于
-            &gt;:是否等于
-            &lt;:是否小于
-            ！=：是否等于
-            =~：左侧字符是否能够被右侧的PATTERN所匹配
-                Note:此表达式一般用于[[ ]]中
-            -z：”SIRING&quot;：测试字符串是否为空，空则为真，不空为假
-            -n:”SIRING&quot;：测试字符串是否不空，不空则为真，空则为假
-
-            Note：用于字符串比较式时的用到的操作数都应该使用引号；
-
-    文件测试
-</code></pre><h2 id="bash自定义退出码"><a href="#bash自定义退出码" class="headerlink" title="bash自定义退出码"></a>bash自定义退出码</h2><pre><code>exit [n]:自定义退出状态码
-    注意：脚本中一旦遇到exit命令，脚本会立即终止，终止退出状态取决于exit命令后面的数字，如果未给脚本指定退出状态码，整个脚本的退出状态码取决于脚本中执行的最后一条命令的状态码；
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;bash中的变量类型：&quot;&gt;&lt;a href=&quot;#bash中的变量类型：&quot; class=&quot;headerlink&quot; title=&quot;bash中的变量类型：&quot;&gt;&lt;/a&gt;bash中的变量类型：&lt;/h2&gt;&lt;p&gt; 根据变量的生效范围等标准：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;本地变量
     
     </summary>
     
