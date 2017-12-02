@@ -1,0 +1,1100 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux学习笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="为什么要使用SELinux问题： 在生产环境中，某些管理员，为了简单，或者是因为无知，常常把一些目录或文件的权限，设置为777, 会导致一些非预期的后果（用户可以执行原本不应该执行的代码、误删重要资料） 目前的安全机制： 是基于用户的UID,GID的rwx权限设置。 即进程的UID和GID, 和程序的UID与GID进行匹配。 进程的UID和GID就是启动这个进程的用户的UID和GID。 最终导致黑">
+<meta name="keywords" content="Linux学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux学习笔记（六）-SELinux">
+<meta property="og:url" content="http://yjscloud.com/2017/05/06/Linux学习笔记（六）-SELinux/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="为什么要使用SELinux问题： 在生产环境中，某些管理员，为了简单，或者是因为无知，常常把一些目录或文件的权限，设置为777, 会导致一些非预期的后果（用户可以执行原本不应该执行的代码、误删重要资料） 目前的安全机制： 是基于用户的UID,GID的rwx权限设置。 即进程的UID和GID, 和程序的UID与GID进行匹配。 进程的UID和GID就是启动这个进程的用户的UID和GID。 最终导致黑">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/2.4.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/2.5.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/2.5-1.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/2.7.png">
+<meta property="og:updated_time" content="2017-12-02T08:08:57.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux学习笔记（六）-SELinux">
+<meta name="twitter:description" content="为什么要使用SELinux问题： 在生产环境中，某些管理员，为了简单，或者是因为无知，常常把一些目录或文件的权限，设置为777, 会导致一些非预期的后果（用户可以执行原本不应该执行的代码、误删重要资料） 目前的安全机制： 是基于用户的UID,GID的rwx权限设置。 即进程的UID和GID, 和程序的UID与GID进行匹配。 进程的UID和GID就是启动这个进程的用户的UID和GID。 最终导致黑">
+<meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/2.4.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2017/05/06/Linux学习笔记（六）-SELinux/"/>
+
+
+
+
+
+  <title>Linux学习笔记（六）-SELinux | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/05/06/Linux学习笔记（六）-SELinux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux学习笔记（六）-SELinux
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-06T17:46:38+08:00">
+                2017-05-06
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/06/Linux学习笔记（六）-SELinux/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,335
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  5
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="为什么要使用SELinux"><a href="#为什么要使用SELinux" class="headerlink" title="为什么要使用SELinux"></a>为什么要使用SELinux</h1><p>问题：</p>
+<p>在生产环境中，某些管理员，为了简单，或者是因为无知，常常把一些目录或文件的权限，设置为777, 会导致一些非预期的后果（用户可以执行原本不应该执行的代码、误删重要资料）</p>
+<p>目前的安全机制：</p>
+<p>是基于用户的UID,GID的rwx权限设置。</p>
+<p>即进程的UID和GID, 和程序的UID与GID进行匹配。</p>
+<p>进程的UID和GID就是启动这个进程的用户的UID和GID。</p>
+<p>最终导致黑客或者管理本身，可能对系统的资源进行窃取或者误操作。</p>
+<p>解决方案：使用SELinux</p>
+<h1 id="SELinux是什么"><a href="#SELinux是什么" class="headerlink" title="SELinux是什么"></a>SELinux是什么</h1><p>SELinux是美国国家安全局和Linux社区，一起研发的。</p>
+<p>是一种安全机制。</p>
+<p>成为“强制访问控制”（MAC）</p>
+<h1 id="SELinux的原理"><a href="#SELinux的原理" class="headerlink" title="SELinux的原理"></a>SELinux的原理</h1><p><img src="http://oxysobnip.bkt.clouddn.com/2.4.png" alt="2.4"></p>
+<h1 id="SELinux的模式"><a href="#SELinux的模式" class="headerlink" title="SELinux的模式"></a>SELinux的模式</h1><h2 id="SELinux的工作模式"><a href="#SELinux的工作模式" class="headerlink" title="SELinux的工作模式"></a>SELinux的工作模式</h2><p>1）强制模式</p>
+<p>   使用SELinux的强制访问控制。</p>
+<p>2）permissive模式</p>
+<p>   访问违背SELinux规则的，就记录告警，但是不阻止访问。</p>
+<p>3）disabled模式</p>
+<p>   不记录，不阻止。</p>
+<h2 id="查看当前的模式"><a href="#查看当前的模式" class="headerlink" title="查看当前的模式"></a>查看当前的模式</h2><pre><code># getenforce
+</code></pre><p>输出为：</p>
+<p>Enforcing  (强制模式)</p>
+<p>Permissive  （Permissive模式）</p>
+<p>Disabled    (Disabled模式)</p>
+<h2 id="改变SELinux的模式"><a href="#改变SELinux的模式" class="headerlink" title="改变SELinux的模式"></a>改变SELinux的模式</h2><p><img src="http://oxysobnip.bkt.clouddn.com/2.5.png" alt="2.5"></p>
+<p>SELiniux的配置文件</p>
+<pre><code>/etc/selinux/config
+</code></pre><pre><code>SELINUX=enforcing      #还可以取 permissive,  enabled 
+SELINUXTYPE=targeted  #SELinux的策略，为“目标”策略
+</code></pre><p>SELINUXTYPE是指SELinux的策略，默认为目标策略targeted, 不要修改<br>并启动系统。</p>
+<h1 id="查看SELinux"><a href="#查看SELinux" class="headerlink" title="查看SELinux"></a>查看SELinux</h1><h2 id="查看文件的SELinux"><a href="#查看文件的SELinux" class="headerlink" title="查看文件的SELinux"></a>查看文件的SELinux</h2><p>ls –l 命令的第一列：</p>
+<pre><code>-rw-r--r--.   
+</code></pre><p>如果文件权限的最后一位是小数点，就表示该文件使用了SELinux<br>如果是+,表示使用了ACL.</p>
+<p>在ls命令中使用Z选项</p>
+<pre><code>#  ls  -Z  file.txt
+unconfined_u:object_r:admin_home_t:s0
+</code></pre><p>对于targeted策略，值需要关注第3列值（以冒号分割）该列，称为“SELinux上下文”，就是一个“标签”,SELinux机制中，已经定义好很多SELinux上下文。</p>
+<h2 id="查看进程的SELinux"><a href="#查看进程的SELinux" class="headerlink" title="查看进程的SELinux"></a>查看进程的SELinux</h2><p>查看httpd进程的SELinux</p>
+<pre><code># ps  auxZ  |  grep  httpd
+或
+# ps  -efZ  |  grep  httpd
+</code></pre><p>Z选项，就是显示进程的SELinux上下文</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/2.5-1.png" alt="2.5-1"></p>
+<h1 id="SELinux保护示例"><a href="#SELinux保护示例" class="headerlink" title="SELinux保护示例"></a>SELinux保护示例</h1><p>（1）在Server0主机上安装apache</p>
+<pre><code># yum  install  -y  httpd
+# systemctl  enable httpd
+# systemctl  start  httpd
+# firewall-cmd  --add-service=httpd
+</code></pre><p>（2)在Desktop0主机访问服务器的网站</p>
+<pre><code># curl  192.168.0.11
+</code></pre><p>  就能访问服务器网站的首页(/var/www/html/index.html)</p>
+<p>（3）在服务器端编辑一个新的页面secure.html</p>
+<pre><code># cd 
+# echo  “This is a secure page”  &gt;  secure.html
+# mv   secure.html   /var/www/html/
+</code></pre><p>（4）在客户端Desktop0上访问</p>
+<pre><code># curl   192.168.0.11/secure.html
+</code></pre><p>   发现没有权限访问secure.html</p>
+<p>   因为：secure.html的SELinux上下文和httpd进程的SELinux上文不一致！</p>
+<p>  httpd的SELinux上下文是：httpd_sys_content_t</p>
+<p>  secure.html的SELinux上下文是：admin_home_t</p>
+<h1 id="修改SELinux上下文"><a href="#修改SELinux上下文" class="headerlink" title="修改SELinux上下文"></a>修改SELinux上下文</h1><p>(1)改变文件的SELinux上下文</p>
+<pre><code># chcon  -t   httpd_sys_content_t   secure.html
+</code></pre><p>把secure.html文件的SELinux上下文，设置为 httpd_sys_content_t</p>
+<p>(2)改变目录以及目录内的所有文件的SELinux上下文</p>
+<pre><code>#chcon  -R  -t  httpd_sys_content_t  secure.html
+</code></pre><p>(3)根据指定的文件来修改文件的SELinux上下文</p>
+<p>相当于复制SELinux上下文。</p>
+<pre><code># chcon   --reference=index.html    secure.html
+</code></pre><p>把文件secure.html的SELinux上下文和index.html的相同</p>
+<p>(4)根据指定的目录来修改目录的SELinux上下文</p>
+<p>相当于复制SELinux上下文。</p>
+<pre><code># chcon   -R  --reference=/var/www/html    /var/www/html/work
+</code></pre><p>把/var/www/html/work目录的SELinux上下文设置成和/var/www/html的相同    </p>
+<h1 id="默认SELinux上下文"><a href="#默认SELinux上下文" class="headerlink" title="默认SELinux上下文"></a>默认SELinux上下文</h1><h2 id="设置默认SELinux上下文"><a href="#设置默认SELinux上下文" class="headerlink" title="设置默认SELinux上下文"></a>设置默认SELinux上下文</h2><p>1）设置文件的默认SELinux上下文</p>
+<pre><code># semanage   fcontext   -a   -t   httpd_sys_content_t  ‘/root/file.txt’
+</code></pre><p>  （1）一定要使用单引号’’</p>
+<p>  （2）单引号里面，必须写绝对路径。</p>
+<p>2）设置目录的默认SELinux上下文</p>
+<pre><code># semanage   fcontext   -a   -t   httpd_sys_content_t  ‘/root/work(/.*)?’
+</code></pre><p>把/root/work目录以及该目录下的所有文件的默认SELinux上下文都修改为httpd_sys_content_t</p>
+<p>说明：（/.*）? 表示匹配任意长度的字符串，可以用来处理目录。</p>
+<p>改变默认SELinux上下文后，并不会改变当前的SELinux上下文。</p>
+<h2 id="恢复默认SELinux上下文"><a href="#恢复默认SELinux上下文" class="headerlink" title="恢复默认SELinux上下文"></a>恢复默认SELinux上下文</h2><p>1)恢复目录以及目录内所有文件的默认SELinux上下文</p>
+<pre><code># restorecon   -R   /root/work
+</code></pre><p>2）恢复文件的默认SELinux上下文</p>
+<pre><code># restorecon  /root/file.txt
+</code></pre><h1 id="SELinux布尔值"><a href="#SELinux布尔值" class="headerlink" title="SELinux布尔值"></a>SELinux布尔值</h1><h2 id="SELinux布尔值的作用"><a href="#SELinux布尔值的作用" class="headerlink" title="SELinux布尔值的作用"></a>SELinux布尔值的作用</h2><p><img src="http://oxysobnip.bkt.clouddn.com/2.7.png" alt="2.7"></p>
+<p>系统定义了很多不同类型的SELinux布尔值。</p>
+<p>只有对应的SELinux布尔值为真，而且SELinux上下文匹配时，才能访问对应的文件。</p>
+<h2 id="查看SELinux布尔值"><a href="#查看SELinux布尔值" class="headerlink" title="查看SELinux布尔值"></a>查看SELinux布尔值</h2><p>查看系统的所有SELinux布尔值</p>
+<pre><code># getsebool   -a 
+</code></pre><p>查看指定的SELinux布尔值</p>
+<pre><code># getsebool   ftpd_anon_write
+</code></pre><p>查询httpd相关的SELinux布尔值</p>
+<pre><code># getsebool  -a  |  grep  httpd
+</code></pre><h2 id="设置SELinux布尔值"><a href="#设置SELinux布尔值" class="headerlink" title="设置SELinux布尔值"></a>设置SELinux布尔值</h2><p>临时设置，重启无效</p>
+<pre><code># setsebool   ftpd_anon_write   on   
+# setsebool   ftpd_anon_write   off
+</code></pre><p>永久有效</p>
+<pre><code># setsebool   -P  ftpd_anon_write   on   
+# setsebool   -P  ftpd_anon_write   off
+</code></pre><h1 id="SELinux端口标记"><a href="#SELinux端口标记" class="headerlink" title="SELinux端口标记"></a>SELinux端口标记</h1><p>问题：在主机B中，安装httpd服务。同时监听80端口和8889端口。（在Apache的主配置文件中添加 Listen 8888即可）</p>
+<p>导致：启动httpd失败！</p>
+<p>原因：SELinux强制模式下，进程访问某个端口时，需要他们的SELinux上下文匹配！<br>而8889端口的SELinux上下文和httpd进程的SELinux上下文不匹配。</p>
+<p>解决：</p>
+<pre><code># semanage   port   -a   -t   http_port_t   -p  tcp    8889
+</code></pre><p>表示，把本机的8889端口添加一个SELinux上下文：http_port_t</p>
+<p>其他命令：</p>
+<pre><code># semanage   port   -d   -t   http_port_t   -p  tcp    8889
+</code></pre><p>把本机的8889端口删除一个SELinux上下文：http_port_t</p>
+<pre><code># semanage   port   -m   -t   http_port_t   -p  tcp    8889 
+</code></pre><p>把本机的8889端口的上下文修改为http_port_t</p>
+<p>查看端口的SELinux上下文：</p>
+<pre><code># semanage  port  -l
+# semanage  port  -l  |  grep  80
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux学习笔记/" rel="tag"><i class="fa fa-tag"></i> Linux学习笔记</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/07/Linux学习笔记（七）-守护进程/" rel="next" title="Linux学习笔记（七）-守护进程">
+                <i class="fa fa-chevron-left"></i> Linux学习笔记（七）-守护进程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/05/Linux学习笔记（五）-vim入门教程/" rel="prev" title="Linux学习笔记（五）-vim入门教程">
+                Linux学习笔记（五）-vim入门教程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么要使用SELinux"><span class="nav-number">1.</span> <span class="nav-text">为什么要使用SELinux</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SELinux是什么"><span class="nav-number">2.</span> <span class="nav-text">SELinux是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SELinux的原理"><span class="nav-number">3.</span> <span class="nav-text">SELinux的原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SELinux的模式"><span class="nav-number">4.</span> <span class="nav-text">SELinux的模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SELinux的工作模式"><span class="nav-number">4.1.</span> <span class="nav-text">SELinux的工作模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看当前的模式"><span class="nav-number">4.2.</span> <span class="nav-text">查看当前的模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#改变SELinux的模式"><span class="nav-number">4.3.</span> <span class="nav-text">改变SELinux的模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#查看SELinux"><span class="nav-number">5.</span> <span class="nav-text">查看SELinux</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#查看文件的SELinux"><span class="nav-number">5.1.</span> <span class="nav-text">查看文件的SELinux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看进程的SELinux"><span class="nav-number">5.2.</span> <span class="nav-text">查看进程的SELinux</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SELinux保护示例"><span class="nav-number">6.</span> <span class="nav-text">SELinux保护示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修改SELinux上下文"><span class="nav-number">7.</span> <span class="nav-text">修改SELinux上下文</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#默认SELinux上下文"><span class="nav-number">8.</span> <span class="nav-text">默认SELinux上下文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置默认SELinux上下文"><span class="nav-number">8.1.</span> <span class="nav-text">设置默认SELinux上下文</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#恢复默认SELinux上下文"><span class="nav-number">8.2.</span> <span class="nav-text">恢复默认SELinux上下文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SELinux布尔值"><span class="nav-number">9.</span> <span class="nav-text">SELinux布尔值</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SELinux布尔值的作用"><span class="nav-number">9.1.</span> <span class="nav-text">SELinux布尔值的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看SELinux布尔值"><span class="nav-number">9.2.</span> <span class="nav-text">查看SELinux布尔值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置SELinux布尔值"><span class="nav-number">9.3.</span> <span class="nav-text">设置SELinux布尔值</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SELinux端口标记"><span class="nav-number">10.</span> <span class="nav-text">SELinux端口标记</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<script type="text/javascript">
+  var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cspan id='cnzz_stat_icon_1261789938'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261789938' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+&nbsp;&nbsp;|&nbsp;&nbsp;您是第 <span id="busuanzi_value_site_uv"></span> 位访客
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>

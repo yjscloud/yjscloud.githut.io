@@ -1,0 +1,1133 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux学习笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Linux正则表达式grep : 最早的文本匹配程序，使用POSIX定义的基本正则表达式（BRE）来匹配文本。 egrep : 扩展式grep，其使用扩展式正规表达式（ERE）来匹配文本。 fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。并且是唯一可   grep：      作用：文本过滤，文本搜索工具，根据用户指定的模式对目标文本进行匹配检查，打印匹配结果      模式：由">
+<meta name="keywords" content="Linux学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux学习笔记（三）-正则表达式">
+<meta property="og:url" content="http://yjscloud.com/2017/05/03/Linux学习笔记（三）-正则表达式/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="Linux正则表达式grep : 最早的文本匹配程序，使用POSIX定义的基本正则表达式（BRE）来匹配文本。 egrep : 扩展式grep，其使用扩展式正规表达式（ERE）来匹配文本。 fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。并且是唯一可   grep：      作用：文本过滤，文本搜索工具，根据用户指定的模式对目标文本进行匹配检查，打印匹配结果      模式：由">
+<meta property="og:updated_time" content="2017-12-02T09:45:00.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux学习笔记（三）-正则表达式">
+<meta name="twitter:description" content="Linux正则表达式grep : 最早的文本匹配程序，使用POSIX定义的基本正则表达式（BRE）来匹配文本。 egrep : 扩展式grep，其使用扩展式正规表达式（ERE）来匹配文本。 fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。并且是唯一可   grep：      作用：文本过滤，文本搜索工具，根据用户指定的模式对目标文本进行匹配检查，打印匹配结果      模式：由">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2017/05/03/Linux学习笔记（三）-正则表达式/"/>
+
+
+
+
+
+  <title>Linux学习笔记（三）-正则表达式 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/05/03/Linux学习笔记（三）-正则表达式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux学习笔记（三）-正则表达式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-03T10:54:46+08:00">
+                2017-05-03
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/03/Linux学习笔记（三）-正则表达式/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,442
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Linux正则表达式"><a href="#Linux正则表达式" class="headerlink" title="Linux正则表达式"></a>Linux正则表达式</h2><pre><code>grep : 最早的文本匹配程序，使用POSIX定义的基本正则表达式（BRE）来匹配文本。
+egrep : 扩展式grep，其使用扩展式正规表达式（ERE）来匹配文本。
+fgrep ：快速grep，这个版本匹配固定字符串而非正则表达式。并且是唯一可
+
+ grep：
+     作用：文本过滤，文本搜索工具，根据用户指定的模式对目标文本进行匹配检查，打印匹配结果
+     模式：由正则表达式字符及文本所填写的过滤条件，
+     正则表达式有两类：
+         基本正则表达式：BRE
+         扩展正则表达式：ERE
+             表达式：grep [OPTIONS] PATTERN [FILE...]
+                 选项：
+                     --color=auto:对匹配到的文本着色显示
+                     -v: 显示不能够被pattern匹配到的行
+                     -i:忽略字符大小写
+                     -o:仅显示匹配到的字符串
+                     -s:不显示错误信息，通常与-q并用
+                     -q:静默模式，不输出任何信息
+                     -A #：after ,后#行
+                     -B #：before，前#行
+                     -C #：context,前后各#行
+</code></pre><h2 id="基本正则表达式介绍"><a href="#基本正则表达式介绍" class="headerlink" title="基本正则表达式介绍"></a>基本正则表达式介绍</h2><h3 id="正则表达式组成"><a href="#正则表达式组成" class="headerlink" title="正则表达式组成"></a>正则表达式组成</h3><pre><code>一般字符：没有特殊意义的字符
+元字符（meta字符）：在正则表达式中有特殊意义
+</code></pre><h3 id="元字符匹配"><a href="#元字符匹配" class="headerlink" title="元字符匹配"></a>元字符匹配</h3><pre><code> .:匹配任意单个字符；
+ \：通常用于打开或关闭后续字符的特殊含义，如\(...\)与{...\}
+ []:匹配指定范围内的任意单个字符；
+ [^]:匹配指定范围外的任意单个字符；
+ 匹配次数:用在要指定次数的字符后面，用于指定前面的字符要出现的次数；
+ *：匹配前面的字符任意次；
+     例如：grep &quot;x*y&quot;
+             abxy
+             xay
+ .*：任意长度的任意字符；
+ + : 匹配前面正则表达式的一个或多个扩展
+? : 匹配前面正则表达式的零个或一个扩展
+| : 匹配|符号前或后的正则表达式
+( ) : 匹配方括号括起来的正则表达式群
+ \?：匹配其前面的字符0或1次，即前面的可有可无；
+     例如：x\?y
+         xy,y,ay
+ \+：匹配其前面的字符至少1次；
+ \{m\}:匹配前面的字符m次；
+     例如：x\{2\}y
+         xy,xxy,y,xxxxy,xyy
+ \{m,n\}:匹配前面的字符至少m次，至多n次；
+     例如：x\{2,5\}y
+         xy,y,xxy
+     \{0，n\}:匹配前面的字符至多n次
+     \{m,\}:匹配前面的字符至少m次
+</code></pre><h3 id="字符集-：："><a href="#字符集-：：" class="headerlink" title="字符集[：：]"></a>字符集[：：]</h3><pre><code>[:alnum:]:数字字符
+[:digit:] : 数字字符
+[:punct:] : 标点符号字符
+[:alpha:] : 字母字符
+[:graph:] : 非空格字符
+[:space:] : 空格字符
+[:blank:] : 空格与定位字符
+[:lower:] : 小写字母字符
+[:upper:] : 大写字母字符
+[:cntrl:] : 控制字符
+[:print:] : 可显示的字符
+[:xdigit:] : 16进制数字
+</code></pre><h3 id="位置锚定"><a href="#位置锚定" class="headerlink" title="位置锚定"></a>位置锚定</h3><pre><code>位置锚定：
+   ^: 行首锚定；
+       写在模式最左侧
+   $: 行尾锚定：
+       写在模式最右侧
+       ^$: 空白行
+
+       不包含特殊字符的连续字符组成的串叫单词：
+       \&lt;或\b: 词首，出现于单词左侧,
+       \&gt;或\b: 词尾，出现于单词右侧,
+       \&lt;PATTERN\&gt;:匹配整个单词：
+</code></pre><h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><pre><code>\(\)：将一个或多个字符捆绑在一起，当做一个整体进行处理；
+    例如：\(ab\)*
+        分组中的模式匹配到的内容，可由正则表达式引擎记忆在内存中，之后可被引用
+</code></pre><h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><pre><code>例如\(ab\(x\)y\).*\(mn\)
+    有编号：自左而后的左括号，以及与其匹配右括号
+    \(a\(b\(c\)\)mn\(x\)\).*\1
+
+    \#: 引用第n个括号所匹配到的内容，而非模式本身
+        例如：
+            \(ab\?c\).*\1
+                abcmnaaa
+                abcmnabc
+                abcmnac
+                acxyac
+</code></pre><h3 id="练习（1）"><a href="#练习（1）" class="headerlink" title="练习（1）"></a>练习（1）</h3><pre><code>1、显示/proc/meminfo文件中以大写或小写S开头的行；
+    grep -i &apos;^s&apos; /proc/meninfo
+    grep &apos;^[Ss]&apos; /proc/meninfo
+2、显示/etc/passwd文件中不以/bin/bash结尾的行；
+    grep -v &apos;/bin/bash$&apos; /etc/passwd
+3、显示/etc/passwd文件中ID号最大的用户名；
+    sort -t: -k3 -n /etc/passwd | tail -1 | cut -d: -f1
+4、如果用户root存在，显示其默认的shell程序；
+    id root &amp;&gt; /dev/null &amp;&amp; grep &quot;^root\&gt;&quot; /etc/passwd | cut -d: -f7
+5、找出/etc/passwd中的两位或三位数；
+    grep &quot;\&lt;[0-9]\{2,3\}\&gt;&quot; /etc/passwd
+6、显示/etc/grub2.cfg文件中，至少以一个空白字符开头的且后面存在空白字符的行；
+    grep &quot;^[[:space:]]\+[^[:space:]]&quot; /etc/grub2.cfg
+7、找出”netstat -tan&quot;命令的结果中以&apos;LISTEN&apos;后跟0、1或多个空白字符结尾的行；
+    netstat -tan | grep &quot;[LISTEN[[:space:]]*$&quot;
+8、添加用户bash、testbash、basher以及nologin(其shell为sbin/nologin);而后找出/etc/passwd文件中用户名同shell名的行，
+    useradd bash
+    useradd basher
+    useradd testbash
+    useradd -s /sbin/nologin nologin
+    grep &quot;^\([[:alnum:]]\+\&gt;\).*\1$&quot; /etc/passwd
+</code></pre><h3 id="练习-2"><a href="#练习-2" class="headerlink" title="练习(2)"></a>练习(2)</h3><pre><code>1、写一个脚本，实现如下功能
+    如果user1用户存在，就显示其存在，否则加之；
+    显示添加的用户的id号等信息；
+    #!/bin/bash
+   id user1 &amp;&gt; /dev/null &amp;&amp; echo &quot;user1 exists.&quot; || useradd user1
+   id user1
+
+
+2、写一个脚本，完成如下功能
+    如果root用户登陆了当前系统，就显示root用户在线；否则说明其未登陆
+    w | grep &quot;^root\&gt;&quot; &amp;&gt; /dev/null &amp;&amp; echo &quot;root logged&quot; || echo &quot;root not logged.&quot;
+</code></pre><h3 id="egrep及扩展的正则表达式"><a href="#egrep及扩展的正则表达式" class="headerlink" title="egrep及扩展的正则表达式"></a>egrep及扩展的正则表达式</h3><p>egrep = grep -E</p>
+<pre><code>egrep [OPTIONS] PATTERN [FILE...]
+
+ 扩展正则表达式的元字符：
+     字符匹配：
+         .
+         []
+         [^]
+     次数匹配：
+         *
+         ？：0或1次
+         +：1次或多次
+         {m}:匹配m次
+         {m,n}:至少m,至多n次
+     锚定：
+         ^
+         $
+        \&lt;,\b
+        \&gt;,\b
+    分组：
+        （）
+
+        后向引用：\1,\2.....
+    或者：
+        a|b
+            （C|c)at:C或cat
+</code></pre><h3 id="练习-3"><a href="#练习-3" class="headerlink" title="练习(3)"></a>练习(3)</h3><pre><code>1、显示当前系统root、centos或user1用户的默认shell和UID
+            grep -E &apos;^(root|centos|user1)\&gt;&apos; /etc/passwd | cut -d: -f1,3,7
+
+2、找出/etc/rc.d/init.d/funtions文件（centos）中某单词后面跟一个小括号的行
+           grep -E -o &quot;^[_[:alpha:]]+(\)&quot; /etc/rc.d/init.d/funtions
+
+3、使用echo输出一绝对路径，使用egrep取出其基名
+           echo &quot;/mmt/sdc&quot; | grep -E -o &quot;[^/]+/?$&quot; | cut -d&quot;/&quot; -f1
+       进一步使用egrep取出路径的目录名，类似于dirname命令的结果
+</code></pre><h3 id="fgrep-不支持正则表达式搜索"><a href="#fgrep-不支持正则表达式搜索" class="headerlink" title="fgrep :不支持正则表达式搜索"></a>fgrep :不支持正则表达式搜索</h3>
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux学习笔记/" rel="tag"><i class="fa fa-tag"></i> Linux学习笔记</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/04/Linux学习笔记（四）-bash基础特性/" rel="next" title="Linux学习笔记（四）-bash基础特性">
+                <i class="fa fa-chevron-left"></i> Linux学习笔记（四）-bash基础特性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/02/Linux学习笔记（二）-find命令/" rel="prev" title="Linux学习笔记（二）-find命令">
+                Linux学习笔记（二）-find命令 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux正则表达式"><span class="nav-number">1.</span> <span class="nav-text">Linux正则表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本正则表达式介绍"><span class="nav-number">2.</span> <span class="nav-text">基本正则表达式介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#正则表达式组成"><span class="nav-number">2.1.</span> <span class="nav-text">正则表达式组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#元字符匹配"><span class="nav-number">2.2.</span> <span class="nav-text">元字符匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符集-：："><span class="nav-number">2.3.</span> <span class="nav-text">字符集[：：]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位置锚定"><span class="nav-number">2.4.</span> <span class="nav-text">位置锚定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组"><span class="nav-number">2.5.</span> <span class="nav-text">分组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用"><span class="nav-number">2.6.</span> <span class="nav-text">引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习（1）"><span class="nav-number">2.7.</span> <span class="nav-text">练习（1）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习-2"><span class="nav-number">2.8.</span> <span class="nav-text">练习(2)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#egrep及扩展的正则表达式"><span class="nav-number">2.9.</span> <span class="nav-text">egrep及扩展的正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习-3"><span class="nav-number">2.10.</span> <span class="nav-text">练习(3)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fgrep-不支持正则表达式搜索"><span class="nav-number">2.11.</span> <span class="nav-text">fgrep :不支持正则表达式搜索</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<script type="text/javascript">
+  var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cspan id='cnzz_stat_icon_1261789938'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261789938' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+&nbsp;&nbsp;|&nbsp;&nbsp;您是第 <span id="busuanzi_value_site_uv"></span> 位访客
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>

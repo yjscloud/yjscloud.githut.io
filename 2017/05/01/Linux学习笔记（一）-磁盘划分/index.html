@@ -1,0 +1,1236 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux学习笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="磁盘设备磁盘设备文件命名 IDE: /dev/hd[a-d] SCSI, SATA, SAS, USB: /dev/sd[a-p] 软驱：/dev/fd[0-1] 打印机：/dev/lp[0-15] 光驱：/dev/cdrom 鼠标：/dev/mouse 同一设备上的不同分区：1,2, …（/dev/sda1, /dev/sda5） 举一个例子： Linux文件系统管理Linux文件系统: ext">
+<meta name="keywords" content="Linux学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux学习笔记（一）-磁盘划分">
+<meta property="og:url" content="http://yjscloud.com/2017/05/01/Linux学习笔记（一）-磁盘划分/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="磁盘设备磁盘设备文件命名 IDE: /dev/hd[a-d] SCSI, SATA, SAS, USB: /dev/sd[a-p] 软驱：/dev/fd[0-1] 打印机：/dev/lp[0-15] 光驱：/dev/cdrom 鼠标：/dev/mouse 同一设备上的不同分区：1,2, …（/dev/sda1, /dev/sda5） 举一个例子： Linux文件系统管理Linux文件系统: ext">
+<meta property="og:image" content="http://oovxjr0mr.bkt.clouddn.com/:dev:sda5.jpeg">
+<meta property="og:image" content="http://oovxjr0mr.bkt.clouddn.com/RAID0.png">
+<meta property="og:image" content="http://oovxjr0mr.bkt.clouddn.com/raid1.jpg">
+<meta property="og:image" content="http://oovxjr0mr.bkt.clouddn.com/raid5.gif">
+<meta property="og:image" content="http://oovxjr0mr.bkt.clouddn.com/raid10.jpg">
+<meta property="og:updated_time" content="2017-12-02T09:45:27.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux学习笔记（一）-磁盘划分">
+<meta name="twitter:description" content="磁盘设备磁盘设备文件命名 IDE: /dev/hd[a-d] SCSI, SATA, SAS, USB: /dev/sd[a-p] 软驱：/dev/fd[0-1] 打印机：/dev/lp[0-15] 光驱：/dev/cdrom 鼠标：/dev/mouse 同一设备上的不同分区：1,2, …（/dev/sda1, /dev/sda5） 举一个例子： Linux文件系统管理Linux文件系统: ext">
+<meta name="twitter:image" content="http://oovxjr0mr.bkt.clouddn.com/:dev:sda5.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2017/05/01/Linux学习笔记（一）-磁盘划分/"/>
+
+
+
+
+
+  <title>Linux学习笔记（一）-磁盘划分 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/05/01/Linux学习笔记（一）-磁盘划分/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux学习笔记（一）-磁盘划分
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-01T22:25:09+08:00">
+                2017-05-01
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/05/01/Linux学习笔记（一）-磁盘划分/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  7,026
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  31
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="磁盘设备"><a href="#磁盘设备" class="headerlink" title="磁盘设备"></a>磁盘设备</h1><p>磁盘设备文件命名</p>
+<p>IDE: /dev/hd[a-d]</p>
+<p>SCSI, SATA, SAS, USB: /dev/sd[a-p]</p>
+<p>软驱：/dev/fd[0-1]</p>
+<p>打印机：/dev/lp[0-15]</p>
+<p>光驱：/dev/cdrom</p>
+<p>鼠标：/dev/mouse</p>
+<p>同一设备上的不同分区：1,2, …（/dev/sda1, /dev/sda5）</p>
+<p>举一个例子：<br><img src="http://oovxjr0mr.bkt.clouddn.com/:dev:sda5.jpeg" alt="01"></p>
+<h1 id="Linux文件系统管理"><a href="#Linux文件系统管理" class="headerlink" title="Linux文件系统管理"></a>Linux文件系统管理</h1><p>Linux文件系统: ext2, ext3, ext4, xfs, btrfs, reiserfs, jfs, swap</p>
+<p>swap: 交换分区</p>
+<p>光盘：iso9660</p>
+<p>Windows：fat32, ntfs</p>
+<p>Unix: FFS, UFS, JFS2</p>
+<p>网络文件系统：NFS, CIFS</p>
+<p>集群文件系统：GFS2, OCFS2</p>
+<p>分布式文件系统：ceph, moosefs, mogilefs, GlusterFS, Lustre</p>
+<p>根据其是否支持”journal”功能：日志型文件系统: ext3, ext4, xfs, …；非日志型文件系统: ext2, vfat</p>
+<p>文件系统的组成部分：内核中的模块：ext4, xfs, vfat；用户空间的管理工具：mkfs.ext4, mkfs.xfs, mkfs.vfat</p>
+<p>Linux的虚拟文件系统：VFS</p>
+<h2 id="创建文件系统"><a href="#创建文件系统" class="headerlink" title="创建文件系统"></a>创建文件系统</h2><p>mkfs:该命令用来在一个设备上构建Linux支持的相关文件系统，也可称之为格式化工具，这里的设备通常是指标硬盘分区。在Linux上通过fdisk等工具进行完分区后，还需要对分区进行处理,使之支持相应的文件系统，这时候就需要用到mkfs这个工具，建立文件系统过程的实质是在磁盘空间上面建立文件系统所需的结构，根据文件系统设计在磁盘空间上写入关于文件系统的数据（称之为文件系统元数据），基于这些数据实现对文件系统的管理和进行相关的操作。实际上，mkfs是一个linux下不同文件系统构建器（mkfs.fstype）的简化前端工具。</p>
+<p>语法：mkfs.文件类型名称 硬盘分区名称</p>
+<p>mke2fs：ext系列文件系统专用管理工具,被用于创建磁盘分区上的“etc2/etc3”文件系统。</p>
+<pre><code>选项：
+    -t {ext2|ext3|ext4}
+    -b 指定区块大小，单位为字节
+    -L 设置文件系统的标签名称
+   -j: 相当于 -t ext3
+        mkfs.ext3 = mkfs -t ext3 = mke2fs -j = mke2fs -t ext3
+    -i #: 为数据空间中每多少个字节创建一个inode；此大小不应该小于block的大小；
+    -N #：为数据空间创建个多少个inode；
+    -m #: 为管理人员预留的空间占据的百分比；预设为5%；
+    -O FEATURE[,...]：启用指定特性
+        -O ^FEATURE：关闭指定特性
+</code></pre><p>mkswap：创建交换分区</p>
+<pre><code>语法：
+    mkswap [选项] [设备名称]
+选项：
+    -c：建立交换区前，先检查是否有损坏的区块； 
+    -f：在SPARC电脑上建立交换区时，要加上此参数； 
+    -v0：建立旧式交换区，此为预设值； 
+    -v1：建立新式交换区。
+
+前提：调整其分区的ID为82；
+</code></pre><h2 id="分区管理工具"><a href="#分区管理工具" class="headerlink" title="分区管理工具"></a>分区管理工具</h2><p>分区管理工具有三种：fdisk, parted, sfdisk</p>
+<h3 id="fdisk"><a href="#fdisk" class="headerlink" title="fdisk"></a>fdisk</h3><p>对于一块硬盘来讲，最多只能管理15分区；</p>
+<pre><code># fdisk -l [-u] [device...]
+# fdisk device
+    子命令：管理功能
+        p: print, 显示已有分区；
+        n: new, 添加新的分区
+        d: delete, 删除某个分区
+        w: write, 写入磁盘并退出
+        q: quit, 放弃更新并退出
+        m: 获取帮助
+        l: 列出所有分区的类型
+        t: 改变某个分区的类型
+
+查看内核是否已经识别新的分区：
+    # cat /proc/partations
+
+通知内核重新读取硬盘分区表：
+    partx -a /dev/DEVICE
+        -n M:N
+
+    kpartx -a /dev/DEVICE
+        -f: force
+
+    CentOS 5: 使用partprobe
+        partprobe [/dev/DEVICE]
+</code></pre><p>实战操作一下fstab命令：<br>我们现在给Linux系统添加一块硬盘进行分区、格式化并挂载到/TESTnew目录下。添加硬盘的操作就不再演示；添加好硬盘后重启一下系统。</p>
+<p>第一步：使用fdisk命令对sdb硬盘进行分区：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#使用fdisk命令对sdb硬盘进行分区：</span></div><div class="line">[root@xwq ~]<span class="comment"># fdisk /dev/sdb</span></div><div class="line">Welcome to fdisk (util-linux <span class="number">2.23</span>.<span class="number">2</span>).</div><div class="line"></div><div class="line">Changes will remain <span class="keyword">in</span> memory only, until you decide to write them.</div><div class="line">Be careful before using the write command.</div><div class="line"></div><div class="line">Device does not contain a recognized partition table</div><div class="line">Building a new DOS disklabel <span class="keyword">with</span> disk identifier <span class="number">0</span>x85f5b4ec.</div><div class="line"><span class="comment">#敲击p查看分区表信息</span></div><div class="line">Command (m for help): p</div><div class="line"></div><div class="line">Disk /dev/sdb: <span class="number">21.5</span> GB, <span class="number">21474836480</span> bytes, <span class="number">41943040</span> sectors</div><div class="line"><span class="attr">Units</span> = sectors of <span class="number">1</span> * <span class="number">512</span> = <span class="number">512</span> bytes</div><div class="line">Sector size (logical/physical): <span class="number">512</span> bytes / <span class="number">512</span> bytes</div><div class="line">I/O size (minimum/optimal): <span class="number">512</span> bytes / <span class="number">512</span> bytes</div><div class="line">Disk label type: dos</div><div class="line">Disk identifier: <span class="number">0</span>x85f5b4ec</div><div class="line"></div><div class="line">   Device Boot      Start         End      Blocks   Id  System</div><div class="line"><span class="comment">#敲击n创建新的分区信息</span></div><div class="line">Command (m for help): n</div><div class="line">Partition type:</div><div class="line">   p   primary (<span class="number">0</span> primary, <span class="number">0</span> extended, <span class="number">4</span> free)</div><div class="line">   e   extended</div><div class="line">Select (default p): p</div><div class="line"><span class="comment">#敲击数字1代表分区编号为1：</span></div><div class="line">Partition number (<span class="number">1</span>-<span class="number">4</span>, default <span class="number">1</span>): <span class="number">1</span></div><div class="line">First sector (<span class="number">2048</span>-<span class="number">41943039</span>, default <span class="number">2048</span>):</div><div class="line"><span class="comment">#磁盘的起始扇区，直接回车即可：</span></div><div class="line">Using default value <span class="number">2048</span></div><div class="line"><span class="comment">#键入+2G，代表该分区的大小为2G</span></div><div class="line">Last sector, +sectors <span class="literal">or</span> +size&#123;K,M,G&#125; (<span class="number">2048</span>-<span class="number">41943039</span>, default <span class="number">41943039</span>): +<span class="number">2</span>G</div><div class="line">Partition <span class="number">1</span> of type Linux <span class="literal">and</span> of size <span class="number">2</span> GiB is set</div><div class="line"><span class="comment">#再次查看分区信息</span></div><div class="line">Command (m for help): p</div><div class="line"></div><div class="line">Disk /dev/sdb: <span class="number">21.5</span> GB, <span class="number">21474836480</span> bytes, <span class="number">41943040</span> sectors</div><div class="line"><span class="attr">Units</span> = sectors of <span class="number">1</span> * <span class="number">512</span> = <span class="number">512</span> bytes</div><div class="line">Sector size (logical/physical): <span class="number">512</span> bytes / <span class="number">512</span> bytes</div><div class="line">I/O size (minimum/optimal): <span class="number">512</span> bytes / <span class="number">512</span> bytes</div><div class="line">Disk label type: dos</div><div class="line">Disk identifier: <span class="number">0</span>x85f5b4ec</div><div class="line"></div><div class="line">   Device Boot      Start         End      Blocks   Id  System</div><div class="line">/dev/sdb1            <span class="number">2048</span>     <span class="number">4196351</span>     <span class="number">2097152</span>   <span class="number">83</span>  Linux</div><div class="line"><span class="comment">#敲击w保存退出</span></div><div class="line">Command (m for help): w</div><div class="line">The partition table has been altered!</div><div class="line"></div><div class="line">Calling ioctl() to re-read partition table.</div><div class="line">Syncing disks.</div><div class="line"></div><div class="line"></div><div class="line">第二步：格式化为xfs文件系统：</div><div class="line"></div><div class="line">Linux用于格式化的命名是mkfs,它支持的文件类型有：cramfs,ext2, ext3, ext4, xfs, msdos,btrfs,minix,vfat</div><div class="line"></div><div class="line">使用方法：mkfs.文件类型名称 硬盘分区名称</div><div class="line"></div><div class="line">[root@xwq ~]<span class="comment"># mkfs.xfs /dev/sdb1</span></div><div class="line"><span class="attr">meta-data=/dev/sdb1</span>              <span class="attr">isize=256</span>    <span class="attr">agcount=4,</span> <span class="attr">agsize=131072</span> <span class="attr">blks</span></div><div class="line">         =                       <span class="attr">sectsz=512</span>   <span class="attr">attr=2,</span> <span class="attr">projid32bit=1</span></div><div class="line">         =                       <span class="attr">crc=0</span></div><div class="line"><span class="attr">data</span>     =                       <span class="attr">bsize=4096</span>   <span class="attr">blocks=524288,</span> <span class="attr">imaxpct=25</span></div><div class="line">         =                       <span class="attr">sunit=0</span>      <span class="attr">swidth=0</span> blks</div><div class="line"><span class="attr">naming</span>   =version <span class="number">2</span>              <span class="attr">bsize=4096</span>   <span class="attr">ascii-ci=0</span> <span class="attr">ftype=0</span></div><div class="line"><span class="attr">log</span>      =internal log           <span class="attr">bsize=4096</span>   <span class="attr">blocks=2560,</span> <span class="attr">version=2</span></div><div class="line">         =                       <span class="attr">sectsz=512</span>   <span class="attr">sunit=0</span> blks, <span class="attr">lazy-count=1</span></div><div class="line"><span class="attr">realtime</span> =none                   <span class="attr">extsz=4096</span>   <span class="attr">blocks=0,</span> <span class="attr">rtextents=0</span></div><div class="line"></div><div class="line">				</div><div class="line">第三步：将硬盘设备挂载到/TESTnew目录:</div><div class="line"></div><div class="line">[root@xwq ~]<span class="comment"># mkdir /TESTnew</span></div><div class="line">[root@xwq ~]<span class="comment"># mount /dev/sdb1 /TESTnew/</span></div><div class="line"></div><div class="line">第四步：设置系统启动后自动挂载该硬盘设备:</div><div class="line"></div><div class="line">在/etc/fstab末行插入:/dev/sdb1 /TESTnew xfs defaults <span class="number">0</span> <span class="number">0</span></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">第五步：查看文件系统的使用情况</div><div class="line"></div><div class="line">df命令用于查看挂载点信息与磁盘使用量，格式为：“df [选项] [文件]”（详细用法下面介绍~~~）</div><div class="line"></div><div class="line">[root@xwq ~]<span class="comment"># df -h</span></div><div class="line">Filesystem             Size  Used Avail Use% Mounted on</div><div class="line">/dev/mapper/rhel-root   <span class="number">45</span>G  <span class="number">3.0</span>G   <span class="number">42</span>G   <span class="number">7</span>% /</div><div class="line">devtmpfs               <span class="number">1.9</span>G     <span class="number">0</span>  <span class="number">1.9</span>G   <span class="number">0</span>% /dev</div><div class="line">tmpfs                  <span class="number">1.9</span>G  <span class="number">164</span>K  <span class="number">1.9</span>G   <span class="number">1</span>% /dev/shm</div><div class="line">tmpfs                  <span class="number">1.9</span>G  <span class="number">9.0</span>M  <span class="number">1.9</span>G   <span class="number">1</span>% /run</div><div class="line">tmpfs                  <span class="number">1.9</span>G     <span class="number">0</span>  <span class="number">1.9</span>G   <span class="number">0</span>% /sys/fs/cgroup</div><div class="line">/dev/mapper/rhel-home   <span class="number">22</span>G   <span class="number">36</span>M   <span class="number">22</span>G   <span class="number">1</span>% /home</div><div class="line">/dev/sda1              <span class="number">497</span>M  <span class="number">119</span>M  <span class="number">379</span>M  <span class="number">24</span>% /boot</div><div class="line">/dev/sr0               <span class="number">3.5</span>G  <span class="number">3.5</span>G     <span class="number">0</span> <span class="number">100</span>% /run/media/root/RHEL-<span class="number">7.0</span> Server.x86_64</div><div class="line">/dev/sdb1              <span class="number">2.0</span>G   <span class="number">33</span>M  <span class="number">2.0</span>G   <span class="number">2</span>% /TESTnew</div></pre></td></tr></table></figure>
+<h2 id="其它常用工具"><a href="#其它常用工具" class="headerlink" title="其它常用工具"></a>其它常用工具</h2><p>blkid：块设备属性信息查看</p>
+<pre><code>blkid [OPTION]... [DEVICE]
+    -U UUID: 根据指定的UUID来查找对应的设备
+    -L LABEL：根据指定的LABEL来查找对应的设备
+    -h 显示帮助信息
+    o 指定输出格式 
+    -s 显示指定信息，默认显示所有信息
+    -v 显示版本信息
+实例：
+1、列出当前系统中所有已挂载文件系统的类型： # blkid 
+2、显示指定设备 UUID： # blkid -s UUID /dev/sda5 
+3、显示所有设备 UUID： # blkid -s UUID 
+4、显示指定设备 LABEL： # blkid -s LABEL /dev/sda5 
+5、显示所有设备 LABEL： # blkid -s LABEL 
+6、显示所有设备文件系统： # blkid -s TYPE 
+7、显示所有设备： # blkid -o device 
+8、以列表方式查看详细信息： # blkid -o list
+</code></pre><p>e2label：管理ext系列文件系统的LABEL（不常用）</p>
+<pre><code># e2label DEVICE [LABEL]
+</code></pre><p>tune2fs：重新设定ext系列文件系统可调整参数的值</p>
+<p>命令作用：Windows下面如果出现意外断电死机情况，下次开机一般都会出现系统自检。Linux系统下面也有文件系统自检，而且是可以通过tune2fs命令，自行定义自检周期及方式。</p>
+<pre><code>选项：
+    -l：查看指定文件系统超级块信息；super block
+    -L &apos;LABEL&apos;：修改卷标
+    -m #：修预留给管理员的空间百分比
+    -j: 将ext2升级为ext3
+    -O: 文件系统属性启用或禁用
+    -o: 调整文件系统的默认挂载选项
+    -U UUID: 修改UUID号
+
+实例：
+    tune2fs -c 30 /dev/hda1 设置强制检查前文件系统可以挂载的次数 
+    tune2fs -c -l /dev/hda1 关闭强制检查挂载次数限制。 
+    tune2fs -i 10 /dev/hda1 10天后检查 
+    tune2fs -i 1d /dev/hda1 1天后检查 
+    tune2fs -i 3w /dev/hda1 3周后检查 
+    tune2fs -i 6m /dev/hda1 半年后检查 
+    tune2fs -i 0 /dev/hda1 禁用时间检查 
+    tune2fs -j /dev/hda1 添加日志功能，将ext2转换成ext3文件系统 
+    tune2fs -r 40000 /dev/hda1 调整/dev/hda1分区的保留空间为40000个磁盘块         tune2fs -o acl,user_xattr /dev/hda1 设置/dev/hda1挂载选项，启用Posix Access Control Lists和用户指定的扩展属性
+</code></pre><p>dumpe2fs：用于打印“EXT2 / ext3的”文件系统的超级块和快组信息。 </p>
+<pre><code>选项：
+    -h：查看超级块信息
+    -b：打印文件系统中预留的块信息
+    -i：从指定的文件系统映像文件中读取文件系统信息 
+    -x：以16进制格式打印信息块成员
+</code></pre><h2 id="文件系统检测"><a href="#文件系统检测" class="headerlink" title="文件系统检测"></a>文件系统检测</h2><p>fsck: 命令被用于检查并且试图修复文件系统中的错误。当文件系统发生错误四化，可用fsck指令尝试加以修复</p>
+<pre><code>语法：fsck [参数] [设备名称]
+选项：
+    -a：自动修复文件系统，不询问任何问题； 
+    -A：依照/etc/fstab配置文件的内容，检查文件内所列的全部文件系统； 
+    -N：不执行指令，仅列出实际执行会进行的动作； 
+    -P：当搭配&quot;-A&quot;参数使用时，则会同时检查所有的文件系统； 
+    -r：采用互动模式，在执行修复时询问问题，让用户得以确认并决定处理方式； 
+    -R：当搭配&quot;-A&quot;参数使用时，则会略过/目录的文件系统不予检查； 
+    -s：依序执行检查作业，而非同时执行； 
+    -t&lt;文件系统类型&gt;：指定要检查的文件系统类型； 
+    -T：执行fsck指令时，不显示标题信息； 
+    -V：显示指令执行过程。
+
+实例：
+    linux的文件系统损坏会导致linux不正常关机，出错的时候如果系统告诉你是哪一块硬盘的分区有问题，比如是/dev/hda2，接着用如下的命令去对付它： 
+    # fsck -y /dev/hda2 
+    结束后使用reboot命令重启系统这样就好了！ 
+    如果不知道时哪个地方出了问题，可以直接： 
+    # fsck 
+    在随后的多个确认对话框中输入:y 
+    结束后同样使用reboot命令重启系统这样就好了！
+</code></pre><p>e2fsck：ext系列文件专用的检测修复工具<br>        -y：自动回答为yes;<br>        -f：强制修复；</p>
+<h2 id="磁盘挂载与卸载"><a href="#磁盘挂载与卸载" class="headerlink" title="磁盘挂载与卸载"></a>磁盘挂载与卸载</h2><p>将额外文件系统与根文件系统某现存的目录建立起关联关系，进而使得此目录做为其它文件访问入口的行为称之为挂载；解除此关联关系的过程称之为卸载；</p>
+<p>把设备关联挂载点：Mount Point</p>
+<p>卸载时：可使用设备，也可以使用挂载点</p>
+<p>注意：挂载点下原有文件在挂载完成后会被临时隐藏</p>
+<h3 id="磁盘挂载"><a href="#磁盘挂载" class="headerlink" title="磁盘挂载"></a>磁盘挂载</h3><p>挂载方法：mount DEVICE MOUNT_POINT</p>
+<pre><code>mount：通过查看/etc/mtab文件显示当前系统已挂载的所有设备
+mount [-fnrsvw] [-t vfstype] [-o options] device dir
+    device：指明要挂载的设备；
+        (1) 设备文件：例如/dev/sda5
+        (2) 卷标：-L &apos;LABEL&apos;, 例如 -L &apos;MYDATA&apos;
+        (3) UUID, -U &apos;UUID&apos;：例如 -U &apos;0c50523c-43f1-45e7-85c0-a126711d406e&apos;
+        (4) 伪文件系统名称：proc, sysfs, devtmpfs, configfs
+        dir：挂载点事先存在；建议使用空目录；进程正在使用中的设备无法被卸载；
+
+选项：
+    -t vsftype：指定要挂载的设备上的文件系统类型；
+    -r: readonly，只读挂载；
+    -w: read and write, 读写挂载；
+    -n: 不更新/etc/mtab； 
+    -a：自动挂载所有支持自动挂载的设备；(定义在了/etc/fstab文件中，且挂载选项中有“自动挂载”功能)
+        -L &apos;LABEL&apos;: 以卷标指定挂载设备；
+        -U &apos;UUID&apos;: 以UUID指定要挂载的设备；
+        -B, --bind: 绑定目录到另一个目录上；
+</code></pre><p>注意：查看内核追踪到的已挂载的所有设备：cat /proc/mounts</p>
+<pre><code>-o options：(挂载文件系统的选项)
+async：异步模式；
+sync：同步模式；
+atime/noatime：包含目录和文件；
+diratime/nodiratime：目录的访问时间戳
+auto/noauto：是否支持自动挂载
+exec/noexec：是否支持将文件系统上应用程序运行为进程
+dev/nodev：是否支持在此文件系统上使用设备文件；
+suid/nosuid：
+remount：重新挂载
+    ro：
+    rw:
+user/nouser：是否允许普通用户挂载此设备
+acl：启用此文件系统上的acl功能
+</code></pre><p>注意：上述选项可多个同时使用，彼此使用逗号分隔；默认挂载选项：defaults<br>                rw, suid, dev, exec, auto, nouser, and async</p>
+<h3 id="卸载命令"><a href="#卸载命令" class="headerlink" title="卸载命令"></a>卸载命令</h3><p>语法：</p>
+<p>umount DEVICE</p>
+<p>umount MOUNT_POINT</p>
+<p>查看正在访问指定文件系统的进程：# fuser -v MOUNT_POINT</p>
+<p>终止所有在正访问指定的文件系统的进程：# fuser -km MOUNT_POINT</p>
+<h3 id="系统磁盘查看"><a href="#系统磁盘查看" class="headerlink" title="系统磁盘查看"></a>系统磁盘查看</h3><p>df:文件系统空间占用等信息的查看工具<br>选项：    </p>
+<pre><code>-a：显示出所有的文件系统（包括虚拟的）
+-h: 更易读的容量格式如:1K,235M,2G使用信息
+-i：展示出inode的信息（默认是磁盘）
+-P: 以Posix兼容的格式输出
+-total：展示出总体使用量
+-T：显示出文件系统的类型
+</code></pre><p>du：查看某目录总体空间占用状态</p>
+<p>语法：”du [选项] [文件]”</p>
+<p>查看根目录中各文件夹所占空间：du -sh /</p>
+<p>查看当前目录下文件夹所占空间：du -sh *<br>选项：</p>
+<pre><code>-h: 更易读的容量格式如:1K,235M,2G使用信息
+-s: 仅显示占用量总和
+-a：评估每个文件而非目录的整体占用量
+-c：评估每个文件并计算出总占用量总和
+</code></pre><h3 id="文件挂载的配置文件：-etc-fstab"><a href="#文件挂载的配置文件：-etc-fstab" class="headerlink" title="文件挂载的配置文件：/etc/fstab"></a>文件挂载的配置文件：/etc/fstab</h3><p>使用mount命令执行挂载操作后立即就可以使用该文件系统了，但是重启后则会失效。如果想让重启依然生效，我们就必须将挂载信息按照指定的格式写入/etc/fstab文件中。/etc/fstab文件只有root用户才有权限编辑！</p>
+<p>填写格式如下：设备文件或伪为文件系统 挂载目录 格式类型 权限选项 自检次序 优先级</p>
+<pre><code>设备系统或伪文件系统：设备文件、LABEL(LABEL=&quot;&quot;)、UUID(UUID=&quot;&quot;)、伪文件系统名称(proc, sysfs)，一般格式为：路径+名称，也可以写成UUID值等
+挂载目录：指定要挂载到的目录，需挂载前创建好
+格式类型：指定文件系统的格式，比如有ext3/ext4/xfs/iso9660/swap等
+权限选项：默认为defaults（rw,suid,dev,exec,auto,nouser,async）,可指定acl或quota等
+自检次序：
+    0：不自检
+    1：首先自检；一般只有rootfs才用1；        
+优先级：若“自检”为1，则可对多块硬盘进行优先级设置
+</code></pre><h2 id="磁盘冗余阵列"><a href="#磁盘冗余阵列" class="headerlink" title="磁盘冗余阵列"></a>磁盘冗余阵列</h2><h3 id="RAID"><a href="#RAID" class="headerlink" title="RAID"></a>RAID</h3><p>RAID0：将多块物理硬盘设备通过硬件或软件的方式串联在一起，成为一个大的卷组，将数据依次分别写入到各个物理硬盘中，这样最理想的状态会使得读写性能提升数倍，但若任意一块硬盘故障则会让整个系统的数据都受到破坏。通俗来说RAID0硬盘组技术至少需要两块物理硬盘设备，能够有效的提高硬盘的性能和吞吐量，但没有数据的冗余和错误修复能力。<br><img src="http://oovxjr0mr.bkt.clouddn.com/RAID0.png" alt="02"></p>
+<p>RAID1：将两块以上的存储设备进行绑定，目的是让数据被多块硬盘同时写入，类似于把数据再制作出多份备份的镜像，当有某一块硬盘损坏后一般可以立即通过热交换方式来恢复数据的正常使用，RAID1硬盘组技术虽然十分注重数据的安全性，但因为是将多块硬盘中写入相同的数据，也就是说理论上硬盘空间的真实可用率只有50%，因此会明显的提高硬盘组整体的成本，同时因为需要将数据同时写入到两块以上的硬盘设备中，这无疑也会增加一定系统计算功能的负载。<br><img src="http://oovxjr0mr.bkt.clouddn.com/raid1.jpg" alt="03"></p>
+<p>RAID5：需要至少三块硬盘，兼顾存储性能、数据安全和存储成本，数据以奇偶校验信息互相保存到硬盘设备中。RAID5硬盘组阵列有两项技术特色，第一，数据的奇偶校验信息并不是单独保存到某一块硬盘设备中的，而是分别互相存储到其它每一块硬盘设备上，这样的好处就是当其中任何一设备损坏后不至于出现致命缺陷。第二，parity部分示例的就是保存数据的奇偶校验信息，换句话说就是RAID5硬盘组并不是备份真真正正的硬盘实际数据信息，而是当设备出现问题后通过奇偶校验信息来尝试重建损坏的数据，这样的技术特性“妥协”的兼顾了存储设备性能、数据安全性与存储成本问题。由于RAID5硬盘组技术是因为成本问题对存储读写速度和安全性能而有了一定的妥协，但绝大部分情况下企业相比硬盘的价格，一定更加在乎数据的价值，生产环境中主要则是使用的RAID10硬盘组技术，顾名思义，这样技术就是对RAID1+RAID0硬盘组技术的一个“组合体”。<br><img src="http://oovxjr0mr.bkt.clouddn.com/raid5.gif" alt="04"></p>
+<p>RAID10：需要至少4块硬盘来组建，兼顾速度和安全，但是成本很高。RAID10先分别两两制作成RAID1硬盘组，保证数据的安全性，然后再对两个RAID1硬盘组实施RAID0技术，进一步的提高存储设备的读写速度，这样理论上只要坏的不是同一组中的所有硬盘，那么最多可以损坏50%的硬盘设备而不丢失数据，因此RAID10硬盘组技术继承了RAID0更高的读写速度和RAID1更安全的数据保障，在不考虑成本的情况下RAID10在读写速度和数据保障性方面都超过了RAID5，是较为广泛使用的存储技术。<br><img src="http://oovxjr0mr.bkt.clouddn.com/raid10.jpg" alt="05"></p>
+<h3 id="mdadm"><a href="#mdadm" class="headerlink" title="mdadm"></a>mdadm</h3><p>mdadm命令用于管理系统软件RAID硬盘阵列，语法格式为：“mdadm [模式] <raid设备名称>[选项] [成员设备名称]”。</raid设备名称></p>
+<p>选项：</p>
+<pre><code>-a：检测设备名称
+-n：指定设备数量
+-l：指定raid级别
+-C：创建
+-v：显示过程
+-f：模拟设备损坏
+-r：移除设备
+-Q：查看摘要信息
+-D：查看详细信息
+-S：停止阵列
+</code></pre><h1 id="实战操练"><a href="#实战操练" class="headerlink" title="实战操练"></a>实战操练</h1><h2 id="添加交换分区"><a href="#添加交换分区" class="headerlink" title="添加交换分区"></a>添加交换分区</h2><p>第一步：添加硬盘（过程略）</p>
+<p>第二步：将新添加的硬盘进行分区</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#对新添加的硬盘设备进行分区：</span></div><div class="line">[root@xwq ~]<span class="comment"># fdisk /dev/sdb</span></div><div class="line">Welcome <span class="keyword">to</span> fdisk (util-linux <span class="number">2.23</span>.<span class="number">2</span>).</div><div class="line"></div><div class="line">Changes will remain <span class="keyword">in</span> memory only, <span class="keyword">until</span> you decide <span class="keyword">to</span> write them.</div><div class="line">Be careful before using the write command.</div><div class="line"></div><div class="line">Device does <span class="keyword">not</span> contain a recognized partition table</div><div class="line">Building a <span class="keyword">new</span> DOS disklabel <span class="keyword">with</span> disk identifier <span class="number">0x762796b6</span>.</div><div class="line"></div><div class="line"><span class="comment">#创建新的分区信息：</span></div><div class="line">Command (m <span class="keyword">for</span> help): n</div><div class="line">Partition type:</div><div class="line">   p   primary (<span class="number">0</span> primary, <span class="number">0</span> extended, <span class="number">4</span> free)</div><div class="line">   e   extended</div><div class="line">   </div><div class="line"><span class="comment">#类型为主分区：</span></div><div class="line">Select (<span class="keyword">default</span> p): p</div><div class="line"><span class="comment">#分区号为1：</span></div><div class="line">Partition number (<span class="number">1</span>-<span class="number">4</span>, <span class="keyword">default</span> <span class="number">1</span>): <span class="number">1</span></div><div class="line"><span class="comment">#回车默认为2048即可</span></div><div class="line">First sector (<span class="number">2048</span>-<span class="number">41943039</span>, <span class="keyword">default</span> <span class="number">2048</span>):</div><div class="line">Using <span class="keyword">default</span> value <span class="number">2048</span></div><div class="line"><span class="comment">#结束扇区部分输入+5G，设置分区大小为5G：</span></div><div class="line">Last sector, +sectors <span class="keyword">or</span> +size&#123;K,M,G&#125; (<span class="number">2048</span>-<span class="number">41943039</span>, <span class="keyword">default</span> <span class="number">41943039</span>): +<span class="number">5</span>G</div><div class="line">Partition <span class="number">1</span> <span class="keyword">of</span> type Linux <span class="keyword">and</span> <span class="keyword">of</span> size <span class="number">5</span> GiB <span class="keyword">is</span> set</div><div class="line"></div><div class="line"><span class="comment">#修改分区的类型：</span></div><div class="line">Command (m <span class="keyword">for</span> help): t</div><div class="line">Selected partition <span class="number">1</span></div><div class="line"><span class="comment">#输入82代表swap分区：</span></div><div class="line">Hex code (type L <span class="keyword">to</span> list all codes): <span class="number">82</span></div><div class="line">Changed type <span class="keyword">of</span> partition <span class="string">'Linux'</span> <span class="keyword">to</span> <span class="string">'Linux swap / Solaris'</span></div><div class="line"></div><div class="line"><span class="comment">#再次查看分区表信息：</span></div><div class="line">Command (m <span class="keyword">for</span> help): p</div><div class="line"></div><div class="line">Disk /dev/sdb: <span class="number">21.5</span> GB, <span class="number">21474836480</span> bytes, <span class="number">41943040</span> sectors</div><div class="line">Units = sectors <span class="keyword">of</span> <span class="number">1</span> * <span class="number">512</span> = <span class="number">512</span> bytes</div><div class="line">Sector size (logical<span class="regexp">/physical): 512 bytes /</span> <span class="number">512</span> bytes</div><div class="line">I<span class="regexp">/O size (minimum/optimal): 512 bytes /</span> <span class="number">512</span> bytes</div><div class="line">Disk label type: dos</div><div class="line">Disk identifier: <span class="number">0x762796b6</span></div><div class="line"></div><div class="line">   Device Boot      Start         End      Blocks   Id  System</div><div class="line"><span class="regexp">/dev/sdb1            2048    10487807     5242880   82  Linux swap /</span> Solaris</div><div class="line"></div><div class="line"><span class="comment">#保存分区表的设置：</span></div><div class="line">Command (m <span class="keyword">for</span> help): w</div><div class="line">The partition table has been altered!</div><div class="line"></div><div class="line">Calling ioctl() <span class="keyword">to</span> re-read partition table.</div><div class="line">Syncing disks.</div><div class="line"></div><div class="line"><span class="comment">#让内核同步分区信息（此步骤仅在没有找到分区设备的情况下需要执行，非必要动作）</span></div><div class="line">[root@xwq ~]<span class="comment"># partprobe</span></div><div class="line"><span class="comment">#将sdb1分区设备格式化为swap类型：</span></div><div class="line">[root@xwq ~]<span class="comment"># mkswap /dev/sdb1</span></div><div class="line">Setting up swapspace version <span class="number">1</span>, size = <span class="number">5242876</span> KiB</div><div class="line"><span class="literal">no</span> label, UUID=fdccb458-<span class="number">6c</span>89-<span class="number">4b</span>10-a67f-a7896ec16bd5</div><div class="line"><span class="comment">#查看当前的内存使用情况，swap大小为：3983</span></div><div class="line">[root@xwq ~]<span class="comment"># free -m</span></div><div class="line">             total       used       free     shared    buffers     cached</div><div class="line">Mem:          <span class="number">3778</span>       <span class="number">1346</span>       <span class="number">2432</span>         <span class="number">10</span>          <span class="number">2</span>        <span class="number">368</span></div><div class="line">-/+ buffers/cache:        <span class="number">975</span>       <span class="number">2802</span></div><div class="line">Swap:         <span class="number">3983</span>          <span class="number">0</span>       <span class="number">3983</span></div><div class="line"><span class="comment">#将sdb1的swap分区启用：</span></div><div class="line">[root@xwq ~]<span class="comment"># swapon /dev/sdb1</span></div><div class="line"><span class="comment">#再次查看内存使用情况，现在swap为9103</span></div><div class="line">[root@xwq ~]<span class="comment"># free -m</span></div><div class="line">             total       used       free     shared    buffers     cached</div><div class="line">Mem:          <span class="number">3778</span>       <span class="number">1352</span>       <span class="number">2425</span>         <span class="number">10</span>          <span class="number">2</span>        <span class="number">368</span></div><div class="line">-/+ buffers/cache:        <span class="number">982</span>       <span class="number">2796</span></div><div class="line">Swap:         <span class="number">9103</span>          <span class="number">0</span>       <span class="number">9103</span></div><div class="line"><span class="comment">#设置为开机自动挂载swap分区设备：</span></div><div class="line">[root@xwq ~]<span class="comment"># vim /etc/fstab</span></div><div class="line">/dev/sdb1 swap swap defaults <span class="number">0</span> <span class="number">0</span></div></pre></td></tr></table></figure>
+<h2 id="部署磁盘阵列组"><a href="#部署磁盘阵列组" class="headerlink" title="部署磁盘阵列组"></a>部署磁盘阵列组</h2><p>第1步：为虚拟机中添加4块硬盘设备来制作一个RAID10磁盘阵列组，<br>注意在虚拟机中添加硬盘的操作一定要记得关闭系统之后再做，</p>
+<p>输入如下命令：<br>*解释一下：<br>-C参数代表创建一个RAID阵列卡，-v参数来显示出创建的过程，同时就在后面追加一个设备名称，这样以后/dev/md0就是我们创建出RAID磁盘阵列组的名称，-a yes参数代表自动创建设备文件，-n 4参数代表使用4块硬盘来制作这个RAID磁盘阵列组，而-l 10参数则代表RAID10方案，最后面追加上4块硬盘设备的名称。</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@xwq ~]<span class="comment"># mdadm -Cv /dev/md0 -a yes -n 4 -l 10 /dev/sdb /dev/sdc /dev/sdd /dev/sde</span></div><div class="line">mdadm: layout defaults to n2</div><div class="line">mdadm: layout defaults to n2</div><div class="line">mdadm: chunk size defaults to 512K</div><div class="line">mdadm: size set to 20954624K</div><div class="line">mdadm: Defaulting to version 1.2 metadata</div><div class="line">mdadm:<span class="built_in"> array </span>/dev/md0 started.</div></pre></td></tr></table></figure>
+<p>第2步:将制作好的RAID磁盘阵列组格式化为ext4格式</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">[root<span class="comment">@xwq ~]# mkfs.ext4 /dev/md0</span></div><div class="line"><span class="symbol">mke2fs</span> <span class="number">1</span>.<span class="number">42</span>.<span class="number">9</span> (<span class="number">28</span>-Dec-<span class="number">2013</span>)</div><div class="line"><span class="symbol">Filesystem</span> label=</div><div class="line"><span class="symbol">OS</span> type: Linux</div><div class="line"><span class="keyword">Block </span>size<span class="number">=4096</span> (log<span class="number">=2</span>)</div><div class="line"><span class="symbol">Fragment</span> size<span class="number">=4096</span> (log<span class="number">=2</span>)</div><div class="line"><span class="keyword">Stride=128 </span><span class="keyword">blocks, </span><span class="keyword">Stripe </span>width<span class="number">=256</span> <span class="keyword">blocks</span></div><div class="line"><span class="number">2621440</span> inodes, <span class="number">10477312</span> <span class="keyword">blocks</span></div><div class="line"><span class="number">523865</span> <span class="keyword">blocks </span>(<span class="number">5</span>.<span class="number">00</span>%) reserved for the super user</div><div class="line"><span class="symbol">First</span> <span class="meta">data</span> <span class="keyword">block=0</span></div><div class="line"><span class="symbol">Maximum</span> filesystem <span class="keyword">blocks=2157969408</span></div><div class="line"><span class="number">320</span> <span class="keyword">block </span>groups</div><div class="line"><span class="number">32768</span> <span class="keyword">blocks </span>per group, <span class="number">32768</span> fragments per group</div><div class="line"><span class="number">8192</span> inodes per group</div><div class="line"><span class="symbol">Superblock</span> <span class="keyword">backups </span>stored on <span class="keyword">blocks: </span></div><div class="line">	<span class="number">32768</span>, <span class="number">98304</span>, <span class="number">163840</span>, <span class="number">229376</span>, <span class="number">294912</span>, <span class="number">819200</span>, <span class="number">884736</span>, <span class="number">1605632</span>, <span class="number">2654208</span>, </div><div class="line">	<span class="number">4096000</span>, <span class="number">7962624</span></div><div class="line"></div><div class="line"><span class="symbol">Allocating</span> group tables: done                            </div><div class="line"><span class="symbol">Writing</span> inode tables: done                            </div><div class="line"><span class="symbol">Creating</span> journal (<span class="number">32768</span> <span class="keyword">blocks): </span>done</div><div class="line"><span class="symbol">Writing</span> superblocks <span class="keyword">and </span>filesystem accounting information: done</div></pre></td></tr></table></figure>
+<p>第3步:创建挂载点然后将存储设备进行挂载操作，挂载成功后可看到可用空间为40G</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@xwq ~]# mkdir /RAID</div><div class="line">[root@xwq ~]# mount /dev/md0 /RAID</div><div class="line">[root@xwq ~]# df -h</div><div class="line">Filesystem             Size  Used Avail Use% Mounted on</div><div class="line">/dev/mapper/rhel-root   <span class="number">45</span>G  <span class="number">3.0</span>G   <span class="number">42</span>G   <span class="number">7</span>% /</div><div class="line">devtmpfs               <span class="number">1.9</span>G     <span class="number">0</span>  <span class="number">1.9</span>G   <span class="number">0</span>% /dev</div><div class="line">tmpfs                  <span class="number">1.9</span>G  <span class="number">176</span>K  <span class="number">1.9</span>G   <span class="number">1</span>% /dev/shm</div><div class="line">tmpfs                  <span class="number">1.9</span>G  <span class="number">8.9</span>M  <span class="number">1.9</span>G   <span class="number">1</span>% /run</div><div class="line">tmpfs                  <span class="number">1.9</span>G     <span class="number">0</span>  <span class="number">1.9</span>G   <span class="number">0</span>% /sys/fs/cgroup</div><div class="line">/dev/mapper/rhel-home   <span class="number">22</span>G   <span class="number">38</span>M   <span class="number">22</span>G   <span class="number">1</span>% /home</div><div class="line">/dev/sda1              <span class="number">497</span>M  <span class="number">119</span>M  <span class="number">379</span>M  <span class="number">24</span>% /boot</div><div class="line">/dev/sr0               <span class="number">3.5</span>G  <span class="number">3.5</span>G     <span class="number">0</span> <span class="number">100</span>% /run/media/root/RHEL<span class="number">-7.0</span> Server.x86_64</div><div class="line">/dev/md0                <span class="number">40</span>G   <span class="number">49</span>M   <span class="number">38</span>G   <span class="number">1</span>% /RAID</div></pre></td></tr></table></figure>
+<p>第4步:查看/dev/md0磁盘阵列设备组详细信息，并将挂载信息写入到配置文件中永久生效</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line">[root@xwq ~]# mdadm -D /dev/md0</div><div class="line">/dev/md0:</div><div class="line">        Version : 1.2</div><div class="line">  Creation Time : <span class="type">Thu</span> May <span class="number">11</span> <span class="number">21</span>:<span class="number">28</span>:<span class="number">16</span> <span class="number">2017</span></div><div class="line">     Raid Level : <span class="type">raid10</span></div><div class="line">     <span class="keyword">Array</span> Size : 41909248 (39.97 <span class="type">GiB</span> <span class="number">42.92</span> GB)</div><div class="line">  Used Dev Size : 20954624 (19.98 <span class="type">GiB</span> <span class="number">21.46</span> GB)</div><div class="line">   Raid Devices : 4</div><div class="line">  Total Devices : 4</div><div class="line">    Persistence : <span class="type">Superblock</span> <span class="keyword">is</span> persistent</div><div class="line"></div><div class="line">    Update Time : <span class="type">Thu</span> May <span class="number">11</span> <span class="number">21</span>:<span class="number">30</span>:<span class="number">13</span> <span class="number">2017</span></div><div class="line">          State : <span class="type">active</span>, resyncing </div><div class="line"> Active Devices : 4</div><div class="line">Working Devices : 4</div><div class="line"> Failed Devices : 0</div><div class="line">  Spare Devices : 0</div><div class="line"></div><div class="line">         Layout : <span class="type">near</span>=<span class="number">2</span></div><div class="line">     Chunk Size : 512<span class="type">K</span></div><div class="line"></div><div class="line">  Resync Status : 61% <span class="type">complete</span></div><div class="line"></div><div class="line">           Name : <span class="type">xwq</span>:<span class="number">0</span>  (local to host xwq)</div><div class="line">           UUID : <span class="type">f206f922</span>:e890b142:<span class="number">577355</span>ad:d80ead01</div><div class="line">         Events : 10</div><div class="line"></div><div class="line">    Number   Major   Minor   RaidDevice State</div><div class="line">       <span class="number">0</span>       <span class="number">8</span>       <span class="number">16</span>        <span class="number">0</span>      active sync   /dev/sdb</div><div class="line">       <span class="number">1</span>       <span class="number">8</span>       <span class="number">32</span>        <span class="number">1</span>      active sync   /dev/sdc</div><div class="line">       <span class="number">2</span>       <span class="number">8</span>       <span class="number">48</span>        <span class="number">2</span>      active sync   /dev/sdd</div><div class="line">       <span class="number">3</span>       <span class="number">8</span>       <span class="number">64</span>        <span class="number">3</span>      active sync   /dev/sde</div><div class="line">[root@xwq ~]# echo <span class="string">"/dev/md0 /RAID ext4 defaults 0 0"</span> &gt;&gt; /etc/fstab</div></pre></td></tr></table></figure>
+<p>第5步:模拟损坏磁盘阵列及修复<br>首先确认有一块物理硬盘设备出现损坏不能再继续正常使用后，应该使用mdadm命令来予以移除之后查看下RAID磁盘阵列组的状态已经被改变</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">[root@xwq ~]# mdadm /dev/md0 -f /dev/sdb</div><div class="line">mdadm: <span class="keyword">set</span> /dev/sdb <span class="comment">faulty in</span> /dev/<span class="comment">md0</span></div><div class="line">[root@xwq ~<span class="comment">]# mdadm -D</span> /dev/<span class="comment">md0</span></div><div class="line">/dev/md0:</div><div class="line">        Version <span class="comment">: 1.2</span></div><div class="line">  Creation <span class="comment">Time : Thu May 11 21:28:16 2017</span></div><div class="line">     Raid <span class="comment">Level : raid10</span></div><div class="line">     Array <span class="comment">Size : 41909248 (39.97 GiB 42.92 GB)</span></div><div class="line">  Used <span class="comment">Dev Size : 20954624 (19.98 GiB 21.46 GB)</span></div><div class="line">   Raid <span class="comment">Devices : 4</span></div><div class="line">  Total <span class="comment">Devices : 4</span></div><div class="line">    Persistence <span class="comment">: Superblock is persistent</span></div><div class="line"></div><div class="line">    Update <span class="comment">Time : Thu May 11 21:31:45 2017</span></div><div class="line">          State <span class="comment">: active, degraded</span> </div><div class="line"> Active <span class="comment">Devices : 3</span></div><div class="line">Working <span class="comment">Devices : 3</span></div><div class="line"> Failed <span class="comment">Devices : 1</span></div><div class="line">  Spare <span class="comment">Devices : 0</span></div><div class="line"></div><div class="line">         Layout <span class="comment">: near=2</span></div><div class="line">     Chunk <span class="comment">Size : 512K</span></div><div class="line"></div><div class="line">           Name <span class="comment">: xwq:0  (local to host xwq)</span></div><div class="line">           UUID <span class="comment">: f206f922:e890b142:577355ad:d80ead01</span></div><div class="line">         Events <span class="comment">: 22</span></div><div class="line"></div><div class="line">    Number   <span class="comment">Major   Minor   RaidDevice State</span></div><div class="line">       0       0        0        0      removed</div><div class="line">       1       8       32        1      active <span class="comment">sync</span>   /dev/<span class="comment">sdc</span></div><div class="line">       2       8       48        2      active <span class="comment">sync</span>   /dev/<span class="comment">sdd</span></div><div class="line">       3       8       64        3      active <span class="comment">sync</span>   /dev/<span class="comment">sde</span></div><div class="line"></div><div class="line">       0       8       16        -      faulty   /dev/<span class="comment">sdb</span></div></pre></td></tr></table></figure>
+<p>因为RAID10级别的磁盘阵列组允许一组RAID1硬盘组中存在一个故障盘而不影响使用，所以此时可以尝试下在/RAID目录中正常的创建或删除文件都是不受影响的。当购买了新的硬盘存储设备后再使用mdadm命令来予以恢复即可，但因为虚拟机模拟硬盘的原因需要重启后才把新的硬盘添加到RAID磁盘阵列组中。    </p>
+<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">[root@xwq ~]<span class="comment"># umount /RAID</span></div><div class="line">umount: /RAID: not mounted</div><div class="line">[root@xwq ~]<span class="comment"># mdadm /dev/md0 -a /dev/sdb</span></div><div class="line">mdadm: Cannot open /dev/sdb: Device or resource busy</div><div class="line">[root@xwq ~]<span class="comment"># mdadm -D /dev/md0</span></div><div class="line">/dev/md0:</div><div class="line">        Version : 1.2</div><div class="line">  Creation Time : Thu May<span class="number"> 11 </span>21:28:16 2017</div><div class="line">     Raid Level : raid10</div><div class="line">     Array Size :<span class="number"> 41909248 </span>(39.97 GiB 42.92 GB)</div><div class="line">  Used Dev Size :<span class="number"> 20954624 </span>(19.98 GiB 21.46 GB)</div><div class="line">   Raid Devices : 4</div><div class="line">  Total Devices : 4</div><div class="line">    Persistence : Superblock is persistent</div><div class="line"></div><div class="line">    Update Time : Thu May<span class="number"> 11 </span>21:37:47 2017</div><div class="line">          State : clean </div><div class="line"> Active Devices : 4</div><div class="line">Working Devices : 4</div><div class="line"> Failed Devices : 0</div><div class="line">  Spare Devices : 0</div><div class="line"></div><div class="line">         Layout : near=2</div><div class="line">     Chunk Size : 512K</div><div class="line"></div><div class="line">           Name : xwq:0  (local to host xwq)</div><div class="line">           UUID : f206f922:e890b142:577355ad:d80ead01</div><div class="line">         Events : 46</div><div class="line"></div><div class="line">    Number   Major   Minor   RaidDevice State</div><div class="line">      <span class="number"> 4 </span>     <span class="number"> 8 </span>     <span class="number"> 16 </span>      <span class="number"> 0 </span>     active sync   /dev/sdb</div><div class="line">      <span class="number"> 1 </span>     <span class="number"> 8 </span>     <span class="number"> 32 </span>      <span class="number"> 1 </span>     active sync   /dev/sdc</div><div class="line">      <span class="number"> 2 </span>     <span class="number"> 8 </span>     <span class="number"> 48 </span>      <span class="number"> 2 </span>     active sync   /dev/sdd</div><div class="line">      <span class="number"> 3 </span>     <span class="number"> 8 </span>     <span class="number"> 64 </span>      <span class="number"> 3 </span>     active sync   /dev/sde</div></pre></td></tr></table></figure>
+<h2 id="磁盘阵列组-备份盘"><a href="#磁盘阵列组-备份盘" class="headerlink" title="磁盘阵列组+备份盘"></a>磁盘阵列组+备份盘</h2><p>此次演示使用RAID5，RAID5磁盘阵列组技术至少需要3块盘来做，加上1块备份盘，总共是需要向虚拟机中模拟4块硬盘设备。</p>
+<p> 第1步：创建一个RAID5磁盘阵列组+备份盘<br>-n 3参数代表创建这个RAID5所需的硬盘个数，-l 5参数代表RAID磁盘阵列的级别，-x 1参数则代表有1块备份盘，当我们查看/dev/md0磁盘阵列组的时候就能看到有一块备份盘在等待中了</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line">[root@xwq ~]# mdadm -Cv /dev/md0 -n <span class="number">3</span> -l <span class="number">5</span> -x <span class="number">1</span> /dev/sdb /dev/sdc /dev/sdd /dev/sde</div><div class="line">mdadm: layout defaults to left-symmetric</div><div class="line">mdadm: layout defaults to left-symmetric</div><div class="line">mdadm: chunk size defaults to <span class="number">512</span>K</div><div class="line">mdadm: size <span class="keyword">set</span> to <span class="comment">20954624K</span></div><div class="line">mdadm: Defaulting <span class="comment">to version 1.2 metadata</span></div><div class="line">mdadm: array /dev/<span class="comment">md0 started.</span></div><div class="line">[root@xwq ~<span class="comment">]# mdadm -D</span> /dev/<span class="comment">md0</span></div><div class="line">/dev/md0:</div><div class="line">        Version <span class="comment">: 1.2</span></div><div class="line">  Creation <span class="comment">Time : Thu May 11 22:00:16 2017</span></div><div class="line">     Raid <span class="comment">Level : raid5</span></div><div class="line">     Array <span class="comment">Size : 41909248 (39.97 GiB 42.92 GB)</span></div><div class="line">  Used <span class="comment">Dev Size : 20954624 (19.98 GiB 21.46 GB)</span></div><div class="line">   Raid <span class="comment">Devices : 3</span></div><div class="line">  Total <span class="comment">Devices : 4</span></div><div class="line">    Persistence <span class="comment">: Superblock is persistent</span></div><div class="line"></div><div class="line">    Update <span class="comment">Time : Thu May 11 22:00:56 2017</span></div><div class="line">          State <span class="comment">: clean, degraded, recovering</span> </div><div class="line"> Active <span class="comment">Devices : 2</span></div><div class="line">Working <span class="comment">Devices : 4</span></div><div class="line"> Failed <span class="comment">Devices : 0</span></div><div class="line">  Spare <span class="comment">Devices : 2</span></div><div class="line"></div><div class="line">         Layout <span class="comment">: left-symmetric</span></div><div class="line">     Chunk <span class="comment">Size : 512K</span></div><div class="line"></div><div class="line"> Rebuild <span class="comment">Status : 43% complete</span></div><div class="line"></div><div class="line">           Name <span class="comment">: xwq:0  (local to host xwq)</span></div><div class="line">           UUID <span class="comment">: 08d84f3b:fce199ba:7594d094:12391c7e</span></div><div class="line">         Events <span class="comment">: 7</span></div><div class="line"></div><div class="line">    Number   <span class="comment">Major   Minor   RaidDevice State</span></div><div class="line">       0       8       16        0      active <span class="comment">sync</span>   /dev/<span class="comment">sdb</span></div><div class="line">       1       8       32        1      active <span class="comment">sync</span>   /dev/<span class="comment">sdc</span></div><div class="line">       4       8       48        2      spare <span class="comment">rebuilding</span>   /dev/<span class="comment">sdd</span></div><div class="line"></div><div class="line">       3       8       64        -      spare   /dev/<span class="comment">sde</span></div></pre></td></tr></table></figure>
+<p>第2步：把这块制作的RAID5磁盘阵列组格式化为ext4文件格式后挂载到目录上</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">[root@xwq ~]<span class="comment"># mkfs.ext4 /dev/md0</span></div><div class="line">mke2fs <span class="number">1.42</span>.<span class="number">9</span> (<span class="number">28</span>-Dec-<span class="number">2013</span>)</div><div class="line">Filesystem <span class="attr">label=</span></div><div class="line">OS <span class="keyword">type</span>: Linux</div><div class="line">Block <span class="attr">size=</span><span class="number">4096</span> (<span class="attr">log=</span><span class="number">2</span>)</div><div class="line">Fragment <span class="attr">size=</span><span class="number">4096</span> (<span class="attr">log=</span><span class="number">2</span>)</div><div class="line"><span class="attr">Stride=</span><span class="number">128</span> blocks, Stripe <span class="attr">width=</span><span class="number">256</span> blocks</div><div class="line"><span class="number">2621440</span> inodes, <span class="number">10477312</span> blocks</div><div class="line"><span class="number">523865</span> blocks (<span class="number">5.00</span>%) reserved for the super <span class="keyword">user</span></div><div class="line"><span class="title">First</span> data <span class="attr">block=</span><span class="number">0</span></div><div class="line">Maximum filesystem <span class="attr">blocks=</span><span class="number">2157969408</span></div><div class="line"><span class="number">320</span> block groups</div><div class="line"><span class="number">32768</span> blocks per group, <span class="number">32768</span> fragments per <span class="keyword">group</span></div><div class="line"><span class="title">8192</span> inodes per <span class="keyword">group</span></div><div class="line"><span class="title">Superblock</span> backups stored on blocks: </div><div class="line">	<span class="number">32768</span>, <span class="number">98304</span>, <span class="number">163840</span>, <span class="number">229376</span>, <span class="number">294912</span>, <span class="number">819200</span>, <span class="number">884736</span>, <span class="number">1605632</span>, <span class="number">2654208</span>, </div><div class="line">	<span class="number">4096000</span>, <span class="number">7962624</span></div><div class="line"></div><div class="line">Allocating <span class="keyword">group</span> <span class="title">tables</span>: done                            </div><div class="line">Writing inode tables: done                            </div><div class="line">Creating journal (<span class="number">32768</span> blocks): done</div><div class="line">Writing superblocks <span class="keyword">and</span> filesystem accounting <span class="literal">inf</span>ormation: done   </div><div class="line"></div><div class="line">[root@xwq ~]<span class="comment"># echo "/dev/md0 /RAID ext4 defaults 0 0" &gt;&gt; /etc/fstab</span></div><div class="line">[root@xwq ~]<span class="comment"># mkdir /RAID</span></div><div class="line">[root@xwq ~]<span class="comment"># mount -a</span></div></pre></td></tr></table></figure>
+<p>第3步：将硬盘设备/dev/sdb移出磁盘阵列组，再次看下/dev/md0磁盘阵列组的状态就会发现备份盘已经被自动顶替上去了，在RAID磁盘阵列组数据安全保证的基础上进一步提高数据可靠性，</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">[root@xwq ~]# mdadm /dev/md0 -f /dev/sdb</div><div class="line">mdadm: <span class="keyword">set</span> /dev/sdb <span class="comment">faulty in</span> /dev/<span class="comment">md0</span></div><div class="line">[root@xwq ~<span class="comment">]# mdadm -D</span> /dev/<span class="comment">md0</span></div><div class="line">/dev/md0:</div><div class="line">        Version <span class="comment">: 1.2</span></div><div class="line">  Creation <span class="comment">Time : Thu May 11 22:00:16 2017</span></div><div class="line">     Raid <span class="comment">Level : raid5</span></div><div class="line">     Array <span class="comment">Size : 41909248 (39.97 GiB 42.92 GB)</span></div><div class="line">  Used <span class="comment">Dev Size : 20954624 (19.98 GiB 21.46 GB)</span></div><div class="line">   Raid <span class="comment">Devices : 3</span></div><div class="line">  Total <span class="comment">Devices : 4</span></div><div class="line">    Persistence <span class="comment">: Superblock is persistent</span></div><div class="line"></div><div class="line">    Update <span class="comment">Time : Thu May 11 22:03:07 2017</span></div><div class="line">          State <span class="comment">: active, degraded, recovering</span> </div><div class="line"> Active <span class="comment">Devices : 2</span></div><div class="line">Working <span class="comment">Devices : 3</span></div><div class="line"> Failed <span class="comment">Devices : 1</span></div><div class="line">  Spare <span class="comment">Devices : 1</span></div><div class="line"></div><div class="line">         Layout <span class="comment">: left-symmetric</span></div><div class="line">     Chunk <span class="comment">Size : 512K</span></div><div class="line"></div><div class="line"> Rebuild <span class="comment">Status : 0% complete</span></div><div class="line"></div><div class="line">           Name <span class="comment">: xwq:0  (local to host xwq)</span></div><div class="line">           UUID <span class="comment">: 08d84f3b:fce199ba:7594d094:12391c7e</span></div><div class="line">         Events <span class="comment">: 101</span></div><div class="line"></div><div class="line">    Number   <span class="comment">Major   Minor   RaidDevice State</span></div><div class="line">       3       8       64        0      spare <span class="comment">rebuilding</span>   /dev/<span class="comment">sde</span></div><div class="line">       1       8       32        1      active <span class="comment">sync</span>   /dev/<span class="comment">sdc</span></div><div class="line">       4       8       48        2      active <span class="comment">sync</span>   /dev/<span class="comment">sdd</span></div><div class="line"></div><div class="line">       0       8       16        -      faulty   /dev/<span class="comment">sdb</span></div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux学习笔记/" rel="tag"><i class="fa fa-tag"></i> Linux学习笔记</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/02/Linux学习笔记（二）-find命令/" rel="next" title="Linux学习笔记（二）-find命令">
+                <i class="fa fa-chevron-left"></i> Linux学习笔记（二）-find命令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/01/hexo博客搭建指南/" rel="prev" title="hexo博客搭建指南">
+                hexo博客搭建指南 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">28</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#磁盘设备"><span class="nav-number">1.</span> <span class="nav-text">磁盘设备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux文件系统管理"><span class="nav-number">2.</span> <span class="nav-text">Linux文件系统管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建文件系统"><span class="nav-number">2.1.</span> <span class="nav-text">创建文件系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分区管理工具"><span class="nav-number">2.2.</span> <span class="nav-text">分区管理工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#fdisk"><span class="nav-number">2.2.1.</span> <span class="nav-text">fdisk</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其它常用工具"><span class="nav-number">2.3.</span> <span class="nav-text">其它常用工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件系统检测"><span class="nav-number">2.4.</span> <span class="nav-text">文件系统检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#磁盘挂载与卸载"><span class="nav-number">2.5.</span> <span class="nav-text">磁盘挂载与卸载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#磁盘挂载"><span class="nav-number">2.5.1.</span> <span class="nav-text">磁盘挂载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#卸载命令"><span class="nav-number">2.5.2.</span> <span class="nav-text">卸载命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统磁盘查看"><span class="nav-number">2.5.3.</span> <span class="nav-text">系统磁盘查看</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件挂载的配置文件：-etc-fstab"><span class="nav-number">2.5.4.</span> <span class="nav-text">文件挂载的配置文件：/etc/fstab</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#磁盘冗余阵列"><span class="nav-number">2.6.</span> <span class="nav-text">磁盘冗余阵列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RAID"><span class="nav-number">2.6.1.</span> <span class="nav-text">RAID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mdadm"><span class="nav-number">2.6.2.</span> <span class="nav-text">mdadm</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实战操练"><span class="nav-number">3.</span> <span class="nav-text">实战操练</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#添加交换分区"><span class="nav-number">3.1.</span> <span class="nav-text">添加交换分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署磁盘阵列组"><span class="nav-number">3.2.</span> <span class="nav-text">部署磁盘阵列组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#磁盘阵列组-备份盘"><span class="nav-number">3.3.</span> <span class="nav-text">磁盘阵列组+备份盘</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<script type="text/javascript">
+  var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cspan id='cnzz_stat_icon_1261789938'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261789938' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+&nbsp;&nbsp;|&nbsp;&nbsp;您是第 <span id="busuanzi_value_site_uv"></span> 位访客
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>
