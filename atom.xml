@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-12-02T09:31:12.000Z</updated>
+  <updated>2017-10-26T07:29:36.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,195 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Linux学习笔记（八）-防火墙</title>
-    <link href="http://yjscloud.com/2017/12/02/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89-%E9%98%B2%E7%81%AB%E5%A2%99/"/>
-    <id>http://yjscloud.com/2017/12/02/Linux学习笔记（八）-防火墙/</id>
-    <published>2017-12-02T08:42:08.000Z</published>
-    <updated>2017-12-02T09:31:12.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="防火墙原理"><a href="#防火墙原理" class="headerlink" title="防火墙原理"></a>防火墙原理</h1><p><img src="http://oxysobnip.bkt.clouddn.com/2.8.png" alt="2.8"></p>
-<p>防火墙的主要作用：用来控制那些主机可以访问本地的那些服务</p>
-<p>特别注意：</p>
-<p>firewall-cmd和iptables是冲突的。</p>
-<p>所以，如果使用firewall-cmd，应该把iptables和其他防火墙服务屏蔽。</p>
-<pre><code># systemctl  mask   {iptables, ip6tables, ebtables}
-</code></pre><h1 id="firewall-cmd的原理"><a href="#firewall-cmd的原理" class="headerlink" title="firewall-cmd的原理"></a>firewall-cmd的原理</h1><p><img src="http://oxysobnip.bkt.clouddn.com/2.9.png" alt="2.9"></p>
-<p>预先定义了很多“区域”</p>
-<p>每个区域，相当于一个“大门”。</p>
-<p>每个网卡，都被绑定到某个区域（如果不绑定，就走默认区域）</p>
-<p>区域内又定义了很多规则</p>
-<p>数据包到达某个区域后，就匹配该区域的规则，以决定是否通过。</p>
-<p>功能演示：主机A安装Apache服务，主机B来访问主机A的网站。默认是拒绝访问的（因为主机A的防火墙没有允许http服务）</p>
-<p>预定义服务:系统把一些常用的网络访问，进行了定义。比如web访问，定义为http， 就是指在80端口使用http协议,比如ssh访问， 就是在22端口使用ssh协议,所以，可以直接对这些“服务”设置规则。</p>
-<p>端口:对于不是预定义服务的访问，就可以使用端口设置规则。注意，设置端口时，必须同时设置所使用的协议（tcp或udp）,比如： # firewall-cmd  –add-port=8000/tcp     </p>
-<h1 id="firewall-cmd的常用命令"><a href="#firewall-cmd的常用命令" class="headerlink" title="firewall-cmd的常用命令"></a>firewall-cmd的常用命令</h1><pre><code># firewall-cmd   --help
-# firewall-cmd   --help  |  grep  zone
-# firewall-cmd   --get-zones
-# firewall-cmd  --get-default-zone
-# firewall-cmd  --set-default-zone=home
-</code></pre><p>查看指定区域（大门）的所有规则</p>
-<pre><code># firewall-cmd   --list-all  --zone=区域名
-</code></pre><p>查看默认区域（大门）的所有规则</p>
-<pre><code># firewall-cmd   --list-all   
-</code></pre><h2 id="防火墙-预定义服务"><a href="#防火墙-预定义服务" class="headerlink" title="防火墙-预定义服务"></a>防火墙-预定义服务</h2><p>在默认区域中，添加一个规则：允许http服务通过防火墙,没有指定区域，就表示是默认区域</p>
-<pre><code># firewall-cmd  --add-service=http    
-</code></pre><p>在指定的home区域添加一个规则：允许http服务通过防火墙</p>
-<pre><code># firewall-cmd  --add-service=http  --zone=home
-</code></pre><p>移除服务</p>
-<pre><code># firewall-cmd  --remove-service=http
-</code></pre><p>查询默认区域中是否允许http服务</p>
-<pre><code># firewall-cmd  --query-service=http  
-</code></pre><p>查询默认区域中是否允许http服务</p>
-<pre><code># firewall-cmd  --query-service=http    --zone=home
-</code></pre><h2 id="防火墙-端口"><a href="#防火墙-端口" class="headerlink" title="防火墙-端口"></a>防火墙-端口</h2><pre><code># firewall-cmd  --add-port=80/tcp   
-# firewall-cmd  --remove-port=80/tcp
-</code></pre><h2 id="防火墙-网络接口"><a href="#防火墙-网络接口" class="headerlink" title="防火墙-网络接口"></a>防火墙-网络接口</h2><p>查看指定的网络接口（网卡），所绑定到的区域</p>
-<pre><code># firewall-cmd   --get-zone-of-interface=eno16777736
-</code></pre><p>一个网络接口，只能绑定到一个区域。</p>
-<p>多个网络接口，可以绑定到同一个区域。</p>
-<pre><code># firewall-cmd  --change-interface=eno16777736  --zone=home
-</code></pre><p>把网络接口eno16777736所绑定的区域，修改为home区域，该命令，用于已经被绑定到某区域的网路接口。</p>
-<pre><code># firewall-cmd  --remove-interface=eno16777736  --zone=home
-</code></pre><p>把网络接口eno16777736,从home区域解绑。解绑后，该网路接口，就没有绑定到任何区域（该接口的数据包就传输到默认接口）</p>
-<pre><code># firewall-cmd  --add-interface=eno16777736  --zone=public
-</code></pre><p>把网络接口eno16777736，绑定到public区域，该命令，用于还没有绑定到任何区域的接口。</p>
-<p>注意：一个网卡，只能绑定到一个区域</p>
-<p>   多个网卡，可以绑定到同一个区域。</p>
-<h1 id="来源source"><a href="#来源source" class="headerlink" title="来源source"></a>来源source</h1><p>需求： server0安装了web服务器，除了desktop0以外，其他任意主机，都不能访问server0的web网站</p>
-<p>实现：<br>在server0上实现：</p>
-<pre><code>firewall-cmd  --remove-service=http
-firewall-cmd  --add-service=http   --zone=home
-firewall-cmd  --add-source=192.168.0.11   --zone=home
-</code></pre><p>如果某个网络接口，被绑定到某区域,那么，来自该网络接口的所有数据包（无论什么主机），都会“流入”到该区域。如果该区域禁止某个服务（比如http）,但是，来自该接口的某个数据包，和其他区域的某个“source规则”匹配，那么该数据包就会流入该区域。</p>
-<p>如果某个网络接口，没有被绑定到任何区域。那么，来自该网络接口的所有数据包（无论什么主机），都会“流入”到“默认区域”。但是，如果来自该接口的某个数据包，和某个区域的“source规则”匹配，那么该数据包就会流入该区域。</p>
-<p>实例：</p>
-<pre><code># firewall-cmd   --remove-source=192.168.168.1/24 
-</code></pre><p>场景：</p>
-<p>主机A：</p>
-<p>1）安装了Apache服务（http服务）。</p>
-<p>2）主机A的网卡被绑定到了public区域。</p>
-<p>3) 主机A的public区域又禁止 http服务。</p>
-<p>此时导致：</p>
-<p>主机B，就不能访问主机A的网站。</p>
-<p>但是，主机A的home区域添加一个source规则，以允许主机B(192.168.168.1)访问。同时home区域又允许http服务</p>
-<pre><code># firewall-cmd   -add-source=192.168.168.1/24  
-</code></pre><p>就会导致：</p>
-<p>主机B，可以访问主机A的网站。（是“进入”了主机A的home区域）</p>
-<p>其他命令:</p>
-<pre><code># firewall-cmd    --remove-source=192.168.168.1/24    删除源
-# firewall-cmd    --add-source=192.168.168.0/24    指定一个网络内的所有主机 
-</code></pre><h1 id="ICMP规则"><a href="#ICMP规则" class="headerlink" title="ICMP规则"></a>ICMP规则</h1><p>ICMP是一种协议。ping命令发送的数据包，就是使用ICMP协议的。</p>
-<p>测试ping的效果</p>
-<p>主机A , ping 主机B(192.168.168.1)</p>
-<p>在主机A中：    # ping   192.168.168.1</p>
-<p>在主机B中抓包：# tcpdump  -i  eno1677728    not  port  22</p>
-<p>  捕获指定网卡的包，除了22端口的数据包以外。</p>
-<p>  wireshark</p>
-<p>就会发现有很多  ICMP  echo  request包 (ping的请求包)</p>
-<p>  ICMP  echo  reply包   (ping的响应包）</p>
-<p>主机B禁止ping</p>
-<pre><code># firewall-cmd   --add-icmp-block=echo-request  
-# firewall-cmd   --add-icmp-block=echo-reply
-</code></pre><p>主机B禁止icmp请求包或响应包。其他主机都ping不通主机A</p>
-<h1 id="伪装"><a href="#伪装" class="headerlink" title="伪装"></a>伪装</h1><p>问题：</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/2.10.png" alt="2.10"></p>
-<p>A -&gt; C</p>
-<p>[ source ip    destination ip  …. ]</p>
-<p>改为：</p>
-<p>[ public  network ip    destination ip  …. ]</p>
-<p>主机A能ping通主机B,主机A不能ping通主机Ｃ</p>
-<p>导致：A不能访问“外网”中的主机。C也不能访问“内网”的主机。</p>
-<p>解决方案</p>
-<p>方案1:在主机B中开启“转发”功能：</p>
-<pre><code># echo 1 &gt;  /proc/sys/net/ipv4/ip_forword
-</code></pre><p>如果把主机c的网关设置为路由器的外网端口，就可以使主机C也能ping通主机A</p>
-<p>该方案的弊端：该方案在内网中有效。因为私网的数据包，是不能转发到公网的。即公网中的路由器收到私网数据包时，直接丢弃。</p>
-<p>补充：</p>
-<p>IP: A类，B类，C类</p>
-<p>每类IP地址，都划分了一部分私有IP，</p>
-<p>A类IP的私有地址：10.0.0.0/8</p>
-<p>B类IP的私有地址：172.16.0.0/16</p>
-<p>C类IP的私有地址：192.168.0.0/24</p>
-<p>方案2：</p>
-<p>在主机B（路由器）中，开启“伪装功能”。</p>
-<pre><code># firewall-cmd   --add-masquerade
-</code></pre><p>效果：外网的主机C 收到的ping请求包中，源地址是内网路由器的公网IP, 而不是真正的内网主机IP。</p>
-<h1 id="端口转发"><a href="#端口转发" class="headerlink" title="端口转发"></a>端口转发</h1><h2 id="本地转发"><a href="#本地转发" class="headerlink" title="本地转发"></a>本地转发</h2><p>实例：</p>
-<p>主机A：安装http服务，使用80端口。192.168.168.2</p>
-<p>主机B：用22来访问主机A的网站。  192.168.168.2:22</p>
-<p>实现：</p>
-<p>在主机A中做“端口转发”</p>
-<pre><code># firewall-cmd  --add-forward-port=port=22:proto=tcp:toport=80:toaddr=
-</code></pre><p>把来自22端口的tcp数据包，转发给本地的80端口。</p>
-<h2 id="远程转发"><a href="#远程转发" class="headerlink" title="远程转发"></a>远程转发</h2><p>实例：</p>
-<p>有主机A(192.168.168.2), 主机B(192.168.168.1), 主机C(192.168.30.30)</p>
-<p>任意主机，使用ssh登录到B, 实际却登录主机C</p>
-<pre><code>root@A#  ssh  192.168.16 
-root@C#
-</code></pre><p>实现：</p>
-<pre><code>root@B# firewall-cmd  --add-forward-port=port=22:proto=tcp:toport=22:toaddr=192.168.30.30
-</code></pre><p>注意：</p>
-<p>使用远程端口转发时，需要开启防火墙的伪装功能，否则无效！</p>
-<h1 id="富规则"><a href="#富规则" class="headerlink" title="富规则"></a>富规则</h1><h2 id="服务富规则"><a href="#服务富规则" class="headerlink" title="服务富规则"></a>服务富规则</h2><p>问题：在某个区域中，添加一个服务或端口等规则时，就会导致：来自对应接口的“所有远程主机”都使用这个规则.</p>
-<p>解决方案：使用富规则。</p>
-<p>实例：主机B上安装了http服务，不允许主机C访问主机Ｂ的网站。</p>
-<p>实现1：</p>
-<pre><code>root@B#  firewall-cmd  --add-service=http
-root@B#  firewall-cmd  --add-rich-rule  &apos;rule 
-family=&quot;ipv4&quot; 
-source address=&quot;192.168.30.30&quot; 
-service name=&quot;http&quot; 
-reject&apos;
-</code></pre><p>注意：不能把source address=”192.168.30.30” 写成  source address=”192.168.30.30/24”,</p>
-<p>否则等同于source address=”192.168.0/24”</p>
-<p>实例2：主机B上安装了http服务，仅允许主机C访问主机Ｂ的网站。</p>
-<p>实现：</p>
-<pre><code>root@B#  firewall-cmd  --remove-service=http
-root@B#  firewall-cmd  --add-rich-rule &apos;rule
-family=ipv4
-service name=http
-source address=192.168.30.30
-accept&apos;
-</code></pre><h2 id="端口富规则"><a href="#端口富规则" class="headerlink" title="端口富规则"></a>端口富规则</h2><p>服务富规则的缺点：只能处理预定义服务！</p>
-<p>比如 http服务(就是tcp/80)</p>
-<p>当需要处理其他的非预定服务，比如 tcp/8000，就不能使用服务富规则！</p>
-<p>实例：主机B上安装了http服务，不允许主机C访问主机Ｂ的网站。</p>
-<p>实现1：</p>
-<pre><code>root@B#  firewall-cmd  --add-service=http
-root@B#  firewall-cmd  --add-rich-rule  &apos;rule 
-family=&quot;ipv4&quot; 
-source address=&quot;192.168.30.30&quot; 
-port  port=80  protocol=tcp   
-reject&apos;
-</code></pre><h2 id="端口转发富规则"><a href="#端口转发富规则" class="headerlink" title="端口转发富规则"></a>端口转发富规则</h2><p>实例：仅主机A，使用ssh登录到B, 实际却登录主机C</p>
-<p>实现：</p>
-<pre><code>root@B firewall-cmd  --add-rich-rule &apos;rule
-family=ipv4
-source address=192.168.168.2
-forward-port  port=22  protocol=tcp  to-port=22  to-addr=192.168.30.30
-accept&apos;
-</code></pre><h2 id="伪装富规则"><a href="#伪装富规则" class="headerlink" title="伪装富规则"></a>伪装富规则</h2><p>实例：本地局域网内仅主机A可以访问外网的主机C</p>
-<p>实现：</p>
-<pre><code>root@B firewall-cmd  --add-rich-rule &apos;rule
-family=ipv4
-source address=192.168.168.2
-masquerade&apos;
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;防火墙原理&quot;&gt;&lt;a href=&quot;#防火墙原理&quot; class=&quot;headerlink&quot; title=&quot;防火墙原理&quot;&gt;&lt;/a&gt;防火墙原理&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;http://oxysobnip.bkt.clouddn.com/2.8.png&quot; alt=&quot;2
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
   
   <entry>
     <title>LVS + Keepalived 实现高可用Web集群</title>
@@ -2177,6 +1988,195 @@ access_by_lua_file &quot;/usr/local/openresty/nginx/conf/waf/access.lua&quot;;
     
     
       <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux学习笔记（八）-防火墙</title>
+    <link href="http://yjscloud.com/2017/05/08/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89-%E9%98%B2%E7%81%AB%E5%A2%99/"/>
+    <id>http://yjscloud.com/2017/05/08/Linux学习笔记（八）-防火墙/</id>
+    <published>2017-05-08T08:42:08.000Z</published>
+    <updated>2017-12-02T09:49:26.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="防火墙原理"><a href="#防火墙原理" class="headerlink" title="防火墙原理"></a>防火墙原理</h1><p><img src="http://oxysobnip.bkt.clouddn.com/2.8.png" alt="2.8"></p>
+<p>防火墙的主要作用：用来控制那些主机可以访问本地的那些服务</p>
+<p>特别注意：</p>
+<p>firewall-cmd和iptables是冲突的。</p>
+<p>所以，如果使用firewall-cmd，应该把iptables和其他防火墙服务屏蔽。</p>
+<pre><code># systemctl  mask   {iptables, ip6tables, ebtables}
+</code></pre><h1 id="firewall-cmd的原理"><a href="#firewall-cmd的原理" class="headerlink" title="firewall-cmd的原理"></a>firewall-cmd的原理</h1><p><img src="http://oxysobnip.bkt.clouddn.com/2.9.png" alt="2.9"></p>
+<p>预先定义了很多“区域”</p>
+<p>每个区域，相当于一个“大门”。</p>
+<p>每个网卡，都被绑定到某个区域（如果不绑定，就走默认区域）</p>
+<p>区域内又定义了很多规则</p>
+<p>数据包到达某个区域后，就匹配该区域的规则，以决定是否通过。</p>
+<p>功能演示：主机A安装Apache服务，主机B来访问主机A的网站。默认是拒绝访问的（因为主机A的防火墙没有允许http服务）</p>
+<p>预定义服务:系统把一些常用的网络访问，进行了定义。比如web访问，定义为http， 就是指在80端口使用http协议,比如ssh访问， 就是在22端口使用ssh协议,所以，可以直接对这些“服务”设置规则。</p>
+<p>端口:对于不是预定义服务的访问，就可以使用端口设置规则。注意，设置端口时，必须同时设置所使用的协议（tcp或udp）,比如： # firewall-cmd  –add-port=8000/tcp     </p>
+<h1 id="firewall-cmd的常用命令"><a href="#firewall-cmd的常用命令" class="headerlink" title="firewall-cmd的常用命令"></a>firewall-cmd的常用命令</h1><pre><code># firewall-cmd   --help
+# firewall-cmd   --help  |  grep  zone
+# firewall-cmd   --get-zones
+# firewall-cmd  --get-default-zone
+# firewall-cmd  --set-default-zone=home
+</code></pre><p>查看指定区域（大门）的所有规则</p>
+<pre><code># firewall-cmd   --list-all  --zone=区域名
+</code></pre><p>查看默认区域（大门）的所有规则</p>
+<pre><code># firewall-cmd   --list-all   
+</code></pre><h2 id="防火墙-预定义服务"><a href="#防火墙-预定义服务" class="headerlink" title="防火墙-预定义服务"></a>防火墙-预定义服务</h2><p>在默认区域中，添加一个规则：允许http服务通过防火墙,没有指定区域，就表示是默认区域</p>
+<pre><code># firewall-cmd  --add-service=http    
+</code></pre><p>在指定的home区域添加一个规则：允许http服务通过防火墙</p>
+<pre><code># firewall-cmd  --add-service=http  --zone=home
+</code></pre><p>移除服务</p>
+<pre><code># firewall-cmd  --remove-service=http
+</code></pre><p>查询默认区域中是否允许http服务</p>
+<pre><code># firewall-cmd  --query-service=http  
+</code></pre><p>查询默认区域中是否允许http服务</p>
+<pre><code># firewall-cmd  --query-service=http    --zone=home
+</code></pre><h2 id="防火墙-端口"><a href="#防火墙-端口" class="headerlink" title="防火墙-端口"></a>防火墙-端口</h2><pre><code># firewall-cmd  --add-port=80/tcp   
+# firewall-cmd  --remove-port=80/tcp
+</code></pre><h2 id="防火墙-网络接口"><a href="#防火墙-网络接口" class="headerlink" title="防火墙-网络接口"></a>防火墙-网络接口</h2><p>查看指定的网络接口（网卡），所绑定到的区域</p>
+<pre><code># firewall-cmd   --get-zone-of-interface=eno16777736
+</code></pre><p>一个网络接口，只能绑定到一个区域。</p>
+<p>多个网络接口，可以绑定到同一个区域。</p>
+<pre><code># firewall-cmd  --change-interface=eno16777736  --zone=home
+</code></pre><p>把网络接口eno16777736所绑定的区域，修改为home区域，该命令，用于已经被绑定到某区域的网路接口。</p>
+<pre><code># firewall-cmd  --remove-interface=eno16777736  --zone=home
+</code></pre><p>把网络接口eno16777736,从home区域解绑。解绑后，该网路接口，就没有绑定到任何区域（该接口的数据包就传输到默认接口）</p>
+<pre><code># firewall-cmd  --add-interface=eno16777736  --zone=public
+</code></pre><p>把网络接口eno16777736，绑定到public区域，该命令，用于还没有绑定到任何区域的接口。</p>
+<p>注意：一个网卡，只能绑定到一个区域</p>
+<p>   多个网卡，可以绑定到同一个区域。</p>
+<h1 id="来源source"><a href="#来源source" class="headerlink" title="来源source"></a>来源source</h1><p>需求： server0安装了web服务器，除了desktop0以外，其他任意主机，都不能访问server0的web网站</p>
+<p>实现：<br>在server0上实现：</p>
+<pre><code>firewall-cmd  --remove-service=http
+firewall-cmd  --add-service=http   --zone=home
+firewall-cmd  --add-source=192.168.0.11   --zone=home
+</code></pre><p>如果某个网络接口，被绑定到某区域,那么，来自该网络接口的所有数据包（无论什么主机），都会“流入”到该区域。如果该区域禁止某个服务（比如http）,但是，来自该接口的某个数据包，和其他区域的某个“source规则”匹配，那么该数据包就会流入该区域。</p>
+<p>如果某个网络接口，没有被绑定到任何区域。那么，来自该网络接口的所有数据包（无论什么主机），都会“流入”到“默认区域”。但是，如果来自该接口的某个数据包，和某个区域的“source规则”匹配，那么该数据包就会流入该区域。</p>
+<p>实例：</p>
+<pre><code># firewall-cmd   --remove-source=192.168.168.1/24 
+</code></pre><p>场景：</p>
+<p>主机A：</p>
+<p>1）安装了Apache服务（http服务）。</p>
+<p>2）主机A的网卡被绑定到了public区域。</p>
+<p>3) 主机A的public区域又禁止 http服务。</p>
+<p>此时导致：</p>
+<p>主机B，就不能访问主机A的网站。</p>
+<p>但是，主机A的home区域添加一个source规则，以允许主机B(192.168.168.1)访问。同时home区域又允许http服务</p>
+<pre><code># firewall-cmd   -add-source=192.168.168.1/24  
+</code></pre><p>就会导致：</p>
+<p>主机B，可以访问主机A的网站。（是“进入”了主机A的home区域）</p>
+<p>其他命令:</p>
+<pre><code># firewall-cmd    --remove-source=192.168.168.1/24    删除源
+# firewall-cmd    --add-source=192.168.168.0/24    指定一个网络内的所有主机 
+</code></pre><h1 id="ICMP规则"><a href="#ICMP规则" class="headerlink" title="ICMP规则"></a>ICMP规则</h1><p>ICMP是一种协议。ping命令发送的数据包，就是使用ICMP协议的。</p>
+<p>测试ping的效果</p>
+<p>主机A , ping 主机B(192.168.168.1)</p>
+<p>在主机A中：    # ping   192.168.168.1</p>
+<p>在主机B中抓包：# tcpdump  -i  eno1677728    not  port  22</p>
+<p>  捕获指定网卡的包，除了22端口的数据包以外。</p>
+<p>  wireshark</p>
+<p>就会发现有很多  ICMP  echo  request包 (ping的请求包)</p>
+<p>  ICMP  echo  reply包   (ping的响应包）</p>
+<p>主机B禁止ping</p>
+<pre><code># firewall-cmd   --add-icmp-block=echo-request  
+# firewall-cmd   --add-icmp-block=echo-reply
+</code></pre><p>主机B禁止icmp请求包或响应包。其他主机都ping不通主机A</p>
+<h1 id="伪装"><a href="#伪装" class="headerlink" title="伪装"></a>伪装</h1><p>问题：</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/2.10.png" alt="2.10"></p>
+<p>A -&gt; C</p>
+<p>[ source ip    destination ip  …. ]</p>
+<p>改为：</p>
+<p>[ public  network ip    destination ip  …. ]</p>
+<p>主机A能ping通主机B,主机A不能ping通主机Ｃ</p>
+<p>导致：A不能访问“外网”中的主机。C也不能访问“内网”的主机。</p>
+<p>解决方案</p>
+<p>方案1:在主机B中开启“转发”功能：</p>
+<pre><code># echo 1 &gt;  /proc/sys/net/ipv4/ip_forword
+</code></pre><p>如果把主机c的网关设置为路由器的外网端口，就可以使主机C也能ping通主机A</p>
+<p>该方案的弊端：该方案在内网中有效。因为私网的数据包，是不能转发到公网的。即公网中的路由器收到私网数据包时，直接丢弃。</p>
+<p>补充：</p>
+<p>IP: A类，B类，C类</p>
+<p>每类IP地址，都划分了一部分私有IP，</p>
+<p>A类IP的私有地址：10.0.0.0/8</p>
+<p>B类IP的私有地址：172.16.0.0/16</p>
+<p>C类IP的私有地址：192.168.0.0/24</p>
+<p>方案2：</p>
+<p>在主机B（路由器）中，开启“伪装功能”。</p>
+<pre><code># firewall-cmd   --add-masquerade
+</code></pre><p>效果：外网的主机C 收到的ping请求包中，源地址是内网路由器的公网IP, 而不是真正的内网主机IP。</p>
+<h1 id="端口转发"><a href="#端口转发" class="headerlink" title="端口转发"></a>端口转发</h1><h2 id="本地转发"><a href="#本地转发" class="headerlink" title="本地转发"></a>本地转发</h2><p>实例：</p>
+<p>主机A：安装http服务，使用80端口。192.168.168.2</p>
+<p>主机B：用22来访问主机A的网站。  192.168.168.2:22</p>
+<p>实现：</p>
+<p>在主机A中做“端口转发”</p>
+<pre><code># firewall-cmd  --add-forward-port=port=22:proto=tcp:toport=80:toaddr=
+</code></pre><p>把来自22端口的tcp数据包，转发给本地的80端口。</p>
+<h2 id="远程转发"><a href="#远程转发" class="headerlink" title="远程转发"></a>远程转发</h2><p>实例：</p>
+<p>有主机A(192.168.168.2), 主机B(192.168.168.1), 主机C(192.168.30.30)</p>
+<p>任意主机，使用ssh登录到B, 实际却登录主机C</p>
+<pre><code>root@A#  ssh  192.168.16 
+root@C#
+</code></pre><p>实现：</p>
+<pre><code>root@B# firewall-cmd  --add-forward-port=port=22:proto=tcp:toport=22:toaddr=192.168.30.30
+</code></pre><p>注意：</p>
+<p>使用远程端口转发时，需要开启防火墙的伪装功能，否则无效！</p>
+<h1 id="富规则"><a href="#富规则" class="headerlink" title="富规则"></a>富规则</h1><h2 id="服务富规则"><a href="#服务富规则" class="headerlink" title="服务富规则"></a>服务富规则</h2><p>问题：在某个区域中，添加一个服务或端口等规则时，就会导致：来自对应接口的“所有远程主机”都使用这个规则.</p>
+<p>解决方案：使用富规则。</p>
+<p>实例：主机B上安装了http服务，不允许主机C访问主机Ｂ的网站。</p>
+<p>实现1：</p>
+<pre><code>root@B#  firewall-cmd  --add-service=http
+root@B#  firewall-cmd  --add-rich-rule  &apos;rule 
+family=&quot;ipv4&quot; 
+source address=&quot;192.168.30.30&quot; 
+service name=&quot;http&quot; 
+reject&apos;
+</code></pre><p>注意：不能把source address=”192.168.30.30” 写成  source address=”192.168.30.30/24”,</p>
+<p>否则等同于source address=”192.168.0/24”</p>
+<p>实例2：主机B上安装了http服务，仅允许主机C访问主机Ｂ的网站。</p>
+<p>实现：</p>
+<pre><code>root@B#  firewall-cmd  --remove-service=http
+root@B#  firewall-cmd  --add-rich-rule &apos;rule
+family=ipv4
+service name=http
+source address=192.168.30.30
+accept&apos;
+</code></pre><h2 id="端口富规则"><a href="#端口富规则" class="headerlink" title="端口富规则"></a>端口富规则</h2><p>服务富规则的缺点：只能处理预定义服务！</p>
+<p>比如 http服务(就是tcp/80)</p>
+<p>当需要处理其他的非预定服务，比如 tcp/8000，就不能使用服务富规则！</p>
+<p>实例：主机B上安装了http服务，不允许主机C访问主机Ｂ的网站。</p>
+<p>实现1：</p>
+<pre><code>root@B#  firewall-cmd  --add-service=http
+root@B#  firewall-cmd  --add-rich-rule  &apos;rule 
+family=&quot;ipv4&quot; 
+source address=&quot;192.168.30.30&quot; 
+port  port=80  protocol=tcp   
+reject&apos;
+</code></pre><h2 id="端口转发富规则"><a href="#端口转发富规则" class="headerlink" title="端口转发富规则"></a>端口转发富规则</h2><p>实例：仅主机A，使用ssh登录到B, 实际却登录主机C</p>
+<p>实现：</p>
+<pre><code>root@B firewall-cmd  --add-rich-rule &apos;rule
+family=ipv4
+source address=192.168.168.2
+forward-port  port=22  protocol=tcp  to-port=22  to-addr=192.168.30.30
+accept&apos;
+</code></pre><h2 id="伪装富规则"><a href="#伪装富规则" class="headerlink" title="伪装富规则"></a>伪装富规则</h2><p>实例：本地局域网内仅主机A可以访问外网的主机C</p>
+<p>实现：</p>
+<pre><code>root@B firewall-cmd  --add-rich-rule &apos;rule
+family=ipv4
+source address=192.168.168.2
+masquerade&apos;
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;防火墙原理&quot;&gt;&lt;a href=&quot;#防火墙原理&quot; class=&quot;headerlink&quot; title=&quot;防火墙原理&quot;&gt;&lt;/a&gt;防火墙原理&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;http://oxysobnip.bkt.clouddn.com/2.8.png&quot; alt=&quot;2
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
