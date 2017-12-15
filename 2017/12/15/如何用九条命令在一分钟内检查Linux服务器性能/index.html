@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Linux学习笔记," />
+  <meta name="keywords" content="非原创系列,Linux运维技能," />
 
 
 
@@ -92,17 +92,28 @@
 
 
 
-<meta name="description" content="bash中的变量类型： 根据变量的生效范围等标准： 本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效 环境变量：生效范围当前shell进程和子进程 局部变量：生效范围为当前shell进程中某代码片段（通常指函数） 位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数 特殊变量：$?,$0,$">
-<meta name="keywords" content="Linux学习笔记">
+<meta name="description" content="uptime命令 这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。 命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况">
+<meta name="keywords" content="非原创系列,Linux运维技能">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux学习笔记（四）-bash基础特性">
-<meta property="og:url" content="http://yjscloud.com/2017/05/04/Linux学习笔记（四）-bash基础特性/index.html">
+<meta property="og:title" content="如何用九条命令在一分钟内检查Linux服务器性能?">
+<meta property="og:url" content="http://yjscloud.com/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="bash中的变量类型： 根据变量的生效范围等标准： 本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效 环境变量：生效范围当前shell进程和子进程 局部变量：生效范围为当前shell进程中某代码片段（通常指函数） 位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数 特殊变量：$?,$0,$">
-<meta property="og:updated_time" content="2017-12-02T09:44:07.000Z">
+<meta property="og:description" content="uptime命令 这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。 命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-1.png">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-2.png">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-3.png">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-4.png">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-5.png">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-6.png">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-7.png">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-8-1.png">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-8-2.png">
+<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-9.png">
+<meta property="og:updated_time" content="2017-12-15T15:24:46.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux学习笔记（四）-bash基础特性">
-<meta name="twitter:description" content="bash中的变量类型： 根据变量的生效范围等标准： 本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效 环境变量：生效范围当前shell进程和子进程 局部变量：生效范围为当前shell进程中某代码片段（通常指函数） 位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数 特殊变量：$?,$0,$">
+<meta name="twitter:title" content="如何用九条命令在一分钟内检查Linux服务器性能?">
+<meta name="twitter:description" content="uptime命令 这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。 命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况">
+<meta name="twitter:image" content="http://p10cpl3za.bkt.clouddn.com/1-1.png">
 
 
 
@@ -130,13 +141,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2017/05/04/Linux学习笔记（四）-bash基础特性/"/>
+  <link rel="canonical" href="http://yjscloud.com/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/"/>
 
 
 
 
 
-  <title>Linux学习笔记（四）-bash基础特性 | 戏子登台</title>
+  <title>如何用九条命令在一分钟内检查Linux服务器性能? | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -310,7 +321,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/05/04/Linux学习笔记（四）-bash基础特性/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -331,7 +342,7 @@
             
             
               
-                Linux学习笔记（四）-bash基础特性
+                如何用九条命令在一分钟内检查Linux服务器性能?
               
             
           </h1>
@@ -346,8 +357,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T11:16:28+08:00">
-                2017-05-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-15T22:52:37+08:00">
+                2017-12-15
               </time>
             
 
@@ -372,8 +383,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">学习笔记</span>
+                  <a href="/categories/运维技能/" itemprop="url" rel="index">
+                    <span itemprop="name">运维技能</span>
                   </a>
                 </span>
 
@@ -390,7 +401,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/05/04/Linux学习笔记（四）-bash基础特性/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -413,7 +424,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,239
+                  1,731
                 </span>
               
 
@@ -429,7 +440,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  5
+                  6
                 </span>
               
             </div>
@@ -447,151 +458,44 @@
       
 
       
-        <h2 id="bash中的变量类型："><a href="#bash中的变量类型：" class="headerlink" title="bash中的变量类型："></a>bash中的变量类型：</h2><p> 根据变量的生效范围等标准：</p>
-<pre><code>本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效
-环境变量：生效范围当前shell进程和子进程
-局部变量：生效范围为当前shell进程中某代码片段（通常指函数）
-位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数
-特殊变量：$?,$0,$*,$#,$@
-</code></pre><h3 id="本地变量"><a href="#本地变量" class="headerlink" title="本地变量"></a>本地变量</h3><p>  变量赋值：name=’value’</p>
-<pre><code>可以使用引用：
-    value:
-         (1）可以是直接字符;name=&quot;username&quot;
-        （2）变量引用：name=&quot;$username&quot;
-         (3)命令引用：name=`COMMAND` ,name=$(COMMAND)
-        变量引用：${name},$name
-            &quot;&quot;:弱引用，其中的变量引用会被替换为变量值；
-            &apos;&apos;:强引用，其中的变量引用不会被替换为变量值，而保持原字符串；
-        显示已定义的所有变量
-            set
-        销毁变量
-            unset name
-</code></pre><h3 id="环境变量："><a href="#环境变量：" class="headerlink" title="环境变量："></a>环境变量：</h3><pre><code> 变量声明、赋值：
-     export name=VALUE
-     declare -x name=VALUE
-     变量引用：$name,${name}
-     显示所有环境变量：
-         export
-         env
-         printenv
-     销毁：
-         unset name
+        <h1 id="uptime命令"><a href="#uptime命令" class="headerlink" title="uptime命令"></a>uptime命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-1.png" alt="1-1"></p>
+<p>这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。</p>
+<p>命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况，需要进一步排查CPU资源都消耗在了哪里。反之，如果15分钟平均负载很高，1分钟平均负载较低，则有可能是CPU资源紧张时刻已经过去。</p>
+<h1 id="dmesg命令"><a href="#dmesg命令" class="headerlink" title="dmesg命令"></a>dmesg命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-2.png" alt="1-2"></p>
+<p>该命令会输出系统日志的最后10行。示例中的输出，可以看见一次内核的oom kill和一次TCP丢包。这些日志可以帮助排查性能问题。千万不要忘了这一步。</p>
+<h1 id="vmstat命令"><a href="#vmstat命令" class="headerlink" title="vmstat命令"></a>vmstat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-3.png" alt="1-3"></p>
+<p>vmstat(8) 命令，每行会输出一些系统核心指标，这些指标可以让我们更详细的了解系统状态。后面跟的参数1，表示每秒输出一次统计信息，表头提示了每一列的含义，这几介绍一些和性能调优相关的列：</p>
+<p>r：等待在CPU资源的进程数。这个数据比平均负载更加能够体现CPU负载情况，数据中不包含等待IO的进程。如果这个数值大于机器CPU核数，那么机器的CPU资源已经饱和。</p>
+<p>free：系统可用内存数（以千字节为单位），如果剩余内存不足，也会导致系统性能问题。下文介绍到的free命令，可以更详细的了解系统内存的使用情况。</p>
+<p>si，so：交换区写入和读取的数量。如果这个数据不为0，说明系统已经在使用交换区（swap），机器物理内存已经不足。</p>
+<p>us, sy, id, wa, st：这些都代表了CPU时间的消耗，它们分别表示用户时间（user）、系统（内核）时间（sys）、空闲时间（idle）、IO等待时间（wait）和被偷走的时间（stolen，一般被其他虚拟机消耗）。</p>
+<p>上述这些CPU时间，可以让我们很快了解CPU是否出于繁忙状态。一般情况下，如果用户时间和系统时间相加非常大，CPU出于忙于执行指令。如果IO等待时间很长，那么系统的瓶颈可能在磁盘IO。</p>
+<p>示例命令的输出可以看见，大量CPU时间消耗在用户态，也就是用户应用程序消耗了CPU时间。这不一定是性能问题，需要结合r队列，一起分析。</p>
+<h1 id="mpstat命令"><a href="#mpstat命令" class="headerlink" title="mpstat命令"></a>mpstat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-4.png" alt="1-4"></p>
+<p>该命令可以显示每个CPU的占用情况，如果有一个CPU占用率特别高，那么有可能是一个单线程应用程序引起的。</p>
+<h1 id="pidstat命令"><a href="#pidstat命令" class="headerlink" title="pidstat命令"></a>pidstat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-5.png" alt="1-5"></p>
+<p>pidstat命令输出进程的CPU占用率，该命令会持续输出，并且不会覆盖之前的数据，可以方便观察系统动态。</p>
+<h1 id="iostat命令"><a href="#iostat命令" class="headerlink" title="iostat命令"></a>iostat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-6.png" alt="1-6"></p>
+<p>r/s, w/s, rkB/s, wkB/s：分别表示每秒读写次数和每秒读写数据量（千字节）。读写量过大，可能会引起性能问题。</p>
+<p>await：IO操作的平均等待时间，单位是毫秒。这是应用程序在和磁盘交互时，需要消耗的时间，包括IO等待和实际操作的耗时。如果这个数值过大，可能是硬件设备遇到了瓶颈或者出现故障。</p>
+<p>avgqu-sz：向设备发出的请求平均数量。如果这个数值大于1，可能是硬件设备已经饱和（部分前端硬件设备支持并行写入）。</p>
+<p>%util：设备利用率。这个数值表示设备的繁忙程度，经验值是如果超过60，可能会影响IO性能（可以参照IO操作平均等待时间）。如果到达100%，说明硬件设备已经饱和。</p>
+<p>如果显示的是逻辑设备的数据，那么设备利用率不代表后端实际的硬件设备已经饱和。值得注意的是，即使IO性能不理想，也不一定意味这应用程序性能会不好，可以利用诸如预读取、写缓存等策略提升应用性能。</p>
+<h1 id="free命令"><a href="#free命令" class="headerlink" title="free命令"></a>free命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-7.png" alt="1-7"></p>
+<p>free命令可以查看系统内存的使用情况，-m参数表示按照兆字节展示。最后两列分别表示用于IO缓存的内存数，和用于文件系统页缓存的内存数。需要注意的是，第二行-/+ buffers/cache，看上去缓存占用了大量内存空间。</p>
+<p>这是Linux系统的内存使用策略，尽可能的利用内存，如果应用程序需要内存，这部分内存会立即被回收并分配给应用程序。因此，这部分内存一般也被当成是可用内存。</p>
+<p>如果可用内存非常少，系统可能会动用交换区（如果配置了的话），这样会增加IO开销（可以在iostat命令中提现），降低系统性能。</p>
+<h1 id="sar命令"><a href="#sar命令" class="headerlink" title="sar命令"></a>sar命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-8-1.png" alt="1-8-1"></p>
+<p>sar命令在这里可以查看网络设备的吞吐率。在排查性能问题时，可以通过网络设备的吞吐量，判断网络设备是否已经饱和。</p>
+<p><img src="http://p10cpl3za.bkt.clouddn.com/1-8-2.png" alt="1-8-2"></p>
+<p>sar命令在这里用于查看TCP连接状态，其中包括：</p>
+<p>active/s：每秒本地发起的TCP连接数，既通过connect调用创建的TCP连接；</p>
+<p>passive/s：每秒远程发起的TCP连接数，即通过accept调用创建的TCP连接；</p>
+<p>retrans/s：每秒TCP重传数量；</p>
+<p>TCP连接数可以用来判断性能问题是否由于建立了过多的连接，进一步可以判断是主动发起的连接，还是被动接受的连接。TCP重传可能是因为网络环境恶劣，或者服务器压</p>
+<h1 id="top命令"><a href="#top命令" class="headerlink" title="top命令"></a>top命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-9.png" alt="1-9"></p>
+<p>top命令包含了前面好几个命令的检查的内容。比如系统负载情况（uptime）、系统内存使用情况（free）、系统CPU使用情况（vmstat）等。因此通过这个命令，可以相对全面的查看系统负载的来源。同时，top命令支持排序，可以按照不同的列排序，方便查找出诸如内存占用最多的进程、CPU占用率最高的进程等。但是，top命令相对于前面一些命令，输出是一个瞬间值，如果不持续盯着，可能会错过一些线索。这时可能需要暂停top命令刷新，来记录和比对数据。</p>
 
-     bash有许多内建的环境变量：PATH,SHELL,UID,HISISZE,HOME,PWD,OLD
-
-变量命名法则：
-     1、不能使程序中的保留字，例如if ，for；
-     2、只能使用数字、字母及下划线，且不能一以数字开头
-     3、见名知义：驼峰命名法（尽量不要用大写字母）
-
- 只读变量：
-     readonly name
-     declare -r name
-</code></pre><h3 id="位置变量："><a href="#位置变量：" class="headerlink" title="位置变量："></a>位置变量：</h3><pre><code>在脚本代码中调用通过命令行传递给脚本参数
-    $1,$2,...:对应调用第1、第2等参数
-    $0:命令本身
-    $*：传递给脚本的所有参数
-    $@:传递给脚本的所有参数
-  $#:传递给脚本的参数的个数
-
-实例：判段给出的文件的行数
-    #!/bin/bash
-    linecount=&quot;$(wc -1 $1| cut -d&apos;&apos; -f1)&quot;
-    echo &quot;$1 has $linecount line.&quot;
-</code></pre><h2 id="bash的配置文件："><a href="#bash的配置文件：" class="headerlink" title="bash的配置文件："></a>bash的配置文件：</h2><pre><code>按生效范围划分，存在两类：
-    全局配置：
-        /etc/profile
-            /etc/profile.d/*.sh
-        /etc/bashrc
-    个人配置：        
-        ~/.bash_profile
-        ~./bashrc
-
-按功能划分，存在两类：
-    profile类：为交互式登陆的shell提供配置
-        全局：/etc/profile,/ect/profile.d/*.sh
-        个人：~/.bash_profile
-        功用：
-            （1）用于定义环境变量
-            （2）运行命令或脚本
-    bashrc类：为非交互式登陆的shell提供配置
-      全局： /etc/bashrc
-      个人：~/.bashrc
-
-      功用：
-          （1）定义命令别名
-           (2）定义本地变量
-</code></pre><h2 id="shell登录："><a href="#shell登录：" class="headerlink" title="shell登录："></a>shell登录：</h2><h3 id="交互式登录："><a href="#交互式登录：" class="headerlink" title="交互式登录："></a>交互式登录：</h3><pre><code>直接通过终端输入账号密码登录；
-    使用“su - UserName&quot;或”su -l UserName&quot;切换的用户
-
-    /etc/profile --&gt; /etc/profile.d/*.sh --&gt; ~/.bash_profile --&gt;~/.bashrc --&gt; /etc/bashrc
-</code></pre><h3 id="非交互式登陆"><a href="#非交互式登陆" class="headerlink" title="非交互式登陆:"></a>非交互式登陆:</h3><pre><code> su UserName
-     图型界面下打开的终端
-     执行脚本
-
-     ~/.bashrc --&gt; /etc/basgrc --&gt; /etc/profile.d/*.sh
-
-编辑配置文件定义的新配置的生效方式：
-    （1）重新启动shell进程
-    （2）使用source或.命令进程
-</code></pre><h2 id="bash中的算术运算"><a href="#bash中的算术运算" class="headerlink" title="bash中的算术运算"></a>bash中的算术运算</h2><pre><code>+，-，*，/，%，**，
-
-实现算术运算：
-    （1）let var=算术表达式
-    （2）var=$[算术表达式]
-    （3）var=$((算术表达式))
-    （4）var=$(expr arg1 arg2 arg3 ...)
-        乘法符号有时候需要转义
-        bash有内建的随机数生成器：$RANDOM
-
-        增强型赋值：
-            +=，-=，*=，/=，%=
-
-            let varOPERvalue
-                例如：let count+=1
-
-        自增，自减：
-            let var+=1
-                let var++
-            let var-=1
-                let var--
-</code></pre><h3 id="练习-1）：写一个脚本"><a href="#练习-1）：写一个脚本" class="headerlink" title="练习(1）：写一个脚本"></a>练习(1）：写一个脚本</h3><p>  计算/etc/passwd文件中的第10个用户和第20用户的ID之和</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">	<span class="comment">#!/bin/bash</span></div><div class="line">userid1=<span class="variable">$(head -n 10 /etc/passwd | tail -n 1 | cut -d: -f3)</span></div><div class="line">userid2=<span class="variable">$(head -n 20 /etc/passwd | tail -n 1 | cut -d: -f3)</span></div><div class="line">useridsum=$[$userid1+userid2]</div><div class="line">echo <span class="string">"uid sum:$useridsum"</span></div></pre></td></tr></table></figure>
-<h3 id="练习-2-：写一个脚本"><a href="#练习-2-：写一个脚本" class="headerlink" title="练习(2)：写一个脚本"></a>练习(2)：写一个脚本</h3><p> 传递两个文件路径作为参数给脚本，计算着两个文件中所有空白行之和</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">spaceline1=$(grep <span class="string">"^[[:space:]]*$"</span> <span class="variable">$1</span> | wc <span class="_">-l</span>)</div><div class="line">spaceline2=$(grep <span class="string">"^[[:space:]]*$"</span> <span class="variable">$2</span> | wc <span class="_">-l</span>)</div><div class="line"><span class="built_in">echo</span> <span class="string">"the sum of space line:$[<span class="variable">$spaceline1</span>+<span class="variable">$spaceline2</span>]"</span></div></pre></td></tr></table></figure>
-<h2 id="bash测试"><a href="#bash测试" class="headerlink" title="bash测试"></a>bash测试</h2><p> 条件测试：<br>     判断某需求是否满足，需要由测试机制来实现</p>
-<pre><code>Note：专用的测试表达式需要由测试命令辅助完成测试过程
-
-测试命令：
-    test EXPRESSION
-    [ EXPRESSION ]
-    [[ EXPRESSION ]]
-    Note:EXPRESSION前后必须有空白字符：
-
-    bash的测试类型：
-        数值测试：
-            -gt:是否大于
-            -ge：是否大于等于
-            -eq:是否等于
-            -ne:是否不等于
-            -lt：是否小于
-            -le：是否小于等于
-    字符串测试：
-            ==/=：是否等于
-            &gt;:是否等于
-            &lt;:是否小于
-            ！=：是否等于
-            =~：左侧字符是否能够被右侧的PATTERN所匹配
-                Note:此表达式一般用于[[ ]]中
-            -z：”SIRING&quot;：测试字符串是否为空，空则为真，不空为假
-            -n:”SIRING&quot;：测试字符串是否不空，不空则为真，空则为假
-
-            Note：用于字符串比较式时的用到的操作数都应该使用引号；
-
-    文件测试
-</code></pre><h2 id="bash自定义退出码"><a href="#bash自定义退出码" class="headerlink" title="bash自定义退出码"></a>bash自定义退出码</h2><pre><code>exit [n]:自定义退出状态码
-    注意：脚本中一旦遇到exit命令，脚本会立即终止，终止退出状态取决于exit命令后面的数字，如果未给脚本指定退出状态码，整个脚本的退出状态码取决于脚本中执行的最后一条命令的状态码；
-</code></pre>
       
     </div>
 
@@ -642,7 +546,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux学习笔记/" rel="tag"><i class="fa fa-tag"></i> Linux学习笔记</a>
+            <a href="/tags/非原创系列/" rel="tag"><i class="fa fa-tag"></i> 非原创系列</a>
+          
+            <a href="/tags/Linux运维技能/" rel="tag"><i class="fa fa-tag"></i> Linux运维技能</a>
           
         </div>
       
@@ -655,18 +561,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/05/Linux学习笔记（五）-vim入门教程/" rel="next" title="Linux学习笔记（五）-vim入门教程">
-                <i class="fa fa-chevron-left"></i> Linux学习笔记（五）-vim入门教程
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/03/Linux学习笔记（三）-正则表达式/" rel="prev" title="Linux学习笔记（三）-正则表达式">
-                Linux学习笔记（三）-正则表达式 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/10/26/LVS-Keepalived-实现高可用Web集群/" rel="prev" title="LVS + Keepalived 实现高可用Web集群">
+                LVS + Keepalived 实现高可用Web集群 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -888,7 +790,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#bash中的变量类型："><span class="nav-number">1.</span> <span class="nav-text">bash中的变量类型：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#本地变量"><span class="nav-number">1.1.</span> <span class="nav-text">本地变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环境变量："><span class="nav-number">1.2.</span> <span class="nav-text">环境变量：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位置变量："><span class="nav-number">1.3.</span> <span class="nav-text">位置变量：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash的配置文件："><span class="nav-number">2.</span> <span class="nav-text">bash的配置文件：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell登录："><span class="nav-number">3.</span> <span class="nav-text">shell登录：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#交互式登录："><span class="nav-number">3.1.</span> <span class="nav-text">交互式登录：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非交互式登陆"><span class="nav-number">3.2.</span> <span class="nav-text">非交互式登陆:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash中的算术运算"><span class="nav-number">4.</span> <span class="nav-text">bash中的算术运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#练习-1）：写一个脚本"><span class="nav-number">4.1.</span> <span class="nav-text">练习(1）：写一个脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习-2-：写一个脚本"><span class="nav-number">4.2.</span> <span class="nav-text">练习(2)：写一个脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash测试"><span class="nav-number">5.</span> <span class="nav-text">bash测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash自定义退出码"><span class="nav-number">6.</span> <span class="nav-text">bash自定义退出码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#uptime命令"><span class="nav-number">1.</span> <span class="nav-text">uptime命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dmesg命令"><span class="nav-number">2.</span> <span class="nav-text">dmesg命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vmstat命令"><span class="nav-number">3.</span> <span class="nav-text">vmstat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mpstat命令"><span class="nav-number">4.</span> <span class="nav-text">mpstat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pidstat命令"><span class="nav-number">5.</span> <span class="nav-text">pidstat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iostat命令"><span class="nav-number">6.</span> <span class="nav-text">iostat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#free命令"><span class="nav-number">7.</span> <span class="nav-text">free命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sar命令"><span class="nav-number">8.</span> <span class="nav-text">sar命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#top命令"><span class="nav-number">9.</span> <span class="nav-text">top命令</span></a></li></ol></div>
             
 
           </div>
