@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-02-07T00:42:17.000Z</updated>
+  <updated>2018-02-07T02:37:30.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,393 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Python当歌（四）：函数</title>
+    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%87%BD%E6%95%B0/"/>
+    <id>http://yjscloud.com/2018/02/07/Python当歌（四）：函数/</id>
+    <published>2018-02-07T01:49:07.000Z</published>
+    <updated>2018-02-07T02:37:30.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="函数基础"><a href="#函数基础" class="headerlink" title="函数基础"></a>函数基础</h1><p>函数是什么?</p>
+<p>想象生活中的例子，修理工需要实现准备好工具箱里面放好锤子，扳手，钳子等工具，然后遇到锤钉子的场景，拿来锤子用就可以，而无需临时再制造一把锤子。</p>
+<p>修理工===&gt;程序员</p>
+<p>具备某一功能的工具===&gt;函数</p>
+<p>要想使用工具，需要事先准备好，然后拿来就用且可以重复使用要想用函数，需要先定义，再使用。</p>
+<h1 id="函数分类"><a href="#函数分类" class="headerlink" title="函数分类"></a>函数分类</h1><p>（1）内置函数</p>
+<p>为了方便我们的开发，针对一些简单的功能，python解释器已经为我们定义好了的函数即内置函数。对于内置函数，我们可以拿来就用而无需事先定义，如len(),sum(),max()</p>
+<p>（2）自定义函数</p>
+<p>很明显内置函数所能提供的功能是有限的，这就需要我们自己根据需求，事先定制好我们自己的函数来实现某种功能，以后，在遇到应用场景时，调用自定义的函数即可。</p>
+<p>（3）如何自定义函数？</p>
+<pre><code>语法：
+    def 函数名(参数1,参数2,参数3,...):
+        &apos;&apos;&apos;注释&apos;&apos;&apos;
+        函数体
+        return 返回的值
+</code></pre><p>ps:函数名要能反映其意义</p>
+<p>（4）函数使用的原则：先定义，再调用</p>
+<p>函数即“变量”，“变量”必须先定义后引用。未定义而直接引用函数，就相当于在引用一个不存在的变量名</p>
+<p>测试一：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-1.png" alt="3-1"></p>
+<p>测试二：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-2.png" alt="3-2"></p>
+<p>结论:函数的使用,必须遵循原则:先定义,后调用；我们在使用函数时,一定要明确地区分定义阶段和调用阶段。</p>
+<pre><code>#定义阶段
+def foo():
+    print(&apos;from foo&apos;)
+    bar()
+def bar():
+    print(&apos;from bar&apos;)
+#调用阶段
+foo()
+</code></pre><p>ps:函数在定义阶段只检测语法，不执行代码。也就说，语法错误在函数定义阶段就会检测出来，而代码的逻辑错误只有在执行时才会知道</p>
+<p>(5)定义函数的三种形式</p>
+<p>1、无参：应用场景仅仅只是执行一些操作，比如与用户交互，打印</p>
+<p>2、有参：需要根据外部传进来的参数，才能执行相应的逻辑，比如统计长度，求最大值最小值</p>
+<p>3、空函数：设计代码结构</p>
+<p>例子：<br>    <img src="http://p3q1rwnbl.bkt.clouddn.com/3-3.png" alt="3-3"></p>
+<p>结论：定义时无参，意味着调用时也无需传入参数；定义时有参，意味着调用时则必须传入参数</p>
+<p>（6)调用函数</p>
+<p>函数的调用：函数名加括号</p>
+<ul>
+<li><p>先找到名字</p>
+</li>
+<li><p>根据名字调用代码</p>
+</li>
+</ul>
+<p>函数调用的三种形式：</p>
+<ul>
+<li><p>语句形式：foo()</p>
+</li>
+<li><p>表达式形式：3*len(‘hello’)</p>
+</li>
+<li><p>当中另外一个函数的参数：range(len(‘hello’))</p>
+</li>
+</ul>
+<p>函数返回值：</p>
+<ul>
+<li><p>无return-&gt;None</p>
+</li>
+<li><p>return 1个值-&gt;返回1个值</p>
+</li>
+<li><p>return 逗号分隔多个值-&gt;元组</p>
+</li>
+</ul>
+<p>什么时候该有返回值？</p>
+<p>调用函数，经过一系列的操作，最后要拿到一个明确的结果，则必须要有返回值（通常有参函数需要有返回值，输入参数，经过计算，得到一个最终的结果）</p>
+<p>什么时候不需要有返回值？</p>
+<p>调用函数，仅仅只是执行一系列的操作，最后不需要得到什么结果，则无需有返回值（通常无参函数不需要有返回值）</p>
+<p>（7）函数的参数<br>形参即变量名，实参即变量值，函数调用时，将值绑定到变量名上，函数调用结束，解除绑定。</p>
+<p>1、位置参数：按照从左到右的顺序定义的参数</p>
+<p>   位置形参：必选参数</p>
+<p>   位置实参：按照位置给形参传值</p>
+<p>2、关键字参数：按照key=value的形式定义的实参</p>
+<p>   无需按照位置为形参传值</p>
+<p>   注意的问题：</p>
+<ul>
+<li>关键字实参必须在位置实参右面</li>
+<li>对同一个形参不能重复传值</li>
+</ul>
+<p>3、默认参数：形参在定义时就已经为其赋值</p>
+<p>可以传值也可以不传值，经常需要变得参数定义成位置形参，变化较小的参数定义成默认参数（形参）</p>
+<p> 注意的问题：</p>
+<ul>
+<li>只在定义时赋值一次</li>
+<li>默认参数的定义应该在位置形参右面</li>
+<li>默认参数通常应该定义成不可变类型</li>
+</ul>
+<p>4、可变长参数：</p>
+<p>  可变长指的是实参值的个数不固定</p>
+<p>  而实参有按位置和按关键字两种形式定义，针对这两种形式的可变长，形参对应有两种解决方案来完整地存放它们，分别是<em>args（列表），*</em>kwargs（字典）</p>
+<p>测试：*args</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-4.png" alt="3-4"></p>
+<p>测试：**kwargs</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-5.png" alt="3-5"></p>
+<p>5、命名关键字参数：*后定义的参数，必须被传值（有默认值的除外），且必须按照关键字实参的形式传递可以保证，传入的参数中一定包含某些关键字。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-6.png" alt="3-6"></p>
+<h1 id="函数的变量、递归以及内置函数"><a href="#函数的变量、递归以及内置函数" class="headerlink" title="函数的变量、递归以及内置函数"></a>函数的变量、递归以及内置函数</h1><h2 id="局部变量和全局变量"><a href="#局部变量和全局变量" class="headerlink" title="局部变量和全局变量"></a>局部变量和全局变量</h2><p>在子程序中定义的变量称为局部变量，在程序的一开始定义的变量称为全局变量。</p>
+<p>全局变量作用域是整个程序，局部变量作用域是定义该变量的子程序。</p>
+<p>当全局变量与局部变量同名时：在定义局部变量的子程序内，局部变量起作用；在其它地方全局变量起作用。</p>
+<pre><code>name=&apos;xwq&apos;
+def change_name():
+    print(&apos;我的名字&apos;,name)    #全局变量起作用
+change_name()
+
+def change_name():
+    name=&apos;帅了一笔&apos;
+    print(&apos;我的名字&apos;,name)        #局部变量起作用
+    change_name()
+print(name)
+
+def change_name():
+    global name
+    name=&apos;帅了一笔&apos;
+    print(&apos;我的名字&apos;,name)        #因为global参数全局变量变为‘帅了一笔’而非xwq,
+change_name()
+</code></pre><p>ps：nonlocal参数</p>
+<pre><code>name = &quot;lf&quot;
+def weihou():
+    name = &quot;xwq&quot;
+    def weiweihou():
+        nonlocal name   # nonlocal，指定上一级变量，如果没有就继续往上直到找到为止
+        name = &quot;冷静&quot;    
+    weiweihou()
+    print(name)
+print(name)
+weihou()
+print(name)
+</code></pre><p>运行结果为：</p>
+<pre><code>lf
+冷静
+lf
+</code></pre><h2 id="嵌套函数和作用域"><a href="#嵌套函数和作用域" class="headerlink" title="嵌套函数和作用域"></a>嵌套函数和作用域</h2><pre><code>name = &quot;xwq&quot;
+
+def change_name():
+    name = &quot;xwq2&quot;
+
+    def change_name2():
+        name = &quot;xwq3&quot;
+        print(&quot;第3层打印&quot;,name)
+
+    change_name2() #调用内层函数
+    print(&quot;第2层打印&quot;,name)
+
+change_name()
+print(&quot;最外层打印&quot;,name)
+</code></pre><p>此时，在最外层调用change_name2()会出现什么效果？没错，出错了， 为什么呢？<br>作用域在定义函数时就已经固定住了，不会随着调用位置的改变而改变。</p>
+<p>例一：</p>
+<pre><code>name=&apos;alex&apos;
+
+def foo():
+    name=&apos;lhf&apos;
+    def bar():
+        print(name)
+    return bar
+
+func=foo()
+func()
+</code></pre><p>例二：</p>
+<pre><code>name=&apos;alex&apos;
+
+def foo():
+    name=&apos;lhf&apos;
+    def bar():
+        name=&apos;wupeiqi&apos;
+        def tt():
+            print(name)
+        return tt
+    return bar
+
+func=foo()
+func()()
+</code></pre><h2 id="递归调用"><a href="#递归调用" class="headerlink" title="递归调用"></a>递归调用</h2><p>在函数内部，可以调用其他函数。如果在调用一个函数的过程中直接或间接调用自身本身</p>
+<pre><code>def calc(n):
+    print(n)
+    if int(n/2) ==0:
+        return n
+    return calc(int(n/2))
+
+calc(10)
+</code></pre><p>输出：</p>
+<pre><code>10
+5
+2
+1
+</code></pre><p>递归特性:</p>
+<ul>
+<li>必须有一个明确的结束条件</li>
+<li>每次进入更深一层递归时，问题规模相比上次递归都应有所减少</li>
+<li>递归效率不高，递归层次过多会导致栈溢出（在计算机中，函数调用是通过栈（stack）这种数据结构实现的，每当进入一个函数调用，栈就会加一层栈帧，每当函数返回，栈就会减一层栈帧。由于栈的大小不是无限的，所以，递归调用的次数过多，会导致栈溢出）</li>
+</ul>
+<h2 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h2><p>（1）zip()函数</p>
+<p>zip()函数接受0个或多个序列作为参数，返回一个tuple列表。 </p>
+<p>zip()函数具体的工作机制是，将每个列表中同一位置的元素取出来组成一个元组，存放到一个列表中，然后返回这个列表。举例说明：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-7.png" alt="3-7"></p>
+<p>对于长度不同的seq，zip()函数处理;</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-8.png" alt="3-8"><br>从上面的例子可以看出，当seq的长度不一致时，zip()会以最短的那个seq为主，进行处理，然后将多余的舍弃掉.</p>
+<p>zip()对只有一个seq的处理：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-9.png" alt="3-9"></p>
+<p>(2)map()函数</p>
+<p>map()函数接收两个参数，一个是函数，一个是Iterable，map将传入的函数依次作用到序列的每个元素，并把结果作为新的Iterator返回。举例说明：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-10.png" alt="3-10"></p>
+<p>map()传入的第一个参数是f，即函数对象本身。由于结果r是一个Iterator，Iterator是惰性序列，因此通过list()函数让它把整个序列都计算出来并返回一个list。</p>
+<p>map（）可以计算任意复杂的函数，比如，把这个list所有数字转为字符串：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-11.png" alt="3-11"></p>
+<p>(3)reduce()函数</p>
+<p>reduce把一个函数作用在一个序列[x1, x2, x3, …]上，这个函数必须接收两个参数，reduce把结果继续和序列的下一个元素做累积计算。举例说明：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-12.png" alt="3-12"></p>
+<p>(4)filter()函数</p>
+<p>和map()类似，filter()也接收一个函数和一个序列。和map()不同的是，filter()把传入的函数依次作用于每个元素，然后根据返回值是True还是False决定保留还是丢弃该元素。</p>
+<p>例如，在一个list中，删掉偶数，只保留奇数，可以这么写：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-13.png" alt="3-13"></p>
+<p>把一个序列中的空字符串删掉，可以这么写：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-14.png" alt="3-14"></p>
+<p>可见用filter()这个高阶函数，关键在于正确实现一个“筛选”函数。</p>
+<p>注意到filter()函数返回的是一个Iterator，也就是一个惰性序列，所以要强迫filter()完成计算结果，需要用list()函数获得所有结果并返回list。</p>
+<p>(5)sorted() 函数对所有可迭代的对象进行排序操作。</p>
+<p>sort 与 sorted 区别：sort 是应用在 list 上的方法，sorted 可以对所有可迭代的对象进行排序操作。list 的 sort 方法返回的是对已经存在的列表进行操作，而内建函数 sorted 方法返回的是一个新的 list，而不是在原来的基础上进行的操作。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-15.png" alt="3-15"></p>
+<p>此外，sorted()函数也是一个高阶函数，它还可以接收一个key函数来实现自定义的排序，例如按绝对值大小排序：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-16.png" alt="3-16"></p>
+<p>(6)max()/min()函数</p>
+<p>max(iterable, key, default) 求迭代器的最大值，其中iterable 为迭代器，max会for i in … 遍历一遍这个迭代器，然后将迭代器的每一个返回值当做参数传给key=func 中的func(一般用lambda表达式定义) ，然后将func的执行结果传给key，然后以key为标准进行大小的判断。</p>
+<p>以下根据不同的判断条件返回最大值也不同</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-17.png" alt="3-17"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;函数基础&quot;&gt;&lt;a href=&quot;#函数基础&quot; class=&quot;headerlink&quot; title=&quot;函数基础&quot;&gt;&lt;/a&gt;函数基础&lt;/h1&gt;&lt;p&gt;函数是什么?&lt;/p&gt;
+&lt;p&gt;想象生活中的例子，修理工需要实现准备好工具箱里面放好锤子，扳手，钳子等工具，然后遇到锤钉子的场景
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python当歌（三）：字符串格式化</title>
+    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A0%BC%E5%BC%8F%E5%8C%96/"/>
+    <id>http://yjscloud.com/2018/02/07/Python当歌（三）：字符串格式化/</id>
+    <published>2018-02-07T01:13:30.000Z</published>
+    <updated>2018-02-07T01:40:49.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>Python的字符串格式化有两种方式: 百分号方式、format方式。</p>
+<p>百分号的方式相对来说比较老，而format方式则是比较先进的方式，企图替换古老的方式，目前两者并存。</p>
+<h1 id="百分号方式"><a href="#百分号方式" class="headerlink" title="百分号方式"></a>百分号方式</h1><p>格式：%[(name)][flags][width].[precision]typecode</p>
+<p>（1）(name)     可选，用于选择指定的key</p>
+<p>（2）flags       可选，可供选择的值有:</p>
+<ul>
+<li>“+”       右对齐；正数前加正好，负数前加负号；</li>
+<li>“-“        左对齐；正数前无符号，负数前加负号；</li>
+<li>空格    右对齐；正数前加空格，负数前加负号；</li>
+<li>0    右对齐；正数前无符号，负数前加负号；用0填充空白处</li>
+</ul>
+<p>（3）    width         可选，占有宽度</p>
+<p>（4）    precision   可选，小数点后保留的位数</p>
+<p>（5） typecode    必选</p>
+<ul>
+<li>s，获取传入对象的<strong>str</strong>方法的返回值，并将其格式化到指定位置</li>
+<li>r，获取传入对象的<strong>repr</strong>方法的返回值，并将其格式化到指定位置</li>
+<li>c，整数：将数字转换成其unicode对应的值，10进制范围为 0 &lt;= i &lt;= 1114111（py27则只支持0-255）；字符：将字符添加到指定位置</li>
+<li>o，将整数转换成 八  进制表示，并将其格式化到指定位置</li>
+<li>x，将整数转换成十六进制表示，并将其格式化到指定位置</li>
+<li>d，将整数、浮点数转换成 十 进制表示，并将其格式化到指定位置</li>
+<li>e，将整数、浮点数转换成科学计数法，并将其格式化到指定位置（小写e）</li>
+<li>E，将整数、浮点数转换成科学计数法，并将其格式化到指定位置（大写E）</li>
+<li>f， 将整数、浮点数转换成浮点数表示，并将其格式化到指定位置（默认保留小数点后6位）</li>
+<li>F，同上</li>
+<li>g，自动调整将整数、浮点数转换成 浮点型或科学计数法表示（超过6位数用科学计数法），并将其格式化到指定位置（如果是科学计数则是e；）</li>
+<li>G，自动调整将整数、浮点数转换成 浮点型或科学计数法表示（超过6位数用科学计数法），并将其格式化到指定位置（如果是科学计数则是E；）</li>
+<li>%，当字符串中存在格式化标志时，需要用 %%表示一个百分号</li>
+</ul>
+<p>注：Python中百分号格式化是不存在自动将整数转换成二进制表示的方式</p>
+<p>常用格式化：</p>
+<pre><code>tpl = &quot;i am %s&quot; % &quot;alex&quot; 
+
+tpl = &quot;i am %s age %d&quot; % (&quot;alex&quot;, 18)
+
+tpl = &quot;i am %(name)s age %(age)d&quot; % {&quot;name&quot;: &quot;alex&quot;, &quot;age&quot;: 18}
+
+tpl = &quot;percent %.2f&quot; % 99.97623
+
+tpl = &quot;i am %(pp).2f&quot; % {&quot;pp&quot;: 123.425556, }
+
+tpl = &quot;i am %.2f %%&quot; % {&quot;pp&quot;: 123.425556, }
+</code></pre><h1 id="Format方式"><a href="#Format方式" class="headerlink" title="Format方式"></a>Format方式</h1><p>格式：[[fill]align][sign][#][0][width][,][.precision][type]</p>
+<p>（1）fill    【可选】空白处填充的字符</p>
+<p>（2）align   【可选】对齐方式（需配合width使用）</p>
+<ul>
+<li>“&lt;”，内容左对齐</li>
+<li>“&gt;”，内容右对齐(默认)</li>
+<li>“＝”，内容右对齐，将符号放置在填充字符的左侧，且只对数字类型有效。 即使：符号+填充物+数字</li>
+<li>“^”，内容居中</li>
+</ul>
+<p>（3）sign    【可选】有无符号数字</p>
+<ul>
+<li>“+”，正号加正，负号加负；</li>
+<li>“-“，正号不变，负号加负；</li>
+<li>空格 ，正号空格，负号加负；</li>
+</ul>
+<p>（4）”#”        【可选】对于二进制、八进制、十六进制，如果加上#，会显示 0b/0o/0x，否则不显示</p>
+<p>（5)”,”      【可选】为数字添加分隔符，如：1,000,000</p>
+<p>（6）width  【可选】格式化位所占宽度</p>
+<p>（7）.precision 【可选】小数位保留精度</p>
+<p>（8）type     【可选】格式化类型</p>
+<p>传入” 字符串类型 “的参数</p>
+<ul>
+<li>s，格式化字符串类型数据</li>
+<li>空白，未指定类型，则默认是None，同s</li>
+</ul>
+<p>传入“ 整数类型 ”的参数</p>
+<ul>
+<li>b，将10进制整数自动转换成2进制表示然后格式化</li>
+<li>c，将10进制整数自动转换为其对应的unicode字符</li>
+<li>d，十进制整数</li>
+<li>o，将10进制整数自动转换成8进制表示然后格式化；</li>
+<li>x，将10进制整数自动转换成16进制表示然后格式化（小写x）</li>
+<li>X，将10进制整数自动转换成16进制表示然后格式化（大写X）</li>
+</ul>
+<p>传入“ 浮点型或小数类型 ”的参数</p>
+<ul>
+<li>e，转换为科学计数法（小写e）表示，然后格式化；</li>
+<li>E，转换为科学计数法（大写E）表示，然后格式化;</li>
+<li>f ，转换为浮点型（默认小数点后保留6位）表示，然后格式化；</li>
+<li>F， 转换为浮点型（默认小数点后保留6位）表示，然后格式化；</li>
+<li>g，自动在e和f中切换</li>
+<li>G，自动在E和F中切换</li>
+<li>%  显示百分比（默认显示小数点后6位）</li>
+</ul>
+<p>常用格式化：</p>
+<pre><code>tpl = &quot;i am {}, age {}, {}&quot;.format(&quot;seven&quot;, 18, &apos;alex&apos;)
+
+tpl = &quot;i am {}, age {}, {}&quot;.format(*[&quot;seven&quot;, 18, &apos;alex&apos;])
+
+tpl = &quot;i am {0}, age {1}, really {0}&quot;.format(&quot;seven&quot;, 18)
+
+tpl = &quot;i am {0}, age {1}, really {0}&quot;.format(*[&quot;seven&quot;, 18])
+
+tpl = &quot;i am {name}, age {age}, really {name}&quot;.format(name=&quot;seven&quot;, age=18)
+
+tpl = &quot;i am {name}, age {age}, really {name}&quot;.format(**{&quot;name&quot;: &quot;seven&quot;, &quot;age&quot;: 18})
+
+tpl = &quot;i am {0[0]}, age {0[1]}, really {0[2]}&quot;.format([1, 2, 3], [11, 22, 33])
+
+tpl = &quot;i am {:s}, age {:d}, money {:f}&quot;.format(&quot;seven&quot;, 18, 88888.1)
+
+tpl = &quot;i am {:s}, age {:d}&quot;.format(*[&quot;seven&quot;, 18])
+
+tpl = &quot;i am {name:s}, age {age:d}&quot;.format(name=&quot;seven&quot;, age=18)
+
+tpl = &quot;i am {name:s}, age {age:d}&quot;.format(**{&quot;name&quot;: &quot;seven&quot;, &quot;age&quot;: 18})
+
+tpl = &quot;numbers: {:b},{:o},{:d},{:x},{:X}, {:%}&quot;.format(15, 15, 15, 15, 15, 15.87623, 2)
+
+tpl = &quot;numbers: {:b},{:o},{:d},{:x},{:X}, {:%}&quot;.format(15, 15, 15, 15, 15, 15.87623, 2)
+
+tpl = &quot;numbers: {0:b},{0:o},{0:d},{0:x},{0:X}, {0:%}&quot;.format(15)
+
+tpl = &quot;numbers: {num:b},{num:o},{num:d},{num:x},{num:X}, {num:%}&quot;.format(num=15)
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Python的字符串格式化有两种方式: 百分号方式、format方式。&lt;/p&gt;
+&lt;p&gt;百分号的方式相对来说比较老，而format方式则是比较先进的方式，企图替换古老的方式，目前两者并存。&lt;/p&gt;
+&lt;h1 id=&quot;百分号方式&quot;&gt;&lt;a href=&quot;#百分号方式&quot; class=&quot;
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Python当歌（二）：基础数值类型</title>
@@ -2316,384 +2703,6 @@ access_by_lua_file &quot;/usr/local/openresty/nginx/conf/waf/access.lua&quot;;
     
     
       <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux学习笔记（九）-LVM</title>
-    <link href="http://yjscloud.com/2017/05/09/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B9%9D%EF%BC%89-LVM/"/>
-    <id>http://yjscloud.com/2017/05/09/Linux学习笔记（九）-LVM/</id>
-    <published>2017-05-09T12:14:57.000Z</published>
-    <updated>2017-12-02T12:59:05.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="为什么要使用LVM"><a href="#为什么要使用LVM" class="headerlink" title="为什么要使用LVM"></a>为什么要使用LVM</h1><p>问题：</p>
-<p>(1) Windows系统中常常出现的问题：</p>
-<p>电脑使用久了，某个分区（特别是C盘）不够用了。</p>
-<p>解决方案：使用特殊的工具软件，进行调整，或者再加一个硬盘，然后再创建一个大一点的分区，并把数据复制过去。总之，非常麻烦、耗时！</p>
-<p>(2) Linux系统中也存在类似问题：</p>
-<p>使用一段时间后，/home对应的分区不够用了，导致不能再在这个目录内添加数据，甚至不能创建用户。</p>
-<p>解决方案：和Windows类似，创建1个更大的分区，然后进行复制。</p>
-<p>分析：以上问题的根本原因，在于分区的大小不能改变！分区太小了不够用，太大了又浪费。</p>
-<p>解决方案：   </p>
-<p>使用LVM（逻辑卷管理器）</p>
-<p>LVM，可以弹性的调整文件系统的容量</p>
-<p>LVM，可以调整“分区”（实际上是“逻辑卷”）的大小</p>
-<h1 id="LVM的概念"><a href="#LVM的概念" class="headerlink" title="LVM的概念"></a>LVM的概念</h1><p>理解：逻辑卷，如果荆轲刺秦是使用的画卷，可以随意变长变短。</p>
-<p>基础概念：</p>
-<p>(1)物理卷（PV）</p>
-<p>Physical Volume</p>
-<p>LVM中最底层的就是物理卷PV</p>
-<p>原来的物理分区，需要转换为物理卷PV（把分区的分区类型编码改为8e即可）</p>
-<p>(2)卷组 / 卷用户组（VG）</p>
-<p>多个PV组成一个VG</p>
-<p>VG相当于标准分区中的“磁盘”</p>
-<p>VG最多可包含65534个PE，但是PE大小可调整</p>
-<p>(3)物理扩展块 / 物理区域（PE）</p>
-<p>Physical Extend</p>
-<p>是PV中可用于分配的最小存储单元</p>
-<p>PE相当于标准分区中的“扇区”</p>
-<p>PE的大小在创建VG时指定，默认为4MiB（可调整），一旦确定后不能修改。</p>
-<p>同一VG中的所有PE大小必须一致，新的PV加入到vg后，PE的大小自动更改为VG中定义的PE大小。</p>
-<p>(4)逻辑卷（LV）</p>
-<p>1个VG可“切”成多个LV</p>
-<p>LV的设备文件名一般取“/dev/VG的名称/LV的名称”</p>
-<p>LV在功能上，相当于标准分区中的物理分区。</p>
-<p>注意：LV中包含多个PE, 有的已经使用，有的还没有使用，但不存在“空闲”的PE, 其中的PE都属于该LV,PV中包含多个PE, 可分配给多个不同的LV, 还没有分配给LV的，就称为“空间“(free)的PE</p>
-<p>(5)逻辑扩展块 / 逻辑区域（LE）</p>
-<p>LE是LV中可用于分配的最小存储单元，</p>
-<p>LE的大小取决于LV所在VG中的PE大小（大小相等）</p>
-<p>原理图示</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/2.11.png" alt="2.11"></p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/2.12.png" alt="2.12"></p>
-<p>小结:LVM可实现，在不影响已有数据的情况下，动态方便地改变文件系统的容量。</p>
-<h1 id="LVM的使用"><a href="#LVM的使用" class="headerlink" title="LVM的使用"></a>LVM的使用</h1><p>（1）准备物理设备</p>
-<p>即使用fdisk或gdisk创建一个物理分区，并把分区的类型设置为8e（MBR分区）或8e00(GPT分区)</p>
-<pre><code># fdisk  /dev/vda
-</code></pre><p>（2）创建PV</p>
-<p>把物理分区，“转换”为物理卷PV</p>
-<pre><code># pvcreate     /dev/vda1    /dev/vda2
-</code></pre><p>或：</p>
-<pre><code># pvcreate   /dev/vda1  
-</code></pre><p>pvcreate命令可同时对多个分区进行转换。</p>
-<p>（3）创建VG（卷组 / 卷用户组）</p>
-<p>一个VG可包含多个PV</p>
-<p>可创建多个VG .</p>
-<pre><code># vgcreate   vg-alpha   /dev/vda1    /dev/vda2
-</code></pre><p>创建了一个卷组，名为vg-alpha,  该卷组中包含两个PV（/dev/sda1和/dev/sda2）</p>
-<p>注意： 物理分区和物理卷，都使用相同的 设备文件名，比如  /dev/sda1</p>
-<p>（4）创建LV</p>
-<p>从卷组vg中可“切割“出多个LV</p>
-<pre><code># lvcreate    -n  lv1   -L   100M   vg-alpha
-</code></pre><p>从卷组vg-alpha中，创建一个LV, 名称为lv1,  大小为100MiB</p>
-<p>lv1对应设备文件名为：  /dev/vg-alpha/lv1</p>
-<pre><code># lvcreate  -n  lv2   -l   10   vg-alpha
-</code></pre><p>从卷组vg-alpha中，创建一个LV, 名称为lv2,  大小为10个PE</p>
-<p>lv2对应设备文件名为：  /dev/vg-alpha/lv2</p>
-<p>逻辑卷的对应的设备名（又称path）： /dev/卷组名/逻辑卷名  </p>
-<p>（5）格式化LV</p>
-<p>和格式化物理分区的方式相同。</p>
-<pre><code># mkfs  -t   xfs   /dev/vg-alpha/lv1
-</code></pre><p>（6)挂载LV</p>
-<p>和挂载物理分区的方式相同。</p>
-<pre><code># mkdir   /mnt/data1 
-# mount   /dev/vg-alpha/lv1    /mnt/data1
-</code></pre><p>(7)永久挂载</p>
-<p>在/etc/fstab中添加：</p>
-<pre><code>/dev/vg-alpha/lv1       /mnt/data1      xfs      defaults    1    3
-
-# mount  -a
-</code></pre><p>(8)删除LV</p>
-<p>和删除物理分区的方式类似。</p>
-<p>删除准备：</p>
-<p>1）先把需要保留的数据移动到另一个文件系统。</p>
-<p>2) 卸载该LV</p>
-<pre><code># umount   /mnt/data1
-</code></pre><p>删除LV:</p>
-<pre><code># lvremove  /dev/vg-alpha/lv1
-</code></pre><p>注意：删除LV后，该LV中包含的PE，可分配给已有的LV或新的LV</p>
-<p>(9)删除VG</p>
-<pre><code># vgremove   vg-alpha
-</code></pre><p>说明：删除VG后，该VG中包含的PV，并没有被删除，可分配给已有的VG或新的VG。</p>
-<p>(10)删除PV</p>
-<p>PV和对应的物理分区，使用相同的设备文件名。</p>
-<p>删除PV, 是指删除它的PV属性，“还原”为原来的特性，比如为“物理分区”</p>
-<p>删除 PV后， 该PV就不存在了，但是所来所对应的物理分区还存在！</p>
-<pre><code># pvremove   /dev/vda1     /dev/vda2
-</code></pre><p>(11)查看LVM的状态信息</p>
-<p>1）查看物理卷的信息（pvdisplay）</p>
-<pre><code># pvdisplay    /dev/vda2
-</code></pre><p>查看指定物理卷/dev/vda2的状态信息。</p>
-<pre><code># pvdisplay    
-</code></pre><p>查看所有物理卷的状态信息。</p>
-<p>2）查看卷组的信息（vgdisplay）</p>
-<pre><code>#  vgdisplay     vg-alpha
-</code></pre><p>查看指定卷组的信息</p>
-<pre><code>#  vgdisplay
-</code></pre><p>查看所有卷组的信息</p>
-<p>3）查看逻辑卷的信息 （lvdisplay）</p>
-<pre><code>#  lvdisplay    /dev/vg-alpha/lv1
-</code></pre><p>查看指定逻辑卷的信息。</p>
-<pre><code># lvdisplay 
-</code></pre><p>查看所有逻辑卷的信息</p>
-<p>（12）扩展/缩减卷组VG </p>
-<p>扩展VG</p>
-<p>把额外的物理卷PV添加到VG， 使得该VG有更多的PE分配给逻辑卷LV</p>
-<pre><code>#fdisk  /dev/vdb
-</code></pre><p>准备好一个PV, 可创建一个新的分区再转换为PV，或者使用已有的不使用的PV</p>
-<pre><code># vgextend   vg-alpha    /dev/vdb2
-</code></pre><p>把物理卷/dev/vdb2添加到卷组vg-alpha中。</p>
-<pre><code># vgdisplay   vg-alpha
-</code></pre><p>扩展后，检查VG是否增加可用的PE (free  PE字段)</p>
-<p>缩减VG</p>
-<p>把物理卷PV从VG中删除</p>
-<p>需要两个步骤：</p>
-<p>步骤1）把该PV上的所有PE移动（实质是“复制”）到该VG中（或该VG中指定的）含有空闲PE的PV中</p>
-<p>方式1：</p>
-<pre><code># pvmove    /dev/vdb2
-</code></pre><p>把物理卷/dev/vdb2中的所有PE移动（实质是“复制”）到该VG中含有空闲PE的PV中</p>
-<p>方式2：</p>
-<pre><code># pvmove    /dev/vdb2    /dev/vdb1
-</code></pre><p>把物理卷/dev/vdb2中的所有PE移动（实质是“复制”）到该VG中的物理卷vdb1</p>
-<p>步骤2）把PV从VG中删除</p>
-<pre><code># vgreduce     vg-alpha   /dev/vdb2
-</code></pre><p>把物理卷/dev/vdb2从卷组vg-alpha中删除，但是该物理卷本身并不删除。</p>
-<p>3）补充</p>
-<p>PV从VG中删除后，成为未使用的PV, 该PV可添加到其他的VG中，</p>
-<p>也可以删除它的PV属性，“还原”为原来的特性，比如为“物理分区”。</p>
-<pre><code># pvremove     /dev/vdb2
-</code></pre><p>把物理卷/dev/vdb2的PV属性删除，成为原来的物理分区。</p>
-<p>（13）扩展逻辑卷LV </p>
-<p>扩展LV</p>
-<p>扩展LV需要3个步骤：</p>
-<p>1） 检查LV所在的VG中是否还有空闲的PE</p>
-<pre><code>#  vgdisplay   vg-alpha
-</code></pre><p>检查 Free  PE字段</p>
-<p>如果还有足够的PE，才能扩展LV，</p>
-<p>如果没有足够的PE, 那应该先扩展VG</p>
-<p>2）扩展LV</p>
-<pre><code># lvextend   -L   +300M   /dev/vg-alpha/lv1
-</code></pre><p>把逻辑卷lv1增加 300MiB空间。</p>
-<p>选项用法：</p>
-<pre><code>-L   +300M    增加300MiB
--L   300M      设置为300MB
--l    +100      增加100个PE
--l    100        设置为100个PE
--l    +50%FREE    增加VG中可用空间的50%
-</code></pre><p>3） 扩展文件系统</p>
-<p>即，需要把扩展后的LV对应的文件系统（挂载点）进行“更新”一下。</p>
-<p>否则LV扩展了，但是对应的文件系统并不会扩展。</p>
-<p>有两种方式：</p>
-<p>方式1：（适用于XFS文件系统）</p>
-<pre><code>#  xfs_growfs      /mnt/data1
-</code></pre><p>xfs_growfs的参数为lv的挂载点。</p>
-<p>方式2：（适用于ext4文件系统）</p>
-<pre><code>#  resize2fs    /dev/vg-alpha/lv1
-</code></pre><p>resize2fs的参数为逻辑卷的完整设备文件名</p>
-<p>补充：查看分区、逻辑卷的的文件系统格式</p>
-<pre><code># df  -T 
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;为什么要使用LVM&quot;&gt;&lt;a href=&quot;#为什么要使用LVM&quot; class=&quot;headerlink&quot; title=&quot;为什么要使用LVM&quot;&gt;&lt;/a&gt;为什么要使用LVM&lt;/h1&gt;&lt;p&gt;问题：&lt;/p&gt;
-&lt;p&gt;(1) Windows系统中常常出现的问题：&lt;/p&gt;
-&lt;p&gt;电
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux学习笔记（八）-防火墙</title>
-    <link href="http://yjscloud.com/2017/05/08/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AB%EF%BC%89-%E9%98%B2%E7%81%AB%E5%A2%99/"/>
-    <id>http://yjscloud.com/2017/05/08/Linux学习笔记（八）-防火墙/</id>
-    <published>2017-05-08T08:42:08.000Z</published>
-    <updated>2017-12-15T14:55:51.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="防火墙原理"><a href="#防火墙原理" class="headerlink" title="防火墙原理"></a>防火墙原理</h1><p><img src="http://oxysobnip.bkt.clouddn.com/2.8.png" alt="2.8"></p>
-<p>防火墙的主要作用：用来控制那些主机可以访问本地的那些服务</p>
-<p>特别注意：</p>
-<p>firewall-cmd和iptables是冲突的。</p>
-<p>所以，如果使用firewall-cmd，应该把iptables和其他防火墙服务屏蔽。</p>
-<pre><code># systemctl  mask   {iptables, ip6tables, ebtables}
-</code></pre><h1 id="firewall-cmd的原理"><a href="#firewall-cmd的原理" class="headerlink" title="firewall-cmd的原理"></a>firewall-cmd的原理</h1><p><img src="http://oxysobnip.bkt.clouddn.com/2.9.png" alt="2.9"></p>
-<p>预先定义了很多“区域”</p>
-<p>每个区域，相当于一个“大门”。</p>
-<p>每个网卡，都被绑定到某个区域（如果不绑定，就走默认区域）</p>
-<p>区域内又定义了很多规则</p>
-<p>数据包到达某个区域后，就匹配该区域的规则，以决定是否通过。</p>
-<p>功能演示：主机A安装Apache服务，主机B来访问主机A的网站。默认是拒绝访问的（因为主机A的防火墙没有允许http服务）</p>
-<p>预定义服务:系统把一些常用的网络访问，进行了定义。比如web访问，定义为http， 就是指在80端口使用http协议,比如ssh访问， 就是在22端口使用ssh协议,所以，可以直接对这些“服务”设置规则。</p>
-<p>端口:对于不是预定义服务的访问，就可以使用端口设置规则。注意，设置端口时，必须同时设置所使用的协议（tcp或udp）,比如： # firewall-cmd  –add-port=8000/tcp     </p>
-<h1 id="firewall-cmd的常用命令"><a href="#firewall-cmd的常用命令" class="headerlink" title="firewall-cmd的常用命令"></a>firewall-cmd的常用命令</h1><pre><code># firewall-cmd   --help
-# firewall-cmd   --help  |  grep  zone
-# firewall-cmd   --get-zones
-# firewall-cmd  --get-default-zone
-# firewall-cmd  --set-default-zone=home
-</code></pre><p>查看指定区域（大门）的所有规则</p>
-<pre><code># firewall-cmd   --list-all  --zone=区域名
-</code></pre><p>查看默认区域（大门）的所有规则</p>
-<pre><code># firewall-cmd   --list-all   
-</code></pre><h2 id="防火墙-预定义服务"><a href="#防火墙-预定义服务" class="headerlink" title="防火墙-预定义服务"></a>防火墙-预定义服务</h2><p>在默认区域中，添加一个规则：允许http服务通过防火墙,没有指定区域，就表示是默认区域</p>
-<pre><code># firewall-cmd  --add-service=http    
-</code></pre><p>在指定的home区域添加一个规则：允许http服务通过防火墙</p>
-<pre><code># firewall-cmd  --add-service=http  --zone=home
-</code></pre><p>移除服务</p>
-<pre><code># firewall-cmd  --remove-service=http
-</code></pre><p>查询默认区域中是否允许http服务</p>
-<pre><code># firewall-cmd  --query-service=http  
-</code></pre><p>查询默认区域中是否允许http服务</p>
-<pre><code># firewall-cmd  --query-service=http    --zone=home
-</code></pre><h2 id="防火墙-端口"><a href="#防火墙-端口" class="headerlink" title="防火墙-端口"></a>防火墙-端口</h2><pre><code># firewall-cmd  --add-port=80/tcp   
-# firewall-cmd  --remove-port=80/tcp
-</code></pre><h2 id="防火墙-网络接口"><a href="#防火墙-网络接口" class="headerlink" title="防火墙-网络接口"></a>防火墙-网络接口</h2><p>查看指定的网络接口（网卡），所绑定到的区域</p>
-<pre><code># firewall-cmd   --get-zone-of-interface=eno16777736
-</code></pre><p>一个网络接口，只能绑定到一个区域。</p>
-<p>多个网络接口，可以绑定到同一个区域。</p>
-<pre><code># firewall-cmd  --change-interface=eno16777736  --zone=home
-</code></pre><p>把网络接口eno16777736所绑定的区域，修改为home区域，该命令，用于已经被绑定到某区域的网路接口。</p>
-<pre><code># firewall-cmd  --remove-interface=eno16777736  --zone=home
-</code></pre><p>把网络接口eno16777736,从home区域解绑。解绑后，该网路接口，就没有绑定到任何区域（该接口的数据包就传输到默认接口）</p>
-<pre><code># firewall-cmd  --add-interface=eno16777736  --zone=public
-</code></pre><p>把网络接口eno16777736，绑定到public区域，该命令，用于还没有绑定到任何区域的接口。</p>
-<p>注意：一个网卡，只能绑定到一个区域</p>
-<p>   多个网卡，可以绑定到同一个区域。</p>
-<h1 id="来源source"><a href="#来源source" class="headerlink" title="来源source"></a>来源source</h1><p>需求： server0安装了web服务器，除了desktop0以外，其他任意主机，都不能访问server0的web网站</p>
-<p>实现：<br>在server0上实现：</p>
-<pre><code>firewall-cmd  --remove-service=http
-firewall-cmd  --add-service=http   --zone=home
-firewall-cmd  --add-source=192.168.0.11   --zone=home
-</code></pre><p>如果某个网络接口，被绑定到某区域,那么，来自该网络接口的所有数据包（无论什么主机），都会“流入”到该区域。如果该区域禁止某个服务（比如http）,但是，来自该接口的某个数据包，和其他区域的某个“source规则”匹配，那么该数据包就会流入该区域。</p>
-<p>如果某个网络接口，没有被绑定到任何区域。那么，来自该网络接口的所有数据包（无论什么主机），都会“流入”到“默认区域”。但是，如果来自该接口的某个数据包，和某个区域的“source规则”匹配，那么该数据包就会流入该区域。</p>
-<p>实例：</p>
-<pre><code># firewall-cmd   --remove-source=192.168.168.1/24 
-</code></pre><p>场景：</p>
-<p>主机A：</p>
-<p>1）安装了Apache服务（http服务）。</p>
-<p>2）主机A的网卡被绑定到了public区域。</p>
-<p>3) 主机A的public区域又禁止 http服务。</p>
-<p>此时导致：</p>
-<p>主机B，就不能访问主机A的网站。</p>
-<p>但是，主机A的home区域添加一个source规则，以允许主机B(192.168.168.1)访问。同时home区域又允许http服务</p>
-<pre><code># firewall-cmd   -add-source=192.168.168.1/24  
-</code></pre><p>就会导致：</p>
-<p>主机B，可以访问主机A的网站。（是“进入”了主机A的home区域）</p>
-<p>其他命令:</p>
-<pre><code># firewall-cmd    --remove-source=192.168.168.1/24    删除源
-# firewall-cmd    --add-source=192.168.168.0/24    指定一个网络内的所有主机 
-</code></pre><h1 id="ICMP规则"><a href="#ICMP规则" class="headerlink" title="ICMP规则"></a>ICMP规则</h1><p>ICMP是一种协议。ping命令发送的数据包，就是使用ICMP协议的。</p>
-<p>测试ping的效果</p>
-<p>主机A , ping 主机B(192.168.168.1)</p>
-<p>在主机A中：    # ping   192.168.168.1</p>
-<p>在主机B中抓包：# tcpdump  -i  eno1677728    not  port  22</p>
-<p>  捕获指定网卡的包，除了22端口的数据包以外。</p>
-<p>  wireshark</p>
-<p>就会发现有很多  ICMP  echo  request包 (ping的请求包)</p>
-<p>  ICMP  echo  reply包   (ping的响应包）</p>
-<p>主机B禁止ping</p>
-<pre><code># firewall-cmd   --add-icmp-block=echo-request  
-# firewall-cmd   --add-icmp-block=echo-reply
-</code></pre><p>主机B禁止icmp请求包或响应包。其他主机都ping不通主机A</p>
-<h1 id="伪装"><a href="#伪装" class="headerlink" title="伪装"></a>伪装</h1><p>问题：</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/2.10.png" alt="2.10"></p>
-<p>A -&gt; C</p>
-<p>[ source ip    destination ip  …. ]</p>
-<p>改为：</p>
-<p>[ public  network ip    destination ip  …. ]</p>
-<p>主机A能ping通主机B,主机A不能ping通主机Ｃ</p>
-<p>导致：A不能访问“外网”中的主机。C也不能访问“内网”的主机。</p>
-<p>解决方案</p>
-<p>方案1:在主机B中开启“转发”功能：</p>
-<pre><code># echo 1 &gt;  /proc/sys/net/ipv4/ip_forword
-</code></pre><p>如果把主机c的网关设置为路由器的外网端口，就可以使主机C也能ping通主机A</p>
-<p>该方案的弊端：该方案在内网中有效。因为私网的数据包，是不能转发到公网的。即公网中的路由器收到私网数据包时，直接丢弃。</p>
-<p>补充：</p>
-<p>IP: A类，B类，C类</p>
-<p>每类IP地址，都划分了一部分私有IP，</p>
-<p>A类IP的私有地址：10.0.0.0/8</p>
-<p>B类IP的私有地址：172.16.0.0/16</p>
-<p>C类IP的私有地址：192.168.0.0/24</p>
-<p>方案2：</p>
-<p>在主机B（路由器）中，开启“伪装功能”。</p>
-<pre><code># firewall-cmd   --add-masquerade
-</code></pre><p>效果：外网的主机C 收到的ping请求包中，源地址是内网路由器的公网IP, 而不是真正的内网主机IP。</p>
-<h1 id="端口转发"><a href="#端口转发" class="headerlink" title="端口转发"></a>端口转发</h1><h2 id="本地转发"><a href="#本地转发" class="headerlink" title="本地转发"></a>本地转发</h2><p>实例：</p>
-<p>主机A：安装http服务，使用80端口。192.168.168.2</p>
-<p>主机B：用22来访问主机A的网站。  192.168.168.2:22</p>
-<p>实现：</p>
-<p>在主机A中做“端口转发”</p>
-<pre><code># firewall-cmd  --add-forward-port=port=22:proto=tcp:toport=80:toaddr=
-</code></pre><p>把来自22端口的tcp数据包，转发给本地的80端口。</p>
-<h2 id="远程转发"><a href="#远程转发" class="headerlink" title="远程转发"></a>远程转发</h2><p>实例：</p>
-<p>有主机A(192.168.168.2), 主机B(192.168.168.1), 主机C(192.168.30.30)</p>
-<p>任意主机，使用ssh登录到B, 实际却登录主机C</p>
-<pre><code>root@A#  ssh  192.168.16 
-root@C#
-</code></pre><p>实现：</p>
-<pre><code>root@B# firewall-cmd  --add-forward-port=port=22:proto=tcp:toport=22:toaddr=192.168.30.30
-</code></pre><p>注意：</p>
-<p>使用远程端口转发时，需要开启防火墙的伪装功能，否则无效！</p>
-<h1 id="富规则"><a href="#富规则" class="headerlink" title="富规则"></a>富规则</h1><h2 id="服务富规则"><a href="#服务富规则" class="headerlink" title="服务富规则"></a>服务富规则</h2><p>问题：在某个区域中，添加一个服务或端口等规则时，就会导致：来自对应接口的“所有远程主机”都使用这个规则.</p>
-<p>解决方案：使用富规则。</p>
-<p>实例：主机B上安装了http服务，不允许主机C访问主机Ｂ的网站。</p>
-<p>实现1：</p>
-<pre><code>root@B#  firewall-cmd  --add-service=http
-root@B#  firewall-cmd  --add-rich-rule  &apos;rule 
-family=&quot;ipv4&quot; 
-source address=&quot;192.168.30.30&quot; 
-service name=&quot;http&quot; 
-reject&apos;
-</code></pre><p>注意：不能把source address=”192.168.30.30” 写成  source address=”192.168.30.30/24”,</p>
-<p>否则等同于source address=”192.168.0/24”</p>
-<p>实例2：主机B上安装了http服务，仅允许主机C访问主机Ｂ的网站。</p>
-<p>实现：</p>
-<pre><code>root@B#  firewall-cmd  --remove-service=http
-root@B#  firewall-cmd  --add-rich-rule &apos;rule
-family=ipv4
-service name=http
-source address=192.168.30.30
-accept&apos;
-</code></pre><h2 id="端口富规则"><a href="#端口富规则" class="headerlink" title="端口富规则"></a>端口富规则</h2><p>服务富规则的缺点：只能处理预定义服务！</p>
-<p>比如 http服务(就是tcp/80)</p>
-<p>当需要处理其他的非预定服务，比如 tcp/8000，就不能使用服务富规则！</p>
-<p>实例：主机B上安装了http服务，不允许主机C访问主机Ｂ的网站。</p>
-<p>实现1：</p>
-<pre><code>root@B#  firewall-cmd  --add-service=http
-root@B#  firewall-cmd  --add-rich-rule  &apos;rule 
-family=&quot;ipv4&quot; 
-source address=&quot;192.168.30.30&quot; 
-port  port=80  protocol=tcp   
-reject&apos;
-</code></pre><h2 id="端口转发富规则"><a href="#端口转发富规则" class="headerlink" title="端口转发富规则"></a>端口转发富规则</h2><p>实例：仅主机A，使用ssh登录到B, 实际却登录主机C</p>
-<p>实现：</p>
-<pre><code>root@B firewall-cmd  --add-rich-rule &apos;rule
-family=ipv4
-source address=192.168.168.2
-forward-port  port=22  protocol=tcp  to-port=22  to-addr=192.168.30.30
-accept&apos;
-</code></pre><h2 id="伪装富规则"><a href="#伪装富规则" class="headerlink" title="伪装富规则"></a>伪装富规则</h2><p>实例：本地局域网内仅主机A可以访问外网的主机C</p>
-<p>实现：</p>
-<pre><code>root@B firewall-cmd  --add-rich-rule &apos;rule
-family=ipv4
-source address=192.168.168.2
-masquerade&apos;
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;防火墙原理&quot;&gt;&lt;a href=&quot;#防火墙原理&quot; class=&quot;headerlink&quot; title=&quot;防火墙原理&quot;&gt;&lt;/a&gt;防火墙原理&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;http://oxysobnip.bkt.clouddn.com/2.8.png&quot; alt=&quot;2
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   

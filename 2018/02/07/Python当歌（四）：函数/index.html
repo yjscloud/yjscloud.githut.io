@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="KVM学习笔记," />
+  <meta name="keywords" content="Python学习笔记," />
 
 
 
@@ -92,29 +92,35 @@
 
 
 
-<meta name="description" content="什么是存储池KVM平台以存储池的形式对存储进行统一管理，所谓存储池可以理解为本地目录、通过远端磁盘阵列（iSCSI、NFS）分配过来磁盘或目录，当然也支持各类分布式文件系统。通过virsh中pool命令能够查看、创建、激活、注册、删除存储池。 注1:KVM存储池主要是体现一种管理方式，可以通过挂载存储目录，lvm逻辑卷的方式创建存储池，虚拟机存储卷创建完成后，剩下的操作与无存储卷的方式无任何区别了">
-<meta name="keywords" content="KVM学习笔记">
+<meta name="description" content="函数基础函数是什么? 想象生活中的例子，修理工需要实现准备好工具箱里面放好锤子，扳手，钳子等工具，然后遇到锤钉子的场景，拿来锤子用就可以，而无需临时再制造一把锤子。 修理工===&amp;gt;程序员 具备某一功能的工具===&amp;gt;函数 要想使用工具，需要事先准备好，然后拿来就用且可以重复使用要想用函数，需要先定义，再使用。 函数分类（1）内置函数 为了方便我们的开发，针对一些简单的功能，python解">
+<meta name="keywords" content="Python学习笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="kvm学习笔记（八）-kvm虚拟机存储池配置">
-<meta property="og:url" content="http://yjscloud.com/2017/10/20/kvm学习笔记（八）-kvm虚拟机存储池配置/index.html">
+<meta property="og:title" content="Python当歌（四）：函数">
+<meta property="og:url" content="http://yjscloud.com/2018/02/07/Python当歌（四）：函数/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="什么是存储池KVM平台以存储池的形式对存储进行统一管理，所谓存储池可以理解为本地目录、通过远端磁盘阵列（iSCSI、NFS）分配过来磁盘或目录，当然也支持各类分布式文件系统。通过virsh中pool命令能够查看、创建、激活、注册、删除存储池。 注1:KVM存储池主要是体现一种管理方式，可以通过挂载存储目录，lvm逻辑卷的方式创建存储池，虚拟机存储卷创建完成后，剩下的操作与无存储卷的方式无任何区别了">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.102.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.103.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.104.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.105.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.106.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.107.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.108.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.109.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.110.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.111.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.112.png">
-<meta property="og:updated_time" content="2017-12-02T09:34:59.000Z">
+<meta property="og:description" content="函数基础函数是什么? 想象生活中的例子，修理工需要实现准备好工具箱里面放好锤子，扳手，钳子等工具，然后遇到锤钉子的场景，拿来锤子用就可以，而无需临时再制造一把锤子。 修理工===&amp;gt;程序员 具备某一功能的工具===&amp;gt;函数 要想使用工具，需要事先准备好，然后拿来就用且可以重复使用要想用函数，需要先定义，再使用。 函数分类（1）内置函数 为了方便我们的开发，针对一些简单的功能，python解">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-1.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-2.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-3.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-4.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-5.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-6.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-7.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-8.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-9.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-10.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-11.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-12.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-13.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-14.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-15.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-16.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-17.png">
+<meta property="og:updated_time" content="2018-02-07T02:37:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="kvm学习笔记（八）-kvm虚拟机存储池配置">
-<meta name="twitter:description" content="什么是存储池KVM平台以存储池的形式对存储进行统一管理，所谓存储池可以理解为本地目录、通过远端磁盘阵列（iSCSI、NFS）分配过来磁盘或目录，当然也支持各类分布式文件系统。通过virsh中pool命令能够查看、创建、激活、注册、删除存储池。 注1:KVM存储池主要是体现一种管理方式，可以通过挂载存储目录，lvm逻辑卷的方式创建存储池，虚拟机存储卷创建完成后，剩下的操作与无存储卷的方式无任何区别了">
-<meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/1.102.png">
+<meta name="twitter:title" content="Python当歌（四）：函数">
+<meta name="twitter:description" content="函数基础函数是什么? 想象生活中的例子，修理工需要实现准备好工具箱里面放好锤子，扳手，钳子等工具，然后遇到锤钉子的场景，拿来锤子用就可以，而无需临时再制造一把锤子。 修理工===&amp;gt;程序员 具备某一功能的工具===&amp;gt;函数 要想使用工具，需要事先准备好，然后拿来就用且可以重复使用要想用函数，需要先定义，再使用。 函数分类（1）内置函数 为了方便我们的开发，针对一些简单的功能，python解">
+<meta name="twitter:image" content="http://p3q1rwnbl.bkt.clouddn.com/3-1.png">
 
 
 
@@ -142,13 +148,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2017/10/20/kvm学习笔记（八）-kvm虚拟机存储池配置/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/02/07/Python当歌（四）：函数/"/>
 
 
 
 
 
-  <title>kvm学习笔记（八）-kvm虚拟机存储池配置 | 戏子登台</title>
+  <title>Python当歌（四）：函数 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -322,7 +328,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/10/20/kvm学习笔记（八）-kvm虚拟机存储池配置/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/02/07/Python当歌（四）：函数/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -343,7 +349,7 @@
             
             
               
-                kvm学习笔记（八）-kvm虚拟机存储池配置
+                Python当歌（四）：函数
               
             
           </h1>
@@ -358,8 +364,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-20T12:56:21+08:00">
-                2017-10-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T09:49:07+08:00">
+                2018-02-07
               </time>
             
 
@@ -402,7 +408,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/10/20/kvm学习笔记（八）-kvm虚拟机存储池配置/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/02/07/Python当歌（四）：函数/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -425,7 +431,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  518
+                  2,636
                 </span>
               
 
@@ -441,7 +447,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  2
+                  10
                 </span>
               
             </div>
@@ -459,37 +465,230 @@
       
 
       
-        <h1 id="什么是存储池"><a href="#什么是存储池" class="headerlink" title="什么是存储池"></a>什么是存储池</h1><p>KVM平台以存储池的形式对存储进行统一管理，所谓存储池可以理解为本地目录、通过远端磁盘阵列（iSCSI、NFS）分配过来磁盘或目录，当然也支持各类分布式文件系统。通过virsh中pool命令能够查看、创建、激活、注册、删除存储池。</p>
-<p>注1:KVM存储池主要是体现一种管理方式，可以通过挂载存储目录，lvm逻辑卷的方式创建存储池，虚拟机存储卷创建完成后，剩下的操作与无存储卷的方式无任何区别了。</p>
-<p>注2:KVM存储池也要用于虚拟机迁移任务。</p>
-<h1 id="存储池配置步骤"><a href="#存储池配置步骤" class="headerlink" title="存储池配置步骤"></a>存储池配置步骤</h1><h2 id="创建基于文件夹的存储池（目录）"><a href="#创建基于文件夹的存储池（目录）" class="headerlink" title="创建基于文件夹的存储池（目录）"></a>创建基于文件夹的存储池（目录）</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.102.png" alt="1.102"></p>
-<h2 id="定义存储池与其目录"><a href="#定义存储池与其目录" class="headerlink" title="定义存储池与其目录"></a>定义存储池与其目录</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.103.png" alt="1.103"></p>
-<h2 id="创建已定义的存储池"><a href="#创建已定义的存储池" class="headerlink" title="创建已定义的存储池"></a>创建已定义的存储池</h2><p>(1)创建已定义的存储池</p>
-<pre><code># virsh pool-build vmdisk
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.104.png" alt="1.104"></p>
-<p>(2)查看已定义的存储池，存储池不激活无法使用。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.105.png" alt="1.105"></p>
-<h2 id="激活并自动启动已定义的存储池"><a href="#激活并自动启动已定义的存储池" class="headerlink" title="激活并自动启动已定义的存储池"></a>激活并自动启动已定义的存储池</h2><p><img src="http://oxysobnip.bkt.clouddn.com/1.106.png" alt="1.106"></p>
-<p>这里vmdisk存储池就已经创建好了，可以直接在这个存储池中创建虚拟磁盘文件了。</p>
-<h2 id="在存储池中创建虚拟机存储卷"><a href="#在存储池中创建虚拟机存储卷" class="headerlink" title="在存储池中创建虚拟机存储卷"></a>在存储池中创建虚拟机存储卷</h2><p>(1)在存储池中创建虚拟机存储卷</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.107.png" alt="1.107"></p>
-<p>(2)根据创建的虚拟机存储卷安装虚拟机</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.108.png" alt="1.108"></p>
-<p>安装过程略！</p>
-<p>说明：KVM存储池主要是体现一种管理方式，可以通过挂载存储目录，lvm逻辑卷的方式创建存储池，虚拟机存储卷创建完成后，剩下的操作与无存储卷的方式无任何区别了。KVM存储池也要用于虚拟机迁移任务。</p>
-<h2 id="存储池相关管理命令"><a href="#存储池相关管理命令" class="headerlink" title="存储池相关管理命令"></a>存储池相关管理命令</h2><p>(1)在存储池中删除虚拟机存储卷</p>
-<pre><code># virsh vol-delete --pool vmdisk test-01.qcow2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.109.png" alt="1.109"></p>
-<p>(2)取消激活存储池</p>
-<pre><code># virsh pool-destroy vmdisk
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.110.png" alt="1.110"></p>
-<p>(3)删除存储池定义的目录/mnt/vmfs</p>
-<pre><code># virsh pool-delete vmdisk
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.111.png" alt="1.111"></p>
-<p>(4)取消定义存储池</p>
-<pre><code># virsh pool-undefine vmdisk
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.112.png" alt="1.112"></p>
-<p>到此kvm存储池配置与管理操作完毕。</p>
+        <h1 id="函数基础"><a href="#函数基础" class="headerlink" title="函数基础"></a>函数基础</h1><p>函数是什么?</p>
+<p>想象生活中的例子，修理工需要实现准备好工具箱里面放好锤子，扳手，钳子等工具，然后遇到锤钉子的场景，拿来锤子用就可以，而无需临时再制造一把锤子。</p>
+<p>修理工===&gt;程序员</p>
+<p>具备某一功能的工具===&gt;函数</p>
+<p>要想使用工具，需要事先准备好，然后拿来就用且可以重复使用要想用函数，需要先定义，再使用。</p>
+<h1 id="函数分类"><a href="#函数分类" class="headerlink" title="函数分类"></a>函数分类</h1><p>（1）内置函数</p>
+<p>为了方便我们的开发，针对一些简单的功能，python解释器已经为我们定义好了的函数即内置函数。对于内置函数，我们可以拿来就用而无需事先定义，如len(),sum(),max()</p>
+<p>（2）自定义函数</p>
+<p>很明显内置函数所能提供的功能是有限的，这就需要我们自己根据需求，事先定制好我们自己的函数来实现某种功能，以后，在遇到应用场景时，调用自定义的函数即可。</p>
+<p>（3）如何自定义函数？</p>
+<pre><code>语法：
+    def 函数名(参数1,参数2,参数3,...):
+        &apos;&apos;&apos;注释&apos;&apos;&apos;
+        函数体
+        return 返回的值
+</code></pre><p>ps:函数名要能反映其意义</p>
+<p>（4）函数使用的原则：先定义，再调用</p>
+<p>函数即“变量”，“变量”必须先定义后引用。未定义而直接引用函数，就相当于在引用一个不存在的变量名</p>
+<p>测试一：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-1.png" alt="3-1"></p>
+<p>测试二：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-2.png" alt="3-2"></p>
+<p>结论:函数的使用,必须遵循原则:先定义,后调用；我们在使用函数时,一定要明确地区分定义阶段和调用阶段。</p>
+<pre><code>#定义阶段
+def foo():
+    print(&apos;from foo&apos;)
+    bar()
+def bar():
+    print(&apos;from bar&apos;)
+#调用阶段
+foo()
+</code></pre><p>ps:函数在定义阶段只检测语法，不执行代码。也就说，语法错误在函数定义阶段就会检测出来，而代码的逻辑错误只有在执行时才会知道</p>
+<p>(5)定义函数的三种形式</p>
+<p>1、无参：应用场景仅仅只是执行一些操作，比如与用户交互，打印</p>
+<p>2、有参：需要根据外部传进来的参数，才能执行相应的逻辑，比如统计长度，求最大值最小值</p>
+<p>3、空函数：设计代码结构</p>
+<p>例子：<br>    <img src="http://p3q1rwnbl.bkt.clouddn.com/3-3.png" alt="3-3"></p>
+<p>结论：定义时无参，意味着调用时也无需传入参数；定义时有参，意味着调用时则必须传入参数</p>
+<p>（6)调用函数</p>
+<p>函数的调用：函数名加括号</p>
+<ul>
+<li><p>先找到名字</p>
+</li>
+<li><p>根据名字调用代码</p>
+</li>
+</ul>
+<p>函数调用的三种形式：</p>
+<ul>
+<li><p>语句形式：foo()</p>
+</li>
+<li><p>表达式形式：3*len(‘hello’)</p>
+</li>
+<li><p>当中另外一个函数的参数：range(len(‘hello’))</p>
+</li>
+</ul>
+<p>函数返回值：</p>
+<ul>
+<li><p>无return-&gt;None</p>
+</li>
+<li><p>return 1个值-&gt;返回1个值</p>
+</li>
+<li><p>return 逗号分隔多个值-&gt;元组</p>
+</li>
+</ul>
+<p>什么时候该有返回值？</p>
+<p>调用函数，经过一系列的操作，最后要拿到一个明确的结果，则必须要有返回值（通常有参函数需要有返回值，输入参数，经过计算，得到一个最终的结果）</p>
+<p>什么时候不需要有返回值？</p>
+<p>调用函数，仅仅只是执行一系列的操作，最后不需要得到什么结果，则无需有返回值（通常无参函数不需要有返回值）</p>
+<p>（7）函数的参数<br>形参即变量名，实参即变量值，函数调用时，将值绑定到变量名上，函数调用结束，解除绑定。</p>
+<p>1、位置参数：按照从左到右的顺序定义的参数</p>
+<p>   位置形参：必选参数</p>
+<p>   位置实参：按照位置给形参传值</p>
+<p>2、关键字参数：按照key=value的形式定义的实参</p>
+<p>   无需按照位置为形参传值</p>
+<p>   注意的问题：</p>
+<ul>
+<li>关键字实参必须在位置实参右面</li>
+<li>对同一个形参不能重复传值</li>
+</ul>
+<p>3、默认参数：形参在定义时就已经为其赋值</p>
+<p>可以传值也可以不传值，经常需要变得参数定义成位置形参，变化较小的参数定义成默认参数（形参）</p>
+<p> 注意的问题：</p>
+<ul>
+<li>只在定义时赋值一次</li>
+<li>默认参数的定义应该在位置形参右面</li>
+<li>默认参数通常应该定义成不可变类型</li>
+</ul>
+<p>4、可变长参数：</p>
+<p>  可变长指的是实参值的个数不固定</p>
+<p>  而实参有按位置和按关键字两种形式定义，针对这两种形式的可变长，形参对应有两种解决方案来完整地存放它们，分别是<em>args（列表），*</em>kwargs（字典）</p>
+<p>测试：*args</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-4.png" alt="3-4"></p>
+<p>测试：**kwargs</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-5.png" alt="3-5"></p>
+<p>5、命名关键字参数：*后定义的参数，必须被传值（有默认值的除外），且必须按照关键字实参的形式传递可以保证，传入的参数中一定包含某些关键字。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-6.png" alt="3-6"></p>
+<h1 id="函数的变量、递归以及内置函数"><a href="#函数的变量、递归以及内置函数" class="headerlink" title="函数的变量、递归以及内置函数"></a>函数的变量、递归以及内置函数</h1><h2 id="局部变量和全局变量"><a href="#局部变量和全局变量" class="headerlink" title="局部变量和全局变量"></a>局部变量和全局变量</h2><p>在子程序中定义的变量称为局部变量，在程序的一开始定义的变量称为全局变量。</p>
+<p>全局变量作用域是整个程序，局部变量作用域是定义该变量的子程序。</p>
+<p>当全局变量与局部变量同名时：在定义局部变量的子程序内，局部变量起作用；在其它地方全局变量起作用。</p>
+<pre><code>name=&apos;xwq&apos;
+def change_name():
+    print(&apos;我的名字&apos;,name)    #全局变量起作用
+change_name()
+
+def change_name():
+    name=&apos;帅了一笔&apos;
+    print(&apos;我的名字&apos;,name)        #局部变量起作用
+    change_name()
+print(name)
+
+def change_name():
+    global name
+    name=&apos;帅了一笔&apos;
+    print(&apos;我的名字&apos;,name)        #因为global参数全局变量变为‘帅了一笔’而非xwq,
+change_name()
+</code></pre><p>ps：nonlocal参数</p>
+<pre><code>name = &quot;lf&quot;
+def weihou():
+    name = &quot;xwq&quot;
+    def weiweihou():
+        nonlocal name   # nonlocal，指定上一级变量，如果没有就继续往上直到找到为止
+        name = &quot;冷静&quot;    
+    weiweihou()
+    print(name)
+print(name)
+weihou()
+print(name)
+</code></pre><p>运行结果为：</p>
+<pre><code>lf
+冷静
+lf
+</code></pre><h2 id="嵌套函数和作用域"><a href="#嵌套函数和作用域" class="headerlink" title="嵌套函数和作用域"></a>嵌套函数和作用域</h2><pre><code>name = &quot;xwq&quot;
+
+def change_name():
+    name = &quot;xwq2&quot;
+
+    def change_name2():
+        name = &quot;xwq3&quot;
+        print(&quot;第3层打印&quot;,name)
+
+    change_name2() #调用内层函数
+    print(&quot;第2层打印&quot;,name)
+
+change_name()
+print(&quot;最外层打印&quot;,name)
+</code></pre><p>此时，在最外层调用change_name2()会出现什么效果？没错，出错了， 为什么呢？<br>作用域在定义函数时就已经固定住了，不会随着调用位置的改变而改变。</p>
+<p>例一：</p>
+<pre><code>name=&apos;alex&apos;
+
+def foo():
+    name=&apos;lhf&apos;
+    def bar():
+        print(name)
+    return bar
+
+func=foo()
+func()
+</code></pre><p>例二：</p>
+<pre><code>name=&apos;alex&apos;
+
+def foo():
+    name=&apos;lhf&apos;
+    def bar():
+        name=&apos;wupeiqi&apos;
+        def tt():
+            print(name)
+        return tt
+    return bar
+
+func=foo()
+func()()
+</code></pre><h2 id="递归调用"><a href="#递归调用" class="headerlink" title="递归调用"></a>递归调用</h2><p>在函数内部，可以调用其他函数。如果在调用一个函数的过程中直接或间接调用自身本身</p>
+<pre><code>def calc(n):
+    print(n)
+    if int(n/2) ==0:
+        return n
+    return calc(int(n/2))
+
+calc(10)
+</code></pre><p>输出：</p>
+<pre><code>10
+5
+2
+1
+</code></pre><p>递归特性:</p>
+<ul>
+<li>必须有一个明确的结束条件</li>
+<li>每次进入更深一层递归时，问题规模相比上次递归都应有所减少</li>
+<li>递归效率不高，递归层次过多会导致栈溢出（在计算机中，函数调用是通过栈（stack）这种数据结构实现的，每当进入一个函数调用，栈就会加一层栈帧，每当函数返回，栈就会减一层栈帧。由于栈的大小不是无限的，所以，递归调用的次数过多，会导致栈溢出）</li>
+</ul>
+<h2 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h2><p>（1）zip()函数</p>
+<p>zip()函数接受0个或多个序列作为参数，返回一个tuple列表。 </p>
+<p>zip()函数具体的工作机制是，将每个列表中同一位置的元素取出来组成一个元组，存放到一个列表中，然后返回这个列表。举例说明：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-7.png" alt="3-7"></p>
+<p>对于长度不同的seq，zip()函数处理;</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-8.png" alt="3-8"><br>从上面的例子可以看出，当seq的长度不一致时，zip()会以最短的那个seq为主，进行处理，然后将多余的舍弃掉.</p>
+<p>zip()对只有一个seq的处理：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-9.png" alt="3-9"></p>
+<p>(2)map()函数</p>
+<p>map()函数接收两个参数，一个是函数，一个是Iterable，map将传入的函数依次作用到序列的每个元素，并把结果作为新的Iterator返回。举例说明：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-10.png" alt="3-10"></p>
+<p>map()传入的第一个参数是f，即函数对象本身。由于结果r是一个Iterator，Iterator是惰性序列，因此通过list()函数让它把整个序列都计算出来并返回一个list。</p>
+<p>map（）可以计算任意复杂的函数，比如，把这个list所有数字转为字符串：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-11.png" alt="3-11"></p>
+<p>(3)reduce()函数</p>
+<p>reduce把一个函数作用在一个序列[x1, x2, x3, …]上，这个函数必须接收两个参数，reduce把结果继续和序列的下一个元素做累积计算。举例说明：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-12.png" alt="3-12"></p>
+<p>(4)filter()函数</p>
+<p>和map()类似，filter()也接收一个函数和一个序列。和map()不同的是，filter()把传入的函数依次作用于每个元素，然后根据返回值是True还是False决定保留还是丢弃该元素。</p>
+<p>例如，在一个list中，删掉偶数，只保留奇数，可以这么写：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-13.png" alt="3-13"></p>
+<p>把一个序列中的空字符串删掉，可以这么写：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-14.png" alt="3-14"></p>
+<p>可见用filter()这个高阶函数，关键在于正确实现一个“筛选”函数。</p>
+<p>注意到filter()函数返回的是一个Iterator，也就是一个惰性序列，所以要强迫filter()完成计算结果，需要用list()函数获得所有结果并返回list。</p>
+<p>(5)sorted() 函数对所有可迭代的对象进行排序操作。</p>
+<p>sort 与 sorted 区别：sort 是应用在 list 上的方法，sorted 可以对所有可迭代的对象进行排序操作。list 的 sort 方法返回的是对已经存在的列表进行操作，而内建函数 sorted 方法返回的是一个新的 list，而不是在原来的基础上进行的操作。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-15.png" alt="3-15"></p>
+<p>此外，sorted()函数也是一个高阶函数，它还可以接收一个key函数来实现自定义的排序，例如按绝对值大小排序：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-16.png" alt="3-16"></p>
+<p>(6)max()/min()函数</p>
+<p>max(iterable, key, default) 求迭代器的最大值，其中iterable 为迭代器，max会for i in … 遍历一遍这个迭代器，然后将迭代器的每一个返回值当做参数传给key=func 中的func(一般用lambda表达式定义) ，然后将func的执行结果传给key，然后以key为标准进行大小的判断。</p>
+<p>以下根据不同的判断条件返回最大值也不同</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-17.png" alt="3-17"></p>
 
       
     </div>
@@ -541,7 +740,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/KVM学习笔记/" rel="tag"><i class="fa fa-tag"></i> KVM学习笔记</a>
+            <a href="/tags/Python学习笔记/" rel="tag"><i class="fa fa-tag"></i> Python学习笔记</a>
           
         </div>
       
@@ -554,18 +753,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/21/kvm学习笔记（九）-cpu添加虚拟化功能/" rel="next" title="kvm学习笔记（九）-cpu添加虚拟化功能">
-                <i class="fa fa-chevron-left"></i> kvm学习笔记（九）-cpu添加虚拟化功能
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/20/kvm学习笔记（七）-kvm虚拟机动态迁移/" rel="prev" title="kvm学习笔记（七）-kvm虚拟机动态迁移">
-                kvm学习笔记（七）-kvm虚拟机动态迁移 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/07/Python当歌（三）：字符串格式化/" rel="prev" title="Python当歌（三）：字符串格式化">
+                Python当歌（三）：字符串格式化 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -787,7 +982,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是存储池"><span class="nav-number">1.</span> <span class="nav-text">什么是存储池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储池配置步骤"><span class="nav-number">2.</span> <span class="nav-text">存储池配置步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建基于文件夹的存储池（目录）"><span class="nav-number">2.1.</span> <span class="nav-text">创建基于文件夹的存储池（目录）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定义存储池与其目录"><span class="nav-number">2.2.</span> <span class="nav-text">定义存储池与其目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建已定义的存储池"><span class="nav-number">2.3.</span> <span class="nav-text">创建已定义的存储池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#激活并自动启动已定义的存储池"><span class="nav-number">2.4.</span> <span class="nav-text">激活并自动启动已定义的存储池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在存储池中创建虚拟机存储卷"><span class="nav-number">2.5.</span> <span class="nav-text">在存储池中创建虚拟机存储卷</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储池相关管理命令"><span class="nav-number">2.6.</span> <span class="nav-text">存储池相关管理命令</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#函数基础"><span class="nav-number">1.</span> <span class="nav-text">函数基础</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数分类"><span class="nav-number">2.</span> <span class="nav-text">函数分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数的变量、递归以及内置函数"><span class="nav-number">3.</span> <span class="nav-text">函数的变量、递归以及内置函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#局部变量和全局变量"><span class="nav-number">3.1.</span> <span class="nav-text">局部变量和全局变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#嵌套函数和作用域"><span class="nav-number">3.2.</span> <span class="nav-text">嵌套函数和作用域</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#递归调用"><span class="nav-number">3.3.</span> <span class="nav-text">递归调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内置函数"><span class="nav-number">3.4.</span> <span class="nav-text">内置函数</span></a></li></ol></li></ol></div>
             
 
           </div>
