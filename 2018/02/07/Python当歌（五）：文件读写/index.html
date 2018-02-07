@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Linux学习笔记," />
+  <meta name="keywords" content="Python学习笔记," />
 
 
 
@@ -92,17 +92,17 @@
 
 
 
-<meta name="description" content="bash中的变量类型： 根据变量的生效范围等标准： 本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效 环境变量：生效范围当前shell进程和子进程 局部变量：生效范围为当前shell进程中某代码片段（通常指函数） 位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数 特殊变量：$?,$0,$">
-<meta name="keywords" content="Linux学习笔记">
+<meta name="description" content="介绍计算机系统分为：计算机硬件，操作系统，应用程序三部分。 我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必须要保存于硬盘中，这就涉及到应用程序要操作硬件，众所周知，应用程序是无法直接操作硬件的，这就用到了操作系统。操作系统把复杂的硬件操作封装成简单的接口给用户/应用程序使用，其中文件就是操作系统提供给应用程序来操作硬盘虚拟概念，用户或应用程序通过操作文件，可以将自己的数据永">
+<meta name="keywords" content="Python学习笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux学习笔记（四）-bash基础特性">
-<meta property="og:url" content="http://yjscloud.com/2017/05/04/Linux学习笔记（四）-bash基础特性/index.html">
+<meta property="og:title" content="Python当歌（五）：文件读写">
+<meta property="og:url" content="http://yjscloud.com/2018/02/07/Python当歌（五）：文件读写/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="bash中的变量类型： 根据变量的生效范围等标准： 本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效 环境变量：生效范围当前shell进程和子进程 局部变量：生效范围为当前shell进程中某代码片段（通常指函数） 位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数 特殊变量：$?,$0,$">
-<meta property="og:updated_time" content="2017-12-02T09:44:07.000Z">
+<meta property="og:description" content="介绍计算机系统分为：计算机硬件，操作系统，应用程序三部分。 我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必须要保存于硬盘中，这就涉及到应用程序要操作硬件，众所周知，应用程序是无法直接操作硬件的，这就用到了操作系统。操作系统把复杂的硬件操作封装成简单的接口给用户/应用程序使用，其中文件就是操作系统提供给应用程序来操作硬盘虚拟概念，用户或应用程序通过操作文件，可以将自己的数据永">
+<meta property="og:updated_time" content="2018-02-07T02:57:35.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux学习笔记（四）-bash基础特性">
-<meta name="twitter:description" content="bash中的变量类型： 根据变量的生效范围等标准： 本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效 环境变量：生效范围当前shell进程和子进程 局部变量：生效范围为当前shell进程中某代码片段（通常指函数） 位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数 特殊变量：$?,$0,$">
+<meta name="twitter:title" content="Python当歌（五）：文件读写">
+<meta name="twitter:description" content="介绍计算机系统分为：计算机硬件，操作系统，应用程序三部分。 我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必须要保存于硬盘中，这就涉及到应用程序要操作硬件，众所周知，应用程序是无法直接操作硬件的，这就用到了操作系统。操作系统把复杂的硬件操作封装成简单的接口给用户/应用程序使用，其中文件就是操作系统提供给应用程序来操作硬盘虚拟概念，用户或应用程序通过操作文件，可以将自己的数据永">
 
 
 
@@ -130,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2017/05/04/Linux学习笔记（四）-bash基础特性/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/02/07/Python当歌（五）：文件读写/"/>
 
 
 
 
 
-  <title>Linux学习笔记（四）-bash基础特性 | 戏子登台</title>
+  <title>Python当歌（五）：文件读写 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -310,7 +310,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/05/04/Linux学习笔记（四）-bash基础特性/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/02/07/Python当歌（五）：文件读写/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -331,7 +331,7 @@
             
             
               
-                Linux学习笔记（四）-bash基础特性
+                Python当歌（五）：文件读写
               
             
           </h1>
@@ -346,8 +346,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-04T11:16:28+08:00">
-                2017-05-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T10:40:14+08:00">
+                2018-02-07
               </time>
             
 
@@ -390,7 +390,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/05/04/Linux学习笔记（四）-bash基础特性/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/02/07/Python当歌（五）：文件读写/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -413,7 +413,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,239
+                  1,491
                 </span>
               
 
@@ -429,7 +429,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  5
+                  6
                 </span>
               
             </div>
@@ -447,151 +447,108 @@
       
 
       
-        <h2 id="bash中的变量类型："><a href="#bash中的变量类型：" class="headerlink" title="bash中的变量类型："></a>bash中的变量类型：</h2><p> 根据变量的生效范围等标准：</p>
-<pre><code>本地变量：生效范围为当前shell进程；对当前shell之外的其他shell进场，包括当前shell的子shell进场无效
-环境变量：生效范围当前shell进程和子进程
-局部变量：生效范围为当前shell进程中某代码片段（通常指函数）
-位置变量：$1,$2,...来表示，用于让脚本在脚本代码中调用通过命令行传递给它的参数
-特殊变量：$?,$0,$*,$#,$@
-</code></pre><h3 id="本地变量"><a href="#本地变量" class="headerlink" title="本地变量"></a>本地变量</h3><p>  变量赋值：name=’value’</p>
-<pre><code>可以使用引用：
-    value:
-         (1）可以是直接字符;name=&quot;username&quot;
-        （2）变量引用：name=&quot;$username&quot;
-         (3)命令引用：name=`COMMAND` ,name=$(COMMAND)
-        变量引用：${name},$name
-            &quot;&quot;:弱引用，其中的变量引用会被替换为变量值；
-            &apos;&apos;:强引用，其中的变量引用不会被替换为变量值，而保持原字符串；
-        显示已定义的所有变量
-            set
-        销毁变量
-            unset name
-</code></pre><h3 id="环境变量："><a href="#环境变量：" class="headerlink" title="环境变量："></a>环境变量：</h3><pre><code> 变量声明、赋值：
-     export name=VALUE
-     declare -x name=VALUE
-     变量引用：$name,${name}
-     显示所有环境变量：
-         export
-         env
-         printenv
-     销毁：
-         unset name
+        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>计算机系统分为：计算机硬件，操作系统，应用程序三部分。</p>
+<p>我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必须要保存于硬盘中，这就涉及到应用程序要操作硬件，众所周知，应用程序是无法直接操作硬件的，这就用到了操作系统。操作系统把复杂的硬件操作封装成简单的接口给用户/应用程序使用，其中文件就是操作系统提供给应用程序来操作硬盘虚拟概念，用户或应用程序通过操作文件，可以将自己的数据永久保存下来。<br>有了文件的概念，我们无需再去考虑操作硬盘的细节，只需要关注操作文件的流程：</p>
+<ol>
+<li>打开文件，得到文件句柄并赋值给一个变量</li>
+<li>通过句柄对文件进行操作</li>
+<li>关闭文件</li>
+</ol>
+<h1 id="在python中"><a href="#在python中" class="headerlink" title="在python中"></a>在python中</h1><p>(1)打开文件，得到文件句柄并赋值给一个变量</p>
+<p>f=open(‘a.txt’,’r’,encoding=’utf-8’) #默认打开模式就为r</p>
+<p>(2) 通过句柄对文件进行操作</p>
+<p>data=f.read()</p>
+<p>(3) 关闭文件</p>
+<p>f.close()</p>
+<p>分析一下f=open(‘a.txt’,’r’)过程：</p>
+<p>1、由应用程序向操作系统发起系统调用open(…)</p>
+<p>2、操作系统打开该文件，并返回一个文件句柄给应用程序</p>
+<p>3、应用程序将文件句柄赋值给变量f</p>
+<h1 id="强调"><a href="#强调" class="headerlink" title="强调"></a>强调</h1><p>1、强调第一点：</p>
+<p>打开一个文件包含两部分资源：操作系统级打开的文件+应用程序的变量。在操作完毕一个文件时，必须把与该文件的这两部分资源一个不落地回收，回收方法为：</p>
+<p>（1）f.close() #回收操作系统级打开的文件</p>
+<p>（2）del f #回收应用程序级的变量</p>
+<p>其中del f一定要发生在f.close()之后，否则就会导致操作系统打开的文件还没有关闭，白白占用资源，而python自动的垃圾回收机制决定了我们无需考虑del f，这就要求我们，在操作完毕文件后，一定要记住f.close()。</p>
+<p>但是每次都这么写实在太繁琐，所以，Python引入了with语句来自动帮我们调用close()方法：</p>
+<pre><code>with open(&apos;a.txt&apos;,&apos;w&apos;) as f:
+    pass
 
-     bash有许多内建的环境变量：PATH,SHELL,UID,HISISZE,HOME,PWD,OLD
+with open(&apos;a.txt&apos;,&apos;r&apos;) as read_f,open(&apos;b.txt&apos;,&apos;w&apos;) as write_f:
+    data=read_f.read()
+write_f.write(data)
+</code></pre><p>2、强调第二点：</p>
+<p>f=open(…)是由操作系统打开文件，那么如果我们没有为open指定编码，那么打开文件的默认编码很明显是操作系统说了算了，操作系统会用自己的默认编码去打开文件，在windows下是gbk，在linux下是utf-8。若要保证不乱码，文件以什么方式存的，就要以什么方式打开。<br>f=open(‘a.txt’,’r’,encoding=’utf-8’)</p>
+<p>3、强调第三点</p>
+<p>由于文件读写时都有可能产生IOError，一旦出错，后面的f.close()就不会调用。所以，为了保证无论是否出错都能正确地关闭文件，我们可以使用try … finally来实现：</p>
+<pre><code>try:
+    f = open(&apos;/path/to/file&apos;, &apos;r&apos;)
+    print(f.read())
+finally:
+    if f:
+        f.close()
+</code></pre><h1 id="打开文件的模式"><a href="#打开文件的模式" class="headerlink" title="打开文件的模式"></a>打开文件的模式</h1><p>（1）打开文件的模式有(默认为文本模式)：</p>
+<ul>
+<li>r ，只读模式【默认模式，文件必须存在，不存在则抛出异常】</li>
+<li>w，只写模式【不可读；不存在则创建；存在则清空内容】</li>
+<li>a， 之追加写模式【不可读；不存在则创建；存在则只追加内容】</li>
+</ul>
+<p>（2）对于非文本文件，我们只能使用b模式，”b”表示以字节的方式操作（而所有文件也都是以字节的形式存储的，使用这种模式无需考虑文本文件的字符编码、图片文件的jgp格式、视频文件的avi格式）</p>
+<ul>
+<li>rb </li>
+<li>wb</li>
+<li>ab</li>
+</ul>
+<p>注：以b方式打开时，读取到的内容是字节类型，写入时也需要提供字节类型，不能指定编码</p>
+<p>（3）了解部分</p>
+<ul>
+<li>“+” 表示可以同时读写某个文件</li>
+<li>r+， 读写【可读，可写】</li>
+<li>w+，写读【可读，可写】</li>
+<li>a+， 写读【可读，可写】</li>
+<li>x， 只写模式【不可读；不存在则创建，存在则报错】</li>
+<li>x+ ，写读【可读，可写】</li>
+</ul>
+<h1 id="操作文件的方法"><a href="#操作文件的方法" class="headerlink" title="操作文件的方法"></a>操作文件的方法</h1><p>（1）掌握</p>
+<ul>
+<li>f.read() #读取所有内容,光标移动到文件末尾</li>
+<li>f.readline() #读取一行内容,光标移动到第二行首部</li>
+<li>f.readlines() #读取每一行内容,存放于列表中</li>
+<li>f.write(‘1111\n222\n’) #针对文本模式的写,需要自己写换行符</li>
+<li>f.write(‘1111\n222\n’.encode(‘utf-8’)) #针对b模式的写,需要自己写换行符</li>
+<li>f.writelines([‘333\n’,’444\n’]) #文件模式</li>
+<li>f.writelines([bytes(‘333\n’,encoding=’utf-8’),’444\n’.encode(‘utf-8’)]) #b模式</li>
+</ul>
+<p>（2）了解</p>
+<ul>
+<li>f.readable() #文件是否可读</li>
+<li>f.writable() #文件是否可读</li>
+<li>f.closed #文件是否关闭</li>
+<li>f.encoding #如果文件打开模式为b,则没有该属性</li>
+<li>f.flush() #立刻将文件内容从内存刷到硬盘</li>
+<li>f.name</li>
+</ul>
+<h1 id="文件内光标移动"><a href="#文件内光标移动" class="headerlink" title="文件内光标移动"></a>文件内光标移动</h1><p>（1）read(3)：</p>
+<ul>
+<li>文件打开方式为文本模式时，代表读取3个字符</li>
+<li>文件打开方式为b模式时，代表读取3个字节</li>
+</ul>
+<p>（2）其余的文件内光标移动都是以字节为单位如seek，tell，truncate</p>
+<p>注意：</p>
+<ul>
+<li>seek有三种移动方式0，1，2，其中1和2必须在b模式下进行，但无论哪种模式，都是以bytes为单位移动的</li>
+<li><p>truncate是截断文件，所以文件的打开方式必须可写，但是不能用w或w+等方式打开，因为那样直接清空文件了，所以truncate要在r+或a或a+等模式下测试效果：</p>
+<pre><code>import time
+with open(&apos;test.txt&apos;,&apos;rb&apos;) as f:
+    f.seek(0,2)
+while True:
+    line=f.readline()
+    if line:
+        print(line.decode(&apos;utf-8&apos;))
+    else:
+        time.sleep(0.2)
+</code></pre></li>
+</ul>
 
-变量命名法则：
-     1、不能使程序中的保留字，例如if ，for；
-     2、只能使用数字、字母及下划线，且不能一以数字开头
-     3、见名知义：驼峰命名法（尽量不要用大写字母）
-
- 只读变量：
-     readonly name
-     declare -r name
-</code></pre><h3 id="位置变量："><a href="#位置变量：" class="headerlink" title="位置变量："></a>位置变量：</h3><pre><code>在脚本代码中调用通过命令行传递给脚本参数
-    $1,$2,...:对应调用第1、第2等参数
-    $0:命令本身
-    $*：传递给脚本的所有参数
-    $@:传递给脚本的所有参数
-  $#:传递给脚本的参数的个数
-
-实例：判段给出的文件的行数
-    #!/bin/bash
-    linecount=&quot;$(wc -1 $1| cut -d&apos;&apos; -f1)&quot;
-    echo &quot;$1 has $linecount line.&quot;
-</code></pre><h2 id="bash的配置文件："><a href="#bash的配置文件：" class="headerlink" title="bash的配置文件："></a>bash的配置文件：</h2><pre><code>按生效范围划分，存在两类：
-    全局配置：
-        /etc/profile
-            /etc/profile.d/*.sh
-        /etc/bashrc
-    个人配置：        
-        ~/.bash_profile
-        ~./bashrc
-
-按功能划分，存在两类：
-    profile类：为交互式登陆的shell提供配置
-        全局：/etc/profile,/ect/profile.d/*.sh
-        个人：~/.bash_profile
-        功用：
-            （1）用于定义环境变量
-            （2）运行命令或脚本
-    bashrc类：为非交互式登陆的shell提供配置
-      全局： /etc/bashrc
-      个人：~/.bashrc
-
-      功用：
-          （1）定义命令别名
-           (2）定义本地变量
-</code></pre><h2 id="shell登录："><a href="#shell登录：" class="headerlink" title="shell登录："></a>shell登录：</h2><h3 id="交互式登录："><a href="#交互式登录：" class="headerlink" title="交互式登录："></a>交互式登录：</h3><pre><code>直接通过终端输入账号密码登录；
-    使用“su - UserName&quot;或”su -l UserName&quot;切换的用户
-
-    /etc/profile --&gt; /etc/profile.d/*.sh --&gt; ~/.bash_profile --&gt;~/.bashrc --&gt; /etc/bashrc
-</code></pre><h3 id="非交互式登陆"><a href="#非交互式登陆" class="headerlink" title="非交互式登陆:"></a>非交互式登陆:</h3><pre><code> su UserName
-     图型界面下打开的终端
-     执行脚本
-
-     ~/.bashrc --&gt; /etc/basgrc --&gt; /etc/profile.d/*.sh
-
-编辑配置文件定义的新配置的生效方式：
-    （1）重新启动shell进程
-    （2）使用source或.命令进程
-</code></pre><h2 id="bash中的算术运算"><a href="#bash中的算术运算" class="headerlink" title="bash中的算术运算"></a>bash中的算术运算</h2><pre><code>+，-，*，/，%，**，
-
-实现算术运算：
-    （1）let var=算术表达式
-    （2）var=$[算术表达式]
-    （3）var=$((算术表达式))
-    （4）var=$(expr arg1 arg2 arg3 ...)
-        乘法符号有时候需要转义
-        bash有内建的随机数生成器：$RANDOM
-
-        增强型赋值：
-            +=，-=，*=，/=，%=
-
-            let varOPERvalue
-                例如：let count+=1
-
-        自增，自减：
-            let var+=1
-                let var++
-            let var-=1
-                let var--
-</code></pre><h3 id="练习-1）：写一个脚本"><a href="#练习-1）：写一个脚本" class="headerlink" title="练习(1）：写一个脚本"></a>练习(1）：写一个脚本</h3><p>  计算/etc/passwd文件中的第10个用户和第20用户的ID之和</p>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">	<span class="comment">#!/bin/bash</span></div><div class="line">userid1=<span class="variable">$(head -n 10 /etc/passwd | tail -n 1 | cut -d: -f3)</span></div><div class="line">userid2=<span class="variable">$(head -n 20 /etc/passwd | tail -n 1 | cut -d: -f3)</span></div><div class="line">useridsum=$[$userid1+userid2]</div><div class="line">echo <span class="string">"uid sum:$useridsum"</span></div></pre></td></tr></table></figure>
-<h3 id="练习-2-：写一个脚本"><a href="#练习-2-：写一个脚本" class="headerlink" title="练习(2)：写一个脚本"></a>练习(2)：写一个脚本</h3><p> 传递两个文件路径作为参数给脚本，计算着两个文件中所有空白行之和</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">spaceline1=$(grep <span class="string">"^[[:space:]]*$"</span> <span class="variable">$1</span> | wc <span class="_">-l</span>)</div><div class="line">spaceline2=$(grep <span class="string">"^[[:space:]]*$"</span> <span class="variable">$2</span> | wc <span class="_">-l</span>)</div><div class="line"><span class="built_in">echo</span> <span class="string">"the sum of space line:$[<span class="variable">$spaceline1</span>+<span class="variable">$spaceline2</span>]"</span></div></pre></td></tr></table></figure>
-<h2 id="bash测试"><a href="#bash测试" class="headerlink" title="bash测试"></a>bash测试</h2><p> 条件测试：<br>     判断某需求是否满足，需要由测试机制来实现</p>
-<pre><code>Note：专用的测试表达式需要由测试命令辅助完成测试过程
-
-测试命令：
-    test EXPRESSION
-    [ EXPRESSION ]
-    [[ EXPRESSION ]]
-    Note:EXPRESSION前后必须有空白字符：
-
-    bash的测试类型：
-        数值测试：
-            -gt:是否大于
-            -ge：是否大于等于
-            -eq:是否等于
-            -ne:是否不等于
-            -lt：是否小于
-            -le：是否小于等于
-    字符串测试：
-            ==/=：是否等于
-            &gt;:是否等于
-            &lt;:是否小于
-            ！=：是否等于
-            =~：左侧字符是否能够被右侧的PATTERN所匹配
-                Note:此表达式一般用于[[ ]]中
-            -z：”SIRING&quot;：测试字符串是否为空，空则为真，不空为假
-            -n:”SIRING&quot;：测试字符串是否不空，不空则为真，空则为假
-
-            Note：用于字符串比较式时的用到的操作数都应该使用引号；
-
-    文件测试
-</code></pre><h2 id="bash自定义退出码"><a href="#bash自定义退出码" class="headerlink" title="bash自定义退出码"></a>bash自定义退出码</h2><pre><code>exit [n]:自定义退出状态码
-    注意：脚本中一旦遇到exit命令，脚本会立即终止，终止退出状态取决于exit命令后面的数字，如果未给脚本指定退出状态码，整个脚本的退出状态码取决于脚本中执行的最后一条命令的状态码；
-</code></pre>
       
     </div>
 
@@ -642,7 +599,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux学习笔记/" rel="tag"><i class="fa fa-tag"></i> Linux学习笔记</a>
+            <a href="/tags/Python学习笔记/" rel="tag"><i class="fa fa-tag"></i> Python学习笔记</a>
           
         </div>
       
@@ -655,18 +612,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/05/Linux学习笔记（五）-vim入门教程/" rel="next" title="Linux学习笔记（五）-vim入门教程">
-                <i class="fa fa-chevron-left"></i> Linux学习笔记（五）-vim入门教程
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/03/Linux学习笔记（三）-正则表达式/" rel="prev" title="Linux学习笔记（三）-正则表达式">
-                Linux学习笔记（三）-正则表达式 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/07/Python当歌（四）：函数/" rel="prev" title="Python当歌（四）：函数">
+                Python当歌（四）：函数 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -888,7 +841,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#bash中的变量类型："><span class="nav-number">1.</span> <span class="nav-text">bash中的变量类型：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#本地变量"><span class="nav-number">1.1.</span> <span class="nav-text">本地变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环境变量："><span class="nav-number">1.2.</span> <span class="nav-text">环境变量：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#位置变量："><span class="nav-number">1.3.</span> <span class="nav-text">位置变量：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash的配置文件："><span class="nav-number">2.</span> <span class="nav-text">bash的配置文件：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell登录："><span class="nav-number">3.</span> <span class="nav-text">shell登录：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#交互式登录："><span class="nav-number">3.1.</span> <span class="nav-text">交互式登录：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非交互式登陆"><span class="nav-number">3.2.</span> <span class="nav-text">非交互式登陆:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash中的算术运算"><span class="nav-number">4.</span> <span class="nav-text">bash中的算术运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#练习-1）：写一个脚本"><span class="nav-number">4.1.</span> <span class="nav-text">练习(1）：写一个脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#练习-2-：写一个脚本"><span class="nav-number">4.2.</span> <span class="nav-text">练习(2)：写一个脚本</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash测试"><span class="nav-number">5.</span> <span class="nav-text">bash测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash自定义退出码"><span class="nav-number">6.</span> <span class="nav-text">bash自定义退出码</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#在python中"><span class="nav-number">2.</span> <span class="nav-text">在python中</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#强调"><span class="nav-number">3.</span> <span class="nav-text">强调</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#打开文件的模式"><span class="nav-number">4.</span> <span class="nav-text">打开文件的模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#操作文件的方法"><span class="nav-number">5.</span> <span class="nav-text">操作文件的方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件内光标移动"><span class="nav-number">6.</span> <span class="nav-text">文件内光标移动</span></a></li></ol></div>
             
 
           </div>
