@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-02-07T03:31:21.000Z</updated>
+  <updated>2018-02-07T08:21:59.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,196 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Python当歌（八）：装饰器</title>
+    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%85%AB%EF%BC%89%EF%BC%9A%E8%A3%85%E9%A5%B0%E5%99%A8/"/>
+    <id>http://yjscloud.com/2018/02/07/Python当歌（八）：装饰器/</id>
+    <published>2018-02-07T08:04:24.000Z</published>
+    <updated>2018-02-07T08:21:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们防风御寒，咋办？我们想到的一个办法就是把内裤改造一下，让它变得更厚更长，这样一来，它不仅有遮羞功能，还能提供保暖，不过有个问题，这个内裤被我们改造成了长裤后，虽然还有遮羞功能，但本质上它不再是一条真正的内裤了。于是聪明的人们发明长裤，在不影响内裤的前提下，直接把长裤套在了内裤外面，这样内裤还是内裤，有了长裤后宝宝再也不冷了。装饰器就像我们这里说的长裤，在不影响内裤作用的前提下，给我们的身子提供了保暖的功效。</p>
+<p>谈装饰器前，还要先要明白一件事，Python 中的函数和 Java、C++不太一样，Python 中的函数可以像普通变量一样当做参数传递给另外一个函数，例如：</p>
+<pre><code>def foo():
+    print(&quot;foo&quot;)
+
+def bar(func):
+    func()
+
+bar(foo)
+</code></pre><p>正式回到我们的主题。装饰器本质上是一个 Python 函数或类，它可以让其他函数或类在不需要做任何代码修改的前提下增加额外功能，装饰器的返回值也是一个函数/类对象。它经常用于有切面需求的场景，比如：时间计算、性能测试、事务处理、缓存、权限校验等场景，装饰器是解决这类问题的绝佳设计。有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码到装饰器中并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能。</p>
+<p>先来看一个简单例子：</p>
+<pre><code>import time
+
+def foo():
+    time.sleep(3)
+    print(&quot;运行时间是%s&quot; %(stop_time - start_time))
+</code></pre><p>现在有一个新的需求，希望可以记录下函数运行的时间，于是在代码中添加计算时间的代码：</p>
+<pre><code>import time
+
+def foo():
+    start_time = time.time()
+    time.sleep(3)
+    stop_time = time.time()
+    print(&quot;运行时间是%s&quot; %(stop_time - start_time))
+</code></pre><p>如果函数 bar()、bar2() 也有类似的需求，怎么做？再写一个 类似的代码在 bar 函数里？这样就造成大量雷同的代码，为了减少重复写代码，我们可以这样做，重新定义一个新的函数：专门计算函数运行时间 ，时间计算完成之后再执行真正的业务代码。</p>
+<pre><code>import time
+def timmer(func): #func=test
+        start_time=time.time()
+        func() #就是在运行test()
+        stop_time = time.time()
+        print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+def test():
+    time.sleep(3)
+print(&apos;test函数运行完毕&apos;)
+
+timmer(test)
+</code></pre><p>这样做逻辑上是没问题的，功能是实现了，但是我们调用的时候不再是调用真正的业务逻辑test函数，而是换成了timmer函数，这就破坏了原有的代码结构， 现在我们不得不每次都要把原来的那个test函数作为参数传递给test函数，那么有没有更好的方式的呢？当然有，答案就是装饰器。</p>
+<h1 id="简单装饰器"><a href="#简单装饰器" class="headerlink" title="简单装饰器"></a>简单装饰器</h1><pre><code>import time
+def timmer(func): #func=test
+    def wrapper():
+        start_time=time.time()
+        func() #就是在运行test()
+        stop_time = time.time()
+        print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
+
+def test():
+    time.sleep(3)
+print(&apos;test函数运行完毕&apos;)
+
+test = timmer(test)  #因为装饰器 timmer(test) 返回的时函数对象 wrapper，这条语句相当于test = wrapper
+test()    #执行test()就相当与执行wrapper()
+</code></pre><p>timmer就是一个装饰器，它一个普通的函数，它把执行真正业务逻辑的函数 func 包裹在其中，看起来像 test 被 timmer 装饰了一样，timmer返回的也是一个函数，这个函数的名字叫 wrapper。在这个例子中，函数进入和退出时 ，被称为一个横切面，这种编程方式被称为面向切面的编程。</p>
+<h1 id="语法糖"><a href="#语法糖" class="headerlink" title="@ 语法糖"></a>@ 语法糖</h1><p>如果你接触 Python 有一段时间了的话，想必你对 @ 符号一定不陌生了，没错 @ 符号就是装饰器的语法糖，它放在函数开始定义的地方，这样就可以省略最后一步再次赋值的操作。</p>
+<pre><code>import time
+def timmer(func): #func=test
+    def wrapper():
+        start_time=time.time()
+        func() #就是在运行test()
+        stop_time = time.time()
+        print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
+
+@timmer
+def test():
+    time.sleep(3)
+print(&apos;test函数运行完毕&apos;)
+
+test()
+</code></pre><p>如上所示，有了 @ ，我们就可以省去test = timmer(test)这一句了，直接调用 test() 即可得到想要的结果。你们看到了没有，test() 函数不需要做任何修改，只需在定义的地方加上装饰器，调用的时候还是和以前一样，如果我们有其他的类似函数，我们可以继续调用装饰器来修饰函数，而不用重复修改函数或者增加新的封装。这样，我们就提高了程序的可重复利用性，并增加了程序的可读性。</p>
+<p>装饰器在 Python 使用如此方便都要归因于 Python 的函数能像普通的对象一样能作为参数传递给其他函数，可以被赋值给其他变量，可以作为返回值，可以被定义在另外一个函数内。</p>
+<h1 id="args、-kwargs"><a href="#args、-kwargs" class="headerlink" title=" args、* kwargs"></a><em> args、*</em> kwargs</h1><p>如果我的业务逻辑函数 foo 需要参数怎么办？比如：</p>
+<pre><code>def test(name):
+    time.sleep(3)
+    print(“test函数运行完毕,名字是【%s】” %name)
+</code></pre><p>我们可以在定义 wrapper 函数的时候指定参数：</p>
+<pre><code>def wrapper(name):
+    start_time=time.time()
+   func(name)        
+     stop_time = time.time()
+   print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
+</code></pre><p>这样 test的参数就可以定义在 wrapper 函数中。如果 foo 函数接收两个参数呢？三个参数呢？更有甚者，就多个。当装饰器不知道 test个参数时，我们可以用 * args 来代替：</p>
+<pre><code>def wrapper(*args):
+    start_time=time.time()
+   func(*args)        
+    stop_time = time.time()
+   print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
+</code></pre><p>如此一来，甭管 test定义了多少个参数，我都可以完整地传递到 func 中去。这样就不影响 test的业务逻辑了。这时还有读者会问，如果 test函数还定义了一些关键字参数呢？比如：</p>
+<pre><code>def test(name,age,gender):
+    time.sleep(1)
+    print(&apos;test1函数运行完毕,名字是【%s】 年龄是【%s】 性别【%s】&apos; %(name,age,gender))
+    return &apos;这是test的返回值&apos;
+</code></pre><p>这时，你就可以把 wrapper 函数指定关键字函数：</p>
+<pre><code>def wrapper(*args,**kwargs):
+    start_time=time.time()
+    func(*args,**kwargs)
+    stop_time = time.time()
+    print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
+</code></pre><h1 id="带参数的装饰器"><a href="#带参数的装饰器" class="headerlink" title="带参数的装饰器"></a>带参数的装饰器</h1><p>装饰器还有更大的灵活性，例如带参数的装饰器，在上面的装饰器调用中，该装饰器接收唯一的参数就是执行业务的函数test 。装饰器的语法允许我们在调用时，提供其它参数，比如@timmer()。这样，就为装饰器的编写和使用提供了更大的灵活性。比如，我们可以在装饰器中指定如何计算时间，因为不同业务函数可能需要的计算时间方式是不一样的。</p>
+<pre><code>import time
+
+def cal_time(timing):
+    def timmer(func):
+        def wrapper(*args, **kwargs):
+                start_time = time.time()
+                func(*args, **kwargs)
+                stop_time = time.time()
+                if timing == &quot;True&quot;:
+                    print(&quot;运行时间是%s&quot; %(stop_time - start_time))
+                else:
+                    print(&quot;鬼知道他运行了多长时间&quot;)
+        return wrapper
+    return timmer
+
+@cal_time(timing=&quot;True&quot;)
+def test():
+    time.sleep(3)
+    print(&quot;test函数运行完毕&quot;)
+
+test()
+</code></pre><p>上面的cal_time是允许带参数的装饰器。它实际上是对原有装饰器的一个函数封装，并返回一个装饰器。我们可以将它理解为一个含有参数的闭包。当我 们使用@cal_time(timing=”True”)调用的时候，Python 能够发现这一层的封装，并把参数传递到装饰器的环境中。</p>
+<p> @cal_time(timing=”True”等价于@timmer</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python当歌（七）：闭包</title>
+    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E9%97%AD%E5%8C%85/"/>
+    <id>http://yjscloud.com/2018/02/07/Python当歌（七）：闭包/</id>
+    <published>2018-02-07T07:54:22.000Z</published>
+    <updated>2018-02-07T08:02:29.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>闭包和函数紧密联系在一起，介绍闭包前有必要先介绍一些背景知识，诸如嵌套函数、变量的作用域等概念。</p>
+<h1 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h1><p>作用域是程序运行时变量可被访问的范围，定义在函数内的变量是局部变量，局部变量的作用范围只能是函数内部范围内，它不能在函数外引用。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-1.png" alt="7-1"></p>
+<p>定义在模块最外层的变量是全局变量，它是全局范围内可见的，当然在函数里面也可以读取到全局变量的。例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-2.png" alt="7-2"></p>
+<h1 id="嵌套函数"><a href="#嵌套函数" class="headerlink" title="嵌套函数"></a>嵌套函数</h1><p>函数不仅可以定义在模块的最外层，还可以定义在另外一个函数的内部，像这种定义在函数里面的函数称之为嵌套函数（nested function）例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-3.png" alt="7-3"></p>
+<p>对于嵌套函数，它可以访问到其外层作用域中声明的非局部（non-local）变量，比如代码示例中的变量 msg 可以被嵌套函数 printer 正常访问。</p>
+<p>那么有没有一种可能即使脱离了函数本身的作用范围，局部变量还可以被访问得到呢？答案是闭包。</p>
+<h1 id="什么是闭包"><a href="#什么是闭包" class="headerlink" title="什么是闭包"></a>什么是闭包</h1><p>函数身为第一类对象，它可以作为函数的返回值返回，现在我们来考虑如下的例子：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-4.png" alt="7-4"></p>
+<p>这段代码和前面例子的效果完全一样，同样输出 “python”。不同的地方在于内部函数 printer 直接作为返回值返回了。</p>
+<p>一般情况下，函数中的局部变量仅在函数的执行期间可用，一旦 print_msg() 执行过后，我们会认为 msg变量将不再可用。然而，在这里我们发现 print_msg 执行完之后，在调用 another 的时候 msg 变量的值正常输出了，这就是闭包的作用，闭包使得局部变量在函数外被访问成为可能。<br>这里的 another 就是一个闭包，闭包本质上是一个函数，它有两部分组成，printer 函数和变量 msg。闭包使得这些变量的值始终保存在内存中。</p>
+<p>闭包，顾名思义，就是一个封闭的包裹，里面包裹着自由变量，就像在类里面定义的属性值一样，自由变量的可见范围随同包裹，哪里可以访问到这个包裹，哪里就可以访问到这个自由变量。</p>
+<h1 id="为什么要使用闭包"><a href="#为什么要使用闭包" class="headerlink" title="为什么要使用闭包"></a>为什么要使用闭包</h1><p>闭包避免了使用全局变量，此外，闭包允许将函数与其所操作的某些数据（环境）关连起来。这一点与面向对象编程是非常类似的，在面对象编程中，对象允许我们将某些数据（对象的属性）与一个或者多个方法相关联。一般来说，当对象中只有一个方法时，这时使用闭包是更好的选择。来看一个例子：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-5.png" alt="7-5"></p>
+<p>这比用类来实现更优雅，此外装饰器也是基于闭包的一中应用场景。<br>所有函数都有一个 <strong>closure</strong>属性，如果这个函数是一个闭包的话，那么它返回的是一个由 cell 对象 组成的元组对象。cell 对象的cell_contents 属性就是闭包中的自由变量。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-6.png" alt="7-6"></p>
+<p>这解释了为什么局部变量脱离函数之后，还可以在函数之外被访问的原因的，因为它存储在了闭包的 cell_contents中了。</p>
+<p>原文地址：<a href="https://foofish.net/python-closure.html" target="_blank" rel="external">一步一步教你认识Python闭包</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;闭包和函数紧密联系在一起，介绍闭包前有必要先介绍一些背景知识，诸如嵌套函数、变量的作用域等概念。&lt;/p&gt;
+&lt;h1 id=&quot;作用域&quot;&gt;&lt;a href=&quot;#作用域&quot; class=&quot;headerlink&quot; title=&quot;作用域&quot;&gt;&lt;/a&gt;作用域&lt;/h1&gt;&lt;p&gt;作用域是程序运行时变
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Python当歌（六）：迭代器、生成器</title>
@@ -2166,541 +2356,6 @@ libvirt.vif.driver=com.cloud.hypervisor.kvm.resource.OvsVifDriver
     <summary type="html">
     
       &lt;h1 id=&quot;Open-vSwitch简介&quot;&gt;&lt;a href=&quot;#Open-vSwitch简介&quot; class=&quot;headerlink&quot; title=&quot;Open vSwitch简介&quot;&gt;&lt;/a&gt;Open vSwitch简介&lt;/h1&gt;&lt;h2 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h2&gt;&lt;p&gt;Open vSwitch的官方定义：Open vSwitch是一个具有工业级质量的多层虚拟交换机。通过可编程扩展，可以实现大规模网络的自动化（配置、管理、维护）。它支持现有标准管理接口和协议（比如netFlow，sFlow，SPAN，RSPAN，CLI，LACP，802.1ag等，熟悉物理网络维护的管理员可以毫不费力地通过Open vSwitch转向虚拟网络管理）。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://yjscloud.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
-    
-      <category term="CloudStack" scheme="http://yjscloud.com/tags/CloudStack/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CloudStack搭建指南（二）</title>
-    <link href="http://yjscloud.com/2017/09/17/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
-    <id>http://yjscloud.com/2017/09/17/CloudStack搭建指南（二）/</id>
-    <published>2017-09-17T12:14:12.000Z</published>
-    <updated>2017-10-18T05:30:28.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="GlusterFS介绍"><a href="#GlusterFS介绍" class="headerlink" title="GlusterFS介绍"></a>GlusterFS介绍</h1><h2 id="什么是GlusterFS？"><a href="#什么是GlusterFS？" class="headerlink" title="什么是GlusterFS？"></a>什么是GlusterFS？</h2><p>GlusterFS是定义在用户空间中使用的分布式文件系统，在用户空间即文件系统（FUSE）。 它是一个基于软件的文件系统，它考虑到自己的灵活性功能。</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.1.png" alt="gfs-1.1"></p>
-<a id="more"></a>
-<p>看看下图，它示意性地表示了分层模型中GlusterFS的位置。 默认情况下，GlusterFS将使用TCP协议。</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.2.png" alt="gfs-1.2"></p>
-<h2 id="GlusterFS的优点"><a href="#GlusterFS的优点" class="headerlink" title="GlusterFS的优点"></a>GlusterFS的优点</h2><p>(1)创新 -它消除了元数据，并能dramtically提高性能，这将有助于我们统一的数据和对象。</p>
-<p>(2)    弹性 -适应于经济增长和减少数据的大小。</p>
-<p>(3)    线性扩展 -它具有可用性高数量和超越。</p>
-<p>(4)    简单 -在用户空间运行时，它易于管理和独立于内核。</p>
-<h2 id="什么使Gluster在其他分布式文件系统中脱颖而出？"><a href="#什么使Gluster在其他分布式文件系统中脱颖而出？" class="headerlink" title="什么使Gluster在其他分布式文件系统中脱颖而出？"></a>什么使Gluster在其他分布式文件系统中脱颖而出？</h2><p>(1)    出售 -缺乏一个元数据服务器提供了一个更快的文件系统。</p>
-<p>(2)    实惠的 -它可以部署在商品硬件。</p>
-<p>(3)    灵活的 -正如我刚才所说，GlusterFS是一个纯软件的文件系统。 这里的数据存储在本地文件系统，如ext4，xfs等。</p>
-<p>(4)    开源 -目前GlusterFS是由红帽公司是一家十亿美元的开源公司，作为维护红帽存储的一部分。</p>
-<h2 id="GlusterFS中的存储概念"><a href="#GlusterFS中的存储概念" class="headerlink" title="GlusterFS中的存储概念"></a>GlusterFS中的存储概念</h2><p>(1)砖 -砖基本上是指的是值得信赖的存储池之间共享任何目录。</p>
-<p>(2)    值得信赖的存储池 -为这些共享文件/目录，这是基于对设计方案的集合。</p>
-<p>(3)    块存储 -它们是通过该数据跨系统中的块的形式被移动设备。</p>
-<p>(4)    集群 -在红帽存储，两个群集和值得信赖的存储池传达的基础上定义的协议存储服务器协作的含义相同。</p>
-<p>(5)    分布式文件系统 -的文件系统，其中数据被分布在，用户可以在不知道该文件的实际位置访问该文件不同的节点。 用户没有体验到远程访问的感觉。</p>
-<p>(6)    FUSE -这是一个可加载的内核模块，它允许用户在不涉及任何内核代码创建上面的内核文件系统。</p>
-<p>（7)glusterd – glusterd是GlusterFS管理守护这是将在整个时间每当服务器处于活动状态运行文件系统的骨干。</p>
-<p>(8)POSIX -便携式操作系统接口（POSIX）是由IEEE作为在应用程序可编程接口（API）的形式的解决方案，以Unix的变体之间的相容性定义的标准的家庭。</p>
-<p>(9)    RAID -独立磁盘（RAID）冗余阵列是给通过冗余提高存储可靠性的技术。</p>
-<p>(10)亚体 -在同一译者由至少处理后砖。</p>
-<p>(11)译者 -译者是一段代码，它执行从安装点的用户启动的基本动作。 它连接一个或多个子卷。</p>
-<p>（12)音量 -一个体积是砖的逻辑集合。 所有操作都基于用户创建的不同类型的卷。</p>
-<h1 id="gluster的三种基本卷"><a href="#gluster的三种基本卷" class="headerlink" title="gluster的三种基本卷"></a>gluster的三种基本卷</h1><h2 id="分布式卷"><a href="#分布式卷" class="headerlink" title="分布式卷"></a>分布式卷</h2><p>分布式Glusterfs卷 - 这是默认的glusterfs卷，即，如果不指定卷的类型，则在创建卷时，默认选项是创建分布式卷。这里，文件分布在卷中的各种砖块上。所以file1可能仅存储在brick1或brick2中，而不能存储在两者中。因此，没有数据冗余。这样的存储容量的目的是容易且便宜地缩放卷大小。然而，这也意味着砖块故障将导致完全丢失数据，并且必须依靠底层硬件进行数据丢失保护<br><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.3.png" alt="gfs1.3"></p>
-<h2 id="复制卷-raid1"><a href="#复制卷-raid1" class="headerlink" title="复制卷(raid1)"></a>复制卷(raid1)</h2><p>复制Glusterfs卷 - 在本卷中，我们克服了分布式卷中面临的数据丢失问题。这些数据的完整副本保留在所有砖上。卷中的副本数可以由客户端在创建卷时决定。所以我们需要至少有两个砖块来创建一个2个副本或至少三个砖块来创建一个3个副本的卷。这样一个卷的一个主要优点是，即使一个砖失败，仍然可以从其复制的砖块访问数据。这样的卷被用于更好的可靠性和数据冗余。<br><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.4.png" alt="gfs-1.4"></p>
-<h2 id="条带卷（raid0）"><a href="#条带卷（raid0）" class="headerlink" title="条带卷（raid0）"></a>条带卷（raid0）</h2><p>条纹Glusterfs卷 - 考虑一个大型文件存储在一个砖块，许多客户端同时经常访问。这将对单个砖造成太多负载，并降低性能。在条带卷中，将数据分割成不同的条纹后，将数据存储在砖块中。因此，大文件将被分成更小的块（等于块中的块数），每个块都存储在一个砖块中。现在分配了负载，并且可以更快地获取文件，但没有提供数据冗余。<br><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.5.png" alt="gfs-1.5"></p>
-<h1 id="GlusterFS搭建与使用"><a href="#GlusterFS搭建与使用" class="headerlink" title="GlusterFS搭建与使用"></a>GlusterFS搭建与使用</h1><h2 id="Glusterfs搭建"><a href="#Glusterfs搭建" class="headerlink" title="Glusterfs搭建"></a>Glusterfs搭建</h2><p>(1)先安装epel源</p>
-<pre><code># yum -y install epel-release
-</code></pre><p>(2)如果用yum直接安装会很慢，建议去glusterfs官网把rpm包下载下来然后把这些rpm包上传到linux服务器中。<br>然后执行如下命令：</p>
-<pre><code># yum -y install glusterfs-*
-</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs-1.6.png" alt="gfs-1.6"></p>
-<p>(3)启动gluster :</p>
-<pre><code># service glusterd start
-</code></pre><p>(4)关闭防火墙以及selinux</p>
-<pre><code># service iptables stop
-# chkconfig iptables off
-# sed -i &apos;s/SELINUX=enforcing/SELINUX=disabled/&apos; /etc/selinux/config
-</code></pre><h2 id="GlusterFS的使用"><a href="#GlusterFS的使用" class="headerlink" title="GlusterFS的使用"></a>GlusterFS的使用</h2><p>(1)建立信任关系: </p>
-<pre><code># gluster peer probe 10.0.0.5
-</code></pre><p>(2)    查看信任状态：</p>
-<pre><code># gluster peer status
-</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs01.png" alt="gfs01"></p>
-<p>(3)创建分布式卷：</p>
-<p>gfs1: </p>
-<pre><code># mkdir -p /data/exp1
-</code></pre><p>gfs2: </p>
-<pre><code># mkdir -p /data/exp2
-</code></pre><p>gfs1: </p>
-<pre><code># gluster volume create test-volume 10.0.0.4:/data/exp1 10.0.0.5:/data/exp2 force
-</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs02.png" alt="gfs02"></p>
-<p>查看卷的详情：</p>
-<pre><code># gluster volume info
-</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs03.png" alt="gfs03"></p>
-<p>(4)创建复制卷：</p>
-<p>gfs1 :</p>
-<pre><code># mkdir /data/exp3
-</code></pre><p>gfs2 :</p>
-<pre><code># mkdir /data/exp4
-</code></pre><p>gfs1 :</p>
-<pre><code># gluster volume create repo-volume replica 2 transport tcp 10.0.0.4:/data/exp3 10.0.0.5:/data/exp4 force
-</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs04.png" alt="gfs04"></p>
-<p>查看卷的详情：</p>
-<pre><code># gluster volume info repo-volume
-</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs05.png" alt="gfs05"></p>
-<p>(5)创建条带卷： </p>
-<p>gfs1: </p>
-<pre><code># mkdir /data/exp5
-</code></pre><p>gfs2: </p>
-<pre><code># mkdir /data/exp6
-</code></pre><p>gfs1 :</p>
-<pre><code># gluster volume create raid0-volume stripe 2 transport tcp 10.0.0.4:/data/exp5 10.0.0.5:/data/exp6 force  
-</code></pre><p>(6)启动卷：</p>
-<p>默认情况下创建的卷是没有启动的我们用命令gluster volume start volume-name 启动即可<br>(7)挂载卷：</p>
-<p>创建挂载点</p>
-<p>gfs1:  </p>
-<pre><code># mkdir /mnt/g1 /mnt/g2 /mnt/g3
-</code></pre><p>挂载卷</p>
-<p>gfs1:  </p>
-<pre><code># mount.glusterfs 10.0.0.4:/test-volume /mnt/g1
-# mount.glusterfs 10.0.0.4:/repo-volume /mnt/g2
-# mount.glusterfs 10.0.0.4:/raid0-volume /mnt/g3
-</code></pre><p>查看挂载的卷：df -h</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/gfs06.png" alt="gfs06"></p>
-<p>(8)创建分布式复制卷：</p>
-<p>gfs1: </p>
-<pre><code># mkdir /exp1 /exp2
-</code></pre><p>gfs2: </p>
-<pre><code># mkdir /exp1 /exp2
-</code></pre><p>gfs1:</p>
-<pre><code>#gluster volume create xwq-volume replica 2 transport tcp 10.0.0.4:/exp1 10.0.0.4:/exp2 10.0.0.5:/exp1 10.0.0.5:/exp2 force
-</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs07.png" alt="gfs07"></p>
-<p>启动卷：</p>
-<pre><code># gluster volume start xwq-volume
-</code></pre><p>创建挂载点：</p>
-<pre><code># mkdir /mnt/g5
-</code></pre><p>挂载：</p>
-<pre><code># mount.glusterfs 10.0.0.4:/xwq-volume /mnt/g5
-</code></pre><p>数据写入测试：</p>
-<pre><code># man tcp &gt; /mnt/g5/tcp1.txt
-# man tcp &gt; /mnt/g5/tcp2.txt
-# man tcp &gt; /mnt/g5/tcp3.txt
-# man tcp &gt; /mnt/g5/tcp4.txt
-</code></pre><p>查看数据情况：</p>
-<pre><code># tree /exp* 
-</code></pre><p>数据分布和我们想象中的有点不一样，这与你添加卷的顺序有关</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/tree02.png" alt="gfs"><br><img src="http://owawy15xy.bkt.clouddn.com/tree03.png" alt="gfs"></p>
-<p>(9)扩展卷 为分布式添加扩展卷 </p>
-<p>gfs1:</p>
-<pre><code># mkdir /data/exp9
-</code></pre><p>gfs1:</p>
-<pre><code># gluster volume add-brick test-volume 10.0.0.4:/data/exp9 force
-</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs-add01.png" alt=""></p>
-<p>均衡卷中的数据：</p>
-<pre><code># gluster volume rebalance test-volume start
-</code></pre><p>(10)删除卷：                    </p>
-<p>gfs1：</p>
-<pre><code># gluster volume remove-brick test-volume 10.0.0.4:/data/exp9 force
-</code></pre><p>数据可能会丢失，数据并不会删除!</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/remove-gfs.png" alt=""></p>
-<p>更多详细内容请参阅<a href="http://docs.gluster.org" target="_blank" rel="external">官方文档</a></p>
-<h1 id="GlusterFS在cloudstack中的应用"><a href="#GlusterFS在cloudstack中的应用" class="headerlink" title="GlusterFS在cloudstack中的应用"></a>GlusterFS在cloudstack中的应用</h1><h2 id="在master端删库重新配置cloudstack-management"><a href="#在master端删库重新配置cloudstack-management" class="headerlink" title="在master端删库重新配置cloudstack-management"></a>在master端删库重新配置cloudstack-management</h2><p>（1）先停止管理服务器：</p>
-<pre><code># /etc/init.d/cloudstack-management stop
-</code></pre><p>（2）删库：<br>进入数据库：</p>
-<pre><code># mysql -uroot -p123456
-</code></pre><p>删库：</p>
-<pre><code># drop database cloud;
-# drop database cloud_usage;
-</code></pre><h2 id="在agent端配置"><a href="#在agent端配置" class="headerlink" title="在agent端配置"></a>在agent端配置</h2><p>(1)在之前安装agent的时候会自动安装glusterfs但是某些依赖库并没有安装完全，要卸载重装；</p>
-<p>卸载命令：</p>
-<pre><code># yum remove glusterfs*
-</code></pre><p>上传rpm到合适的目录执行</p>
-<pre><code># yum -y install glusterfs-*
-</code></pre><p>或：安装</p>
-<pre><code># yum install -y centos-release-gluster37.noarch
-</code></pre><p>然后再执行如下命令：</p>
-<pre><code># yum --enablerepo=centos-gluster*-test install glusterfs-server glusterfs-cli glusterfs-geo-replication
-</code></pre><p>(2) 删除agent1节点 /export/primary目录下的镜像：</p>
-<pre><code># rm -rf *
-</code></pre><p>启动glusterfs服务：</p>
-<pre><code># service glusterd start 
-# chkconfig glusterd on 
-</code></pre><p>(3)然后以agent1为模板克隆一台虚拟机，改名为agent2并对网卡和主机名进行更改</p>
-<p>(4)    添加信任池</p>
-<p>[1]先关闭agent1和agent2的防火墙：</p>
-<pre><code># /etc/init.d/iptables stop
-</code></pre><p>[2]在agent1节点添加信任：</p>
-<pre><code># gluster peer probe 192.168.0.32
-</code></pre><p>可用gluster peer status查看链接状态</p>
-<p>（5）添加磁盘、格式化、挂载~此处略</p>
-<p>（6）因为刚才安装glusterfs的时候把agent给卸载，现在重新安装回去</p>
-<pre><code># yum -y install cloudstack-common-4.8.0-1.el6.x86_64.rpm cloudstack-agent-4.8.0-1.el6.x86_64.rpm
-</code></pre><p>（7）创建分布式复制卷 </p>
-<p>创建：</p>
-<pre><code># gluster volume create gv2 replica 2 agnet1:/export/primary agent2:/export/primary force
-</code></pre><p>启动卷：</p>
-<pre><code># gluster volume start gv2    
-</code></pre><p>查看卷：</p>
-<pre><code># gluster volume info
-</code></pre><p><img src="http://owawy15xy.bkt.clouddn.com/gfs-ag01.png" alt="gsf-ag01"></p>
-<h2 id="在master端进行库的初始化"><a href="#在master端进行库的初始化" class="headerlink" title="在master端进行库的初始化"></a>在master端进行库的初始化</h2><p>（1）初始化：</p>
-<pre><code># cloudstack-setup-databases cloud:123456@localhost --deploy-as=root:123456
-</code></pre><p>（2）启动cloudstack：</p>
-<pre><code># cloudstack-setup-management
-</code></pre><p>（3）上传模板：</p>
-<pre><code># /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m /export/secondary/ -f /opt/systemvm64template-4.6.0-kvm.qcow2.bz2 -h kvm –F
-</code></pre><h1 id="系统管理"><a href="#系统管理" class="headerlink" title="系统管理"></a>系统管理</h1><p>登陆cloudstack后天web界面创建资源域，步骤和之前创建资源域大致相同；<br>配置步骤如下：</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/cs01.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs02.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs3.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs04.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs05.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs06.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs07.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/cs08.png" alt=""><br><img src="http://owawy15xy.bkt.clouddn.com/lose01.png" alt=""></p>
-<p>启动资源域后报错，可以通过查看日志来排错，这里我们直接进入“基础架构”进行添加主机</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/lost02.png" alt=""></p>
-<p>添加主存储</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/lost03.png" alt=""></p>
-<p>添加二级存储<br><img src="http://owawy15xy.bkt.clouddn.com/lost04.png" alt=""></p>
-<p>添加好后我们到“全局设置”修改一下配置，设置内存超峰</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/men3.png" alt=""></p>
-<p>然后启用资源域，如果系统vm顺利启动则说明你的cloudstack平台搭建成功！<br><img src="http://owawy15xy.bkt.clouddn.com/lost05.png" alt=""></p>
-<p>完成效果图：</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/lost~~~.png" alt=""></p>
-<h1 id="在线迁移主机"><a href="#在线迁移主机" class="headerlink" title="在线迁移主机"></a>在线迁移主机</h1><p>当运行着虚拟机的主机资源报警或者发生故障时，如何确保运行在该主机上的虚拟机可以正常提供服务呢？这个时候glusterfs分布式文件系统就发挥了它的用处，由于glusterfs是共享式存储，可以实现在网络不中断的情况下对主机进行迁移。</p>
-<p>（1）用命令virsh list 查看运行在主机上的虚拟机</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/%E4%BA%8C-1.png" alt="二-1"></p>
-<p>虚拟机运行在agent1节点上<br><img src="http://owawy15xy.bkt.clouddn.com/%E4%BA%8C-2.png" alt="二-2"></p>
-<p>（2）迁移s-1-VM为例</p>
-<p>查看其公网ip,s-1-VM在agent1上，我们在agent2上ping s-1-VM,要确保可以ping通才能进行迁移。</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/%E4%BA%8C-3.png" alt="二-3"></p>
-<p>进行系统迁移：</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/%E4%BA%8C-4.png" alt="二-4"></p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/%E4%BA%8C-5.png" alt="二-5"></p>
-<p>在agent2上查看，迁移成功！</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/%E4%BA%8C-6.png" alt="二-6"></p>
-<p>在迁移过程中不会对用户的使用产生任何影响，用户是无法察觉迁移过程的。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;GlusterFS介绍&quot;&gt;&lt;a href=&quot;#GlusterFS介绍&quot; class=&quot;headerlink&quot; title=&quot;GlusterFS介绍&quot;&gt;&lt;/a&gt;GlusterFS介绍&lt;/h1&gt;&lt;h2 id=&quot;什么是GlusterFS？&quot;&gt;&lt;a href=&quot;#什么是GlusterFS？&quot; class=&quot;headerlink&quot; title=&quot;什么是GlusterFS？&quot;&gt;&lt;/a&gt;什么是GlusterFS？&lt;/h2&gt;&lt;p&gt;GlusterFS是定义在用户空间中使用的分布式文件系统，在用户空间即文件系统（FUSE）。 它是一个基于软件的文件系统，它考虑到自己的灵活性功能。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://owawy15xy.bkt.clouddn.com/gfs-1.1.png&quot; alt=&quot;gfs-1.1&quot;&gt;&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="技术分享" scheme="http://yjscloud.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
-    
-    
-      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
-    
-      <category term="CloudStack" scheme="http://yjscloud.com/tags/CloudStack/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CloudStack搭建指南（一）</title>
-    <link href="http://yjscloud.com/2017/09/15/CloudStack%E6%90%AD%E5%BB%BA%E6%8C%87%E5%8D%97%EF%BC%88%E4%B8%80%EF%BC%89/"/>
-    <id>http://yjscloud.com/2017/09/15/CloudStack搭建指南（一）/</id>
-    <published>2017-09-15T02:49:46.000Z</published>
-    <updated>2017-10-18T05:29:56.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="理论基础"><a href="#理论基础" class="headerlink" title="理论基础"></a>理论基础</h1><h2 id="云计算的出现"><a href="#云计算的出现" class="headerlink" title="云计算的出现"></a>云计算的出现</h2><p>基本上，云计算只是一种把 IT 资源当作服务来提供的手段。几乎所有 IT 资源都可以作为云服务来提供：应用程序、计算能力、存储容量、联网、编程工具，以至于通信服务和协作工具。<br>云计算最早为 Google、Amazon 等其他扩建基础设施的大型互联网服务提供商所采用。于是产生一种架构：大规模扩展、水平分布的系统资源，抽象为虚拟 IT 服务，并作为持续配置、合用的资源进行管理。<br><a id="more"></a><br>就最终用户而言，云计算意味着没有硬件购置成本、没有需要管理的软件许可证或升级、不需要雇佣新的员工或咨询人员、不需要租赁设施、没有任何种类的基建投资，而且还没有隐性成本。只是一种用仪表测量出来的、根据使用情况支付的订购费或固定的订购费。只是用您所需的量，而且只按使用量付费。</p>
-<p>云计算体系结构图如下：</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/cs-1.1.png" alt="1.1"></p>
-<h2 id="把基础设施当做服务（IaaS）"><a href="#把基础设施当做服务（IaaS）" class="headerlink" title="把基础设施当做服务（IaaS）"></a>把基础设施当做服务（IaaS）</h2><p>把基础设施当作服务 (IaaS) 处于最低层级，而且是一种作为标准化服务在网上提供基本存储和计算能力的手段。服务器、存储系统、交换机、路由器和其他系统协作 (例如，通过虚拟化技术) 处理特定类型的工作负载 — 从批处理到峰值负载期间的服务器/存储扩大。<br>最著名的商业示例是 Amazon Web 服务 (AWS)，其 EC2 和 S3 服务分别提供基本计算和存储服务。国内代表阿里云、腾讯云、百度云、金山云等。</p>
-<h2 id="IaaS平台的虚拟化技术的好处"><a href="#IaaS平台的虚拟化技术的好处" class="headerlink" title="IaaS平台的虚拟化技术的好处"></a>IaaS平台的虚拟化技术的好处</h2><p>利用率更高 — 在虚拟化之前，企业数据中心的服务器和存储利用率一般平均不到 50% (事实上，通常利用率为 10% 到 15%)。通过虚拟化，可以把工作负载封装一并转移到空闲或使用不足的系统，这就意味着可以整合现有系统，因而可以延迟或避免购买更多服务器容量。</p>
-<p>资源整合 — 虚拟化使得整合多个 IT 资源成为可能。除服务器和存储整合之外，虚拟化提供一个整合系统架构、应用程序基础设施、数据和数据库、接口、网络、桌面系统甚至业务流程，因而可以节约成本和提高效率。</p>
-<p>节省电能/成本 — 运行企业级数据中心所需的电能不再无限制地使用，而成本呈螺旋式上升趋势。在服务器硬件上每花一美元，就会在电费上增加一美元 (包括服务器运行和散热方面的成本)。利用虚拟化进行整合使得降低总能耗和节约大量资金成为可能。</p>
-<p>节约空间 — 服务器膨胀仍然是多数企业数据中心面临的一个严重问题，可扩大数据中心并不总是一个良好的选择，因为每增大一平方米空间，就会平均增加很多成本。虚拟化通过把多个虚拟系统整合到较少物理系统上，可以缓解空间压力。</p>
-<p>灾难恢复 (Disaster recovery) /业务连续 (Business Continuity) — 虚拟化可提高总体服务级利用率，并提供灾难恢复解决方案新选项。</p>
-<h2 id="Cloudstack-介绍"><a href="#Cloudstack-介绍" class="headerlink" title="Cloudstack 介绍"></a>Cloudstack 介绍</h2><p>CloudStack是一个开源的具有高可用性及扩展性的云计算平台CloudStack 是一个开源的云操作系统，它可以帮助用户利用自己的硬件提供类似于Amazon EC2那样的公共云服务。CloudStack可以通过组织和协调用户的虚拟化资源，构建一个和谐的环境。<br>Cloudstack支持管理大部分主流的hypervisors，如KVM，XenServer，VMware，Oracle VM，Xen等。<br><img src="http://owawy15xy.bkt.clouddn.com/1.4.png" alt="1.4"></p>
-<p>Cloudstack 部署图如下：</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/1.4.1.png" alt="1.4.1"><br>Zone：Zone 对应于现实中的一个数据中心，它是 CloudStack 中最大的一个单元。<br>即从包含关系上来说，一个 zone 包含多个 pod，一个 pod 包含多个 cluster，一个 cluster 包含多个 host。</p>
-<p>提供点（Pods）：<br>一个提供点通常代表一个机架，机柜里面的主机在同一个子网，每个区域中必须包含一个或多个提供点，提供点中包含主机和主存储服务器， CloudStack 的内部管理通信配置一个预留 IP 地址范围。预留的 IP 范围对云中的每个区域来说必须唯一。</p>
-<p>集群（Clusters）：<br>Cluster 是多个主机组成的一个集群。<br>同一个cluster中的主机有相同的硬件，相同的 Hypervisor，和共用同样的存储。同一个 cluster 中的虚拟机，可以实现无中断服务地从一个主机迁移到另外一个上。<br>集群由一个或多个宿主机和一个或多个主要存储服务器构成。集群的大小取决于下层虚拟机软件。大多数情况下基本无建议。当使用VMware时，每个VMware集群都被vCenter 服务器管理。管理员必须在本产品中登记vCenter。每个zone下可以有多个vCenter服务器。每个vCenter服务器可能管理多个VMware集群</p>
-<p>主机（Hosts）：<br>Host 就是运行的虚拟机（VM）主机。<br>宿主机就是个独立的计算机。宿主机运行来宾虚拟机并提供其相应的计算资源。每个宿主机都装有虚拟机软件来运行来宾虚拟机。比如一个开启了kvm支持的服务器，一个思杰XenServer服务器，或者一个ESXi服务器都可以作为宿主机。<br>宿主机在CloudStack部署中属于最小的组织单元。宿主机包含于集群中，集群又属于提供点，而区域中包含提供点（就是在逻辑概念上zone&gt;pod&gt;cluster&gt;host），新增的宿主机可以随时添加以提供更多资源给来宾虚拟机，CloudStack自动探测宿主机的cpu数量和内存资源。宿主机对终端用户不可见。终端用户不能决定他们的虚拟机被分配到哪台宿主机。</p>
-<p>CloudStack 中存在两种存储：<br>Primary storage：一级存储与 cluster 关联，它为该 cluster 中的主机的全部虚拟机提供磁盘卷。一个 cluster 至少有一个一级存储，且在部署时位置要临近主机以提供高性能。<br>Secondary storage：二级存储与 zone 关联，它存储模板文件，ISO 镜像和磁盘卷快照。</p>
-<h1 id="部署安装"><a href="#部署安装" class="headerlink" title="部署安装"></a>部署安装</h1><p>cloudstack 安装前的准备</p>
-<p>VMWARE Workstation虚拟机为实验平台，我的个节点硬件资源分配情况</p>
-<pre><code>master1 : 2G内存+40G硬盘+双核6600k
-agent1 :  6G内存+40G硬盘+双核6600k
-agent2 : 6G内存+40G硬盘+双核6600k
-agent3 : 6G内存+40G硬盘+双核6600k
-NFS : 1G内存+40G硬盘+双核6600k+500G硬盘+500G硬盘
-系统：CentOS-6-x86_64（6.8）
-网络选择：桥接
-</code></pre><h2 id="配置nfs服务器"><a href="#配置nfs服务器" class="headerlink" title="配置nfs服务器"></a>配置nfs服务器</h2><h3 id="安装ntp服务"><a href="#安装ntp服务" class="headerlink" title="安装ntp服务"></a>安装ntp服务</h3><p>为了同步云平台中主机的时间，需要配置NTP，但NTP默认没有安装。因此需要先安装NTP，然后进行配置。通过以下命令进行安装：</p>
-<pre><code># yum -y install ntp
-</code></pre><p>实际上默认配置项即可满足的需求，仅需启用NTP并设置为开机启动，如下所示：</p>
-<pre><code># chkconfig ntpd on
-# service ntpd start
-</code></pre><h3 id="NFS服务安装"><a href="#NFS服务安装" class="headerlink" title="NFS服务安装"></a>NFS服务安装</h3><p>本文档将配置的环境使用NFS做为主存储和辅助存储，需配置两个NFS共享目录，在此之前需先安装nfs-utils：</p>
-<pre><code># yum -y install nfs-utils
-</code></pre><p>接下来需配置NFS提供两个不同的挂载点。通过编辑/etc/exports文件即可简单实现。确保这个文件中包含下面内容：</p>
-<pre><code>/export/secondary *(rw,async,no_root_squash,no_subtree_check)
-/export/primary *(rw,async,no_root_squash,no_subtree_check)
-</code></pre><p>注意配置文件中指定了系统中两个并不存在的目录，下面需要创建这些目录并设置合适的权限，对应的命令如下所示：</p>
-<pre><code># mkdir -p /export/primary
-# mkdir –p /export/secondary
-</code></pre><h3 id="格式化硬盘"><a href="#格式化硬盘" class="headerlink" title="格式化硬盘"></a>格式化硬盘</h3><p>查看磁盘：</p>
-<pre><code># fdisk  -l
-</code></pre><p>格式化磁盘：</p>
-<pre><code># mkfs.ext4  /dev/sdb 
-# mkfs.ext4  /dev/sdc
-</code></pre><p>为格式化好的磁盘添加开机自动挂载:</p>
-<pre><code># echo &quot;/dev/sdb  /export/secondary  ext4 defaults 0 0&quot;  &gt;&gt; /etc/fstab
-# echo &quot;/dev/sdc  /export/primary  ext4 defaults 0 0&quot;  &gt;&gt; /etc/fstab
-</code></pre><h3 id="配置防火墙"><a href="#配置防火墙" class="headerlink" title="配置防火墙"></a>配置防火墙</h3><p>CentOS 6.x 版本默认使用NFSv4设置为以下内容：<br>在/etc/sysconfig/nfs文件中取消如下选项的注释：</p>
-<pre><code>LOCKD_TCPPORT=32803
-LOCKD_UDPPORT=32769
-MOUNTD_PORT=892
-RQUOTAD_PORT=875
-STATD_PORT=662
-STATD_OUTGOING_PORT=2020
-</code></pre><p>接下来还需配置防火墙策略，允许NFS客户端访问。编辑文件/etc/sysconfig/iptables</p>
-<pre><code>-A INPUT -m state --state NEW -p udp --dport 111 -j ACCEPT
--A INPUT -m state --state NEW -p tcp --dport 111 -j ACCEPT
--A INPUT -m state --state NEW -p tcp --dport 2049 -j ACCEPT
--A INPUT -m state --state NEW -p tcp --dport 32803 -j ACCEPT
--A INPUT -m state --state NEW -p udp --dport 32769 -j ACCEPT
--A INPUT -m state --state NEW -p tcp --dport 892 -j ACCEPT
--A INPUT -m state --state NEW -p tcp --dport 892 -j ACCEPT
--A INPUT -m state --state NEW -p udp --dport 892 -j ACCEPT
--A INPUT -m state --state NEW -p tcp --dport 875 -j ACCEPT
--A INPUT -m state --state NEW -p udp --dport 875 -j ACCEPT
--A INPUT -m state --state NEW -p tcp --dport 662 -j ACCEPT
--A INPUT -m state --state NEW -p udp --dport 662 -j ACCEPT
--A INPUT -m state --state NEW -p tcp --dport 80 -j ACCEPT
-</code></pre><p>通过以下命令重新启动iptables服务：</p>
-<pre><code># service iptables restart
-</code></pre><p>您也可以直接关闭防火墙：</p>
-<pre><code># service iptables stop (关闭防火墙)
-# chkconfig iptables off（禁止防火墙开机自起）
-# service iptables status（查看防火墙状态）
-</code></pre><p>然后需要配置NFS服务为开机自启动，执行如下命令：</p>
-<pre><code># service rpcbind start
-# service nfs start
-# chkconfig rpcbind on
-# chkconfig nfs on
-</code></pre><p>最后可以在agent1上安装nfs-utils软件，测试您的nfs服务是否搭建成功showmount -e  192.168.0.20测试master1的nfs服务是否配置成功！</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/nfs-2.1.png" alt="nfs-2.1"></p>
-<h2 id="管理服务器安装"><a href="#管理服务器安装" class="headerlink" title="管理服务器安装"></a>管理服务器安装</h2><h3 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h3><p>安装好自己的虚拟机为自己的虚拟机设置网络，以下是我的所有虚拟机ip设置如下：</p>
-<pre><code>master1: 192.168.0.20
-agent1:192.168.0.21
-agent2:192.168.0.22
-agent3:192.168.0.23
-NFS: 192.168.0.24
-</code></pre><p>默认情况下新安装的机器并未启用网络，在root权限下使用命令ifup eth0激活你的网卡，并用命令setup开启图形化界面固定你的ip，或这用vim /etc/sysconfig/network-scripts/ifcfg-eth0修改网卡配置文件， </p>
-<p>根据您需求修改配置文件，指定IP地址，网络掩码等信息，例：</p>
-<pre><code>DEVICE=eth0
-HWADDR=52:54:00:B9:A6:C0
-NM_CONTROLLED=no
-ONBOOT=yes
-BOOTPROTO=none
-IPADDR=192.168.0.20
-NETMASK=255.255.255.0
-GATEWAY=192.168.0.1
-DNS1=192.168.0.1
-</code></pre><h3 id="修改主机名"><a href="#修改主机名" class="headerlink" title="修改主机名"></a>修改主机名</h3><p>需要修改两处：一处是/etc/sysconfig/network，另一处是/etc/hosts，只修改任一处会导致系统启动异常。<br>（1）修改：/etc/sysconfig/network</p>
-<p>用vimi编辑器，里面有一行 HOSTNAME=localhost.localdomain (如果是默认的话），修改 localhost.localdomain 为你的主机名。例：<br><img src="http://owawy15xy.bkt.clouddn.com/2.2.1.png" alt="2.2.1"></p>
-<p>（2）修改：/etc/hosts</p>
-<p>打开该文件，会有一行 127.0.0.1 localhost.localdomain localhost 。其中 127.0.0.1 是本地环路地址， localhost.localdomain 是主机名(hostname)，也就是你待修改的。localhost 是主机名的别名（alias）。将第二项修改为你的主机名，第三项可选。例：</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.2.1-1.png" alt="2.2.1-1"></p>
-<p>将上面两个文件修改完后，并不能立刻生效。如果要立刻生效的话，可以用 hostname your-hostname 作临时修改，它只是临时地修改主机名，系统重启后会恢复原样的。但修改上面两个文件是永久的，重启系统会得到新的主机名。</p>
-<p>最后，重启后查看主机名 hostname –fqdn</p>
-<p>通过hostname –fqdn命令重新检查主机名 。</p>
-<h3 id="关闭selinux"><a href="#关闭selinux" class="headerlink" title="关闭selinux"></a>关闭selinux</h3><p>关闭selinux</p>
-<pre><code># sed -i &apos;s/SELINUX=enforcing/SELINUX=disabled/&apos; /etc/selinux/config
-</code></pre><p>也可以用vi 直接编辑修改</p>
-<h3 id="安装epel-源"><a href="#安装epel-源" class="headerlink" title="安装epel 源"></a>安装epel 源</h3><p>cloudstack  yum源有部分包依赖 epel 源</p>
-<pre><code># yum -y install epel-release 
-</code></pre><h3 id="安装-cloudstack-源"><a href="#安装-cloudstack-源" class="headerlink" title="安装 cloudstack 源"></a>安装 cloudstack 源</h3><p>添加CloudStack软件仓库，创建/etc/yum.repos.d/cloudstack.repo文件，并添加如下信息。</p>
-<pre><code>[cloudstack]
-name=cloudstack
-baseurl=http://cloudstack.apt-get.eu/centos/6/4.8/
-enabled=1
-gpgcheck=0
-</code></pre><p>或者把安装包下载到本地，然后上传到合适的文件夹，我上传到了opt/目录下，这样编译安装会快很多。</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.2.5.png" alt="2.2.5"></p>
-<h3 id="安装NTP"><a href="#安装NTP" class="headerlink" title="安装NTP"></a>安装NTP</h3><p>为了同步云平台中主机的时间，需要配置NTP，但NTP默认没有安装。因此需要先安装NTP，然后进行配置。通过以下命令进行安装：</p>
-<pre><code># yum -y install ntp
-</code></pre><p>实际上默认配置项即可满足的需求，仅需启用NTP并设置为开机启动，如下所示：</p>
-<pre><code># chkconfig ntpd on
-# service ntpd start
-</code></pre><p>接下来进行CloudStack管理节点和相关工具的安装。</p>
-<h3 id="安装管理端"><a href="#安装管理端" class="headerlink" title="安装管理端"></a>安装管理端</h3><p>现在进入您放cloudstack软件包的文件件，使用如下命令安装管理服务器。</p>
-<pre><code># yum -y install cloudstack-management-4.8.0-1.el6.x86_64.rpm cloudstack-common-4.8.0-1.el6.x86_64.rpm
-</code></pre><h3 id="数据库安装和配置"><a href="#数据库安装和配置" class="headerlink" title="数据库安装和配置"></a>数据库安装和配置</h3><p>首先安装MySQL，并对它进行配置，以确保CloudStack运行正常。<br>运行如下命令安装：</p>
-<pre><code># yum -y install mysql-server
-</code></pre><p>MySQL安装完成后，需更改其配置文件/etc/my.cnf。在[mysqld]下添加下列参数：</p>
-<pre><code>innodb_rollback_on_timeout=1
-innodb_lock_wait_timeout=600
-max_connections=350
-log-bin=mysql-bin
-binlog-format = &apos;ROW&apos;
-</code></pre><p>正确配置MySQL后，启动它并配置为开机自启动：</p>
-<pre><code># service mysqld start
-# chkconfig mysqld on
-</code></pre><p>设置mysql 密码及范围权限 </p>
-<pre><code># mysqladmin -uroot password 123456
-# mysql -uroot  -p123456 -e &quot;GRANT ALL PRIVILEGES ON *.* TO root@&apos;%&apos;     IDENTIFIED BY &apos;123456&apos;&quot;;
-</code></pre><h3 id="系统初始化"><a href="#系统初始化" class="headerlink" title="系统初始化"></a>系统初始化</h3><p>在程序执行完毕后，需初始化数据库，通过如下命令和选项完成：</p>
-<pre><code># cloudstack-setup-databases cloud:123456@localhost --deploy-as=root:123456
-</code></pre><p>当该过程结束后，您应该可以看到类似信息：”CloudStack has successfully initialized the database.”。<br>数据库创建后，最后一步是配置管理服务器，执行如下命令：</p>
-<pre><code># cloudstack-setup-management
-</code></pre><h3 id="上传系统模板"><a href="#上传系统模板" class="headerlink" title="上传系统模板"></a>上传系统模板</h3><p>CloudStack通过一系列系统虚拟机提供功能，如访问虚拟机控制台，如提供各类网络服务，以及管理辅助存储的中的各类资源。该步骤会获取系统虚拟机模板，用于云平台引导后系统虚拟机的部署。<br>然后需要下载系统虚拟机模板，并把这些模板部署于刚才创建的辅助存储中；管理服务器包含一个脚本可以正确的操作这些系统虚拟机模板：</p>
-<pre><code># /usr/share/cloudstack-common/scripts/storage/secondary/cloud-install-sys-tmplt -m /export/secondary/ -f /opt/systemvm64template-4.6.0-kvm.qcow2.bz2 -h kvm -F
-</code></pre><h3 id="访问用户界面"><a href="#访问用户界面" class="headerlink" title="访问用户界面"></a>访问用户界面</h3><p>要访问CloudStack的WEB界面，仅需在浏览器访问 <a href="http://XXX.XXX.XXX:8080/client" target="_blank" rel="external">http://XXX.XXX.XXX:8080/client</a> ，使用默认用户’admin’和密码’password’来登录。第一次登录可以看到欢迎界面。<br><img src="http://owawy15xy.bkt.clouddn.com/2.2.11.png" alt="2.2.11"></p>
-<h2 id="安装agent节点及配置"><a href="#安装agent节点及配置" class="headerlink" title="安装agent节点及配置"></a>安装agent节点及配置</h2><h3 id="先决条件"><a href="#先决条件" class="headerlink" title="先决条件"></a>先决条件</h3><p>本文档描述的环境使用管理服务器同时作为计算节点，这意味着很多先决步骤已经在搭建管理服务器时完成；但为了清晰起见，仍然列出相关步骤：</p>
-<p>(1)网络配置</p>
-<p>(2)主机名</p>
-<p>(3)SELinux</p>
-<p>(4)NTP</p>
-<p>(5)配置ClouStack软件库</p>
-<p>你不需要在管理节点上执行这些操作，当然，如果您需要添加额外的主机以上步骤仍然需要执行。</p>
-<h3 id="Agent-安装"><a href="#Agent-安装" class="headerlink" title="Agent 安装"></a>Agent 安装</h3><p>安装KVM代理仅仅需要一条简单的命令，但之后我们需要进行一些配置。</p>
-<pre><code># yum -y install cloudstack-common-4.8.0-1.el6.x86_64.rpm cloudstack-agent-4.8.0-1.el6.x86_64.rpm
-</code></pre><h3 id="虚拟化配置"><a href="#虚拟化配置" class="headerlink" title="虚拟化配置"></a>虚拟化配置</h3><p>配置KVM</p>
-<p>KVM中我们有两部分需要进行配置, libvirt和QEMU.</p>
-<p>配置QEMU</p>
-<p>KVM的配置项相对简单，仅需配置一项。编辑QEMU VNC配置文件/etc/libvirt/qemu.conf并取消如下行的注释。同时注释 security_driver=”none”</p>
-<pre><code>vnc_listen=0.0.0.0
-# security_driver=&quot;none&quot;
-</code></pre><p>配置Libvirt<br>CloudStack使用libvirt管理虚拟机。因此正确的配置libvirt至关重要。Libvirt属于cloudstack-agent的依赖组件，应提前安装好。</p>
-<p>为了实现动态迁移，libvirt需要监听使用非加密的TCP连接。还需要关闭libvirts尝试使用组播DNS进行广播。这些都是在 /etc/libvirt/libvirtd.conf文件中进行配置。</p>
-<p>设置下列参数：</p>
-<pre><code>listen_tls = 0
-listen_tcp = 1
-tcp_port = &quot;16059&quot;
-auth_tcp = &quot;none&quot;
-mdns_adv = 0
-</code></pre><p>仅仅在libvirtd.conf中启用”listen_tcp”还不够，我们还必须修改/etc/sysconfig/libvirtd中的参数:</p>
-<p>更改</p>
-<pre><code>LIBVIRTD_ARGS=&quot;-1&quot;
-</code></pre><p>重启libvirt服务</p>
-<pre><code># service libvirtd restart
-</code></pre><p>KVM配置完成</p>
-<p>For the sake of completeness you should check if KVM is running OK on your machine:</p>
-<pre><code># lsmod | grep kvm
-</code></pre><p>输入lsmod | grep kvm命令后输出的信息</p>
-<pre><code>kvm_intel              55496  0
-kvm                   337772  1 kvm_intel
-</code></pre><h2 id="系统配置"><a href="#系统配置" class="headerlink" title="系统配置"></a>系统配置</h2><h3 id="登陆到用户界面"><a href="#登陆到用户界面" class="headerlink" title="登陆到用户界面"></a>登陆到用户界面</h3><p>CloudStack提供一个基于web的UI，管理员和终端用户能够使用这个界面。</p>
-<pre><code>http://&lt;management-server-ip-address&gt;:8080/client（后台管理网站）
-</code></pre><p>如果管理服务器是全新的安装,。那么会出现一个安装向导。在稍后的访问中,你将看到一个登录界面,你需要通过用户名和密码登入来查看你的仪表盘.</p>
-<pre><code>用户名 -&gt; 你账号的用户ID。默认用户名是admin。
-密码 -&gt; 用户ID对应的密码。默认用户名的密码是password。
-域 -&gt; 如果你是root用户，此处留空即可。
-</code></pre><h3 id="根管理员界面的概述"><a href="#根管理员界面的概述" class="headerlink" title="根管理员界面的概述"></a>根管理员界面的概述</h3><p>在管理服务器软件安装并且运行后, 你就可以运行CloudStack的用户界面.了。在这里通过UI，可以供给、查看并管理你的云基础架构。</p>
-<p>打开你自己喜欢的浏览器并访问这个URL。请把IP地址替换成你自己的管理服务器的IP。</p>
-<p>http://<management-server-ip-address>:8080/client</management-server-ip-address></p>
-<p>初次登录管理服务器时，会出现一个向导启动画面。后续访问时，您会直接进入控制面板。<br>如果你看到第一次的向导屏幕, 可以选择下面步骤之一进行。<br><strong>继续执行基本安装。</strong>如果你仅仅是想体验CloudStack，请选择这个，并且这样你可以马上开始跟着向导进行简单的配置。我们将帮助你建立一个有以下功能的云：一个运行CloudStack软件的机器和使用NFS协议的存储；一个运行VMs的XenServer或KVM hypervisor的服务器；一个共享的公有网络。安装向导的提示会给你需要的所有信息。但如果你需要更多的详细信息，你可以按照试用安装向导进行.</p>
-<p>我之前用过CloudStack。 如果您已经完成设计阶段，计划部署一个复杂CloudStack云，或是准备对用基础安装向导搭建的试验云进行扩展，请选择此项。在管理员UI中，您可以使用CloudStack中更强大的功能，例如高级VLAN网络、高可用、负载均衡器和防火墙等额外网络设备，以及支持Citrix XenServer、KVM、VMware vSphere等多种虚拟化平台。</p>
-<p>根管理员的仪表盘显示出来:<br>在云的安装及后续管理过程中，您需要用根管理员登录UI。根管理员账号管理着CloudStack的部署以及物理设施。根管理员可以修改系统配置，改变基本功能，创建和删除用户账号，以及其他仅限于已授权人员执行的操作。在初始安CloudStack时，请务必修改默认密码为新的较独特的密码。<br>打开你自己喜欢的浏览器并访问这个URL。请把IP地址替换成你自己的管理服务器的IP。</p>
-<pre><code>http://&lt;management-server-ip-address&gt;:8080/client
-使用当前root用户的ID和口令登录UI。缺省为admin，pawword。
-点击帐户。
-点击管理员帐号名。
-点击查看用户。
-点击管理员用户名。
-点击更改密码按钮。 
-输入新密码，然后点击确认。
-</code></pre><h3 id="初始化配置"><a href="#初始化配置" class="headerlink" title="初始化配置"></a>初始化配置</h3><p>选择“基础架构 –&gt; 添加区域”按照截图进行配置.</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.1.png" alt="2.4.1"></p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.2.png" alt="2.4.2"><br>名称：zone        dns1：172.16.2.1        dns2：192.168.0.1（这些内容包括下面的填写仅为参考值。可根据实际情况进行修改）</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.3.png" alt="2.4.3"></p>
-<p>物理网卡名称可以保持默认，改一下名也可以我改名为eth0</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.4.png" alt="2.4.4"></p>
-<p>提供名称：pod        预留网关：192.168.0.1     预留掩码：255.255.255.0<br>起始IP：192.168.0.31    结束IP：192.168.0.50</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.5.png" alt="2.4.5"></p>
-<p>来宾网关：192.168.0.1     掩码：255.255.255.0     起始IP:192.168.0.51  结束IP：192.168.0.80</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.6.png" alt="2.4.6"></p>
-<p>集群名称我取名为cluster</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.7.png" alt="2.4.7"></p>
-<p>主机名称：192.168.0.21        用户名：root    密码：<strong><em>*</em></strong>（这里用户名和密码，填写被添加主机的root用户和密码）</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.8.png" alt="2.4.8"><br>名称：primary   协议：选择nfs        服务器：192.168.0.24   路径：/export/primary</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.9.png" alt="2.4.9"></p>
-<p>NFS服务器：192.168.0.24        路径：/export/secondary</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.10.png" alt="2.4.10"></p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.11.png" alt="2.4.11"></p>
-<p>单击“是”启动区域！</p>
-<p>查看系统VM。大约5-10分钟启动成功，如果启动失败，查看日志文件进行改进！</p>
-<p>如果配置错误在可以在这里启动区域或禁用区域</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.12.png" alt="2.4.12"><br><img src="http://owawy15xy.bkt.clouddn.com/2.4.13.png" alt="2.4.13"></p>
-<p>这里我的资源域已经启动了。</p>
-<p>如果以上步骤均没有问题，则会显示如上图所示的界面，除了虚拟路由器数目仍旧为0，系统VM数目为2之外，其他所有组件的数目均为1。</p>
-<p>系统VM是否启动成功可以查看其状态是否为Running：</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.14.png" alt="2.4.14"></p>
-<p>系统VM是不同于主机上创建的普通虚拟机的，他们是CloudStack云平台自带的用于完成自身的一些任务的虚拟机。</p>
-<p>Secondary Storage VM：简称为SSVM，用于管理二级存储的相关操作，如模板跟镜像文件的上传与下载，快照，volumes的存放，第一次创建虚拟机时从二级存储拷贝模板到一级存储并且自动创建快照，每一个资源域可以有多个SSVM，当SSVM被删除或停止，它会自动被重建并启动。</p>
-<p>Console Proxy VM：用于在web 界面上展示控制台。</p>
-<p>虚拟路由器将会在第一个实例启动后自动创建。</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.4.15.png" alt="2.4.15"></p>
-<h2 id="启动虚拟机实例"><a href="#启动虚拟机实例" class="headerlink" title="启动虚拟机实例"></a>启动虚拟机实例</h2><h3 id="搭建一个http-服务器"><a href="#搭建一个http-服务器" class="headerlink" title="搭建一个http 服务器"></a>搭建一个http 服务器</h3><p>搭建http 服务主要用来管理ISO系统和镜像模板</p>
-<p>在master 节点安装 nginx </p>
-<pre><code># yum  -y install nginx
-</code></pre><p>防火墙中加入允许80 端口访问</p>
-<p>也可以直接关闭防火墙！在master管理节点不建议关闭防火墙！</p>
-<pre><code>-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
-</code></pre><p>编辑 /etc/nginx/nginx.conf  配置文件，能够使访问目录</p>
-<pre><code>autoindex on;# 显示目录
-autoindex_exact_size on;# 显示文件大小
-autoindex_localtime on;# 显示文件时间
-</code></pre><p>到 /usr/share/nginx/html  目录 删除所有文件 ，启动nginx</p>
-<pre><code># /etc/init.d/nginx restart
-</code></pre><p>上传ISO 到 /usr/share/nginx/html</p>
-<p>看到如下界面</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.1.png" alt="2.5.1"><br>修改全局设置  secstorage.allowed 设置 ，二级存储ISO镜像和模板可以下载，IP网段改为0.0.0.0/0</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.2.png" alt="2.5.2"></p>
-<h3 id="制作模板"><a href="#制作模板" class="headerlink" title="制作模板"></a>制作模板</h3><p>Cloudstack模版支持两种模式：</p>
-<pre><code>一种是通过KVM 制作的qcow2或raw文件    
-另外就是直接上传ISO文件作为模版文件
-</code></pre><p>先在Cloudstack的模板注册中，添加ISO镜像文件，然后启动实例，选择从ISO启动，然后安装系统。</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.3.png" alt="2.5.3"><br>URL 输入下载ISO的地址</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.4.png" alt="2.5.4"></p>
-<p>完成后，已就绪状态是 “YES”</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.5-1.png" alt="2.5.5-1"></p>
-<p>用ISO 安装虚拟机实例<br><img src="http://owawy15xy.bkt.clouddn.com/2.5.5.png" alt="2.5.5"></p>
-<p>选择ISO </p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.6.png" alt="2.5.6"></p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.7.png" alt="2.5.7"></p>
-<p>选择磁盘方案</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.8.png" alt="2.5.8"></p>
-<p>完成后选择 启动实例</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.9.png" alt="2.5.9"></p>
-<p>安装centos 后 ，发现没有IP， 网卡处选择自动启动</p>
-<p>对于CentOS，必须要修改网络接口的配置文件，在这里我们编辑/etc/sysconfig/network-scripts/ifcfg-eth0文件，更改下面的内容。</p>
-<pre><code>DEVICE=eth0
-TYPE=Ethernet
-BOOTPROTO=dhcp
-ONBOOT=yes
-</code></pre><p>移除udev持久设备规则</p>
-<pre><code># rm -f /etc/udev/rules.d/70*
-# rm -f /var/lib/dhclient/*
-</code></pre><p>移除SSH Keys</p>
-<p>这步是为了确认所有要作为模板的VMs的SSH Keys都不相同，否则这样会降低虚拟机的安全性。</p>
-<pre><code># rm -f /etc/ssh/*key*
-</code></pre><p>清除日志文件</p>
-<p>从主模板移除旧的日志文件是一个好习惯。</p>
-<pre><code># cat /dev/null &gt; /var/log/audit/audit.log 2&gt;/dev/null
-# cat /dev/null &gt; /var/log/wtmp 2&gt;/dev/null
-# logrotate -f /etc/logrotate.conf 2&gt;/dev/null
-# rm -f /var/log/*-* /var/log/*.gz 2&gt;/dev/null
-</code></pre><p>清除用户历史</p>
-<p>下一步来清除你曾经运行过的bash命令。</p>
-<pre><code># history -c
-# unset HISTFILE
-</code></pre><p>关闭VM</p>
-<p>现在你可以关闭你的主模板并且创建模板了！</p>
-<pre><code># halt -p
-</code></pre><p>创建模板！</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.10.png" alt="2.5.10"></p>
-<p>成功后从模板列表中，可以看出</p>
-<p><img src="http://owawy15xy.bkt.clouddn.com/2.5.11.png" alt="2.5.11"></p>
-<p>接下来就可以用模板创建VM了！</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;理论基础&quot;&gt;&lt;a href=&quot;#理论基础&quot; class=&quot;headerlink&quot; title=&quot;理论基础&quot;&gt;&lt;/a&gt;理论基础&lt;/h1&gt;&lt;h2 id=&quot;云计算的出现&quot;&gt;&lt;a href=&quot;#云计算的出现&quot; class=&quot;headerlink&quot; title=&quot;云计算的出现&quot;&gt;&lt;/a&gt;云计算的出现&lt;/h2&gt;&lt;p&gt;基本上，云计算只是一种把 IT 资源当作服务来提供的手段。几乎所有 IT 资源都可以作为云服务来提供：应用程序、计算能力、存储容量、联网、编程工具，以至于通信服务和协作工具。&lt;br&gt;云计算最早为 Google、Amazon 等其他扩建基础设施的大型互联网服务提供商所采用。于是产生一种架构：大规模扩展、水平分布的系统资源，抽象为虚拟 IT 服务，并作为持续配置、合用的资源进行管理。&lt;br&gt;
     
     </summary>
     

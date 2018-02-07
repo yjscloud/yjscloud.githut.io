@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Linux学习笔记,keepalived," />
+  <meta name="keywords" content="Python学习笔记," />
 
 
 
@@ -92,27 +92,17 @@
 
 
 
-<meta name="description" content="高可用性技术简介高可用性（HighAvailability）通常是用来描述一个系统经过专门的设计，从而减少停工的时间，而保持其服务的高可用性。计算机系统的可用性定义为：MTTF/(MTTF+MTTR) * 100%，因此计算机系统的可用性定义为系统保持正常运行时间的百分比。而负载均衡服务器的高可用性是为了屏蔽负载均衡服务器的失效，需要建立一个备份机。主服务器和备份机上都运行高可用性监控程序，通过传">
-<meta name="keywords" content="Linux学习笔记,keepalived">
+<meta name="description" content="前言讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们防风御寒，咋办？我们想到的一个办法就是把内裤改造一下，让它变得更厚更长，这样一来，它不仅有遮羞功能，还能提供保暖，不过有个问题，这个内裤被我们改造成了长裤后，虽然还有遮羞功能，但本质上它不再是一条真正的内裤了。于是聪明的人们发明长裤，在不影响内裤的前提下，">
+<meta name="keywords" content="Python学习笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="LVS + Keepalived 实现高可用Web集群">
-<meta property="og:url" content="http://yjscloud.com/2017/10/26/LVS-Keepalived-实现高可用Web集群/index.html">
+<meta property="og:title" content="Python当歌（八）：装饰器">
+<meta property="og:url" content="http://yjscloud.com/2018/02/07/Python当歌（八）：装饰器/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="高可用性技术简介高可用性（HighAvailability）通常是用来描述一个系统经过专门的设计，从而减少停工的时间，而保持其服务的高可用性。计算机系统的可用性定义为：MTTF/(MTTF+MTTR) * 100%，因此计算机系统的可用性定义为系统保持正常运行时间的百分比。而负载均衡服务器的高可用性是为了屏蔽负载均衡服务器的失效，需要建立一个备份机。主服务器和备份机上都运行高可用性监控程序，通过传">
-<meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/k-1.png">
-<meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/k-2.png">
-<meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/k-3.png">
-<meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/k-4.png">
-<meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/k-5.png">
-<meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/k-6.png">
-<meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/k-7.png">
-<meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/k-9.png">
-<meta property="og:image" content="http://ow78pfxd9.bkt.clouddn.com/k-8.png">
-<meta property="og:updated_time" content="2017-10-26T07:29:36.000Z">
+<meta property="og:description" content="前言讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们防风御寒，咋办？我们想到的一个办法就是把内裤改造一下，让它变得更厚更长，这样一来，它不仅有遮羞功能，还能提供保暖，不过有个问题，这个内裤被我们改造成了长裤后，虽然还有遮羞功能，但本质上它不再是一条真正的内裤了。于是聪明的人们发明长裤，在不影响内裤的前提下，">
+<meta property="og:updated_time" content="2018-02-07T08:21:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LVS + Keepalived 实现高可用Web集群">
-<meta name="twitter:description" content="高可用性技术简介高可用性（HighAvailability）通常是用来描述一个系统经过专门的设计，从而减少停工的时间，而保持其服务的高可用性。计算机系统的可用性定义为：MTTF/(MTTF+MTTR) * 100%，因此计算机系统的可用性定义为系统保持正常运行时间的百分比。而负载均衡服务器的高可用性是为了屏蔽负载均衡服务器的失效，需要建立一个备份机。主服务器和备份机上都运行高可用性监控程序，通过传">
-<meta name="twitter:image" content="http://ow78pfxd9.bkt.clouddn.com/k-1.png">
+<meta name="twitter:title" content="Python当歌（八）：装饰器">
+<meta name="twitter:description" content="前言讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们防风御寒，咋办？我们想到的一个办法就是把内裤改造一下，让它变得更厚更长，这样一来，它不仅有遮羞功能，还能提供保暖，不过有个问题，这个内裤被我们改造成了长裤后，虽然还有遮羞功能，但本质上它不再是一条真正的内裤了。于是聪明的人们发明长裤，在不影响内裤的前提下，">
 
 
 
@@ -140,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2017/10/26/LVS-Keepalived-实现高可用Web集群/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/02/07/Python当歌（八）：装饰器/"/>
 
 
 
 
 
-  <title>LVS + Keepalived 实现高可用Web集群 | 戏子登台</title>
+  <title>Python当歌（八）：装饰器 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -320,7 +310,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/10/26/LVS-Keepalived-实现高可用Web集群/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/02/07/Python当歌（八）：装饰器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -341,7 +331,7 @@
             
             
               
-                LVS + Keepalived 实现高可用Web集群
+                Python当歌（八）：装饰器
               
             
           </h1>
@@ -356,8 +346,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-26T13:23:40+08:00">
-                2017-10-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-07T16:04:24+08:00">
+                2018-02-07
               </time>
             
 
@@ -382,8 +372,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/技术分享/" itemprop="url" rel="index">
-                    <span itemprop="name">技术分享</span>
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
                   </a>
                 </span>
 
@@ -400,7 +390,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/10/26/LVS-Keepalived-实现高可用Web集群/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/02/07/Python当歌（八）：装饰器/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -423,7 +413,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  2,947
+                  1,995
                 </span>
               
 
@@ -439,7 +429,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  11
+                  8
                 </span>
               
             </div>
@@ -457,166 +447,131 @@
       
 
       
-        <h1 id="高可用性技术简介"><a href="#高可用性技术简介" class="headerlink" title="高可用性技术简介"></a>高可用性技术简介</h1><p>高可用性（HighAvailability）通常是用来描述一个系统经过专门的设计，从而减少停工的时间，而保持其服务的高可用性。计算机系统的可用性定义为：MTTF/(MTTF+MTTR) * 100%，因此计算机系统的可用性定义为系统保持正常运行时间的百分比。而负载均衡服务器的高可用性是为了屏蔽负载均衡服务器的失效，需要建立一个备份机。主服务器和备份机上都运行高可用性监控程序，通过传送信息来监控对方的运行状况。当备份机不能在一定的时间里接收到从主服务器那里发送的它存活着（即它从事着主服务器的工作）的时候，备份服务器就会从主服务器那里接管器主服务器的服务IP并继续提供服务。当主服务器又开始接管服务时，它会给备份服务器发送它接管的消息，接着备份服务器就会释放服务IP地址，这样子主服务器又再一次接管了服务IP。这就实现了在主服务器失效的状况下，备份服务器可以接管主服务的工作，以此实现负载集群系统配置信息的同步与备份了。</p>
-<a id="more"></a>
-<h1 id="LVS-负载均衡技术"><a href="#LVS-负载均衡技术" class="headerlink" title="LVS 负载均衡技术"></a>LVS 负载均衡技术</h1><p>LVS即 Linux Virtual Server，是由中国一个Linux程序员章文嵩博士发起和领导的，基于Linux系统的服务器集群解决方案，其实现目标是创建一个具有良好的扩展性、高可靠性、高性能和高可用性的体系。使用LVS架设的服务器集群系统从体系结构上看是透明的，最终用户只感觉到一个虚拟服务器。物理服务器之间可以通过高速的 LAN或分布在各地的WAN相连。最前端是负载均衡器，它负责将各种服务请求分发给后面的物理服务器，让整个集群表现得像一个服务于同一IP地址的虚拟服务器。负载均衡（Load Balance）建立在现有网络结构之上，它提供了一种廉价有效透明的方法扩展网络设备和服务器的带宽、增加吞吐量、加强网络数据处理能力、提高网络的灵活性和可用性。</p>
-<p>负载均衡可以通过软件实现也可以通过硬件实现，软件负载均衡解决方案是指在一台或多台服务器相应的操作系统上安装一个或多个附加软件来实现负载均衡，它的优点是基于特定环境，配置简单，使用灵活，成本低廉，可以满足一般的负载均衡需求。而硬件负载均衡解决方案是直接在服务器和外部网络间安装负载均衡设备，这种设备我们通常称之为负载均衡器，由于专门的设备完成专门的任务，独立于操作系统，整体性能得到大量提高，加上多样化的负载均衡策略，智能化的流量管理，可达到最佳的负载均衡需求。LVS负载均衡的实现基础是IP交换，将IP层的TCP/IP请求均匀的转移到服务器池中不同的服务器上。而在 Linux平台下 IP的交换具备了一定的可扩展性,可以实现高性能、高可扩展性、易管理性等诸多特点,成为一个以负载均衡为核心的真正意义的集群系统。</p>
-<p>LVS服务器集群采用IP负载均衡技术和基于内容请求分发技术。调度器具有很好的吞吐率，将请求均衡地转移到不同的服务器上执行，且调度器自动屏蔽掉服务器的故障，从而将一组服务器构成一个高性能的、高可用的虚拟服务器。整个服务器集群的结构对客户是透明的，而且无需修改客户端和服务器端的程序。负载调度器可以运行在以下三种模式下：</p>
-<p>（1）Virtual Server via NAT（VS-NAT）：用地址翻译实现虚拟服务器。地址转换器有能被外界访问到的合法IP地址，它修改来自专有网络的流出包的地址。外界看起来包是来自 地址转换器本身，当外界包送到转换器时，它能判断出应该将包送到内部网的哪个节点。优点是节省IP 地址，能对内部进行伪装；缺点是效率低，因为返回给请求方的流量经过转换器。</p>
-<p>（2）Virtual Server via IP Tunneling （VS-TUN）：用IP隧道技术实现虚拟服务器。这种方式是在集群的节点不在同一个网段时可用的转发机制，是将IP包封装在其他网络流量中的方法。为了 安全的考虑，应该使用隧道技术中的VPN，也可使用租用专线。 集群所能提供的服务是基于TCP/IP的Web服务、Mail服务、News服务、DNS服务、Proxy服务器等。</p>
-<p>（3）Virtual Server via Direct Routing（VS-DR）：用直接路由技术实现虚拟服务器。当参与集群的计算机和作为控制管理的计算机在同一个网段时可以用此法，控制管理的计算机接 收到请求包时直接送到参与集群的节点。优点是返回给客户的流量不经过控制主机，速度快开销少。<br>LVS本身是基于IP层的负载均衡，可以说是最高效的一种方式。其中VS- DR和VS-TUN两种工作模式可以由后端机器直接对外服务，负载均衡的性能很高，对资源占用很少，通过LVS服务器集群负载均衡技术，能够以很高的性价比解决网络访问量激增带来的服务器瓶颈问题。</p>
-<h1 id="KEEPALIVED-技术"><a href="#KEEPALIVED-技术" class="headerlink" title="KEEPALIVED 技术"></a>KEEPALIVED 技术</h1><p>在 keepalived中，一个是master，其他的都是backup</p>
-<p>vrrp:实现ip地址的高可用性，将除地址之外其他的功能也转移</p>
-<p>通过状态的改变，keepalived检测到，执行相应的状态下定义的脚本，脚本中有服务的 关闭和开启的命令，来实现服务的转移。</p>
-<p>keepalived不仅提供地址的转移功能，服务启动和关闭，还有监控功能具有两个核心组件：VRRP stack 和 checkers（用来监控服务）、还有对外围监控脚本调用的实现，节点之间只通过优先级来确定资源在哪个节点上运行，需要起始配置，虚拟地址转移需通过配置脚本来启动服务转移信息状态，有个通知机制，可以发短信或者邮件给管理员（需配置邮件服务器）</p>
-<p>适用于用不到共享存储，节点少的且keepalived支持多节点，但是节点中启动服务的只能有一个节点（一主多从）让每个节点都活动起来（运行两组资源）</p>
-<p>vrrp认证：1、明文认证、配置好预共享密钥  2、md5 sha1 散列</p>
-<p>core：是keepalived的核心，复杂主进程的启动和维护，全局配置文件的加载解析等</p>
-<p>check：负责healthchecker(健康检查)，包括了各种健康检查方式，以及对应的配置的解析包括<br>LVS的配置解析</p>
-<p>vrrp：VRRPD子进程，VRRPD子进程就是来实现VRRP协议的</p>
-<p>libipfwc：iptables(ipchains)库，配置LVS会用到</p>
-<p>libipvs*：配置LVS会用到</p>
-<p>注意，keepalived和LVS完全是两码事，只不过他们各负其责相互配合而已</p>
-<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-1.png" alt="k-1"></p>
-<p>keepalived启动后会有三个进程</p>
-<p>(1)父进程：内存管理，子进程管理等等</p>
-<p>(2)子进程：VRRP子进程</p>
-<p>(3)子进程：healthchecker子进程</p>
-<h1 id="实验环境物理结构说明"><a href="#实验环境物理结构说明" class="headerlink" title="实验环境物理结构说明"></a>实验环境物理结构说明</h1><p><img src="http://ow78pfxd9.bkt.clouddn.com/k-2.png" alt="k-2"></p>
-<h1 id="keepalived测试环境安装"><a href="#keepalived测试环境安装" class="headerlink" title="keepalived测试环境安装"></a>keepalived测试环境安装</h1><p>（1）关闭防火墙和selinux</p>
-<pre><code># service iptables stop
-# chkconfig iptables off
-# vi /etc/selinux/config 
-    把enforcing改为disabled
-# setenforce 0
-</code></pre><p>（2）分别给master和backup节点安装ipvsadm和keepalived</p>
-<pre><code># yum –y install ipvsadm
-# yum –y install keepalived
-# service keepalived start
-# chkconfig keepalived on
-</code></pre><p>（3）配置 keepalived.conf</p>
-<pre><code>#  vi /etc/keeplived/keepalived.conf
-</code></pre><pre>
-! Configuration File for keepalived
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们防风御寒，咋办？我们想到的一个办法就是把内裤改造一下，让它变得更厚更长，这样一来，它不仅有遮羞功能，还能提供保暖，不过有个问题，这个内裤被我们改造成了长裤后，虽然还有遮羞功能，但本质上它不再是一条真正的内裤了。于是聪明的人们发明长裤，在不影响内裤的前提下，直接把长裤套在了内裤外面，这样内裤还是内裤，有了长裤后宝宝再也不冷了。装饰器就像我们这里说的长裤，在不影响内裤作用的前提下，给我们的身子提供了保暖的功效。</p>
+<p>谈装饰器前，还要先要明白一件事，Python 中的函数和 Java、C++不太一样，Python 中的函数可以像普通变量一样当做参数传递给另外一个函数，例如：</p>
+<pre><code>def foo():
+    print(&quot;foo&quot;)
 
-global_defs {
-   router_id S208                ## keepalived 服务器标识符，可以随意设定（ 貌似也是全局唯一 ）
-}
+def bar(func):
+    func()
 
-vrrp_instance NW3007 {            ## 定义一个名为 NW3007 的 VRRP 实例
-    state MASTER                ## Keepalived 服务器角色，MASTER 为主、BACKUP 为备
-    interface eth0                ## 指定 HA 监测网络接口
-    virtual_router_id 51            ## 虚拟路由标识，同一个 VRRP 实例使用唯一的标识，主备必须一样
-    priority 200                    ## 节点优先级，同一 VRRP 实例中 MASTER 的优先级必须大于 BACKUP
-    advert_int 5                    ## MASTER / BACKUP 之间同步检查间隔时间，单位 秒
-    track_interface {                ##指定监听数据的网口
-        eth0
-    }
-    authentication {                ## 节点之间通信验证类型、密码 ，同一 VRRP 实例中，MASTER / BACKUP 必须使用相同的密码才可以通信
-        auth_type PASS
-        auth_pass 1111
-    }
-    virtual_ipaddress {            ## 虚拟 IP 地址，又称漂移 IP 。可以通过 ip add 在 MASTER 上查看是否绑定
-        192.168.2.100
-    }
-}
+bar(foo)
+</code></pre><p>正式回到我们的主题。装饰器本质上是一个 Python 函数或类，它可以让其他函数或类在不需要做任何代码修改的前提下增加额外功能，装饰器的返回值也是一个函数/类对象。它经常用于有切面需求的场景，比如：时间计算、性能测试、事务处理、缓存、权限校验等场景，装饰器是解决这类问题的绝佳设计。有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码到装饰器中并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能。</p>
+<p>先来看一个简单例子：</p>
+<pre><code>import time
 
-virtual_server 192.168.0.110 80 {        ## 定义虚拟服务器
-    delay_loop 3                        ## 定义健康检查时间间隔，单位 秒
-    lb_algo wlc                         ## 负载均衡调度算法，支持 rr 、wrr 、lc 、wlc 、lblc 、sh 、dh 等
-    lb_kind DR                        ## LVS 负载均衡机制，支持 NAT 、TUN 、DR
-    protocol TCP                    ## 转发协议类型，支持 TCP 、UDP
-    ha_suspend                        
+def foo():
+    time.sleep(3)
+    print(&quot;运行时间是%s&quot; %(stop_time - start_time))
+</code></pre><p>现在有一个新的需求，希望可以记录下函数运行的时间，于是在代码中添加计算时间的代码：</p>
+<pre><code>import time
 
-    real_server 192.168.0.30 80 {            ## 定义节点服务器
-        weight 3                        ## 节点权重值，数字越大权重越高，分配到的连接越多。主要用于后端节点服务器性能不统一
-        TCP_CHECK {                ## 健康检测方式，支持 HTTP_GET 、SSL_GET 、TCP_CHECK 、SMTP_CHECK 、MISC_CHECK
-            connect_timeout 3        ## 无响应超时时间，单位 秒
-        }
-    }
+def foo():
+    start_time = time.time()
+    time.sleep(3)
+    stop_time = time.time()
+    print(&quot;运行时间是%s&quot; %(stop_time - start_time))
+</code></pre><p>如果函数 bar()、bar2() 也有类似的需求，怎么做？再写一个 类似的代码在 bar 函数里？这样就造成大量雷同的代码，为了减少重复写代码，我们可以这样做，重新定义一个新的函数：专门计算函数运行时间 ，时间计算完成之后再执行真正的业务代码。</p>
+<pre><code>import time
+def timmer(func): #func=test
+        start_time=time.time()
+        func() #就是在运行test()
+        stop_time = time.time()
+        print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+def test():
+    time.sleep(3)
+print(&apos;test函数运行完毕&apos;)
 
-    real_server 192.168.0.31 80 {        ## 第二台节点服务器
-        weight 3
-        TCP_CHECK {
-            connect_timeout 3
-        }
-    }
-}
-</pre>
+timmer(test)
+</code></pre><p>这样做逻辑上是没问题的，功能是实现了，但是我们调用的时候不再是调用真正的业务逻辑test函数，而是换成了timmer函数，这就破坏了原有的代码结构， 现在我们不得不每次都要把原来的那个test函数作为参数传递给test函数，那么有没有更好的方式的呢？当然有，答案就是装饰器。</p>
+<h1 id="简单装饰器"><a href="#简单装饰器" class="headerlink" title="简单装饰器"></a>简单装饰器</h1><pre><code>import time
+def timmer(func): #func=test
+    def wrapper():
+        start_time=time.time()
+        func() #就是在运行test()
+        stop_time = time.time()
+        print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
 
-<p>在master节点配置好keepalived文件后将keepalived.conf拷贝到backup节点</p>
-<pre><code># scp /etc/keepalived/keepalived.conf  192.168.0.29:/etc/keepalived/
-</code></pre><p>然后将priority值改为100即可,最后重启keepalived服务</p>
-<pre><code># service keepalived restart
-</code></pre><p>（4）为master节点和backup节点添加vip</p>
-<p>master节点</p>
-<pre><code># ip addr add 192.168.0.110/32 dev eth0
-</code></pre><p><img src="http://ow78pfxd9.bkt.clouddn.com/k-3.png" alt="k-3"></p>
-<p>backup节点</p>
-<pre><code># ip addr add 192.168.0.110/32 dev eth0
-</code></pre><p><img src="http://ow78pfxd9.bkt.clouddn.com/k-4.png" alt="k-4"></p>
-<p>（5）验证虚拟 IP 地址是否可以正常漂移</p>
-<p>停用master节点网卡</p>
-<pre><code># ifdown eth0
-</code></pre><p>查看backup节点的日志文件</p>
-<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-5.png" alt="k-5"></p>
-<p>查看backup的网卡</p>
-<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-6.png" alt="k-6"></p>
-<p>重新激活master网卡,查看backup日志文件<br><img src="http://ow78pfxd9.bkt.clouddn.com/k-7.png" alt="k-7"></p>
-<p>虚拟ip会自动移除，虚拟ip设置正常！</p>
-<p>注意：停用master的网卡vip会自动消失需要重新为master添加vip</p>
-<pre><code># ip addr add 192.168.0.110/32 dev eth0
-</code></pre><h1 id="配置RS-1和RS-2"><a href="#配置RS-1和RS-2" class="headerlink" title="配置RS-1和RS-2"></a>配置RS-1和RS-2</h1><p>（1）关闭防火墙和selinux</p>
-<pre><code># service iptables stop
-# chkconfig iptables off
-# vi /etc/selinux/config 
-    把enforcing改为disabled
-# setenforce 0
-</code></pre><p>（2）安装httpd</p>
-<p>分别在RS-1和RS-2上进行如下操作</p>
-<pre><code># yum –y install httpd
-# service httpd start
-# chkconfig httpd on
-</code></pre><p>在RS-1</p>
-<pre><code>echo RS-1-Web11111111 &gt; /var/www/html/index.html
-</code></pre><p>在RS-2</p>
-<pre><code>echo RS-2-Web2222222 &gt; /var/www/html/index.html
-</code></pre><p>（3）RS-1创建一个脚本文件</p>
-<pre><code># vi /root/realserver.sh
-</code></pre><pre>
-#!/bin/bash
-vip=192.168.0.110
+def test():
+    time.sleep(3)
+print(&apos;test函数运行完毕&apos;)
 
-case $1 in
-start)
-    echo 1 > /proc/sys/net/ipv4/conf/all/arp_ignore
-    echo 1 > /proc/sys/net/ipv4/conf/eth0/arp_ignore
-    echo 2 > /proc/sys/net/ipv4/conf/all/arp_announce
-    echo 2 > /proc/sys/net/ipv4/conf/eth0/arp_announce
+test = timmer(test)  #因为装饰器 timmer(test) 返回的时函数对象 wrapper，这条语句相当于test = wrapper
+test()    #执行test()就相当与执行wrapper()
+</code></pre><p>timmer就是一个装饰器，它一个普通的函数，它把执行真正业务逻辑的函数 func 包裹在其中，看起来像 test 被 timmer 装饰了一样，timmer返回的也是一个函数，这个函数的名字叫 wrapper。在这个例子中，函数进入和退出时 ，被称为一个横切面，这种编程方式被称为面向切面的编程。</p>
+<h1 id="语法糖"><a href="#语法糖" class="headerlink" title="@ 语法糖"></a>@ 语法糖</h1><p>如果你接触 Python 有一段时间了的话，想必你对 @ 符号一定不陌生了，没错 @ 符号就是装饰器的语法糖，它放在函数开始定义的地方，这样就可以省略最后一步再次赋值的操作。</p>
+<pre><code>import time
+def timmer(func): #func=test
+    def wrapper():
+        start_time=time.time()
+        func() #就是在运行test()
+        stop_time = time.time()
+        print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
 
-    ifconfig lo:0 $vip netmask 255.255.255.255 broadcast $vip up
+@timmer
+def test():
+    time.sleep(3)
+print(&apos;test函数运行完毕&apos;)
 
-    ;;
-stop)
-    ifconfig lo:0 down
-        echo 0 > /proc/sys/net/ipv4/conf/all/arp_ignore
-        echo 0 > /proc/sys/net/ipv4/conf/eth0/arp_ignore
-        echo 0 > /proc/sys/net/ipv4/conf/all/arp_announce
-        echo 0 > /proc/sys/net/ipv4/conf/eth0/arp_announce
-    ;;
-esac
-</pre>
+test()
+</code></pre><p>如上所示，有了 @ ，我们就可以省去test = timmer(test)这一句了，直接调用 test() 即可得到想要的结果。你们看到了没有，test() 函数不需要做任何修改，只需在定义的地方加上装饰器，调用的时候还是和以前一样，如果我们有其他的类似函数，我们可以继续调用装饰器来修饰函数，而不用重复修改函数或者增加新的封装。这样，我们就提高了程序的可重复利用性，并增加了程序的可读性。</p>
+<p>装饰器在 Python 使用如此方便都要归因于 Python 的函数能像普通的对象一样能作为参数传递给其他函数，可以被赋值给其他变量，可以作为返回值，可以被定义在另外一个函数内。</p>
+<h1 id="args、-kwargs"><a href="#args、-kwargs" class="headerlink" title=" args、* kwargs"></a><em> args、*</em> kwargs</h1><p>如果我的业务逻辑函数 foo 需要参数怎么办？比如：</p>
+<pre><code>def test(name):
+    time.sleep(3)
+    print(“test函数运行完毕,名字是【%s】” %name)
+</code></pre><p>我们可以在定义 wrapper 函数的时候指定参数：</p>
+<pre><code>def wrapper(name):
+    start_time=time.time()
+   func(name)        
+     stop_time = time.time()
+   print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
+</code></pre><p>这样 test的参数就可以定义在 wrapper 函数中。如果 foo 函数接收两个参数呢？三个参数呢？更有甚者，就多个。当装饰器不知道 test个参数时，我们可以用 * args 来代替：</p>
+<pre><code>def wrapper(*args):
+    start_time=time.time()
+   func(*args)        
+    stop_time = time.time()
+   print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
+</code></pre><p>如此一来，甭管 test定义了多少个参数，我都可以完整地传递到 func 中去。这样就不影响 test的业务逻辑了。这时还有读者会问，如果 test函数还定义了一些关键字参数呢？比如：</p>
+<pre><code>def test(name,age,gender):
+    time.sleep(1)
+    print(&apos;test1函数运行完毕,名字是【%s】 年龄是【%s】 性别【%s】&apos; %(name,age,gender))
+    return &apos;这是test的返回值&apos;
+</code></pre><p>这时，你就可以把 wrapper 函数指定关键字函数：</p>
+<pre><code>def wrapper(*args,**kwargs):
+    start_time=time.time()
+    func(*args,**kwargs)
+    stop_time = time.time()
+    print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    return wrapper
+</code></pre><h1 id="带参数的装饰器"><a href="#带参数的装饰器" class="headerlink" title="带参数的装饰器"></a>带参数的装饰器</h1><p>装饰器还有更大的灵活性，例如带参数的装饰器，在上面的装饰器调用中，该装饰器接收唯一的参数就是执行业务的函数test 。装饰器的语法允许我们在调用时，提供其它参数，比如@timmer()。这样，就为装饰器的编写和使用提供了更大的灵活性。比如，我们可以在装饰器中指定如何计算时间，因为不同业务函数可能需要的计算时间方式是不一样的。</p>
+<pre><code>import time
 
-<p>赋予运行权权限</p>
-<pre><code># chmod a+x /root/realserver.sh
-</code></pre><p>将脚本拷贝到RS-2</p>
-<pre><code># scp /root/realserver.sh 192.168.0.31:/root/
-</code></pre><p>在RS-1和RS-2执行脚本</p>
-<pre><code># ./realserver start
-</code></pre><h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p>服务器之间可以自由调度</p>
-<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-9.png" alt="k-9"></p>
-<p><img src="http://ow78pfxd9.bkt.clouddn.com/k-8.png" alt="k-8"></p>
-<p>停用mater网卡也可以自由调度RS-1和RS-2，实验到此结束</p>
+def cal_time(timing):
+    def timmer(func):
+        def wrapper(*args, **kwargs):
+                start_time = time.time()
+                func(*args, **kwargs)
+                stop_time = time.time()
+                if timing == &quot;True&quot;:
+                    print(&quot;运行时间是%s&quot; %(stop_time - start_time))
+                else:
+                    print(&quot;鬼知道他运行了多长时间&quot;)
+        return wrapper
+    return timmer
+
+@cal_time(timing=&quot;True&quot;)
+def test():
+    time.sleep(3)
+    print(&quot;test函数运行完毕&quot;)
+
+test()
+</code></pre><p>上面的cal_time是允许带参数的装饰器。它实际上是对原有装饰器的一个函数封装，并返回一个装饰器。我们可以将它理解为一个含有参数的闭包。当我 们使用@cal_time(timing=”True”)调用的时候，Python 能够发现这一层的封装，并把参数传递到装饰器的环境中。</p>
+<p> @cal_time(timing=”True”等价于@timmer</p>
 
       
     </div>
@@ -668,9 +623,7 @@ esac
       
         <div class="post-tags">
           
-            <a href="/tags/Linux学习笔记/" rel="tag"><i class="fa fa-tag"></i> Linux学习笔记</a>
-          
-            <a href="/tags/keepalived/" rel="tag"><i class="fa fa-tag"></i> keepalived</a>
+            <a href="/tags/Python学习笔记/" rel="tag"><i class="fa fa-tag"></i> Python学习笔记</a>
           
         </div>
       
@@ -683,18 +636,14 @@ esac
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/" rel="next" title="如何用九条命令在一分钟内检查Linux服务器性能?">
-                <i class="fa fa-chevron-left"></i> 如何用九条命令在一分钟内检查Linux服务器性能?
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/21/kvm学习笔记（九）-cpu添加虚拟化功能/" rel="prev" title="kvm学习笔记（九）-cpu添加虚拟化功能">
-                kvm学习笔记（九）-cpu添加虚拟化功能 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/07/Python当歌（七）：闭包/" rel="prev" title="Python当歌（七）：闭包">
+                Python当歌（七）：闭包 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -916,7 +865,7 @@ esac
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#高可用性技术简介"><span class="nav-number">1.</span> <span class="nav-text">高可用性技术简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LVS-负载均衡技术"><span class="nav-number">2.</span> <span class="nav-text">LVS 负载均衡技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#KEEPALIVED-技术"><span class="nav-number">3.</span> <span class="nav-text">KEEPALIVED 技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验环境物理结构说明"><span class="nav-number">4.</span> <span class="nav-text">实验环境物理结构说明</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#keepalived测试环境安装"><span class="nav-number">5.</span> <span class="nav-text">keepalived测试环境安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置RS-1和RS-2"><span class="nav-number">6.</span> <span class="nav-text">配置RS-1和RS-2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试"><span class="nav-number">7.</span> <span class="nav-text">测试</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单装饰器"><span class="nav-number">2.</span> <span class="nav-text">简单装饰器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语法糖"><span class="nav-number">3.</span> <span class="nav-text">@ 语法糖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#args、-kwargs"><span class="nav-number">4.</span> <span class="nav-text"> args、* kwargs</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#带参数的装饰器"><span class="nav-number">5.</span> <span class="nav-text">带参数的装饰器</span></a></li></ol></div>
             
 
           </div>
