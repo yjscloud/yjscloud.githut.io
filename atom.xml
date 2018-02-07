@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2017-12-15T15:24:46.000Z</updated>
+  <updated>2018-02-07T00:42:17.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,273 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Python当歌（二）：基础数值类型</title>
+    <link href="http://yjscloud.com/2018/02/06/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B/"/>
+    <id>http://yjscloud.com/2018/02/06/Python当歌（二）：基础数值类型/</id>
+    <published>2018-02-06T10:31:58.000Z</published>
+    <updated>2018-02-07T00:42:17.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h1><p>所有的功能，都放在int里</p>
+<p>int:将字符串转换为数字</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%881%EF%BC%89.png" alt="二（1）"></p>
+<p>bit_lenght：当前数字的二进制，至少用n位表示</p>
+<pre><code>r = age.bit_length()
+</code></pre><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%882%EF%BC%89.png" alt="二（2）"></p>
+<h1 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h1><p>如：’wupeiqi’、’alex’</p>
+<p>注：字符串一旦创建，不可修改，一旦修改或者拼接，都会造成重新生成字符串。</p>
+<p>每个字符串都具备如下功能：</p>
+<p>（1）首字母大写</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%883%EF%BC%89.png" alt="二（3）"></p>
+<p>（2）所有变小写，casefold（）更牛逼，很多未知的对相应变小写</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%884%EF%BC%89.png" alt="二（4）"></p>
+<p>（3）设置宽度，并将内容居中</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%885%EF%BC%89.png" alt="二（5）"></p>
+<p>注：20代指总长度，*空白未知填充，一个字符，可有可无</p>
+<p>设置宽度，并将内容居右：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%886%EF%BC%89.png" alt="二（6）"></p>
+<p>设置宽度，并将内容居左： </p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%887%EF%BC%89.png" alt="二（7）"></p>
+<p>（4）去字符串中寻找，寻找子序列的出现次数：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%888%EF%BC%89.png" alt="二（8）"></p>
+<p>也可在限定范围内寻找</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%889%EF%BC%89.png" alt="二（9）"></p>
+<p>（5）以什么什么结尾：endswith（），以什么什么开始：startswith（）</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8810%EF%BC%89.png" alt="二（10）"></p>
+<p>（6）断句方法</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8811%EF%BC%89.png" alt="二（11）"></p>
+<p>注：20的意思是以20个字符为空格作为断句</p>
+<p>（7）从开始往后找，找到第一个之后，获取其未知</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8812%EF%BC%89.png" alt="二（12）"></p>
+<p>（8）Index（）找不到，报错 </p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8813%EF%BC%89.png" alt="二（13）"></p>
+<p>（9）格式化，将一个字符串中的占位符替换为指定的值 </p>
+<p>使用关键字进行匹配</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8814%EF%BC%89.png" alt="二（14）"></p>
+<p>使用数字进行匹配</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8815%EF%BC%89.png" alt="二（15）"></p>
+<p>(10)格式化，传入的值 {“name”: ‘alex’, “a”: 19} </p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-16.png" alt="2-16"></p>
+<p>（11）字符串中是否只包含字母和数字</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-17.png" alt="2-17"></p>
+<p>（12）是否是字母和汉字</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-18.png" alt="2-18"></p>
+<p>（13）当前输入是否是数字</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-19.png" alt="2-19"></p>
+<p>（14）是否存在不可显示的字符</p>
+<pre><code># \t   制表符
+# \n   换行
+</code></pre><p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-20.png" alt="2-20"></p>
+<p>(15)判断是否全部是空格</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-21.png" alt="2-21"></p>
+<p>（16）判断是否是标题</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-22.png" alt="2-22"></p>
+<p>(17)将字符串中的每一个元素按照指定分隔符进行拼接</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-23.png" alt="2-23"></p>
+<p>（18)判断是否全部是大小写和转换为大小写</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-24.png" alt="2-24"></p>
+<p>(19)移除指定字符串，有限最多匹配</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-25.png" alt="2-25"></p>
+<p>lstrip()和rstrip()去除左右空白，也可以去除去除\t \n</p>
+<p>（20）分割为三部分</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-26.png" alt="2-26"></p>
+<p>（21）分割为指定个数</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-27.png" alt="2-27"></p>
+<p>（22）分割，只能根据，true，false：是否保留换行</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-28.png" alt="2-28"></p>
+<p>(23)以xxx开头，以xx结尾</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-29.png" alt="2-29"></p>
+<p>(24)大小写转换</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-30.png" alt="2-30"></p>
+<p>(25)字母，数字，下划线 ： 标识符 def  class</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-31.png" alt="2-31"></p>
+<p>(26)将指定字符串替换为指定字符串</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-32.png" alt="2-32"></p>
+<p>以上方法中join、split、find、strip、upper、lower、replace这7个方法比较常用</p>
+<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><p>如：[11,22,33]、[‘wupeiqi’, ‘alex’]</p>
+<p>每个列表都具备如下功能：</p>
+<p>（1)原来值最后追加</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-33.png" alt="2-33"></p>
+<p>(2)清空列表</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-34.png" alt="2-34"></p>
+<p>(3)拷贝，浅拷贝</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-35.png" alt="2-35"></p>
+<p>(4)计算元素出现的次数</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-36.png" alt="2-36"></p>
+<p>(5)根据值获取当前值索引位置（左边优先）</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-37.png" alt="2-37"></p>
+<p>(6)在指定索引位置插入元素</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-38.png" alt="2-38"></p>
+<p>(7)删除某个值(1.指定索引；2. 默认最后一个)，并获取删除的值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-39.png" alt="2-39"></p>
+<p>还可以指定索引来删除</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-40.png" alt="2-40"></p>
+<p>(8)删除列表中的指定值，左边优先</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-41.png" alt="2-41"></p>
+<p>(9)将当前列表进行翻转</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-42.png" alt="2-42"></p>
+<p>(10)列表的排序</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-43-1.png" alt="2-43"></p>
+<p>注：列表中可以嵌套任何类型，列表是有序的，列表中的元素可以是数字，字符串,列表，布尔值…所有的都能放进去，列表元素可以被查询、修改和删除，可以通过索引和切片进行查找，可以用in操作判断一个元素是否在列表中例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-43.png" alt="2-44"></p>
+<p>取嵌套列表中的元素例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-44.png" alt="2-45"></p>
+<p>也可以将字符串转换列表，其内部使用for循环，例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-45.png" alt="2-46"></p>
+<p>也可以将列表转换成字符串，需要自己写for循环一个一个处理： 既有数字又有字符串，例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-46.png" alt="2-47"></p>
+<p>也可以直接使用字符串join方法：列表中的元素只有字符串，例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-47.png" alt="2-48"></p>
+<h1 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h1><p>如：(11,22,33)、(‘wupeiqi’, ‘alex’)</p>
+<p>元组，元素不可被修改，不能被增加或者删除，元组同样可以通过切片索引查询元素</p>
+<p>每个元组都具备如下功能：</p>
+<p>(1)可以被for循环，可迭代对象</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-48.png" alt="2-49"></p>
+<p>(2)转换</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-49.png" alt="2-50"></p>
+<p>(3)元组的一级元素不可修改/删除/增加，元组是有序的。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-50.png" alt="2-51"></p>
+<h1 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h1><p>如：{‘name’: ‘wupeiqi’, ‘age’: 18} 、{‘host’: ‘2.2.2.2’, ‘port’: 80]}</p>
+<p>ps：循环时，默认循环key</p>
+<p>字典两大特点：无序，键唯一</p>
+<p>每个字典都具备如下功能：</p>
+<p>(1)根据序列，创建字典，并指定统一的值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-51.png" alt="2-52"></p>
+<p>(2)根据Key获取值，key不存在时，可以指定默认值（None）</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-52.png" alt="2-53"></p>
+<p>(3)删除并获取值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-53.png" alt="2-54"></p>
+<p>(4)设置值，已存在，不设置，获取当前key对应的值：不存在，设置，获取当前key对应的值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-54.png" alt="2-55"></p>
+<p>(5)更新</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-55.png" alt="2-56"></p>
+<p>(6)字典的value可以是任何值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-56.png" alt="2-57"></p>
+<p>(7)布尔值(1,0)、列表、字典不能作为字典的key</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-57.png" alt="2-58"></p>
+<p>(8)索引方式找到指定元素</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-58.png" alt="2-59"></p>
+<p>(9)字典支持 del 删除</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-59.png" alt="2-60"></p>
+<p>(10)for循环</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-60.png" alt="2-61"></p>
+<h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><p>set是一个无序且不重复的元素集合</p>
+<p>每个集合都具备如下功能：</p>
+<p>(1)添加</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-61.png" alt="2-62"></p>
+<p>(2)清空</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-62.png" alt="2-63"></p>
+<p>(3)拷贝</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-63.png" alt="2-64"></p>
+<p>(4)随机删</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-64.png" alt="2-65"></p>
+<p>(5)指定删除</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-65.png" alt="2-66"></p>
+<p>(6)求交集</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-66.png" alt="2-67"></p>
+<p>(7)求并集</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-67.png" alt="2-68"></p>
+<p>(8)差集</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-68.png" alt="2-69"></p>
+<p>(9)交叉补集</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-69.png" alt="2-70"></p>
+<p>(10)集合值更新</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-70.png" alt="2-71"></p>
+<p>(11)去除集合中的重复值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-71.png" alt="2-72"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;数字&quot;&gt;&lt;a href=&quot;#数字&quot; class=&quot;headerlink&quot; title=&quot;数字&quot;&gt;&lt;/a&gt;数字&lt;/h1&gt;&lt;p&gt;所有的功能，都放在int里&lt;/p&gt;
+&lt;p&gt;int:将字符串转换为数字&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://p3q1rwnbl.b
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Python当歌（一）：Python入门</title>
+    <link href="http://yjscloud.com/2018/02/06/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9APython%E5%85%A5%E9%97%A8/"/>
+    <id>http://yjscloud.com/2018/02/06/Python当歌（一）：Python入门/</id>
+    <published>2018-02-06T08:47:45.000Z</published>
+    <updated>2018-02-06T10:29:06.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="第一句Python代码"><a href="#第一句Python代码" class="headerlink" title="第一句Python代码"></a>第一句Python代码</h1><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%881%EF%BC%89.png" alt="一（1）"></p>
+<p>python内部执行过程如下：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%882%EF%BC%89.png" alt="一（2）"></p>
+<h1 id="内容编码"><a href="#内容编码" class="headerlink" title="内容编码"></a>内容编码</h1><p>python解释器在加载 .py 文件中的代码时，会对内容进行编码（默认ascill）<br>ASCII（American Standard Code for Information Interchange，美国标准信息交换代码）是基于拉丁字母的一套电脑编码系统，主要用于显示现代英语和其他西欧语言，其最多只能用 8 位来表示（一个字节），即：2**8 = 256，所以，ASCII码最多只能表示 256 个符号。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%883%EF%BC%89.png" alt="一（3）"><br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%884%EF%BC%89.png" alt="一（4）"></p>
+<p>显然ASCII码无法将世界上的各种文字和符号全部表示，所以，就需要新出一种可以代表所有字符和符号的编码，即：Unicode<br>Unicode（统一码、万国码、单一码）是一种在计算机上使用的字符编码。Unicode 是为了解决传统的字符编码方案的局限而产生的，它为每种语言中的每个字符设定了统一并且唯一的二进制编码，规定虽有的字符和符号最少由 16 位来表示（2个字节），即：2 **16 = 65536。</p>
+<p>注：此处说的的是最少2个字节，可能更多UTF-8，是对Unicode编码的压缩和优化，他不再使用最少使用2个字节，而是将所有的字符和符号进行分类：ascii码中的内容用1个字节保存、欧洲的字符用2个字节保存，东亚的字符用3个字节保存。<br>注：在python2中如果在.py文中有中文会报错，需要在文件开头添加一行注释：# -<em>- coding: utf-8 -</em>-，就不会报错，而知python3中可以不用添加，python3已经可以很好的支持中文了。</p>
+<h1 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h1><p>当行注视：# 被注释内容<br>多行注释：””” 被注释内容 “””</p>
+<h1 id="执行脚本传入参数"><a href="#执行脚本传入参数" class="headerlink" title="执行脚本传入参数"></a>执行脚本传入参数</h1><p>Python有大量的模块，从而使得开发Python程序非常简洁。类库有包括三中：</p>
+<p>•    Python内部提供的模块</p>
+<p>•    业内开源的模块</p>
+<p>•    程序员自己开发的模块</p>
+<p>Python内部提供一个 sys 的模块，其中的 sys.argv 用来捕获执行执行python脚本时传入的参数</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%885%EF%BC%89.png" alt="一（5）"></p>
+<h1 id="pyc-文件"><a href="#pyc-文件" class="headerlink" title="pyc 文件"></a>pyc 文件</h1><p>执行Python代码时，如果导入了其他的 .py 文件，那么，执行过程中会自动生成一个与其同名的 .pyc 文件，该文件就是Python解释器编译之后产生的字节码。<br>ps：代码经过编译可以产生字节码；字节码通过反编译也可以得到代码。</p>
+<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="声明变量"><a href="#声明变量" class="headerlink" title="声明变量"></a>声明变量</h2><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%886%EF%BC%89.png" alt="一（6）"></p>
+<p>上述代码声明了一个变量，变量名为： name，变量name的值为：”xwq”<br>变量的作用：昵称，其代指内存里某个地址中保存的内容</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%887%EF%BC%89.png" alt="一（7）"></p>
+<p>变量定义的规则：</p>
+<p>变量名只能是 字母、数字或下划线的任意组合，变量名的第一个字符不能是数字</p>
+<p>以下关键字不能声明为变量名：[‘and’, ‘as’, ‘assert’, ‘break’, ‘class’, ‘continue’, ‘def’, ‘del’, ‘elif’, ‘else’, ‘except’, ‘exec’, ‘finally’, ‘for’, ‘from’, ‘global’, ‘if’, ‘import’, ‘in’, ‘is’, ‘lambda’, ‘not’, ‘or’, ‘pass’, ‘print’, ‘raise’, ‘return’, ‘try’, ‘while’, ‘with’, ‘yield’]</p>
+<h2 id="变量的赋值"><a href="#变量的赋值" class="headerlink" title="变量的赋值"></a>变量的赋值</h2><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%888%EF%BC%89.png" alt="一（8）"></p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%809.png" alt="一9"></p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%889%EF%BC%89.png" alt="一（9）"></p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8810%EF%BC%89.png" alt="一（10）"></p>
+<h1 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h1><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8811%EF%BC%89.png" alt="一（11）"></p>
+<h1 id="初识基本数据类型"><a href="#初识基本数据类型" class="headerlink" title="初识基本数据类型"></a>初识基本数据类型</h1><h2 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h2><p>2是一个整数的例子。<br>长整数不过是大一些的整数。</p>
+<p>3.23和52.3E-4是浮点数的例子。E标记表示10的幂。在这里，52.3E-4表示52.3 * 10-4。<br>(-5+4j)和(2.3-4.6j)是复数的例子。</p>
+<p>int（整型）</p>
+<p>　　在32位机器上，整数的位数为32位，取值范围为-2<strong>31～2</strong>31-1，即-2147483648～2147483647<br>　　在64位系统上，整数的位数为64位，取值范围为-2<strong>63～2</strong>63-1，即-9223372036854775808～9223372036854775807<br>　　<br>long（长整型）<br>　　<br>　　跟C语言不同，Python的长整数没有指定位宽，即：Python没有限制长整数数值的大小，但实际上由于机器内存有限，我们使用的长整数数值不可能无限大。<br>　　注意，自从Python2.2起，如果整数发生溢出，Python会自动将整数数据转换为长整数，所以如今在长整数数据后面不加字母L也不会导致严重后果了。</p>
+<p>float（浮点型）<br>　　<br>　　浮点数用来处理实数，即带有小数的数字。类似于C语言中的double类型，占8个字节（64位），其中52位表示底，11位表示指数，剩下的一位表示符号。</p>
+<p>complex（复数）<br>　　<br>　　复数由实数部分和虚数部分组成，一般形式为x＋yj，其中的x是复数的实数部分，y是复数的虚数部分，这里的x和y都是实数。<br>注：Python中存在小数字池：-5 ～ 257</p>
+<h2 id="布尔值"><a href="#布尔值" class="headerlink" title="布尔值"></a>布尔值</h2><p>　　真或假<br>　　<br>　　1 或 0
+　　</p>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><p>“hello world”</p>
+<p>万恶的字符串拼接：python中的字符串在C语言中体现为是一个字符数组，每次创建字符串时候需要在内存中开辟一块连续的空，并且一旦需要修改字符串的话，就需要再次开辟空间，万恶的+号每出现一次就会在内从中重新开辟一块空间。</p>
+<p>字符串格式化:<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8812%EF%BC%89.png" alt="一（12）"></p>
+<p>PS: 字符串是 %s;整数 %d;浮点数%f</p>
+<p>字符串常用功能：移除空白、分割、长度、索引、切片</p>
+<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><p>创建列表：</p>
+<p>name_list = [‘alex’, ‘seven’, ‘eric’]</p>
+<p>基本操作：索引、切片、追加、删除、长度、切片、循环、包含</p>
+<h2 id="元祖"><a href="#元祖" class="headerlink" title="元祖"></a>元祖</h2><p>创建元祖：ages = (11, 22, 33, 44, 55)</p>
+<p>基本操作：索引、切片、循环、长度、包含</p>
+<h2 id="字典（无序）"><a href="#字典（无序）" class="headerlink" title="字典（无序）"></a>字典（无序）</h2><p>创建字典：person = {“name”: “mr.wu”, ‘age’: 18}</p>
+<p>常用操作：索引，新增，删除，键、值、键值对，循环，长度</p>
+<p>PS：循环，range，continue 和 break</p>
+<h1 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h1><p>算数运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8813%EF%BC%89.png" alt="一（13）"></p>
+<p>比较运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8814%EF%BC%89.png" alt="一（14）"></p>
+<p>赋值运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8815%EF%BC%89.png" alt="一（15）"></p>
+<p>逻辑运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8816%EF%BC%89.png" alt="一（16）"></p>
+<p>成员运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8818%EF%BC%89.png" alt="一（17）"></p>
+<p>身份运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8818%EF%BC%89.png" alt="一（18）"></p>
+<p>位运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8819%EF%BC%89.png" alt="一（19）"></p>
+<p>运算符优先级：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8820%EF%BC%89.png" alt="一（20）"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;第一句Python代码&quot;&gt;&lt;a href=&quot;#第一句Python代码&quot; class=&quot;headerlink&quot; title=&quot;第一句Python代码&quot;&gt;&lt;/a&gt;第一句Python代码&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;http://p3q1rwnbl.bkt.clo
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>如何用九条命令在一分钟内检查Linux服务器性能?</title>
@@ -70,9 +337,9 @@
       <category term="运维技能" scheme="http://yjscloud.com/categories/%E8%BF%90%E7%BB%B4%E6%8A%80%E8%83%BD/"/>
     
     
-      <category term="非原创系列" scheme="http://yjscloud.com/tags/%E9%9D%9E%E5%8E%9F%E5%88%9B%E7%B3%BB%E5%88%97/"/>
-    
       <category term="Linux运维技能" scheme="http://yjscloud.com/tags/Linux%E8%BF%90%E7%BB%B4%E6%8A%80%E8%83%BD/"/>
+    
+      <category term="非原创系列" scheme="http://yjscloud.com/tags/%E9%9D%9E%E5%8E%9F%E5%88%9B%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
@@ -2420,261 +2687,6 @@ masquerade&apos;
     <summary type="html">
     
       &lt;h1 id=&quot;防火墙原理&quot;&gt;&lt;a href=&quot;#防火墙原理&quot; class=&quot;headerlink&quot; title=&quot;防火墙原理&quot;&gt;&lt;/a&gt;防火墙原理&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;http://oxysobnip.bkt.clouddn.com/2.8.png&quot; alt=&quot;2
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux学习笔记（七）-守护进程</title>
-    <link href="http://yjscloud.com/2017/05/07/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%83%EF%BC%89-%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B/"/>
-    <id>http://yjscloud.com/2017/05/07/Linux学习笔记（七）-守护进程/</id>
-    <published>2017-05-07T08:14:16.000Z</published>
-    <updated>2017-12-02T08:38:52.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="systemd简介"><a href="#systemd简介" class="headerlink" title="systemd简介"></a>systemd简介</h1><p>在RHEL6中，系统的第一个进程(PID=1) 是init进程</p>
-<p>在RHEL7中，系统的第一个进程是systemd, 是一个特殊的守护进程。</p>
-<p>systemd比原来的init进程更强大：</p>
-<p>1）并行化功能，提供系统的启动速度</p>
-<p>2）能够按需要来启动守护进程</p>
-<p>3）自动服务依赖管理，例如可在网路不可用时，不启动网路服务</p>
-<h1 id="systemd的单元类型"><a href="#systemd的单元类型" class="headerlink" title="systemd的单元类型"></a>systemd的单元类型</h1><p>systemd是第一个进程，可处理多个system单元。</p>
-<p>可以理解为：systemd包含多个“组件”，每个组件，就是一个“单元”。</p>
-<p>在shell中，使用systemctl命令来管理system单元。</p>
-<p>system单元，分多种类型：</p>
-<pre><code># systemctl  -t  help
-</code></pre><p>查看所有可用的systemd单元的类型。</p>
-<p>常用的systemd单元类型：</p>
-<p>1）服务单元  </p>
-<p>   扩展名为 .service</p>
-<p>   服务单元，用来启动对应的“守护进程”。</p>
-<p>2）套接字单元</p>
-<p>   扩展名为.socket</p>
-<p>   表示进程间通信的套接字，可用于延时启动的服务、按需启动的服务。</p>
-<p>3）目标单元</p>
-<p>   扩展名为.target</p>
-<p>   target单元，相当于RHEL6中的运行级别。</p>
-<p>   启动开机时，必须选择一种targe单元进行启动</p>
-<h1 id="管理目标单元"><a href="#管理目标单元" class="headerlink" title="管理目标单元"></a>管理目标单元</h1><h2 id="常用的目标单元"><a href="#常用的目标单元" class="headerlink" title="常用的目标单元"></a>常用的目标单元</h2><p>graphical.target：支持多用户，支持图像登陆和文本登陆。</p>
-<p>multi-user.target：支持多用户，支持文本登陆</p>
-<p>rescue.target：完成基本系统的初始化，rescue模式（救援模式）</p>
-<p>emergency.target：系统根文件系统以只读形式挂载在/目录，emergency模式（紧急模式）</p>
-<p>target单元相当于RHEL6中的运行级别。</p>
-<p>即：每个target单元（运行级别），是一种模式。</p>
-<p>在各个模式下，分别了不同的多个服务。</p>
-<p>例如：graphical.target支持图形化界面</p>
-<p>类比：马云这辈子，大脑开启了商业服务，下辈子投胎后，还是一样的大脑，但是大脑就可能就开启了表演服务，成为演员。</p>
-<h2 id="使用systemctl管理目标单元"><a href="#使用systemctl管理目标单元" class="headerlink" title="使用systemctl管理目标单元"></a>使用systemctl管理目标单元</h2><p>（1）手动切换tareget目标</p>
-<pre><code># systemctl  isolate  multi-user.target
-</code></pre><p> 马上生效</p>
-<p>(2)获取默认target目标</p>
-<pre><code># systemctl  get-default 
-</code></pre><p> 系统重启才生效</p>
-<p>(3)设置默认target目标</p>
-<pre><code># systemctl  set-default  multi-user.target
-</code></pre><p>(4)开机时设置target目标。<br>   仅该次有效,重启系统，然后编辑启动项，在启动命名行中指定启动目标</p>
-<p>  即： 重启系统。</p>
-<p>  按任意键中断倒计时，选择启动项，按e</p>
-<p>  在linux16开头的行的末尾，添加：systemd.unit=recure.target</p>
-<p>  按ctrl+x使用修改，并启动系统。</p>
-<h1 id="管理service单元"><a href="#管理service单元" class="headerlink" title="管理service单元"></a>管理service单元</h1><p>service单元，对应一个特定的服务。<br>一个服务，就是一个后台进程。</p>
-<p>使用systemctl管理service单元：</p>
-<p>(1)查询所有单元的状态</p>
-<pre><code># systemctl  
-</code></pre><p>(2)查询指定单元的状态</p>
-<pre><code># systemctl  status  graphical.target
-# systemctl  status  rsyslog.service
-</code></pre><p>(3)查询所有服务单元的状态</p>
-<pre><code># systemctl  --type=service
-</code></pre><p>(4)查询处于失败或维护状态的所有单元</p>
-<pre><code># systemctl  status  rngd.service  -l
-</code></pre><p>  注： -l 可以显示完整的输出。</p>
-<p>(5)查询指定的单元当前是否处于活动状态</p>
-<pre><code>#  systemctl  is-active  sshd
-</code></pre><p>因为sshd只有service类型的单元，没有同名的其他类型单元，可以省略 .service</p>
-<p>(6)查询指定的单元是否开机自动启动</p>
-<pre><code># systemctl  is-enabled  sshd
-</code></pre><p>(7)查询已加载单元的状态</p>
-<pre><code>#  systemctl  list-units
-</code></pre><p> 列出所有已加载单元的状态。</p>
-<pre><code>#  systemctl  list-units  --type=service
-</code></pre><p>列出所有已加载服务单元的状态。</p>
-<pre><code>#  systemctl  list-unit-files 
-</code></pre><p> 列出所有单元的启用、禁用（开机不自动启动）状态。</p>
-<pre><code>#  systemctl  list-unit-files  --type=service
-</code></pre><p>  列出所有服务单元的启用、禁用（开机不自动启动）状态。</p>
-<p>(8)查看所有失败的服务</p>
-<pre><code>#  systemctl  --failed  --type=service
-</code></pre><p>(9)控制服务单元</p>
-<pre><code># systemctl  status  sshd.service 
-# systemctl  stop   sshd.service
-# systemctl  start   sshd.service
-# systemctl   restart  sshd.service
-# systemctl   enable  sshd.service
-# systemctl   is-enabled  sshd.service
-# systemctl   is-active  sshd.service
-</code></pre><p>(10)重新加载服务的配置文件（不会停止和启动服务）</p>
-<pre><code># systemctl  reload   sshd.service
-</code></pre><p>(11)屏蔽服务</p>
-<p>有些服务之间是有冲突的，比如iptables和firewalld，此时就需要把某个服务屏蔽。</p>
-<p>服务屏蔽后，该服务就不会被启动！</p>
-<p>屏蔽后，不能开机启动该服务，也不能手动启动该服务！</p>
-<pre><code># systemctl   mask  iptables
-</code></pre><p>取消屏蔽服务</p>
-<pre><code># systemctl  unmask  iptables
-</code></pre><p>(12)单元依赖</p>
-<p>某些服务单元，需要依赖其他服务单元，才能启动。</p>
-<p>列出指定单元所依赖的单元。</p>
-<pre><code># systemctl  list-dependencies  sshd
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;systemd简介&quot;&gt;&lt;a href=&quot;#systemd简介&quot; class=&quot;headerlink&quot; title=&quot;systemd简介&quot;&gt;&lt;/a&gt;systemd简介&lt;/h1&gt;&lt;p&gt;在RHEL6中，系统的第一个进程(PID=1) 是init进程&lt;/p&gt;
-&lt;p&gt;在RH
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Linux学习笔记" scheme="http://yjscloud.com/tags/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Linux学习笔记（六）-SELinux</title>
-    <link href="http://yjscloud.com/2017/05/06/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89-SELinux/"/>
-    <id>http://yjscloud.com/2017/05/06/Linux学习笔记（六）-SELinux/</id>
-    <published>2017-05-06T09:46:38.000Z</published>
-    <updated>2017-12-02T08:08:57.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="为什么要使用SELinux"><a href="#为什么要使用SELinux" class="headerlink" title="为什么要使用SELinux"></a>为什么要使用SELinux</h1><p>问题：</p>
-<p>在生产环境中，某些管理员，为了简单，或者是因为无知，常常把一些目录或文件的权限，设置为777, 会导致一些非预期的后果（用户可以执行原本不应该执行的代码、误删重要资料）</p>
-<p>目前的安全机制：</p>
-<p>是基于用户的UID,GID的rwx权限设置。</p>
-<p>即进程的UID和GID, 和程序的UID与GID进行匹配。</p>
-<p>进程的UID和GID就是启动这个进程的用户的UID和GID。</p>
-<p>最终导致黑客或者管理本身，可能对系统的资源进行窃取或者误操作。</p>
-<p>解决方案：使用SELinux</p>
-<h1 id="SELinux是什么"><a href="#SELinux是什么" class="headerlink" title="SELinux是什么"></a>SELinux是什么</h1><p>SELinux是美国国家安全局和Linux社区，一起研发的。</p>
-<p>是一种安全机制。</p>
-<p>成为“强制访问控制”（MAC）</p>
-<h1 id="SELinux的原理"><a href="#SELinux的原理" class="headerlink" title="SELinux的原理"></a>SELinux的原理</h1><p><img src="http://oxysobnip.bkt.clouddn.com/2.4.png" alt="2.4"></p>
-<h1 id="SELinux的模式"><a href="#SELinux的模式" class="headerlink" title="SELinux的模式"></a>SELinux的模式</h1><h2 id="SELinux的工作模式"><a href="#SELinux的工作模式" class="headerlink" title="SELinux的工作模式"></a>SELinux的工作模式</h2><p>1）强制模式</p>
-<p>   使用SELinux的强制访问控制。</p>
-<p>2）permissive模式</p>
-<p>   访问违背SELinux规则的，就记录告警，但是不阻止访问。</p>
-<p>3）disabled模式</p>
-<p>   不记录，不阻止。</p>
-<h2 id="查看当前的模式"><a href="#查看当前的模式" class="headerlink" title="查看当前的模式"></a>查看当前的模式</h2><pre><code># getenforce
-</code></pre><p>输出为：</p>
-<p>Enforcing  (强制模式)</p>
-<p>Permissive  （Permissive模式）</p>
-<p>Disabled    (Disabled模式)</p>
-<h2 id="改变SELinux的模式"><a href="#改变SELinux的模式" class="headerlink" title="改变SELinux的模式"></a>改变SELinux的模式</h2><p><img src="http://oxysobnip.bkt.clouddn.com/2.5.png" alt="2.5"></p>
-<p>SELiniux的配置文件</p>
-<pre><code>/etc/selinux/config
-</code></pre><pre><code>SELINUX=enforcing      #还可以取 permissive,  enabled 
-SELINUXTYPE=targeted  #SELinux的策略，为“目标”策略
-</code></pre><p>SELINUXTYPE是指SELinux的策略，默认为目标策略targeted, 不要修改<br>并启动系统。</p>
-<h1 id="查看SELinux"><a href="#查看SELinux" class="headerlink" title="查看SELinux"></a>查看SELinux</h1><h2 id="查看文件的SELinux"><a href="#查看文件的SELinux" class="headerlink" title="查看文件的SELinux"></a>查看文件的SELinux</h2><p>ls –l 命令的第一列：</p>
-<pre><code>-rw-r--r--.   
-</code></pre><p>如果文件权限的最后一位是小数点，就表示该文件使用了SELinux<br>如果是+,表示使用了ACL.</p>
-<p>在ls命令中使用Z选项</p>
-<pre><code>#  ls  -Z  file.txt
-unconfined_u:object_r:admin_home_t:s0
-</code></pre><p>对于targeted策略，值需要关注第3列值（以冒号分割）该列，称为“SELinux上下文”，就是一个“标签”,SELinux机制中，已经定义好很多SELinux上下文。</p>
-<h2 id="查看进程的SELinux"><a href="#查看进程的SELinux" class="headerlink" title="查看进程的SELinux"></a>查看进程的SELinux</h2><p>查看httpd进程的SELinux</p>
-<pre><code># ps  auxZ  |  grep  httpd
-或
-# ps  -efZ  |  grep  httpd
-</code></pre><p>Z选项，就是显示进程的SELinux上下文</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/2.5-1.png" alt="2.5-1"></p>
-<h1 id="SELinux保护示例"><a href="#SELinux保护示例" class="headerlink" title="SELinux保护示例"></a>SELinux保护示例</h1><p>（1）在Server0主机上安装apache</p>
-<pre><code># yum  install  -y  httpd
-# systemctl  enable httpd
-# systemctl  start  httpd
-# firewall-cmd  --add-service=httpd
-</code></pre><p>（2)在Desktop0主机访问服务器的网站</p>
-<pre><code># curl  192.168.0.11
-</code></pre><p>  就能访问服务器网站的首页(/var/www/html/index.html)</p>
-<p>（3）在服务器端编辑一个新的页面secure.html</p>
-<pre><code># cd 
-# echo  “This is a secure page”  &gt;  secure.html
-# mv   secure.html   /var/www/html/
-</code></pre><p>（4）在客户端Desktop0上访问</p>
-<pre><code># curl   192.168.0.11/secure.html
-</code></pre><p>   发现没有权限访问secure.html</p>
-<p>   因为：secure.html的SELinux上下文和httpd进程的SELinux上文不一致！</p>
-<p>  httpd的SELinux上下文是：httpd_sys_content_t</p>
-<p>  secure.html的SELinux上下文是：admin_home_t</p>
-<h1 id="修改SELinux上下文"><a href="#修改SELinux上下文" class="headerlink" title="修改SELinux上下文"></a>修改SELinux上下文</h1><p>(1)改变文件的SELinux上下文</p>
-<pre><code># chcon  -t   httpd_sys_content_t   secure.html
-</code></pre><p>把secure.html文件的SELinux上下文，设置为 httpd_sys_content_t</p>
-<p>(2)改变目录以及目录内的所有文件的SELinux上下文</p>
-<pre><code>#chcon  -R  -t  httpd_sys_content_t  secure.html
-</code></pre><p>(3)根据指定的文件来修改文件的SELinux上下文</p>
-<p>相当于复制SELinux上下文。</p>
-<pre><code># chcon   --reference=index.html    secure.html
-</code></pre><p>把文件secure.html的SELinux上下文和index.html的相同</p>
-<p>(4)根据指定的目录来修改目录的SELinux上下文</p>
-<p>相当于复制SELinux上下文。</p>
-<pre><code># chcon   -R  --reference=/var/www/html    /var/www/html/work
-</code></pre><p>把/var/www/html/work目录的SELinux上下文设置成和/var/www/html的相同    </p>
-<h1 id="默认SELinux上下文"><a href="#默认SELinux上下文" class="headerlink" title="默认SELinux上下文"></a>默认SELinux上下文</h1><h2 id="设置默认SELinux上下文"><a href="#设置默认SELinux上下文" class="headerlink" title="设置默认SELinux上下文"></a>设置默认SELinux上下文</h2><p>1）设置文件的默认SELinux上下文</p>
-<pre><code># semanage   fcontext   -a   -t   httpd_sys_content_t  ‘/root/file.txt’
-</code></pre><p>  （1）一定要使用单引号’’</p>
-<p>  （2）单引号里面，必须写绝对路径。</p>
-<p>2）设置目录的默认SELinux上下文</p>
-<pre><code># semanage   fcontext   -a   -t   httpd_sys_content_t  ‘/root/work(/.*)?’
-</code></pre><p>把/root/work目录以及该目录下的所有文件的默认SELinux上下文都修改为httpd_sys_content_t</p>
-<p>说明：（/.*）? 表示匹配任意长度的字符串，可以用来处理目录。</p>
-<p>改变默认SELinux上下文后，并不会改变当前的SELinux上下文。</p>
-<h2 id="恢复默认SELinux上下文"><a href="#恢复默认SELinux上下文" class="headerlink" title="恢复默认SELinux上下文"></a>恢复默认SELinux上下文</h2><p>1)恢复目录以及目录内所有文件的默认SELinux上下文</p>
-<pre><code># restorecon   -R   /root/work
-</code></pre><p>2）恢复文件的默认SELinux上下文</p>
-<pre><code># restorecon  /root/file.txt
-</code></pre><h1 id="SELinux布尔值"><a href="#SELinux布尔值" class="headerlink" title="SELinux布尔值"></a>SELinux布尔值</h1><h2 id="SELinux布尔值的作用"><a href="#SELinux布尔值的作用" class="headerlink" title="SELinux布尔值的作用"></a>SELinux布尔值的作用</h2><p><img src="http://oxysobnip.bkt.clouddn.com/2.7.png" alt="2.7"></p>
-<p>系统定义了很多不同类型的SELinux布尔值。</p>
-<p>只有对应的SELinux布尔值为真，而且SELinux上下文匹配时，才能访问对应的文件。</p>
-<h2 id="查看SELinux布尔值"><a href="#查看SELinux布尔值" class="headerlink" title="查看SELinux布尔值"></a>查看SELinux布尔值</h2><p>查看系统的所有SELinux布尔值</p>
-<pre><code># getsebool   -a 
-</code></pre><p>查看指定的SELinux布尔值</p>
-<pre><code># getsebool   ftpd_anon_write
-</code></pre><p>查询httpd相关的SELinux布尔值</p>
-<pre><code># getsebool  -a  |  grep  httpd
-</code></pre><h2 id="设置SELinux布尔值"><a href="#设置SELinux布尔值" class="headerlink" title="设置SELinux布尔值"></a>设置SELinux布尔值</h2><p>临时设置，重启无效</p>
-<pre><code># setsebool   ftpd_anon_write   on   
-# setsebool   ftpd_anon_write   off
-</code></pre><p>永久有效</p>
-<pre><code># setsebool   -P  ftpd_anon_write   on   
-# setsebool   -P  ftpd_anon_write   off
-</code></pre><h1 id="SELinux端口标记"><a href="#SELinux端口标记" class="headerlink" title="SELinux端口标记"></a>SELinux端口标记</h1><p>问题：在主机B中，安装httpd服务。同时监听80端口和8889端口。（在Apache的主配置文件中添加 Listen 8888即可）</p>
-<p>导致：启动httpd失败！</p>
-<p>原因：SELinux强制模式下，进程访问某个端口时，需要他们的SELinux上下文匹配！<br>而8889端口的SELinux上下文和httpd进程的SELinux上下文不匹配。</p>
-<p>解决：</p>
-<pre><code># semanage   port   -a   -t   http_port_t   -p  tcp    8889
-</code></pre><p>表示，把本机的8889端口添加一个SELinux上下文：http_port_t</p>
-<p>其他命令：</p>
-<pre><code># semanage   port   -d   -t   http_port_t   -p  tcp    8889
-</code></pre><p>把本机的8889端口删除一个SELinux上下文：http_port_t</p>
-<pre><code># semanage   port   -m   -t   http_port_t   -p  tcp    8889 
-</code></pre><p>把本机的8889端口的上下文修改为http_port_t</p>
-<p>查看端口的SELinux上下文：</p>
-<pre><code># semanage  port  -l
-# semanage  port  -l  |  grep  80
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;为什么要使用SELinux&quot;&gt;&lt;a href=&quot;#为什么要使用SELinux&quot; class=&quot;headerlink&quot; title=&quot;为什么要使用SELinux&quot;&gt;&lt;/a&gt;为什么要使用SELinux&lt;/h1&gt;&lt;p&gt;问题：&lt;/p&gt;
-&lt;p&gt;在生产环境中，某些管理员，为了
     
     </summary>
     

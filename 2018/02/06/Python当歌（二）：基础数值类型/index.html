@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Linux学习笔记," />
+  <meta name="keywords" content="Python学习笔记," />
 
 
 
@@ -92,20 +92,90 @@
 
 
 
-<meta name="description" content="为什么要使用LVM问题： (1) Windows系统中常常出现的问题： 电脑使用久了，某个分区（特别是C盘）不够用了。 解决方案：使用特殊的工具软件，进行调整，或者再加一个硬盘，然后再创建一个大一点的分区，并把数据复制过去。总之，非常麻烦、耗时！ (2) Linux系统中也存在类似问题： 使用一段时间后，/home对应的分区不够用了，导致不能再在这个目录内添加数据，甚至不能创建用户。 解决方案：和">
-<meta name="keywords" content="Linux学习笔记">
+<meta name="description" content="数字所有的功能，都放在int里 int:将字符串转换为数字  bit_lenght：当前数字的二进制，至少用n位表示 r = age.bit_length()  字符串如：’wupeiqi’、’alex’ 注：字符串一旦创建，不可修改，一旦修改或者拼接，都会造成重新生成字符串。 每个字符串都具备如下功能： （1）首字母大写  （2）所有变小写，casefold（）更牛逼，很多未知的对相应变小写">
+<meta name="keywords" content="Python学习笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux学习笔记（九）-LVM">
-<meta property="og:url" content="http://yjscloud.com/2017/05/09/Linux学习笔记（九）-LVM/index.html">
+<meta property="og:title" content="Python当歌（二）：基础数值类型">
+<meta property="og:url" content="http://yjscloud.com/2018/02/06/Python当歌（二）：基础数值类型/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="为什么要使用LVM问题： (1) Windows系统中常常出现的问题： 电脑使用久了，某个分区（特别是C盘）不够用了。 解决方案：使用特殊的工具软件，进行调整，或者再加一个硬盘，然后再创建一个大一点的分区，并把数据复制过去。总之，非常麻烦、耗时！ (2) Linux系统中也存在类似问题： 使用一段时间后，/home对应的分区不够用了，导致不能再在这个目录内添加数据，甚至不能创建用户。 解决方案：和">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/2.11.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/2.12.png">
-<meta property="og:updated_time" content="2017-12-02T12:59:05.000Z">
+<meta property="og:description" content="数字所有的功能，都放在int里 int:将字符串转换为数字  bit_lenght：当前数字的二进制，至少用n位表示 r = age.bit_length()  字符串如：’wupeiqi’、’alex’ 注：字符串一旦创建，不可修改，一旦修改或者拼接，都会造成重新生成字符串。 每个字符串都具备如下功能： （1）首字母大写  （2）所有变小写，casefold（）更牛逼，很多未知的对相应变小写">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%881%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%882%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%883%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%884%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%885%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%886%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%887%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%888%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%889%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8810%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8811%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8812%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8813%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8814%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8815%EF%BC%89.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-16.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-17.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-18.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-19.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-20.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-21.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-22.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-23.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-24.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-25.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-26.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-27.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-28.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-29.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-30.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-31.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-32.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-33.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-34.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-35.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-36.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-37.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-38.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-39.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-40.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-41.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-42.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-43-1.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-43.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-44.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-45.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-46.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-47.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-48.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-49.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-50.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-51.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-52.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-53.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-54.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-55.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-56.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-57.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-58.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-59.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-60.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-61.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-62.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-63.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-64.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-65.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-66.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-67.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-68.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-69.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-70.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/2-71.png">
+<meta property="og:updated_time" content="2018-02-07T00:42:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux学习笔记（九）-LVM">
-<meta name="twitter:description" content="为什么要使用LVM问题： (1) Windows系统中常常出现的问题： 电脑使用久了，某个分区（特别是C盘）不够用了。 解决方案：使用特殊的工具软件，进行调整，或者再加一个硬盘，然后再创建一个大一点的分区，并把数据复制过去。总之，非常麻烦、耗时！ (2) Linux系统中也存在类似问题： 使用一段时间后，/home对应的分区不够用了，导致不能再在这个目录内添加数据，甚至不能创建用户。 解决方案：和">
-<meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/2.11.png">
+<meta name="twitter:title" content="Python当歌（二）：基础数值类型">
+<meta name="twitter:description" content="数字所有的功能，都放在int里 int:将字符串转换为数字  bit_lenght：当前数字的二进制，至少用n位表示 r = age.bit_length()  字符串如：’wupeiqi’、’alex’ 注：字符串一旦创建，不可修改，一旦修改或者拼接，都会造成重新生成字符串。 每个字符串都具备如下功能： （1）首字母大写  （2）所有变小写，casefold（）更牛逼，很多未知的对相应变小写">
+<meta name="twitter:image" content="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%881%EF%BC%89.png">
 
 
 
@@ -133,13 +203,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2017/05/09/Linux学习笔记（九）-LVM/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/02/06/Python当歌（二）：基础数值类型/"/>
 
 
 
 
 
-  <title>Linux学习笔记（九）-LVM | 戏子登台</title>
+  <title>Python当歌（二）：基础数值类型 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -313,7 +383,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/05/09/Linux学习笔记（九）-LVM/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/02/06/Python当歌（二）：基础数值类型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -334,7 +404,7 @@
             
             
               
-                Linux学习笔记（九）-LVM
+                Python当歌（二）：基础数值类型
               
             
           </h1>
@@ -349,8 +419,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-09T20:14:57+08:00">
-                2017-05-09
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-06T18:31:58+08:00">
+                2018-02-06
               </time>
             
 
@@ -393,7 +463,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/05/09/Linux学习笔记（九）-LVM/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/02/06/Python当歌（二）：基础数值类型/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -416,7 +486,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,945
+                  1,223
                 </span>
               
 
@@ -432,7 +502,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  8
+                  4
                 </span>
               
             </div>
@@ -450,172 +520,174 @@
       
 
       
-        <h1 id="为什么要使用LVM"><a href="#为什么要使用LVM" class="headerlink" title="为什么要使用LVM"></a>为什么要使用LVM</h1><p>问题：</p>
-<p>(1) Windows系统中常常出现的问题：</p>
-<p>电脑使用久了，某个分区（特别是C盘）不够用了。</p>
-<p>解决方案：使用特殊的工具软件，进行调整，或者再加一个硬盘，然后再创建一个大一点的分区，并把数据复制过去。总之，非常麻烦、耗时！</p>
-<p>(2) Linux系统中也存在类似问题：</p>
-<p>使用一段时间后，/home对应的分区不够用了，导致不能再在这个目录内添加数据，甚至不能创建用户。</p>
-<p>解决方案：和Windows类似，创建1个更大的分区，然后进行复制。</p>
-<p>分析：以上问题的根本原因，在于分区的大小不能改变！分区太小了不够用，太大了又浪费。</p>
-<p>解决方案：   </p>
-<p>使用LVM（逻辑卷管理器）</p>
-<p>LVM，可以弹性的调整文件系统的容量</p>
-<p>LVM，可以调整“分区”（实际上是“逻辑卷”）的大小</p>
-<h1 id="LVM的概念"><a href="#LVM的概念" class="headerlink" title="LVM的概念"></a>LVM的概念</h1><p>理解：逻辑卷，如果荆轲刺秦是使用的画卷，可以随意变长变短。</p>
-<p>基础概念：</p>
-<p>(1)物理卷（PV）</p>
-<p>Physical Volume</p>
-<p>LVM中最底层的就是物理卷PV</p>
-<p>原来的物理分区，需要转换为物理卷PV（把分区的分区类型编码改为8e即可）</p>
-<p>(2)卷组 / 卷用户组（VG）</p>
-<p>多个PV组成一个VG</p>
-<p>VG相当于标准分区中的“磁盘”</p>
-<p>VG最多可包含65534个PE，但是PE大小可调整</p>
-<p>(3)物理扩展块 / 物理区域（PE）</p>
-<p>Physical Extend</p>
-<p>是PV中可用于分配的最小存储单元</p>
-<p>PE相当于标准分区中的“扇区”</p>
-<p>PE的大小在创建VG时指定，默认为4MiB（可调整），一旦确定后不能修改。</p>
-<p>同一VG中的所有PE大小必须一致，新的PV加入到vg后，PE的大小自动更改为VG中定义的PE大小。</p>
-<p>(4)逻辑卷（LV）</p>
-<p>1个VG可“切”成多个LV</p>
-<p>LV的设备文件名一般取“/dev/VG的名称/LV的名称”</p>
-<p>LV在功能上，相当于标准分区中的物理分区。</p>
-<p>注意：LV中包含多个PE, 有的已经使用，有的还没有使用，但不存在“空闲”的PE, 其中的PE都属于该LV,PV中包含多个PE, 可分配给多个不同的LV, 还没有分配给LV的，就称为“空间“(free)的PE</p>
-<p>(5)逻辑扩展块 / 逻辑区域（LE）</p>
-<p>LE是LV中可用于分配的最小存储单元，</p>
-<p>LE的大小取决于LV所在VG中的PE大小（大小相等）</p>
-<p>原理图示</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/2.11.png" alt="2.11"></p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/2.12.png" alt="2.12"></p>
-<p>小结:LVM可实现，在不影响已有数据的情况下，动态方便地改变文件系统的容量。</p>
-<h1 id="LVM的使用"><a href="#LVM的使用" class="headerlink" title="LVM的使用"></a>LVM的使用</h1><p>（1）准备物理设备</p>
-<p>即使用fdisk或gdisk创建一个物理分区，并把分区的类型设置为8e（MBR分区）或8e00(GPT分区)</p>
-<pre><code># fdisk  /dev/vda
-</code></pre><p>（2）创建PV</p>
-<p>把物理分区，“转换”为物理卷PV</p>
-<pre><code># pvcreate     /dev/vda1    /dev/vda2
-</code></pre><p>或：</p>
-<pre><code># pvcreate   /dev/vda1  
-</code></pre><p>pvcreate命令可同时对多个分区进行转换。</p>
-<p>（3）创建VG（卷组 / 卷用户组）</p>
-<p>一个VG可包含多个PV</p>
-<p>可创建多个VG .</p>
-<pre><code># vgcreate   vg-alpha   /dev/vda1    /dev/vda2
-</code></pre><p>创建了一个卷组，名为vg-alpha,  该卷组中包含两个PV（/dev/sda1和/dev/sda2）</p>
-<p>注意： 物理分区和物理卷，都使用相同的 设备文件名，比如  /dev/sda1</p>
-<p>（4）创建LV</p>
-<p>从卷组vg中可“切割“出多个LV</p>
-<pre><code># lvcreate    -n  lv1   -L   100M   vg-alpha
-</code></pre><p>从卷组vg-alpha中，创建一个LV, 名称为lv1,  大小为100MiB</p>
-<p>lv1对应设备文件名为：  /dev/vg-alpha/lv1</p>
-<pre><code># lvcreate  -n  lv2   -l   10   vg-alpha
-</code></pre><p>从卷组vg-alpha中，创建一个LV, 名称为lv2,  大小为10个PE</p>
-<p>lv2对应设备文件名为：  /dev/vg-alpha/lv2</p>
-<p>逻辑卷的对应的设备名（又称path）： /dev/卷组名/逻辑卷名  </p>
-<p>（5）格式化LV</p>
-<p>和格式化物理分区的方式相同。</p>
-<pre><code># mkfs  -t   xfs   /dev/vg-alpha/lv1
-</code></pre><p>（6)挂载LV</p>
-<p>和挂载物理分区的方式相同。</p>
-<pre><code># mkdir   /mnt/data1 
-# mount   /dev/vg-alpha/lv1    /mnt/data1
-</code></pre><p>(7)永久挂载</p>
-<p>在/etc/fstab中添加：</p>
-<pre><code>/dev/vg-alpha/lv1       /mnt/data1      xfs      defaults    1    3
+        <h1 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h1><p>所有的功能，都放在int里</p>
+<p>int:将字符串转换为数字</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%881%EF%BC%89.png" alt="二（1）"></p>
+<p>bit_lenght：当前数字的二进制，至少用n位表示</p>
+<pre><code>r = age.bit_length()
+</code></pre><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%882%EF%BC%89.png" alt="二（2）"></p>
+<h1 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h1><p>如：’wupeiqi’、’alex’</p>
+<p>注：字符串一旦创建，不可修改，一旦修改或者拼接，都会造成重新生成字符串。</p>
+<p>每个字符串都具备如下功能：</p>
+<p>（1）首字母大写</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%883%EF%BC%89.png" alt="二（3）"></p>
+<p>（2）所有变小写，casefold（）更牛逼，很多未知的对相应变小写</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%884%EF%BC%89.png" alt="二（4）"></p>
+<p>（3）设置宽度，并将内容居中</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%885%EF%BC%89.png" alt="二（5）"></p>
+<p>注：20代指总长度，*空白未知填充，一个字符，可有可无</p>
+<p>设置宽度，并将内容居右：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%886%EF%BC%89.png" alt="二（6）"></p>
+<p>设置宽度，并将内容居左： </p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%887%EF%BC%89.png" alt="二（7）"></p>
+<p>（4）去字符串中寻找，寻找子序列的出现次数：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%888%EF%BC%89.png" alt="二（8）"></p>
+<p>也可在限定范围内寻找</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%889%EF%BC%89.png" alt="二（9）"></p>
+<p>（5）以什么什么结尾：endswith（），以什么什么开始：startswith（）</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8810%EF%BC%89.png" alt="二（10）"></p>
+<p>（6）断句方法</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8811%EF%BC%89.png" alt="二（11）"></p>
+<p>注：20的意思是以20个字符为空格作为断句</p>
+<p>（7）从开始往后找，找到第一个之后，获取其未知</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8812%EF%BC%89.png" alt="二（12）"></p>
+<p>（8）Index（）找不到，报错 </p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8813%EF%BC%89.png" alt="二（13）"></p>
+<p>（9）格式化，将一个字符串中的占位符替换为指定的值 </p>
+<p>使用关键字进行匹配</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8814%EF%BC%89.png" alt="二（14）"></p>
+<p>使用数字进行匹配</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8815%EF%BC%89.png" alt="二（15）"></p>
+<p>(10)格式化，传入的值 {“name”: ‘alex’, “a”: 19} </p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-16.png" alt="2-16"></p>
+<p>（11）字符串中是否只包含字母和数字</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-17.png" alt="2-17"></p>
+<p>（12）是否是字母和汉字</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-18.png" alt="2-18"></p>
+<p>（13）当前输入是否是数字</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-19.png" alt="2-19"></p>
+<p>（14）是否存在不可显示的字符</p>
+<pre><code># \t   制表符
+# \n   换行
+</code></pre><p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-20.png" alt="2-20"></p>
+<p>(15)判断是否全部是空格</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-21.png" alt="2-21"></p>
+<p>（16）判断是否是标题</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-22.png" alt="2-22"></p>
+<p>(17)将字符串中的每一个元素按照指定分隔符进行拼接</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-23.png" alt="2-23"></p>
+<p>（18)判断是否全部是大小写和转换为大小写</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-24.png" alt="2-24"></p>
+<p>(19)移除指定字符串，有限最多匹配</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-25.png" alt="2-25"></p>
+<p>lstrip()和rstrip()去除左右空白，也可以去除去除\t \n</p>
+<p>（20）分割为三部分</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-26.png" alt="2-26"></p>
+<p>（21）分割为指定个数</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-27.png" alt="2-27"></p>
+<p>（22）分割，只能根据，true，false：是否保留换行</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-28.png" alt="2-28"></p>
+<p>(23)以xxx开头，以xx结尾</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-29.png" alt="2-29"></p>
+<p>(24)大小写转换</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-30.png" alt="2-30"></p>
+<p>(25)字母，数字，下划线 ： 标识符 def  class</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-31.png" alt="2-31"></p>
+<p>(26)将指定字符串替换为指定字符串</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-32.png" alt="2-32"></p>
+<p>以上方法中join、split、find、strip、upper、lower、replace这7个方法比较常用</p>
+<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><p>如：[11,22,33]、[‘wupeiqi’, ‘alex’]</p>
+<p>每个列表都具备如下功能：</p>
+<p>（1)原来值最后追加</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-33.png" alt="2-33"></p>
+<p>(2)清空列表</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-34.png" alt="2-34"></p>
+<p>(3)拷贝，浅拷贝</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-35.png" alt="2-35"></p>
+<p>(4)计算元素出现的次数</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-36.png" alt="2-36"></p>
+<p>(5)根据值获取当前值索引位置（左边优先）</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-37.png" alt="2-37"></p>
+<p>(6)在指定索引位置插入元素</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-38.png" alt="2-38"></p>
+<p>(7)删除某个值(1.指定索引；2. 默认最后一个)，并获取删除的值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-39.png" alt="2-39"></p>
+<p>还可以指定索引来删除</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-40.png" alt="2-40"></p>
+<p>(8)删除列表中的指定值，左边优先</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-41.png" alt="2-41"></p>
+<p>(9)将当前列表进行翻转</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-42.png" alt="2-42"></p>
+<p>(10)列表的排序</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-43-1.png" alt="2-43"></p>
+<p>注：列表中可以嵌套任何类型，列表是有序的，列表中的元素可以是数字，字符串,列表，布尔值…所有的都能放进去，列表元素可以被查询、修改和删除，可以通过索引和切片进行查找，可以用in操作判断一个元素是否在列表中例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-43.png" alt="2-44"></p>
+<p>取嵌套列表中的元素例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-44.png" alt="2-45"></p>
+<p>也可以将字符串转换列表，其内部使用for循环，例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-45.png" alt="2-46"></p>
+<p>也可以将列表转换成字符串，需要自己写for循环一个一个处理： 既有数字又有字符串，例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-46.png" alt="2-47"></p>
+<p>也可以直接使用字符串join方法：列表中的元素只有字符串，例如：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-47.png" alt="2-48"></p>
+<h1 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h1><p>如：(11,22,33)、(‘wupeiqi’, ‘alex’)</p>
+<p>元组，元素不可被修改，不能被增加或者删除，元组同样可以通过切片索引查询元素</p>
+<p>每个元组都具备如下功能：</p>
+<p>(1)可以被for循环，可迭代对象</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-48.png" alt="2-49"></p>
+<p>(2)转换</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-49.png" alt="2-50"></p>
+<p>(3)元组的一级元素不可修改/删除/增加，元组是有序的。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-50.png" alt="2-51"></p>
+<h1 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h1><p>如：{‘name’: ‘wupeiqi’, ‘age’: 18} 、{‘host’: ‘2.2.2.2’, ‘port’: 80]}</p>
+<p>ps：循环时，默认循环key</p>
+<p>字典两大特点：无序，键唯一</p>
+<p>每个字典都具备如下功能：</p>
+<p>(1)根据序列，创建字典，并指定统一的值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-51.png" alt="2-52"></p>
+<p>(2)根据Key获取值，key不存在时，可以指定默认值（None）</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-52.png" alt="2-53"></p>
+<p>(3)删除并获取值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-53.png" alt="2-54"></p>
+<p>(4)设置值，已存在，不设置，获取当前key对应的值：不存在，设置，获取当前key对应的值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-54.png" alt="2-55"></p>
+<p>(5)更新</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-55.png" alt="2-56"></p>
+<p>(6)字典的value可以是任何值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-56.png" alt="2-57"></p>
+<p>(7)布尔值(1,0)、列表、字典不能作为字典的key</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-57.png" alt="2-58"></p>
+<p>(8)索引方式找到指定元素</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-58.png" alt="2-59"></p>
+<p>(9)字典支持 del 删除</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-59.png" alt="2-60"></p>
+<p>(10)for循环</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-60.png" alt="2-61"></p>
+<h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><p>set是一个无序且不重复的元素集合</p>
+<p>每个集合都具备如下功能：</p>
+<p>(1)添加</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-61.png" alt="2-62"></p>
+<p>(2)清空</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-62.png" alt="2-63"></p>
+<p>(3)拷贝</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-63.png" alt="2-64"></p>
+<p>(4)随机删</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-64.png" alt="2-65"></p>
+<p>(5)指定删除</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-65.png" alt="2-66"></p>
+<p>(6)求交集</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-66.png" alt="2-67"></p>
+<p>(7)求并集</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-67.png" alt="2-68"></p>
+<p>(8)差集</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-68.png" alt="2-69"></p>
+<p>(9)交叉补集</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-69.png" alt="2-70"></p>
+<p>(10)集合值更新</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-70.png" alt="2-71"></p>
+<p>(11)去除集合中的重复值</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-71.png" alt="2-72"></p>
 
-# mount  -a
-</code></pre><p>(8)删除LV</p>
-<p>和删除物理分区的方式类似。</p>
-<p>删除准备：</p>
-<p>1）先把需要保留的数据移动到另一个文件系统。</p>
-<p>2) 卸载该LV</p>
-<pre><code># umount   /mnt/data1
-</code></pre><p>删除LV:</p>
-<pre><code># lvremove  /dev/vg-alpha/lv1
-</code></pre><p>注意：删除LV后，该LV中包含的PE，可分配给已有的LV或新的LV</p>
-<p>(9)删除VG</p>
-<pre><code># vgremove   vg-alpha
-</code></pre><p>说明：删除VG后，该VG中包含的PV，并没有被删除，可分配给已有的VG或新的VG。</p>
-<p>(10)删除PV</p>
-<p>PV和对应的物理分区，使用相同的设备文件名。</p>
-<p>删除PV, 是指删除它的PV属性，“还原”为原来的特性，比如为“物理分区”</p>
-<p>删除 PV后， 该PV就不存在了，但是所来所对应的物理分区还存在！</p>
-<pre><code># pvremove   /dev/vda1     /dev/vda2
-</code></pre><p>(11)查看LVM的状态信息</p>
-<p>1）查看物理卷的信息（pvdisplay）</p>
-<pre><code># pvdisplay    /dev/vda2
-</code></pre><p>查看指定物理卷/dev/vda2的状态信息。</p>
-<pre><code># pvdisplay    
-</code></pre><p>查看所有物理卷的状态信息。</p>
-<p>2）查看卷组的信息（vgdisplay）</p>
-<pre><code>#  vgdisplay     vg-alpha
-</code></pre><p>查看指定卷组的信息</p>
-<pre><code>#  vgdisplay
-</code></pre><p>查看所有卷组的信息</p>
-<p>3）查看逻辑卷的信息 （lvdisplay）</p>
-<pre><code>#  lvdisplay    /dev/vg-alpha/lv1
-</code></pre><p>查看指定逻辑卷的信息。</p>
-<pre><code># lvdisplay 
-</code></pre><p>查看所有逻辑卷的信息</p>
-<p>（12）扩展/缩减卷组VG </p>
-<p>扩展VG</p>
-<p>把额外的物理卷PV添加到VG， 使得该VG有更多的PE分配给逻辑卷LV</p>
-<pre><code>#fdisk  /dev/vdb
-</code></pre><p>准备好一个PV, 可创建一个新的分区再转换为PV，或者使用已有的不使用的PV</p>
-<pre><code># vgextend   vg-alpha    /dev/vdb2
-</code></pre><p>把物理卷/dev/vdb2添加到卷组vg-alpha中。</p>
-<pre><code># vgdisplay   vg-alpha
-</code></pre><p>扩展后，检查VG是否增加可用的PE (free  PE字段)</p>
-<p>缩减VG</p>
-<p>把物理卷PV从VG中删除</p>
-<p>需要两个步骤：</p>
-<p>步骤1）把该PV上的所有PE移动（实质是“复制”）到该VG中（或该VG中指定的）含有空闲PE的PV中</p>
-<p>方式1：</p>
-<pre><code># pvmove    /dev/vdb2
-</code></pre><p>把物理卷/dev/vdb2中的所有PE移动（实质是“复制”）到该VG中含有空闲PE的PV中</p>
-<p>方式2：</p>
-<pre><code># pvmove    /dev/vdb2    /dev/vdb1
-</code></pre><p>把物理卷/dev/vdb2中的所有PE移动（实质是“复制”）到该VG中的物理卷vdb1</p>
-<p>步骤2）把PV从VG中删除</p>
-<pre><code># vgreduce     vg-alpha   /dev/vdb2
-</code></pre><p>把物理卷/dev/vdb2从卷组vg-alpha中删除，但是该物理卷本身并不删除。</p>
-<p>3）补充</p>
-<p>PV从VG中删除后，成为未使用的PV, 该PV可添加到其他的VG中，</p>
-<p>也可以删除它的PV属性，“还原”为原来的特性，比如为“物理分区”。</p>
-<pre><code># pvremove     /dev/vdb2
-</code></pre><p>把物理卷/dev/vdb2的PV属性删除，成为原来的物理分区。</p>
-<p>（13）扩展逻辑卷LV </p>
-<p>扩展LV</p>
-<p>扩展LV需要3个步骤：</p>
-<p>1） 检查LV所在的VG中是否还有空闲的PE</p>
-<pre><code>#  vgdisplay   vg-alpha
-</code></pre><p>检查 Free  PE字段</p>
-<p>如果还有足够的PE，才能扩展LV，</p>
-<p>如果没有足够的PE, 那应该先扩展VG</p>
-<p>2）扩展LV</p>
-<pre><code># lvextend   -L   +300M   /dev/vg-alpha/lv1
-</code></pre><p>把逻辑卷lv1增加 300MiB空间。</p>
-<p>选项用法：</p>
-<pre><code>-L   +300M    增加300MiB
--L   300M      设置为300MB
--l    +100      增加100个PE
--l    100        设置为100个PE
--l    +50%FREE    增加VG中可用空间的50%
-</code></pre><p>3） 扩展文件系统</p>
-<p>即，需要把扩展后的LV对应的文件系统（挂载点）进行“更新”一下。</p>
-<p>否则LV扩展了，但是对应的文件系统并不会扩展。</p>
-<p>有两种方式：</p>
-<p>方式1：（适用于XFS文件系统）</p>
-<pre><code>#  xfs_growfs      /mnt/data1
-</code></pre><p>xfs_growfs的参数为lv的挂载点。</p>
-<p>方式2：（适用于ext4文件系统）</p>
-<pre><code>#  resize2fs    /dev/vg-alpha/lv1
-</code></pre><p>resize2fs的参数为逻辑卷的完整设备文件名</p>
-<p>补充：查看分区、逻辑卷的的文件系统格式</p>
-<pre><code># df  -T 
-</code></pre>
       
     </div>
 
@@ -666,7 +738,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux学习笔记/" rel="tag"><i class="fa fa-tag"></i> Linux学习笔记</a>
+            <a href="/tags/Python学习笔记/" rel="tag"><i class="fa fa-tag"></i> Python学习笔记</a>
           
         </div>
       
@@ -679,18 +751,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/12/Web安全防御之初探WAF/" rel="next" title="Web安全防御之初探WAF">
-                <i class="fa fa-chevron-left"></i> Web安全防御之初探WAF
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/08/Linux学习笔记（八）-防火墙/" rel="prev" title="Linux学习笔记（八）-防火墙">
-                Linux学习笔记（八）-防火墙 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/06/Python当歌（一）：Python入门/" rel="prev" title="Python当歌（一）：Python入门">
+                Python当歌（一）：Python入门 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -912,7 +980,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#为什么要使用LVM"><span class="nav-number">1.</span> <span class="nav-text">为什么要使用LVM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LVM的概念"><span class="nav-number">2.</span> <span class="nav-text">LVM的概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#LVM的使用"><span class="nav-number">3.</span> <span class="nav-text">LVM的使用</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数字"><span class="nav-number">1.</span> <span class="nav-text">数字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串"><span class="nav-number">2.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#列表"><span class="nav-number">3.</span> <span class="nav-text">列表</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#元组"><span class="nav-number">4.</span> <span class="nav-text">元组</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字典"><span class="nav-number">5.</span> <span class="nav-text">字典</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#集合"><span class="nav-number">6.</span> <span class="nav-text">集合</span></a></li></ol></div>
             
 
           </div>
