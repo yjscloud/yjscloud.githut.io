@@ -99,7 +99,7 @@
 <meta property="og:url" content="http://yjscloud.com/2018/02/07/Python当歌（八）：装饰器/index.html">
 <meta property="og:site_name" content="戏子登台">
 <meta property="og:description" content="前言讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们防风御寒，咋办？我们想到的一个办法就是把内裤改造一下，让它变得更厚更长，这样一来，它不仅有遮羞功能，还能提供保暖，不过有个问题，这个内裤被我们改造成了长裤后，虽然还有遮羞功能，但本质上它不再是一条真正的内裤了。于是聪明的人们发明长裤，在不影响内裤的前提下，">
-<meta property="og:updated_time" content="2018-02-07T08:21:59.000Z">
+<meta property="og:updated_time" content="2018-02-07T08:54:57.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python当歌（八）：装饰器">
 <meta name="twitter:description" content="前言讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们防风御寒，咋办？我们想到的一个办法就是把内裤改造一下，让它变得更厚更长，这样一来，它不仅有遮羞功能，还能提供保暖，不过有个问题，这个内裤被我们改造成了长裤后，虽然还有遮羞功能，但本质上它不再是一条真正的内裤了。于是聪明的人们发明长裤，在不影响内裤的前提下，">
@@ -473,14 +473,16 @@ def foo():
     print(&quot;运行时间是%s&quot; %(stop_time - start_time))
 </code></pre><p>如果函数 bar()、bar2() 也有类似的需求，怎么做？再写一个 类似的代码在 bar 函数里？这样就造成大量雷同的代码，为了减少重复写代码，我们可以这样做，重新定义一个新的函数：专门计算函数运行时间 ，时间计算完成之后再执行真正的业务代码。</p>
 <pre><code>import time
+
 def timmer(func): #func=test
-        start_time=time.time()
-        func() #就是在运行test()
-        stop_time = time.time()
-        print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    start_time=time.time()
+    func() #就是在运行test()
+    stop_time = time.time()
+    print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+
 def test():
-    time.sleep(3)
-print(&apos;test函数运行完毕&apos;)
+     time.sleep(3)
+     print(&apos;test函数运行完毕&apos;)
 
 timmer(test)
 </code></pre><p>这样做逻辑上是没问题的，功能是实现了，但是我们调用的时候不再是调用真正的业务逻辑test函数，而是换成了timmer函数，这就破坏了原有的代码结构， 现在我们不得不每次都要把原来的那个test函数作为参数传递给test函数，那么有没有更好的方式的呢？当然有，答案就是装饰器。</p>
@@ -518,23 +520,23 @@ print(&apos;test函数运行完毕&apos;)
 test()
 </code></pre><p>如上所示，有了 @ ，我们就可以省去test = timmer(test)这一句了，直接调用 test() 即可得到想要的结果。你们看到了没有，test() 函数不需要做任何修改，只需在定义的地方加上装饰器，调用的时候还是和以前一样，如果我们有其他的类似函数，我们可以继续调用装饰器来修饰函数，而不用重复修改函数或者增加新的封装。这样，我们就提高了程序的可重复利用性，并增加了程序的可读性。</p>
 <p>装饰器在 Python 使用如此方便都要归因于 Python 的函数能像普通的对象一样能作为参数传递给其他函数，可以被赋值给其他变量，可以作为返回值，可以被定义在另外一个函数内。</p>
-<h1 id="args、-kwargs"><a href="#args、-kwargs" class="headerlink" title=" args、* kwargs"></a><em> args、*</em> kwargs</h1><p>如果我的业务逻辑函数 foo 需要参数怎么办？比如：</p>
+<h1 id="args、-kwargs"><a href="#args、-kwargs" class="headerlink" title="*args、**kwargs"></a>*args、**kwargs</h1><p>如果我的业务逻辑函数 foo 需要参数怎么办？比如：</p>
 <pre><code>def test(name):
     time.sleep(3)
     print(“test函数运行完毕,名字是【%s】” %name)
 </code></pre><p>我们可以在定义 wrapper 函数的时候指定参数：</p>
 <pre><code>def wrapper(name):
     start_time=time.time()
-   func(name)        
+    func(name)        
      stop_time = time.time()
-   print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+     print(&apos;运行时间是%s&apos; %(stop_time-start_time))
     return wrapper
 </code></pre><p>这样 test的参数就可以定义在 wrapper 函数中。如果 foo 函数接收两个参数呢？三个参数呢？更有甚者，就多个。当装饰器不知道 test个参数时，我们可以用 * args 来代替：</p>
 <pre><code>def wrapper(*args):
     start_time=time.time()
-   func(*args)        
+    func(*args)        
     stop_time = time.time()
-   print(&apos;运行时间是%s&apos; %(stop_time-start_time))
+    print(&apos;运行时间是%s&apos; %(stop_time-start_time))
     return wrapper
 </code></pre><p>如此一来，甭管 test定义了多少个参数，我都可以完整地传递到 func 中去。这样就不影响 test的业务逻辑了。这时还有读者会问，如果 test函数还定义了一些关键字参数呢？比如：</p>
 <pre><code>def test(name,age,gender):
@@ -865,7 +867,7 @@ test()
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单装饰器"><span class="nav-number">2.</span> <span class="nav-text">简单装饰器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语法糖"><span class="nav-number">3.</span> <span class="nav-text">@ 语法糖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#args、-kwargs"><span class="nav-number">4.</span> <span class="nav-text"> args、* kwargs</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#带参数的装饰器"><span class="nav-number">5.</span> <span class="nav-text">带参数的装饰器</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#简单装饰器"><span class="nav-number">2.</span> <span class="nav-text">简单装饰器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语法糖"><span class="nav-number">3.</span> <span class="nav-text">@ 语法糖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#args、-kwargs"><span class="nav-number">4.</span> <span class="nav-text">*args、**kwargs</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#带参数的装饰器"><span class="nav-number">5.</span> <span class="nav-text">带参数的装饰器</span></a></li></ol></div>
             
 
           </div>
