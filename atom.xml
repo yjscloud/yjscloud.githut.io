@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-02-07T11:03:00.000Z</updated>
+  <updated>2018-02-07T11:14:52.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>Python当歌（九）：模块</title>
-    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B9%9D%EF%BC%89%EF%BC%9A%E6%A8%A1%E5%9D%97/"/>
-    <id>http://yjscloud.com/2018/02/07/Python当歌（九）：模块/</id>
-    <published>2018-02-07T09:37:20.000Z</published>
-    <updated>2018-02-07T11:03:00.000Z</updated>
+    <link href="http://yjscloud.com/2018/01/22/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B9%9D%EF%BC%89%EF%BC%9A%E6%A8%A1%E5%9D%97/"/>
+    <id>http://yjscloud.com/2018/01/22/Python当歌（九）：模块/</id>
+    <published>2018-01-22T09:37:20.000Z</published>
+    <updated>2018-02-07T11:14:52.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="模块-amp-包"><a href="#模块-amp-包" class="headerlink" title="模块&amp;包"></a>模块&amp;包</h1><h2 id="模块-modue-的概念："><a href="#模块-modue-的概念：" class="headerlink" title="模块(modue)的概念："></a>模块(modue)的概念：</h2><p>在计算机程序的开发过程中，随着程序代码越写越多，在一个文件里代码就会越来越长，越来越不容易维护。</p>
 <p>为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样，每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在Python中，一个.py文件就称之为一个模块（Module）。</p>
@@ -568,10 +568,10 @@ print(ret)
   
   <entry>
     <title>Python当歌（八）：装饰器</title>
-    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%85%AB%EF%BC%89%EF%BC%9A%E8%A3%85%E9%A5%B0%E5%99%A8/"/>
-    <id>http://yjscloud.com/2018/02/07/Python当歌（八）：装饰器/</id>
-    <published>2018-02-07T08:04:24.000Z</published>
-    <updated>2018-02-07T08:54:57.000Z</updated>
+    <link href="http://yjscloud.com/2018/01/21/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%85%AB%EF%BC%89%EF%BC%9A%E8%A3%85%E9%A5%B0%E5%99%A8/"/>
+    <id>http://yjscloud.com/2018/01/21/Python当歌（八）：装饰器/</id>
+    <published>2018-01-21T08:04:24.000Z</published>
+    <updated>2018-02-07T11:14:36.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们防风御寒，咋办？我们想到的一个办法就是把内裤改造一下，让它变得更厚更长，这样一来，它不仅有遮羞功能，还能提供保暖，不过有个问题，这个内裤被我们改造成了长裤后，虽然还有遮羞功能，但本质上它不再是一条真正的内裤了。于是聪明的人们发明长裤，在不影响内裤的前提下，直接把长裤套在了内裤外面，这样内裤还是内裤，有了长裤后宝宝再也不冷了。装饰器就像我们这里说的长裤，在不影响内裤作用的前提下，给我们的身子提供了保暖的功效。</p>
 <p>谈装饰器前，还要先要明白一件事，Python 中的函数和 Java、C++不太一样，Python 中的函数可以像普通变量一样当做参数传递给另外一个函数，例如：</p>
@@ -717,10 +717,10 @@ test()
   
   <entry>
     <title>Python当歌（七）：闭包</title>
-    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E9%97%AD%E5%8C%85/"/>
-    <id>http://yjscloud.com/2018/02/07/Python当歌（七）：闭包/</id>
-    <published>2018-02-07T07:54:22.000Z</published>
-    <updated>2018-02-07T08:02:29.000Z</updated>
+    <link href="http://yjscloud.com/2018/01/20/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E9%97%AD%E5%8C%85/"/>
+    <id>http://yjscloud.com/2018/01/20/Python当歌（七）：闭包/</id>
+    <published>2018-01-20T07:54:22.000Z</published>
+    <updated>2018-02-07T11:14:14.000Z</updated>
     
     <content type="html"><![CDATA[<p>闭包和函数紧密联系在一起，介绍闭包前有必要先介绍一些背景知识，诸如嵌套函数、变量的作用域等概念。</p>
 <h1 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h1><p>作用域是程序运行时变量可被访问的范围，定义在函数内的变量是局部变量，局部变量的作用范围只能是函数内部范围内，它不能在函数外引用。</p>
@@ -760,10 +760,10 @@ test()
   
   <entry>
     <title>Python当歌（六）：迭代器、生成器</title>
-    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9A%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8/"/>
-    <id>http://yjscloud.com/2018/02/07/Python当歌（六）：迭代器、生成器/</id>
-    <published>2018-02-07T03:15:23.000Z</published>
-    <updated>2018-02-07T03:31:21.000Z</updated>
+    <link href="http://yjscloud.com/2018/01/19/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9A%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8/"/>
+    <id>http://yjscloud.com/2018/01/19/Python当歌（六）：迭代器、生成器/</id>
+    <published>2018-01-19T03:15:23.000Z</published>
+    <updated>2018-02-07T11:13:40.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h1><h2 id="迭代的概念"><a href="#迭代的概念" class="headerlink" title="迭代的概念"></a>迭代的概念</h2><p>迭代器即迭代的工具，那什么是迭代呢？</p>
 <p>迭代是一个重复的过程，每次重复即一次迭代，并且每次迭代的结果都是下一次迭代的初始值</p>
@@ -854,10 +854,10 @@ for k in dic:
   
   <entry>
     <title>Python当歌（五）：文件读写</title>
-    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99/"/>
-    <id>http://yjscloud.com/2018/02/07/Python当歌（五）：文件读写/</id>
-    <published>2018-02-07T02:40:14.000Z</published>
-    <updated>2018-02-07T02:57:35.000Z</updated>
+    <link href="http://yjscloud.com/2018/01/18/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9A%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99/"/>
+    <id>http://yjscloud.com/2018/01/18/Python当歌（五）：文件读写/</id>
+    <published>2018-01-18T02:40:14.000Z</published>
+    <updated>2018-02-07T11:13:22.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>计算机系统分为：计算机硬件，操作系统，应用程序三部分。</p>
 <p>我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必须要保存于硬盘中，这就涉及到应用程序要操作硬件，众所周知，应用程序是无法直接操作硬件的，这就用到了操作系统。操作系统把复杂的硬件操作封装成简单的接口给用户/应用程序使用，其中文件就是操作系统提供给应用程序来操作硬盘虚拟概念，用户或应用程序通过操作文件，可以将自己的数据永久保存下来。<br>有了文件的概念，我们无需再去考虑操作硬盘的细节，只需要关注操作文件的流程：</p>
@@ -978,10 +978,10 @@ while True:
   
   <entry>
     <title>Python当歌（四）：函数</title>
-    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%87%BD%E6%95%B0/"/>
-    <id>http://yjscloud.com/2018/02/07/Python当歌（四）：函数/</id>
-    <published>2018-02-07T01:49:07.000Z</published>
-    <updated>2018-02-07T02:37:30.000Z</updated>
+    <link href="http://yjscloud.com/2018/01/17/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%87%BD%E6%95%B0/"/>
+    <id>http://yjscloud.com/2018/01/17/Python当歌（四）：函数/</id>
+    <published>2018-01-17T01:49:07.000Z</published>
+    <updated>2018-02-07T11:13:02.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="函数基础"><a href="#函数基础" class="headerlink" title="函数基础"></a>函数基础</h1><p>函数是什么?</p>
 <p>想象生活中的例子，修理工需要实现准备好工具箱里面放好锤子，扳手，钳子等工具，然后遇到锤钉子的场景，拿来锤子用就可以，而无需临时再制造一把锤子。</p>
@@ -1225,10 +1225,10 @@ calc(10)
   
   <entry>
     <title>Python当歌（三）：字符串格式化</title>
-    <link href="http://yjscloud.com/2018/02/07/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A0%BC%E5%BC%8F%E5%8C%96/"/>
-    <id>http://yjscloud.com/2018/02/07/Python当歌（三）：字符串格式化/</id>
-    <published>2018-02-07T01:13:30.000Z</published>
-    <updated>2018-02-07T01:40:49.000Z</updated>
+    <link href="http://yjscloud.com/2018/01/17/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A0%BC%E5%BC%8F%E5%8C%96/"/>
+    <id>http://yjscloud.com/2018/01/17/Python当歌（三）：字符串格式化/</id>
+    <published>2018-01-17T01:13:30.000Z</published>
+    <updated>2018-02-07T11:12:38.000Z</updated>
     
     <content type="html"><![CDATA[<p>Python的字符串格式化有两种方式: 百分号方式、format方式。</p>
 <p>百分号的方式相对来说比较老，而format方式则是比较先进的方式，企图替换古老的方式，目前两者并存。</p>
@@ -1365,10 +1365,10 @@ tpl = &quot;numbers: {num:b},{num:o},{num:d},{num:x},{num:X}, {num:%}&quot;.form
   
   <entry>
     <title>Python当歌（二）：基础数值类型</title>
-    <link href="http://yjscloud.com/2018/02/06/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B/"/>
-    <id>http://yjscloud.com/2018/02/06/Python当歌（二）：基础数值类型/</id>
-    <published>2018-02-06T10:31:58.000Z</published>
-    <updated>2018-02-07T00:42:17.000Z</updated>
+    <link href="http://yjscloud.com/2018/01/16/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B/"/>
+    <id>http://yjscloud.com/2018/01/16/Python当歌（二）：基础数值类型/</id>
+    <published>2018-01-16T10:31:58.000Z</published>
+    <updated>2018-02-07T11:12:22.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h1><p>所有的功能，都放在int里</p>
 <p>int:将字符串转换为数字</p>
@@ -1556,10 +1556,10 @@ tpl = &quot;numbers: {num:b},{num:o},{num:d},{num:x},{num:X}, {num:%}&quot;.form
   
   <entry>
     <title>Python当歌（一）：Python入门</title>
-    <link href="http://yjscloud.com/2018/02/06/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9APython%E5%85%A5%E9%97%A8/"/>
-    <id>http://yjscloud.com/2018/02/06/Python当歌（一）：Python入门/</id>
-    <published>2018-02-06T08:47:45.000Z</published>
-    <updated>2018-02-06T10:29:06.000Z</updated>
+    <link href="http://yjscloud.com/2018/01/15/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9APython%E5%85%A5%E9%97%A8/"/>
+    <id>http://yjscloud.com/2018/01/15/Python当歌（一）：Python入门/</id>
+    <published>2018-01-15T08:47:45.000Z</published>
+    <updated>2018-02-07T11:12:03.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="第一句Python代码"><a href="#第一句Python代码" class="headerlink" title="第一句Python代码"></a>第一句Python代码</h1><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%881%EF%BC%89.png" alt="一（1）"></p>
 <p>python内部执行过程如下：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%882%EF%BC%89.png" alt="一（2）"></p>

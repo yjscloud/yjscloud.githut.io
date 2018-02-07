@@ -1,0 +1,1525 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python学习笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="模块&amp;amp;包模块(modue)的概念：在计算机程序的开发过程中，随着程序代码越写越多，在一个文件里代码就会越来越长，越来越不容易维护。 为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样，每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在Python中，一个.py文件就称之为一个模块（Module）。 使用模块有什么好处？最大的好处是大大提高了代码的可维护">
+<meta name="keywords" content="Python学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python当歌（九）：模块">
+<meta property="og:url" content="http://yjscloud.com/2018/01/22/Python当歌（九）：模块/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="模块&amp;amp;包模块(modue)的概念：在计算机程序的开发过程中，随着程序代码越写越多，在一个文件里代码就会越来越长，越来越不容易维护。 为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样，每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在Python中，一个.py文件就称之为一个模块（Module）。 使用模块有什么好处？最大的好处是大大提高了代码的可维护">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-1.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-2.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-3.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-4.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-5.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-6.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-7.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-8.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-9.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-10.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-11.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-12.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-13.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-14.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-15.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-16.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-17.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-18.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-19.png">
+<meta property="og:updated_time" content="2018-02-07T11:14:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python当歌（九）：模块">
+<meta name="twitter:description" content="模块&amp;amp;包模块(modue)的概念：在计算机程序的开发过程中，随着程序代码越写越多，在一个文件里代码就会越来越长，越来越不容易维护。 为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样，每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在Python中，一个.py文件就称之为一个模块（Module）。 使用模块有什么好处？最大的好处是大大提高了代码的可维护">
+<meta name="twitter:image" content="http://p3q1rwnbl.bkt.clouddn.com/9-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2018/01/22/Python当歌（九）：模块/"/>
+
+
+
+
+
+  <title>Python当歌（九）：模块 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/01/22/Python当歌（九）：模块/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Python当歌（九）：模块
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-22T17:37:20+08:00">
+                2018-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/01/22/Python当歌（九）：模块/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  6,671
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  28
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="模块-amp-包"><a href="#模块-amp-包" class="headerlink" title="模块&amp;包"></a>模块&amp;包</h1><h2 id="模块-modue-的概念："><a href="#模块-modue-的概念：" class="headerlink" title="模块(modue)的概念："></a>模块(modue)的概念：</h2><p>在计算机程序的开发过程中，随着程序代码越写越多，在一个文件里代码就会越来越长，越来越不容易维护。</p>
+<p>为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样，每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在Python中，一个.py文件就称之为一个模块（Module）。</p>
+<p>使用模块有什么好处？<br>最大的好处是大大提高了代码的可维护性。</p>
+<p>其次，编写代码不必从零开始。当一个模块编写完毕，就可以被其他地方引用。我们在编写程序的时候，也经常引用其他模块，包括Python内置的模块和来自第三方的模块。<br>所以，模块一共三种：</p>
+<ul>
+<li>python标准库</li>
+<li>第三方模块</li>
+<li>应用程序自定义模块</li>
+</ul>
+<p>另外，使用模块还可以避免函数名和变量名冲突。相同名字的函数和变量完全可以分别存在不同的模块中，因此，我们自己在编写模块时，不必考虑名字会与其他模块冲突。但是也要注意，尽量不要与内置函数名字冲突。</p>
+<h2 id="模块导入方法"><a href="#模块导入方法" class="headerlink" title="模块导入方法"></a>模块导入方法</h2><p>（1）import语法</p>
+<pre><code>import module1[, module2[,... moduleN]
+</code></pre><p>（2）from…import语句</p>
+<pre><code>from modname import name1[, name2[, ... nameN]]
+</code></pre><p>（3）From…import* 语句</p>
+<pre><code>from modname import *
+</code></pre><p>这提供了一个简单的方法来导入一个模块中的所有项目。然而这种声明不该被过多地使用。大多数情况， Python程序员不使用这种方法，因为引入的其它来源的命名，很可能覆盖了已有的定义</p>
+<p>（4）运行本质</p>
+<pre><code>import test
+from test import add
+</code></pre><p>无论1还是2，首先通过sys.path找到test.py,然后执行test脚本（全部执行），区别是1会将test这个变量名加载到名字空间，而2只会将add这个变量名加载进来。　</p>
+<h2 id="包-package"><a href="#包-package" class="headerlink" title="包(package)"></a>包(package)</h2><p>如果不同的人编写的模块名相同怎么办？为了避免模块名冲突，Python又引入了按目录来组织模块的方法，称为包（Package）。</p>
+<p>举个例子，一个abc.py的文件就是一个名字叫abc的模块，一个xyz.py的文件就是一个名字叫xyz的模块。</p>
+<p>现在，假设我们的abc和xyz这两个模块名字与其他模块冲突了，于是我们可以通过包来组织模块，避免冲突。方法是选择一个顶层包名：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-1.png" alt="9-1"></p>
+<p>引入了包以后，只要顶层的包名不与别人冲突，那所有模块都不会与别人冲突。现在，view.py模块的名字就变成了hello_django.app01.views，类似的，manage.py的模块名则是hello_django.manage。</p>
+<p>请注意，每一个包目录下面都会有一个__init__.py的文件，这个文件是必须存在的，否则，Python就把这个目录当成普通目录(文件夹)，而不是一个包。__init__.py可以是空文件，也可以有Python代码，因为__init__.py本身就是一个模块，而它的模块名就是对应包的名字。</p>
+<p>调用包就是执行包下的__init__.py文件</p>
+<h2 id="注意点（important）"><a href="#注意点（important）" class="headerlink" title="注意点（important）"></a>注意点（important）</h2><p>1、——————-</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-2.png" alt="9-2"></p>
+<p>在nod1里import  hello是找不到的，有同学说可以找到呀，那是因为你的pycharm为你把myapp这一层路径加入到了sys.path里面，所以可以找到，然而程序一旦在命令行运行，则报错。有同学问那怎么办？简单啊，自己把这个路径加进去不就OK啦：</p>
+<pre><code>import sys,os
+BASE_DIR=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(BASE_DIR)
+import hello
+hello.hello1()
+</code></pre><p>2、————————–</p>
+<pre><code>if __name__==&apos;__main__&apos;:
+    print(&apos;ok&apos;)
+
+“Make a .py both importable and executable”
+</code></pre><p>如果我们是直接执行某个.py文件的时候，该文件中那么”__name__ == ‘__main__’“是True,但是我们如果从另外一个.py文件通过import导入该文件的时候，这时__name__的值就是我们这个py文件的名字而不是__main__。</p>
+<p>这个功能还有一个用处：调试代码的时候，在”if __name__ == ‘__main__’“中加入一些我们的调试代码，我们可以让外部模块调用的时候不执行我们的调试代码，但是如果我们想排查问题的时候，直接执行该模块文件，调试代码能够正常运行！</p>
+<h1 id="time模块"><a href="#time模块" class="headerlink" title="time模块"></a>time模块</h1><p>三种时间表示</p>
+<p>在Python中，通常有这几种方式来表示时间：</p>
+<p>（1）时间戳(timestamp)：通常来说，时间戳表示的是从1970年1月1日00:00:00开始按秒计算的偏移量。我们运行“type(time.time())”，返回的是float类型。</p>
+<p>（2）格式化的时间字符串</p>
+<p>（3）元组(struct_time)：struct_time元组共有9个元素共九个元素:(年，月，日，时，分，秒，一年中第几周，一年中第几天，夏令时)<br>import time</p>
+<p>#    1 time() :返回当前时间的时间戳</p>
+<p>time.time()  #1473525444.037215</p>
+<p>#———————————————————-</p>
+<p># 2 localtime([secs])</p>
+<p># 将一个时间戳转换为当前时区的struct_time。secs参数未提供，则以当前时间为准。</p>
+<p>time.localtime() #time.struct_time(tm_year=2016, tm_mon=9, tm_mday=11, tm_hour=0,</p>
+<p># tm_min=38, tm_sec=39, tm_wday=6, tm_yday=255, tm_isdst=0)</p>
+<p>time.localtime(1473525444.037215)</p>
+<p>#———————————————————-</p>
+<p># 3 gmtime([secs]) 和localtime()方法类似，gmtime()方法是将一个时间戳转换为UTC时区（0时区）的struct_time。</p>
+<p>#———————————————————-</p>
+<p># 4 mktime(t) : 将一个struct_time转化为时间戳。</p>
+<p>print(time.mktime(time.localtime()))#1473525749.0</p>
+<p>#———————————————————-</p>
+<p># 5 asctime([t]) : 把一个表示时间的元组或者struct_time表示为这种形式：’Sun Jun 20 23:21:05 1993’。</p>
+<p># 如果没有参数，将会将time.localtime()作为参数传入。</p>
+<p>print(time.asctime())#Sun Sep 11 00:43:43 2016</p>
+<p>#———————————————————-</p>
+<p># 6 ctime([secs]) : 把一个时间戳（按秒计算的浮点数）转化为time.asctime()的形式。如果参数未给或者为None的时候，将会默认time.time()为参数。它的作用相当于time.asctime(time.localtime(secs))。</p>
+<p>print(time.ctime())  # Sun Sep 11 00:46:38 2016</p>
+<p>print(time.ctime(time.time()))  # Sun Sep 11 00:46:38 2016</p>
+<p>#———————————————————-</p>
+<p># 7 strftime(format[, t]) : 把一个代表时间的元组或者struct_time（如由time.localtime()和time.gmtime()返回）转化为格式化的时间字符串。如果t未指定，将传入<br>time.localtime()。如果元组中任何一个元素越界，ValueError的错误将会被抛出。</p>
+<p>print(time.strftime(“%Y-%m-%d %X”, time.localtime()))#2016-09-11 00:49:56</p>
+<p>#———————————————————-</p>
+<p># 8 time.strptime(string[, format])</p>
+<p># 把一个格式化时间字符串转化为struct_time。实际上它和strftime()是逆操作。</p>
+<p>print(time.strptime(‘2011-05-05 16:37:06’, ‘%Y-%m-%d %X’))</p>
+<p># time.struct_time(tm_year=2011, tm_mon=5, tm_mday=5, tm_hour=16, tm_min=37, tm_sec=6,</p>
+<p>#  tm_wday=3, tm_yday=125, tm_isdst=-1)</p>
+<p># 在这个函数中，format默认为：”%a %b %d %H:%M:%S %Y”。</p>
+<p>#———————————————————-</p>
+<p># 9 sleep(secs)<br># 线程推迟指定的时间运行，单位为秒。</p>
+<p>#———————————————————-</p>
+<p># 10 clock()<br># 这个需要注意，在不同的系统上含义不同。在UNIX系统上，它返回的是“进程时间”，它是用秒表示的浮点数（时间戳）。而在WINDOWS中，第一次调用，返回的是进程运行的实际时间。而第二次之后的调用是自第一次调用以后到现在的运行时间，即两次时间差。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-3.png" alt="9-3"><br><img src="http://p3q1rwnbl.bkt.clouddn.com/9-4.png" alt="9-4"></p>
+<h1 id="random模块"><a href="#random模块" class="headerlink" title="random模块"></a>random模块</h1><pre><code>import random
+
+print(random.random())    #(0,1)----float
+
+print(random.randint(1,3))  #[1,3]
+
+print(random.randrange(1,3)) #[1,3)
+
+print(random.choice([1,&apos;23&apos;,[4,5]]))     #23
+
+print(random.sample([1,&apos;23&apos;,[4,5]],2))  #[[4, 5], &apos;23&apos;]
+
+print(random.uniform(1,3))  #1.927109612082716
+
+
+item=[1,3,5,7,9]
+random.shuffle(item)
+print(item)
+</code></pre><p>随机验证码代码:</p>
+<pre><code>import random
+
+def v_code():
+
+    code = &apos;&apos;
+    for i in range(5):
+
+        num=random.randint(0,9)
+        alf=chr(random.randint(65,90))
+        add=random.choice([num,alf])
+        code += str(add)
+    return code
+
+print(v_code())
+</code></pre><h1 id="os模块"><a href="#os模块" class="headerlink" title="os模块"></a>os模块</h1><p>os模块是与操作系统交互的一个接口</p>
+<p>os.getcwd() 获取当前工作目录，即当前python脚本工作的目录路径</p>
+<p>os.chdir(“dirname”)  改变当前脚本工作目录；相当于shell下cd</p>
+<p>os.curdir  返回当前目录: (‘.’)</p>
+<p>os.pardir  获取当前目录的父目录字符串名：(‘..’)</p>
+<p>os.makedirs(‘dirname1/dirname2’)    可生成多层递归目录</p>
+<p>os.removedirs(‘dirname1’)    若目录为空，则删除，并递归到上一级目录，如若也为空，则删除，依此类推</p>
+<p>os.mkdir(‘dirname’)    生成单级目录；相当于shell中mkdir dirname</p>
+<p>os.rmdir(‘dirname’)    删除单级空目录，若目录不为空则无法删除，报错；相当于shell中rmdir dirname</p>
+<p>os.listdir(‘dirname’)    列出指定目录下的所有文件和子目录，包括隐藏文件，并以列表方式打印</p>
+<p>os.remove()  删除一个文件</p>
+<p>os.rename(“oldname”,”newname”)  重命名文件/目录</p>
+<p>os.stat(‘path/filename’)  获取文件/目录信息</p>
+<p>os.sep    输出操作系统特定的路径分隔符，win下为”\“,Linux下为”/“</p>
+<p>os.linesep    输出当前平台使用的行终止符，win下为”\t\n”,Linux下为”\n”</p>
+<p>os.pathsep    输出用于分割文件路径的字符串 win下为;,Linux下为:</p>
+<p>os.name    输出字符串指示当前使用平台。win-&gt;’nt’; Linux-&gt;’posix’</p>
+<p>os.system(“bash command”)  运行shell命令，直接显示</p>
+<p>os.environ  获取系统环境变量</p>
+<p>os.path.abspath(path)  返回path规范化的绝对路径</p>
+<p>os.path.split(path)  将path分割成目录和文件名二元组返回</p>
+<p>os.path.dirname(path)  返回path的目录。其实就是os.path.split(path)的第一个元素</p>
+<p>os.path.basename(path)  返回path最后的文件名。如何path以／或\结尾，那么就会返回空值。即os.path.split(path)的第二个元素</p>
+<p>os.path.exists(path)  如果path存在，返回True；如果path不存在，返回False</p>
+<p>os.path.isabs(path)  如果path是绝对路径，返回True</p>
+<p>os.path.isfile(path)  如果path是一个存在的文件，返回True。否则返回False</p>
+<p>os.path.isdir(path)  如果path是一个存在的目录，则返回True。否则返回False</p>
+<p>os.path.join(path1[, path2[, …]])  将多个路径组合后返回，第一个绝对路径之前的参数将被忽略</p>
+<p>os.path.getatime(path)  返回path所指向的文件或者目录的最后存取时间</p>
+<p>os.path.getmtime(path)  返回path所指向的文件或者目录的最后修改时间</p>
+<h1 id="sys模块"><a href="#sys模块" class="headerlink" title="sys模块"></a>sys模块</h1><p>sys.argv           命令行参数List，第一个元素是程序本身路径</p>
+<p>sys.exit(n)        退出程序，正常退出时exit(0)</p>
+<p>sys.version        获取Python解释程序的版本信息</p>
+<p>sys.maxint         最大的Int值</p>
+<p>sys.path           返回模块的搜索路径，初始化时使用PYTHONPATH环境变量的值</p>
+<p>sys.platform       返回操作系统平台名称</p>
+<p>进度条代码：</p>
+<pre><code>import sys,time
+for i in range(10):
+    sys.stdout.write(&apos;#&apos;)
+    time.sleep(1)
+    sys.stdout.flush()
+</code></pre><h1 id="json-amp-pickle"><a href="#json-amp-pickle" class="headerlink" title="json&amp;pickle"></a>json&amp;pickle</h1><p>用eval内置方法可以将一个字符串转成python对象，不过，eval方法是有局限性的，对于普通的数据类型，json.loads和eval都能用，但遇到特殊类型的时候，eval就不管用了,所以eval的重点还是通常用来执行一个字符串表达式，并返回表达式的值。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-5.png" alt="9-5"></p>
+<h2 id="什么是序列化？"><a href="#什么是序列化？" class="headerlink" title="什么是序列化？"></a>什么是序列化？</h2><p>我们把对象(变量)从内存中变成可存储或传输的过程称之为序列化，在Python中叫pickling，在其他语言中也被称之为serialization，marshalling，flattening等等，都是一个意思。<br>序列化之后，就可以把序列化后的内容写入磁盘，或者通过网络传输到别的机器上。<br>反过来，把变量内容从序列化的对象重新读到内存里称之为反序列化，即unpickling。</p>
+<h2 id="json"><a href="#json" class="headerlink" title="json"></a>json</h2><p>如果我们要在不同的编程语言之间传递对象，就必须把对象序列化为标准格式，比如XML，但更好的方法是序列化为JSON，因为JSON表示出来就是一个字符串，可以被所有语言读取，也可以方便地存储到磁盘或者通过网络传输。JSON不仅是标准格式，并且比XML更快，而且可以直接在Web页面中读取，非常方便。</p>
+<p>JSON表示的对象就是标准的JavaScript语言的对象，JSON和Python内置的数据类型对应如下：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-6.png" alt="9-6"></p>
+<p>#—————————-序列化</p>
+<pre><code>import json
+
+dic={&apos;name&apos;:&apos;alvin&apos;,&apos;age&apos;:23,&apos;sex&apos;:&apos;male&apos;}
+print(type(dic))#&lt;class &apos;dict&apos;&gt;
+
+j=json.dumps(dic)
+print(type(j))#&lt;class &apos;str&apos;&gt;
+
+f=open(&apos;序列化对象&apos;,&apos;w&apos;)
+f.write(j)  #-------------------等价于json.dump(dic,f)
+f.close()
+</code></pre><p>#—————————–反序列化<br></p>
+<pre><code>import json
+f=open(&apos;序列化对象&apos;)
+data=json.loads(f.read())#  等价于data=json.load(f)
+</code></pre><p>注意：</p>
+<pre><code>import json
+#dct=&quot;{&apos;1&apos;:111}&quot;#json 不认单引号
+#dct=str({&quot;1&quot;:111})#报错,因为生成的数据还是单引号:{&apos;one&apos;: 1}
+
+dct=&apos;{&quot;1&quot;:&quot;111&quot;}&apos;
+print(json.loads(dct))
+
+#conclusion:
+#无论数据是怎样创建的，只要满足json格式，就可以json.loads出来,不一定非要dumps的数据才能loads
+</code></pre><h2 id="pickle"><a href="#pickle" class="headerlink" title="pickle"></a>pickle</h2><p>#—————————-序列化</p>
+<pre><code>import pickle
+
+dic={&apos;name&apos;:&apos;alvin&apos;,&apos;age&apos;:23,&apos;sex&apos;:&apos;male&apos;}
+
+print(type(dic))#&lt;class &apos;dict&apos;&gt;
+
+j=pickle.dumps(dic)
+print(type(j))#&lt;class &apos;bytes&apos;&gt;
+
+f=open(&apos;序列化对象_pickle&apos;,&apos;wb&apos;)#注意是w是写入str,wb是写入bytes,j是&apos;bytes&apos;
+f.write(j)  #-------------------等价于pickle.dump(dic,f)
+
+f.close()
+</code></pre><p>#————————-反序列化</p>
+<pre><code>import pickle
+f=open(&apos;序列化对象_pickle&apos;,&apos;rb&apos;)
+
+data=pickle.loads(f.read())#  等价于data=pickle.load(f)
+
+print(data[&apos;age&apos;])  
+</code></pre><p>Pickle的问题和所有其他编程语言特有的序列化问题一样，就是它只能用于Python，并且可能不同版本的Python彼此都不兼容，因此，只能用Pickle保存那些不重要的数据，不能成功地反序列化也没关系。</p>
+<h1 id="xml模块"><a href="#xml模块" class="headerlink" title="xml模块"></a>xml模块</h1><p>xml是实现不同语言或程序之间进行数据交换的协议，跟json差不多，但json使用起来更简单，不过，在json还没诞生的黑暗年代，大家只能选择用xml，至今很多传统公司如金融行业的很多系统的接口还主要是xml。</p>
+<p>xml的格式如下，就是通过&lt;&gt;节点来区别数据结构的:</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;data&gt;
+    &lt;country name=&quot;Liechtenstein&quot;&gt;
+        &lt;rank updated=&quot;yes&quot;&gt;2&lt;/rank&gt;
+        &lt;year&gt;2008&lt;/year&gt;
+        &lt;gdppc&gt;141100&lt;/gdppc&gt;
+        &lt;neighbor name=&quot;Austria&quot; direction=&quot;E&quot;/&gt;
+        &lt;neighbor name=&quot;Switzerland&quot; direction=&quot;W&quot;/&gt;
+    &lt;/country&gt;
+    &lt;country name=&quot;Singapore&quot;&gt;
+        &lt;rank updated=&quot;yes&quot;&gt;5&lt;/rank&gt;
+        &lt;year&gt;2011&lt;/year&gt;
+        &lt;gdppc&gt;59900&lt;/gdppc&gt;
+        &lt;neighbor name=&quot;Malaysia&quot; direction=&quot;N&quot;/&gt;
+    &lt;/country&gt;
+    &lt;country name=&quot;Panama&quot;&gt;
+        &lt;rank updated=&quot;yes&quot;&gt;69&lt;/rank&gt;
+        &lt;year&gt;2011&lt;/year&gt;
+        &lt;gdppc&gt;13600&lt;/gdppc&gt;
+        &lt;neighbor name=&quot;Costa Rica&quot; direction=&quot;W&quot;/&gt;
+        &lt;neighbor name=&quot;Colombia&quot; direction=&quot;E&quot;/&gt;
+    &lt;/country&gt;
+&lt;/data&gt;
+</code></pre><p>xml协议在各个语言里的都 是支持的，在python中可以用以下模块操作xml：</p>
+<pre><code>import xml.etree.ElementTree as ET 
+tree = ET.parse(&quot;xmltest.xml&quot;)
+root = tree.getroot()
+print(root.tag)
+</code></pre><p>#遍历xml文档</p>
+<pre><code>for child in root:
+    print(child.tag, child.attrib)
+    for i in child:
+        print(i.tag,i.text)
+</code></pre><p>#只遍历year 节点</p>
+<pre><code>for node in root.iter(&apos;year&apos;):
+    print(node.tag,node.text)
+</code></pre><p>#—————————————</p>
+<pre><code>import xml.etree.ElementTree as ET
+
+tree = ET.parse(&quot;xmltest.xml&quot;)
+root = tree.getroot()
+</code></pre><p>#修改</p>
+<pre><code>for node in root.iter(&apos;year&apos;):
+    new_year = int(node.text) + 1
+    node.text = str(new_year)
+    node.set(&quot;updated&quot;,&quot;yes&quot;)
+
+tree.write(&quot;xmltest.xml&quot;)
+</code></pre><p>#删除node</p>
+<pre><code>for country in root.findall(&apos;country&apos;):
+    rank = int(country.find(&apos;rank&apos;).text)
+    if rank &gt; 50:
+     root.remove(country)
+
+tree.write(&apos;output.xml&apos;)
+</code></pre><p>自己创建xml文档：</p>
+<pre><code>import xml.etree.ElementTree as ET
+
+new_xml = ET.Element(&quot;namelist&quot;)
+name = ET.SubElement(new_xml,&quot;name&quot;,attrib={&quot;enrolled&quot;:&quot;yes&quot;})
+age = ET.SubElement(name,&quot;age&quot;,attrib={&quot;checked&quot;:&quot;no&quot;})
+sex = ET.SubElement(name,&quot;sex&quot;)
+sex.text = &apos;33&apos;
+name2 = ET.SubElement(new_xml,&quot;name&quot;,attrib={&quot;enrolled&quot;:&quot;no&quot;})
+age = ET.SubElement(name2,&quot;age&quot;)
+age.text = &apos;19&apos;
+
+et = ET.ElementTree(new_xml) #生成文档对象
+et.write(&quot;test.xml&quot;, encoding=&quot;utf-8&quot;,xml_declaration=True)
+
+ET.dump(new_xml) #打印生成的格式
+</code></pre><h1 id="logging模块"><a href="#logging模块" class="headerlink" title="logging模块"></a>logging模块</h1><p>(1)简单应用</p>
+<pre><code>import logging  
+logging.debug(&apos;debug message&apos;)  
+logging.info(&apos;info message&apos;)  
+logging.warning(&apos;warning message&apos;)  
+logging.error(&apos;error message&apos;)  
+logging.critical(&apos;critical message&apos;)
+</code></pre><p>输出：</p>
+<pre><code>WARNING:root:warning message
+ERROR:root:error message
+CRITICAL:root:critical message
+</code></pre><p>可见，默认情况下Python的logging模块将日志打印到了标准输出中，且只显示了大于等于WARNING级别的日志，这说明默认的日志级别设置为WARNING（日志级别等级CRITICAL &gt; ERROR &gt; WARNING &gt; INFO &gt; DEBUG &gt; NOTSET），默认的日志格式为日志级别：Logger名称：用户输出消息。</p>
+<p>（2)灵活配置日志级别，日志格式，输出位置</p>
+<pre><code>import logging
+
+logging.basicConfig(level=logging.DEBUG,
+format=&apos;%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s&apos;,
+datefmt=&apos;%a, %d %b %Y %H:%M:%S&apos;,
+filename=&apos;test.log&apos;,
+filemode=&apos;w&apos;)
+
+logging.debug(&apos;debug message&apos;)
+logging.info(&apos;info message&apos;)
+logging.warning(&apos;warning message&apos;)
+logging.error(&apos;error message&apos;)
+logging.critical(&apos;critical message&apos;)
+</code></pre><p>查看输出：</p>
+<pre><code>Wed, 24 Jan 2018 16:48:57 logging_test.py[line:11] DEBUG debug message
+Wed, 24 Jan 2018 16:48:57 logging_test.py[line:12] INFO info message
+Wed, 24 Jan 2018 16:48:57 logging_test.py[line:13] WARNING warning message
+Wed, 24 Jan 2018 16:48:57 logging_test.py[line:14] ERROR error message
+Wed, 24 Jan 2018 16:48:57 logging_test.py[line:15] CRITICAL critical message
+</code></pre><p>可见在logging.basicConfig()函数中可通过具体参数来更改logging模块默认行为，可用参数有:</p>
+<p>filename：用指定的文件名创建FiledHandler（后边会具体讲解handler的概念），这样日志会被存储在指定的文件中。</p>
+<p>filemode：文件打开方式，在指定了filename时使用这个参数，默认值为“a”还可指定为“w”。</p>
+<p>format：指定handler使用的日志显示格式。 </p>
+<p>datefmt：指定日期时间格式。 </p>
+<p>level：设置rootlogger（后边会讲解具体概念）的日志级别 </p>
+<p>stream：用指定的stream创建StreamHandler。可以指定输出到sys.stderr,sys.stdout或者文件(f=open(‘test.log’,’w’))，默认为sys.stderr。若同时列出了filename和stream两个参数，则stream参数会被忽略。</p>
+<p>format参数中可能用到的格式化串：</p>
+<p>%(name)s Logger的名字</p>
+<p>%(levelno)s 数字形式的日志级别</p>
+<p>%(levelname)s 文本形式的日志级别</p>
+<p>%(pathname)s 调用日志输出函数的模块的完整路径名，可能没有</p>
+<p>%(filename)s 调用日志输出函数的模块的文件名</p>
+<p>%(module)s 调用日志输出函数的模块名</p>
+<p>%(funcName)s 调用日志输出函数的函数名</p>
+<p>%(lineno)d 调用日志输出函数的语句所在的代码行</p>
+<p>%(created)f 当前时间，用UNIX标准的表示时间的浮 点数表示</p>
+<p>%(relativeCreated)d 输出日志信息时的，自Logger创建以 来的毫秒数</p>
+<p>%(asctime)s 字符串形式的当前时间。默认格式是 “2003-07-08 16:49:45,896”。逗号后面的是毫秒</p>
+<p>%(thread)d 线程ID。可能没有</p>
+<p>%(threadName)s 线程名。可能没有</p>
+<p>%(process)d 进程ID。可能没有</p>
+<p>%(message)s用户输出的消息</p>
+<p>（3)logger对象</p>
+<p>上述几个例子中我们了解到了logging.debug()、logging.info()、logging.warning()、logging.error()、logging.critical()（分别用以记录不同级别的日志信息），logging.basicConfig()（用默认日志格式（Formatter）为日志系统建立一个默认的流处理器（StreamHandler），设置基础配置（如日志级别等）并加到root logger（根Logger）中）这几个logging模块级别的函数，另外还有一个模块级别的函数是logging.getLogger([name])（返回一个logger对象，如果没有指定名字将返回root logger）</p>
+<p>先看一个最简单的过程：</p>
+<pre><code>import logging
+
+logger = logging.getLogger()
+# 创建一个handler，用于写入日志文件
+fh = logging.FileHandler(&apos;test.log&apos;)
+
+# 再创建一个handler，用于输出到控制台
+ch = logging.StreamHandler()
+
+formatter = logging.Formatter(&apos;%(asctime)s - %(name)s - %(levelname)s - %(message)s&apos;)
+
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+
+logger.addHandler(fh) #logger对象可以添加多个fh和ch对象
+logger.addHandler(ch)
+
+logger.debug(&apos;logger debug message&apos;)
+logger.info(&apos;logger info message&apos;)
+logger.warning(&apos;logger warning message&apos;)
+logger.error(&apos;logger error message&apos;)
+logger.critical(&apos;logger critical message&apos;)
+</code></pre><p>先简单介绍一下，logging库提供了多个组件：Logger、Handler、Filter、Formatter。Logger对象提供应用程序可直接使用的接口，Handler发送日志到适当的目的地，Filter提供了过滤日志信息的方法，Formatter指定日志显示格式。</p>
+<p>Logger是一个树形层级结构，输出信息之前都要获得一个Logger（如果没有显示的获取则自动创建并使用root Logger，如第一个例子所示）。</p>
+<p>logger = logging.getLogger()返回一个默认的Logger也即root Logger，并应用默认的日志级别、Handler和Formatter设置。</p>
+<p>当然也可以通过Logger.setLevel(lel)指定最低的日志级别，可用的日志级别有logging.DEBUG、logging.INFO、logging.WARNING、logging.ERROR、logging.CRITICAL。</p>
+<p>Logger.debug()、Logger.info()、Logger.warning()、Logger.error()、Logger.critical()输出不同级别的日志，只有日志等级大于或等于设置的日志级别的日志才会被输出。</p>
+<pre><code>logger.debug(&apos;logger debug message&apos;)  
+logger.info(&apos;logger info message&apos;)  
+logger.warning(&apos;logger warning message&apos;)  
+logger.error(&apos;logger error message&apos;)  
+logger.critical(&apos;logger critical message&apos;)  
+</code></pre><p>只输出了</p>
+<pre><code>2018-01-24 12:54:43,222 - root - WARNING - logger warning message
+2018-01-24 12:54:43,223 - root - ERROR - logger error message
+2018-01-24 12:54:43,224 - root - CRITICAL - logger critical message
+</code></pre><p>从这个输出可以看出logger = logging.getLogger()返回的Logger名为root。这里没有用logger.setLevel(logging.Debug)显示的为logger设置日志级别，所以使用默认的日志级别WARNIING，故结果只输出了大于等于WARNIING级别的信息。</p>
+<p>如果我们再创建两个logger对象：</p>
+<pre><code>logger1 = logging.getLogger(&apos;mylogger&apos;)
+logger1.setLevel(logging.DEBUG)
+
+logger2 = logging.getLogger(&apos;mylogger&apos;)
+logger2.setLevel(logging.INFO)
+
+logger1.addHandler(fh)
+logger1.addHandler(ch)
+
+logger2.addHandler(fh)
+logger2.addHandler(ch)
+
+logger1.debug(&apos;logger1 debug message&apos;)
+logger1.info(&apos;logger1 info message&apos;)
+logger1.warning(&apos;logger1 warning message&apos;)
+logger1.error(&apos;logger1 error message&apos;)
+logger1.critical(&apos;logger1 critical message&apos;)
+
+logger2.debug(&apos;logger2 debug message&apos;)
+logger2.info(&apos;logger2 info message&apos;)
+logger2.warning(&apos;logger2 warning message&apos;)
+logger2.error(&apos;logger2 error message&apos;)
+logger2.critical(&apos;logger2 critical message&apos;)
+</code></pre><p>结果：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-7.png" alt="9-7"></p>
+<p>这里有两个个问题：</p>
+<p><1>我们明明通过logger1.setLevel(logging.DEBUG)将logger1的日志级别设置为了DEBUG，为何显示的时候没有显示出DEBUG级别的日志信息，而是从INFO级别的日志开始显示呢？</1></p>
+<p>原来logger1和logger2对应的是同一个Logger实例，只要logging.getLogger（name）中名称参数name相同则返回的Logger实例就是同一个，且仅有一个，也即name与Logger实例一一对应。在logger2实例中通过logger2.setLevel(logging.INFO)设置mylogger的日志级别为logging.INFO，所以最后logger1的输出遵从了后来设置的日志级别。</p>
+<p><2>为什么logger1、logger2对应的每个输出分别显示两次?</2></p>
+<p>这是因为我们通过logger = logging.getLogger()显示的创建了root Logger，而logger1 = logging.getLogger(‘mylogger’)创建了root Logger的孩子(root.)mylogger,logger2同样。而孩子,孙子，重孙……既会将消息分发给他的handler进行处理也会传递给所有的祖先Logger处理。</p>
+<p>ok,那么现在我们把</p>
+<p># logger.addHandler(fh)<br># logger.addHandler(ch)  注释掉，我们再来看效果：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-8.png" alt="9-8"></p>
+<p>因为我们注释了logger对象显示的位置，所以才用了默认方式，即标准输出方式。因为它的父级没有设置文件显示方式，所以在这里只打印了一次。孩子,孙子，重孙……可逐层继承来自祖先的日志级别、Handler、Filter设置，也可以通过Logger.setLevel(lel)、Logger.addHandler(hdlr)、Logger.removeHandler(hdlr)、Logger.addFilter(filt)、Logger.removeFilter(filt)。设置自己特别的日志级别、Handler、Filter。若不设置则使用继承来的值。</p>
+<p><3>Filter</3></p>
+<p>限制只有满足过滤规则的日志才会输出。</p>
+<p>比如我们定义了filter = logging.Filter(‘a.b.c’),并将这个Filter添加到了一个Handler上，则使用该Handler的Logger中只有名字带 a.b.c前缀的Logger才能输出其日志。</p>
+<pre><code>filter = logging.Filter(&apos;mylogger&apos;) 
+
+logger.addFilter(filter)
+</code></pre><p>这是只对logger这个对象进行筛选,如果想对所有的对象进行筛选，则：</p>
+<pre><code>filter = logging.Filter(&apos;mylogger&apos;) 
+
+fh.addFilter(filter)
+
+ch.addFilter(filter)
+</code></pre><p> 这样，所有添加fh或者ch的logger对象都会进行筛选。</p>
+<h1 id="re模块"><a href="#re模块" class="headerlink" title="re模块"></a>re模块</h1><p>就其本质而言，正则表达式（或 RE）是一种小型的、高度专业化的编程语言，（在Python中）它内嵌在Python中，并通过 re 模块实现。正则表达式模式被编译成一系列的字节码，然后由用 C 编写的匹配引擎执行。</p>
+<p>字符匹配（普通字符，元字符）：</p>
+<p>（1）普通字符：大多数字符和字母都会和自身匹配</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-9.png" alt="9-9"></p>
+<p>(2)元字符：<code>. ^ $ * + ? { } [ ] | ( ) \</code></p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-10.png" alt="9-10"></p>
+<p>注意：前面的*,+,?等都是贪婪匹配，也就是尽可能匹配，后面加?号使其变成惰性匹配</p>
+<p>（3）元字符之字符集［］：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-11.png" alt="9-11"></p>
+<p>在字符集里有功能的符号: - ^ \</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-12.png" alt="9-12"></p>
+<p>（4)元字符之转义符\</p>
+<p>反斜杠后边跟元字符去除特殊功能,比如.</p>
+<p>反斜杠后边跟普通字符实现特殊功能,比如\d</p>
+<p>\d  匹配任何十进制数；它相当于类 [0-9]。</p>
+<p>\D 匹配任何非数字字符；它相当于类 [^0-9]。</p>
+<p>\s  匹配任何空白字符；它相当于类 [ \t\n\r\f\v]。</p>
+<p>\S 匹配任何非空白字符；它相当于类 [^ \t\n\r\f\v]。</p>
+<p>\w 匹配任何字母数字字符；它相当于类 [a-zA-Z0-9_]。</p>
+<p>\W 匹配任何非字母数字字符；它相当于类 [^a-zA-Z0-9_]</p>
+<p>\b  匹配一个特殊字符边界，比如空格 ，&amp;，＃等</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-13.png" alt="9-13"></p>
+<p>一个小坑：</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-14.png" alt="9-14"></p>
+<p>选择\b是因为\b在ASCII表中是有意义的</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-15.png" alt="9-15"></p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-16.png" alt="9-16"></p>
+<p>（5)元字符之分组()</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-17.png" alt="9-17"></p>
+<p>(6)元字符之｜</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-18.png" alt="9-18"></p>
+<p>(7)re模块下的常用方法</p>
+<pre><code>import  re
+
+#1
+re.findall(&apos;a&apos;,&apos;alvin yuan&apos;)    #返回所有满足匹配条件的结果,放在列表里
+
+#2
+re.search(&apos;a&apos;,&apos;alvin yuan&apos;).group()  #函数会在字符串内查找模式匹配,只到找到第一个匹配然后返回一个包含匹配信息的对象,该对象可以
+# 通过调用group()方法得到匹配的字符串,如果字符串没有匹配，则返回None。
+
+#3
+re.match(&apos;a&apos;,&apos;abc&apos;).group()     #同search,不过尽在字符串开始处进行匹配
+
+#4
+ret=re.split(&apos;[ab]&apos;,&apos;abcd&apos;)     #先按&apos;a&apos;分割得到&apos;&apos;和&apos;bcd&apos;,在对&apos;&apos;和&apos;bcd&apos;分别按&apos;b&apos;分割
+print(ret)#[&apos;&apos;, &apos;&apos;, &apos;cd&apos;]
+
+#5
+ret=re.sub(&apos;\d&apos;,&apos;abc&apos;,&apos;alvin5yuan6&apos;,1)
+print(ret)#alvinabcyuan6
+ret=re.subn(&apos;\d&apos;,&apos;abc&apos;,&apos;alvin5yuan6&apos;)
+print(ret)#(&apos;alvinabcyuanabc&apos;, 2)
+
+#6
+obj=re.compile(&apos;\d{3}&apos;)
+ret=obj.search(&apos;abc123eeee&apos;)
+print(ret.group())#123
+
+#7
+ret=re.finditer(&apos;\d&apos;,&apos;ds3sy4784a&apos;)
+print(ret)        #&lt;callable_iterator object at 0x10195f940&gt;
+print(next(ret).group())
+print(next(ret).group())
+
+注意：
+import re
+
+ret=re.findall(&apos;www.(baidu|163).com&apos;,&apos;www.baidu.com&apos;)
+print(ret)#[&apos;baidu&apos;]     这是因为findall会优先把匹配结果组里内容返回,如果想要匹配结果,取消权限即可
+
+ret=re.findall(&apos;www.(?:baidu|163.com&apos;,&apos;www.163.com&apos;)
+print(ret)#[&apos;www.163.com&apos;]
+</code></pre><p>PS: Python支持的正则表达式元字符和语法汇总表</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-19.png" alt="9-19"></p>
+<p>(8)正则表达式使用总结：</p>
+<p>1、用法</p>
+<p>^ 匹配字符串的开始。</p>
+<p>$ 匹配字符串的结尾。</p>
+<p>\b 匹配一个单词的边界。</p>
+<p>\d 匹配任意数字。</p>
+<p>\D 匹配任意非数字字符。</p>
+<p>x? 匹配一个可选的 x 字符 (换言之，它匹配 1 次或者 0 次 x 字符)。</p>
+<p>x* 匹配0次或者多次 x 字符。</p>
+<p>x+ 匹配1次或者多次 x 字符。</p>
+<p>x{n,m} 匹配 x 字符，至少 n 次，至多 m 次。</p>
+<p>(a|b|c) 要么匹配 a，要么匹配 b，要么匹配 c。</p>
+<p>(x) 一般情况下表示一个记忆组 (remembered group)。你可以利用 re.search 函数返回对象的 groups() 函数获取它的值。</p>
+<p>正则表达式中的点号通常意味着 “匹配任意单字符”</p>
+<p>2、解题思路：</p>
+<p>匹配出所有的整数：1-2*(60+(-40.35/5)-(-4*3))</p>
+<p>A、既然是提取数字，那么数字的形式一般是：整数，小数，整数加小数；</p>
+<p>B、所以一般是形如：—-.—–或者就是—-</p>
+<p>C、根据上述正则表达式的含义，可写出如下的表达式：“-?\d+.\d*|(-?\d+) “；</p>
+<p>D、-？\d+匹配1次或者0次负号；.这个是匹配小数点的；\d*这个是匹配小数点之后的数字的，所以是0个或者多个；|表示左右表达式任意匹配一个 ；</p>
+<p>3.代码</p>
+<pre><code>import  re
+ret=re.findall(r&quot;-?\d+\.\d*|(-?\d+)&quot;,&quot;1-2*(60+(-40.35/5)-(-4*3))&quot;)
+ret.remove(&quot;&quot;)
+print(ret)
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python学习笔记/" rel="tag"><i class="fa fa-tag"></i> Python学习笔记</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/21/Python当歌（八）：装饰器/" rel="prev" title="Python当歌（八）：装饰器">
+                Python当歌（八）：装饰器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">39</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#模块-amp-包"><span class="nav-number">1.</span> <span class="nav-text">模块&包</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模块-modue-的概念："><span class="nav-number">1.1.</span> <span class="nav-text">模块(modue)的概念：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模块导入方法"><span class="nav-number">1.2.</span> <span class="nav-text">模块导入方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#包-package"><span class="nav-number">1.3.</span> <span class="nav-text">包(package)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意点（important）"><span class="nav-number">1.4.</span> <span class="nav-text">注意点（important）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#time模块"><span class="nav-number">2.</span> <span class="nav-text">time模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#random模块"><span class="nav-number">3.</span> <span class="nav-text">random模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#os模块"><span class="nav-number">4.</span> <span class="nav-text">os模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sys模块"><span class="nav-number">5.</span> <span class="nav-text">sys模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#json-amp-pickle"><span class="nav-number">6.</span> <span class="nav-text">json&pickle</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是序列化？"><span class="nav-number">6.1.</span> <span class="nav-text">什么是序列化？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#json"><span class="nav-number">6.2.</span> <span class="nav-text">json</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pickle"><span class="nav-number">6.3.</span> <span class="nav-text">pickle</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#xml模块"><span class="nav-number">7.</span> <span class="nav-text">xml模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#logging模块"><span class="nav-number">8.</span> <span class="nav-text">logging模块</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#re模块"><span class="nav-number">9.</span> <span class="nav-text">re模块</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<script type="text/javascript">
+  var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cspan id='cnzz_stat_icon_1261789938'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261789938' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+&nbsp;&nbsp;|&nbsp;&nbsp;您是第 <span id="busuanzi_value_site_uv"></span> 位访客
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>

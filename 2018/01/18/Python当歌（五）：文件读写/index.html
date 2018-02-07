@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Linux运维技能,非原创系列," />
+  <meta name="keywords" content="Python学习笔记," />
 
 
 
@@ -92,28 +92,17 @@
 
 
 
-<meta name="description" content="uptime命令 这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。 命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况">
-<meta name="keywords" content="Linux运维技能,非原创系列">
+<meta name="description" content="介绍计算机系统分为：计算机硬件，操作系统，应用程序三部分。 我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必须要保存于硬盘中，这就涉及到应用程序要操作硬件，众所周知，应用程序是无法直接操作硬件的，这就用到了操作系统。操作系统把复杂的硬件操作封装成简单的接口给用户/应用程序使用，其中文件就是操作系统提供给应用程序来操作硬盘虚拟概念，用户或应用程序通过操作文件，可以将自己的数据永">
+<meta name="keywords" content="Python学习笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何用九条命令在一分钟内检查Linux服务器性能?">
-<meta property="og:url" content="http://yjscloud.com/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/index.html">
+<meta property="og:title" content="Python当歌（五）：文件读写">
+<meta property="og:url" content="http://yjscloud.com/2018/01/18/Python当歌（五）：文件读写/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="uptime命令 这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。 命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-1.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-2.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-3.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-4.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-5.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-6.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-7.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-8-1.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-8-2.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-9.png">
-<meta property="og:updated_time" content="2017-12-15T15:24:46.000Z">
+<meta property="og:description" content="介绍计算机系统分为：计算机硬件，操作系统，应用程序三部分。 我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必须要保存于硬盘中，这就涉及到应用程序要操作硬件，众所周知，应用程序是无法直接操作硬件的，这就用到了操作系统。操作系统把复杂的硬件操作封装成简单的接口给用户/应用程序使用，其中文件就是操作系统提供给应用程序来操作硬盘虚拟概念，用户或应用程序通过操作文件，可以将自己的数据永">
+<meta property="og:updated_time" content="2018-02-07T11:13:22.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="如何用九条命令在一分钟内检查Linux服务器性能?">
-<meta name="twitter:description" content="uptime命令 这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。 命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况">
-<meta name="twitter:image" content="http://p10cpl3za.bkt.clouddn.com/1-1.png">
+<meta name="twitter:title" content="Python当歌（五）：文件读写">
+<meta name="twitter:description" content="介绍计算机系统分为：计算机硬件，操作系统，应用程序三部分。 我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必须要保存于硬盘中，这就涉及到应用程序要操作硬件，众所周知，应用程序是无法直接操作硬件的，这就用到了操作系统。操作系统把复杂的硬件操作封装成简单的接口给用户/应用程序使用，其中文件就是操作系统提供给应用程序来操作硬盘虚拟概念，用户或应用程序通过操作文件，可以将自己的数据永">
 
 
 
@@ -141,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/01/18/Python当歌（五）：文件读写/"/>
 
 
 
 
 
-  <title>如何用九条命令在一分钟内检查Linux服务器性能? | 戏子登台</title>
+  <title>Python当歌（五）：文件读写 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -321,7 +310,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/01/18/Python当歌（五）：文件读写/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -342,7 +331,7 @@
             
             
               
-                如何用九条命令在一分钟内检查Linux服务器性能?
+                Python当歌（五）：文件读写
               
             
           </h1>
@@ -357,8 +346,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-15T22:52:37+08:00">
-                2017-12-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-18T10:40:14+08:00">
+                2018-01-18
               </time>
             
 
@@ -383,8 +372,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维技能/" itemprop="url" rel="index">
-                    <span itemprop="name">运维技能</span>
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
                   </a>
                 </span>
 
@@ -401,7 +390,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/01/18/Python当歌（五）：文件读写/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -424,7 +413,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,731
+                  1,491
                 </span>
               
 
@@ -458,43 +447,107 @@
       
 
       
-        <h1 id="uptime命令"><a href="#uptime命令" class="headerlink" title="uptime命令"></a>uptime命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-1.png" alt="1-1"></p>
-<p>这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。</p>
-<p>命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况，需要进一步排查CPU资源都消耗在了哪里。反之，如果15分钟平均负载很高，1分钟平均负载较低，则有可能是CPU资源紧张时刻已经过去。</p>
-<h1 id="dmesg命令"><a href="#dmesg命令" class="headerlink" title="dmesg命令"></a>dmesg命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-2.png" alt="1-2"></p>
-<p>该命令会输出系统日志的最后10行。示例中的输出，可以看见一次内核的oom kill和一次TCP丢包。这些日志可以帮助排查性能问题。千万不要忘了这一步。</p>
-<h1 id="vmstat命令"><a href="#vmstat命令" class="headerlink" title="vmstat命令"></a>vmstat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-3.png" alt="1-3"></p>
-<p>vmstat(8) 命令，每行会输出一些系统核心指标，这些指标可以让我们更详细的了解系统状态。后面跟的参数1，表示每秒输出一次统计信息，表头提示了每一列的含义，这几介绍一些和性能调优相关的列：</p>
-<p>r：等待在CPU资源的进程数。这个数据比平均负载更加能够体现CPU负载情况，数据中不包含等待IO的进程。如果这个数值大于机器CPU核数，那么机器的CPU资源已经饱和。</p>
-<p>free：系统可用内存数（以千字节为单位），如果剩余内存不足，也会导致系统性能问题。下文介绍到的free命令，可以更详细的了解系统内存的使用情况。</p>
-<p>si，so：交换区写入和读取的数量。如果这个数据不为0，说明系统已经在使用交换区（swap），机器物理内存已经不足。</p>
-<p>us, sy, id, wa, st：这些都代表了CPU时间的消耗，它们分别表示用户时间（user）、系统（内核）时间（sys）、空闲时间（idle）、IO等待时间（wait）和被偷走的时间（stolen，一般被其他虚拟机消耗）。</p>
-<p>上述这些CPU时间，可以让我们很快了解CPU是否出于繁忙状态。一般情况下，如果用户时间和系统时间相加非常大，CPU出于忙于执行指令。如果IO等待时间很长，那么系统的瓶颈可能在磁盘IO。</p>
-<p>示例命令的输出可以看见，大量CPU时间消耗在用户态，也就是用户应用程序消耗了CPU时间。这不一定是性能问题，需要结合r队列，一起分析。</p>
-<h1 id="mpstat命令"><a href="#mpstat命令" class="headerlink" title="mpstat命令"></a>mpstat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-4.png" alt="1-4"></p>
-<p>该命令可以显示每个CPU的占用情况，如果有一个CPU占用率特别高，那么有可能是一个单线程应用程序引起的。</p>
-<h1 id="pidstat命令"><a href="#pidstat命令" class="headerlink" title="pidstat命令"></a>pidstat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-5.png" alt="1-5"></p>
-<p>pidstat命令输出进程的CPU占用率，该命令会持续输出，并且不会覆盖之前的数据，可以方便观察系统动态。</p>
-<h1 id="iostat命令"><a href="#iostat命令" class="headerlink" title="iostat命令"></a>iostat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-6.png" alt="1-6"></p>
-<p>r/s, w/s, rkB/s, wkB/s：分别表示每秒读写次数和每秒读写数据量（千字节）。读写量过大，可能会引起性能问题。</p>
-<p>await：IO操作的平均等待时间，单位是毫秒。这是应用程序在和磁盘交互时，需要消耗的时间，包括IO等待和实际操作的耗时。如果这个数值过大，可能是硬件设备遇到了瓶颈或者出现故障。</p>
-<p>avgqu-sz：向设备发出的请求平均数量。如果这个数值大于1，可能是硬件设备已经饱和（部分前端硬件设备支持并行写入）。</p>
-<p>%util：设备利用率。这个数值表示设备的繁忙程度，经验值是如果超过60，可能会影响IO性能（可以参照IO操作平均等待时间）。如果到达100%，说明硬件设备已经饱和。</p>
-<p>如果显示的是逻辑设备的数据，那么设备利用率不代表后端实际的硬件设备已经饱和。值得注意的是，即使IO性能不理想，也不一定意味这应用程序性能会不好，可以利用诸如预读取、写缓存等策略提升应用性能。</p>
-<h1 id="free命令"><a href="#free命令" class="headerlink" title="free命令"></a>free命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-7.png" alt="1-7"></p>
-<p>free命令可以查看系统内存的使用情况，-m参数表示按照兆字节展示。最后两列分别表示用于IO缓存的内存数，和用于文件系统页缓存的内存数。需要注意的是，第二行-/+ buffers/cache，看上去缓存占用了大量内存空间。</p>
-<p>这是Linux系统的内存使用策略，尽可能的利用内存，如果应用程序需要内存，这部分内存会立即被回收并分配给应用程序。因此，这部分内存一般也被当成是可用内存。</p>
-<p>如果可用内存非常少，系统可能会动用交换区（如果配置了的话），这样会增加IO开销（可以在iostat命令中提现），降低系统性能。</p>
-<h1 id="sar命令"><a href="#sar命令" class="headerlink" title="sar命令"></a>sar命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-8-1.png" alt="1-8-1"></p>
-<p>sar命令在这里可以查看网络设备的吞吐率。在排查性能问题时，可以通过网络设备的吞吐量，判断网络设备是否已经饱和。</p>
-<p><img src="http://p10cpl3za.bkt.clouddn.com/1-8-2.png" alt="1-8-2"></p>
-<p>sar命令在这里用于查看TCP连接状态，其中包括：</p>
-<p>active/s：每秒本地发起的TCP连接数，既通过connect调用创建的TCP连接；</p>
-<p>passive/s：每秒远程发起的TCP连接数，即通过accept调用创建的TCP连接；</p>
-<p>retrans/s：每秒TCP重传数量；</p>
-<p>TCP连接数可以用来判断性能问题是否由于建立了过多的连接，进一步可以判断是主动发起的连接，还是被动接受的连接。TCP重传可能是因为网络环境恶劣，或者服务器压</p>
-<h1 id="top命令"><a href="#top命令" class="headerlink" title="top命令"></a>top命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-9.png" alt="1-9"></p>
-<p>top命令包含了前面好几个命令的检查的内容。比如系统负载情况（uptime）、系统内存使用情况（free）、系统CPU使用情况（vmstat）等。因此通过这个命令，可以相对全面的查看系统负载的来源。同时，top命令支持排序，可以按照不同的列排序，方便查找出诸如内存占用最多的进程、CPU占用率最高的进程等。但是，top命令相对于前面一些命令，输出是一个瞬间值，如果不持续盯着，可能会错过一些线索。这时可能需要暂停top命令刷新，来记录和比对数据。</p>
+        <h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>计算机系统分为：计算机硬件，操作系统，应用程序三部分。</p>
+<p>我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必须要保存于硬盘中，这就涉及到应用程序要操作硬件，众所周知，应用程序是无法直接操作硬件的，这就用到了操作系统。操作系统把复杂的硬件操作封装成简单的接口给用户/应用程序使用，其中文件就是操作系统提供给应用程序来操作硬盘虚拟概念，用户或应用程序通过操作文件，可以将自己的数据永久保存下来。<br>有了文件的概念，我们无需再去考虑操作硬盘的细节，只需要关注操作文件的流程：</p>
+<ol>
+<li>打开文件，得到文件句柄并赋值给一个变量</li>
+<li>通过句柄对文件进行操作</li>
+<li>关闭文件</li>
+</ol>
+<h1 id="在python中"><a href="#在python中" class="headerlink" title="在python中"></a>在python中</h1><p>(1)打开文件，得到文件句柄并赋值给一个变量</p>
+<p>f=open(‘a.txt’,’r’,encoding=’utf-8’) #默认打开模式就为r</p>
+<p>(2) 通过句柄对文件进行操作</p>
+<p>data=f.read()</p>
+<p>(3) 关闭文件</p>
+<p>f.close()</p>
+<p>分析一下f=open(‘a.txt’,’r’)过程：</p>
+<p>1、由应用程序向操作系统发起系统调用open(…)</p>
+<p>2、操作系统打开该文件，并返回一个文件句柄给应用程序</p>
+<p>3、应用程序将文件句柄赋值给变量f</p>
+<h1 id="强调"><a href="#强调" class="headerlink" title="强调"></a>强调</h1><p>1、强调第一点：</p>
+<p>打开一个文件包含两部分资源：操作系统级打开的文件+应用程序的变量。在操作完毕一个文件时，必须把与该文件的这两部分资源一个不落地回收，回收方法为：</p>
+<p>（1）f.close() #回收操作系统级打开的文件</p>
+<p>（2）del f #回收应用程序级的变量</p>
+<p>其中del f一定要发生在f.close()之后，否则就会导致操作系统打开的文件还没有关闭，白白占用资源，而python自动的垃圾回收机制决定了我们无需考虑del f，这就要求我们，在操作完毕文件后，一定要记住f.close()。</p>
+<p>但是每次都这么写实在太繁琐，所以，Python引入了with语句来自动帮我们调用close()方法：</p>
+<pre><code>with open(&apos;a.txt&apos;,&apos;w&apos;) as f:
+    pass
+
+with open(&apos;a.txt&apos;,&apos;r&apos;) as read_f,open(&apos;b.txt&apos;,&apos;w&apos;) as write_f:
+    data=read_f.read()
+write_f.write(data)
+</code></pre><p>2、强调第二点：</p>
+<p>f=open(…)是由操作系统打开文件，那么如果我们没有为open指定编码，那么打开文件的默认编码很明显是操作系统说了算了，操作系统会用自己的默认编码去打开文件，在windows下是gbk，在linux下是utf-8。若要保证不乱码，文件以什么方式存的，就要以什么方式打开。<br>f=open(‘a.txt’,’r’,encoding=’utf-8’)</p>
+<p>3、强调第三点</p>
+<p>由于文件读写时都有可能产生IOError，一旦出错，后面的f.close()就不会调用。所以，为了保证无论是否出错都能正确地关闭文件，我们可以使用try … finally来实现：</p>
+<pre><code>try:
+    f = open(&apos;/path/to/file&apos;, &apos;r&apos;)
+    print(f.read())
+finally:
+    if f:
+        f.close()
+</code></pre><h1 id="打开文件的模式"><a href="#打开文件的模式" class="headerlink" title="打开文件的模式"></a>打开文件的模式</h1><p>（1）打开文件的模式有(默认为文本模式)：</p>
+<ul>
+<li>r ，只读模式【默认模式，文件必须存在，不存在则抛出异常】</li>
+<li>w，只写模式【不可读；不存在则创建；存在则清空内容】</li>
+<li>a， 之追加写模式【不可读；不存在则创建；存在则只追加内容】</li>
+</ul>
+<p>（2）对于非文本文件，我们只能使用b模式，”b”表示以字节的方式操作（而所有文件也都是以字节的形式存储的，使用这种模式无需考虑文本文件的字符编码、图片文件的jgp格式、视频文件的avi格式）</p>
+<ul>
+<li>rb </li>
+<li>wb</li>
+<li>ab</li>
+</ul>
+<p>注：以b方式打开时，读取到的内容是字节类型，写入时也需要提供字节类型，不能指定编码</p>
+<p>（3）了解部分</p>
+<ul>
+<li>“+” 表示可以同时读写某个文件</li>
+<li>r+， 读写【可读，可写】</li>
+<li>w+，写读【可读，可写】</li>
+<li>a+， 写读【可读，可写】</li>
+<li>x， 只写模式【不可读；不存在则创建，存在则报错】</li>
+<li>x+ ，写读【可读，可写】</li>
+</ul>
+<h1 id="操作文件的方法"><a href="#操作文件的方法" class="headerlink" title="操作文件的方法"></a>操作文件的方法</h1><p>（1）掌握</p>
+<ul>
+<li>f.read() #读取所有内容,光标移动到文件末尾</li>
+<li>f.readline() #读取一行内容,光标移动到第二行首部</li>
+<li>f.readlines() #读取每一行内容,存放于列表中</li>
+<li>f.write(‘1111\n222\n’) #针对文本模式的写,需要自己写换行符</li>
+<li>f.write(‘1111\n222\n’.encode(‘utf-8’)) #针对b模式的写,需要自己写换行符</li>
+<li>f.writelines([‘333\n’,’444\n’]) #文件模式</li>
+<li>f.writelines([bytes(‘333\n’,encoding=’utf-8’),’444\n’.encode(‘utf-8’)]) #b模式</li>
+</ul>
+<p>（2）了解</p>
+<ul>
+<li>f.readable() #文件是否可读</li>
+<li>f.writable() #文件是否可读</li>
+<li>f.closed #文件是否关闭</li>
+<li>f.encoding #如果文件打开模式为b,则没有该属性</li>
+<li>f.flush() #立刻将文件内容从内存刷到硬盘</li>
+<li>f.name</li>
+</ul>
+<h1 id="文件内光标移动"><a href="#文件内光标移动" class="headerlink" title="文件内光标移动"></a>文件内光标移动</h1><p>（1）read(3)：</p>
+<ul>
+<li>文件打开方式为文本模式时，代表读取3个字符</li>
+<li>文件打开方式为b模式时，代表读取3个字节</li>
+</ul>
+<p>（2）其余的文件内光标移动都是以字节为单位如seek，tell，truncate</p>
+<p>注意：</p>
+<ul>
+<li>seek有三种移动方式0，1，2，其中1和2必须在b模式下进行，但无论哪种模式，都是以bytes为单位移动的</li>
+<li><p>truncate是截断文件，所以文件的打开方式必须可写，但是不能用w或w+等方式打开，因为那样直接清空文件了，所以truncate要在r+或a或a+等模式下测试效果：</p>
+<pre><code>import time
+with open(&apos;test.txt&apos;,&apos;rb&apos;) as f:
+    f.seek(0,2)
+while True:
+    line=f.readline()
+    if line:
+        print(line.decode(&apos;utf-8&apos;))
+    else:
+        time.sleep(0.2)
+</code></pre></li>
+</ul>
 
       
     </div>
@@ -546,9 +599,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux运维技能/" rel="tag"><i class="fa fa-tag"></i> Linux运维技能</a>
-          
-            <a href="/tags/非原创系列/" rel="tag"><i class="fa fa-tag"></i> 非原创系列</a>
+            <a href="/tags/Python学习笔记/" rel="tag"><i class="fa fa-tag"></i> Python学习笔记</a>
           
         </div>
       
@@ -561,8 +612,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/15/Python当歌（一）：Python入门/" rel="next" title="Python当歌（一）：Python入门">
-                <i class="fa fa-chevron-left"></i> Python当歌（一）：Python入门
+              <a href="/2018/01/19/Python当歌（六）：迭代器、生成器/" rel="next" title="Python当歌（六）：迭代器、生成器">
+                <i class="fa fa-chevron-left"></i> Python当歌（六）：迭代器、生成器
               </a>
             
           </div>
@@ -571,8 +622,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/26/LVS-Keepalived-实现高可用Web集群/" rel="prev" title="LVS + Keepalived 实现高可用Web集群">
-                LVS + Keepalived 实现高可用Web集群 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/01/17/Python当歌（四）：函数/" rel="prev" title="Python当歌（四）：函数">
+                Python当歌（四）：函数 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -794,7 +845,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#uptime命令"><span class="nav-number">1.</span> <span class="nav-text">uptime命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dmesg命令"><span class="nav-number">2.</span> <span class="nav-text">dmesg命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vmstat命令"><span class="nav-number">3.</span> <span class="nav-text">vmstat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mpstat命令"><span class="nav-number">4.</span> <span class="nav-text">mpstat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pidstat命令"><span class="nav-number">5.</span> <span class="nav-text">pidstat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iostat命令"><span class="nav-number">6.</span> <span class="nav-text">iostat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#free命令"><span class="nav-number">7.</span> <span class="nav-text">free命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sar命令"><span class="nav-number">8.</span> <span class="nav-text">sar命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#top命令"><span class="nav-number">9.</span> <span class="nav-text">top命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#在python中"><span class="nav-number">2.</span> <span class="nav-text">在python中</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#强调"><span class="nav-number">3.</span> <span class="nav-text">强调</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#打开文件的模式"><span class="nav-number">4.</span> <span class="nav-text">打开文件的模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#操作文件的方法"><span class="nav-number">5.</span> <span class="nav-text">操作文件的方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#文件内光标移动"><span class="nav-number">6.</span> <span class="nav-text">文件内光标移动</span></a></li></ol></div>
             
 
           </div>

@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Linux运维技能,非原创系列," />
+  <meta name="keywords" content="Python学习笔记," />
 
 
 
@@ -92,28 +92,17 @@
 
 
 
-<meta name="description" content="uptime命令 这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。 命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况">
-<meta name="keywords" content="Linux运维技能,非原创系列">
+<meta name="description" content="Python的字符串格式化有两种方式: 百分号方式、format方式。 百分号的方式相对来说比较老，而format方式则是比较先进的方式，企图替换古老的方式，目前两者并存。 百分号方式格式：%[(name)][flags][width].[precision]typecode （1）(name)     可选，用于选择指定的key （2）flags       可选，可供选择的值有:  “+”">
+<meta name="keywords" content="Python学习笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何用九条命令在一分钟内检查Linux服务器性能?">
-<meta property="og:url" content="http://yjscloud.com/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/index.html">
+<meta property="og:title" content="Python当歌（三）：字符串格式化">
+<meta property="og:url" content="http://yjscloud.com/2018/01/17/Python当歌（三）：字符串格式化/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="uptime命令 这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。 命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-1.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-2.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-3.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-4.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-5.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-6.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-7.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-8-1.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-8-2.png">
-<meta property="og:image" content="http://p10cpl3za.bkt.clouddn.com/1-9.png">
-<meta property="og:updated_time" content="2017-12-15T15:24:46.000Z">
+<meta property="og:description" content="Python的字符串格式化有两种方式: 百分号方式、format方式。 百分号的方式相对来说比较老，而format方式则是比较先进的方式，企图替换古老的方式，目前两者并存。 百分号方式格式：%[(name)][flags][width].[precision]typecode （1）(name)     可选，用于选择指定的key （2）flags       可选，可供选择的值有:  “+”">
+<meta property="og:updated_time" content="2018-02-07T11:12:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="如何用九条命令在一分钟内检查Linux服务器性能?">
-<meta name="twitter:description" content="uptime命令 这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。 命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况">
-<meta name="twitter:image" content="http://p10cpl3za.bkt.clouddn.com/1-1.png">
+<meta name="twitter:title" content="Python当歌（三）：字符串格式化">
+<meta name="twitter:description" content="Python的字符串格式化有两种方式: 百分号方式、format方式。 百分号的方式相对来说比较老，而format方式则是比较先进的方式，企图替换古老的方式，目前两者并存。 百分号方式格式：%[(name)][flags][width].[precision]typecode （1）(name)     可选，用于选择指定的key （2）flags       可选，可供选择的值有:  “+”">
 
 
 
@@ -141,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/01/17/Python当歌（三）：字符串格式化/"/>
 
 
 
 
 
-  <title>如何用九条命令在一分钟内检查Linux服务器性能? | 戏子登台</title>
+  <title>Python当歌（三）：字符串格式化 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -321,7 +310,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/01/17/Python当歌（三）：字符串格式化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -342,7 +331,7 @@
             
             
               
-                如何用九条命令在一分钟内检查Linux服务器性能?
+                Python当歌（三）：字符串格式化
               
             
           </h1>
@@ -357,8 +346,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-15T22:52:37+08:00">
-                2017-12-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-17T09:13:30+08:00">
+                2018-01-17
               </time>
             
 
@@ -383,8 +372,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/运维技能/" itemprop="url" rel="index">
-                    <span itemprop="name">运维技能</span>
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
                   </a>
                 </span>
 
@@ -401,7 +390,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/12/15/如何用九条命令在一分钟内检查Linux服务器性能/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/01/17/Python当歌（三）：字符串格式化/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -424,7 +413,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,731
+                  1,363
                 </span>
               
 
@@ -458,44 +447,123 @@
       
 
       
-        <h1 id="uptime命令"><a href="#uptime命令" class="headerlink" title="uptime命令"></a>uptime命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-1.png" alt="1-1"></p>
-<p>这个命令可以快速查看机器的负载情况。在Linux系统中，这些数据表示等待CPU资源的进程和阻塞在不可中断IO进程（进程状态为D）的数量。这些数据可以让我们对系统资源使用有一个宏观的了解。</p>
-<p>命令的输出分别表示1分钟、5分钟、15分钟的平均负载情况。通过这三个数据，可以了解服务器负载是在趋于紧张还是趋于缓解。如果1分钟平均负载很高，而15分钟平均负载很低，说明服务器正在命令高负载情况，需要进一步排查CPU资源都消耗在了哪里。反之，如果15分钟平均负载很高，1分钟平均负载较低，则有可能是CPU资源紧张时刻已经过去。</p>
-<h1 id="dmesg命令"><a href="#dmesg命令" class="headerlink" title="dmesg命令"></a>dmesg命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-2.png" alt="1-2"></p>
-<p>该命令会输出系统日志的最后10行。示例中的输出，可以看见一次内核的oom kill和一次TCP丢包。这些日志可以帮助排查性能问题。千万不要忘了这一步。</p>
-<h1 id="vmstat命令"><a href="#vmstat命令" class="headerlink" title="vmstat命令"></a>vmstat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-3.png" alt="1-3"></p>
-<p>vmstat(8) 命令，每行会输出一些系统核心指标，这些指标可以让我们更详细的了解系统状态。后面跟的参数1，表示每秒输出一次统计信息，表头提示了每一列的含义，这几介绍一些和性能调优相关的列：</p>
-<p>r：等待在CPU资源的进程数。这个数据比平均负载更加能够体现CPU负载情况，数据中不包含等待IO的进程。如果这个数值大于机器CPU核数，那么机器的CPU资源已经饱和。</p>
-<p>free：系统可用内存数（以千字节为单位），如果剩余内存不足，也会导致系统性能问题。下文介绍到的free命令，可以更详细的了解系统内存的使用情况。</p>
-<p>si，so：交换区写入和读取的数量。如果这个数据不为0，说明系统已经在使用交换区（swap），机器物理内存已经不足。</p>
-<p>us, sy, id, wa, st：这些都代表了CPU时间的消耗，它们分别表示用户时间（user）、系统（内核）时间（sys）、空闲时间（idle）、IO等待时间（wait）和被偷走的时间（stolen，一般被其他虚拟机消耗）。</p>
-<p>上述这些CPU时间，可以让我们很快了解CPU是否出于繁忙状态。一般情况下，如果用户时间和系统时间相加非常大，CPU出于忙于执行指令。如果IO等待时间很长，那么系统的瓶颈可能在磁盘IO。</p>
-<p>示例命令的输出可以看见，大量CPU时间消耗在用户态，也就是用户应用程序消耗了CPU时间。这不一定是性能问题，需要结合r队列，一起分析。</p>
-<h1 id="mpstat命令"><a href="#mpstat命令" class="headerlink" title="mpstat命令"></a>mpstat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-4.png" alt="1-4"></p>
-<p>该命令可以显示每个CPU的占用情况，如果有一个CPU占用率特别高，那么有可能是一个单线程应用程序引起的。</p>
-<h1 id="pidstat命令"><a href="#pidstat命令" class="headerlink" title="pidstat命令"></a>pidstat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-5.png" alt="1-5"></p>
-<p>pidstat命令输出进程的CPU占用率，该命令会持续输出，并且不会覆盖之前的数据，可以方便观察系统动态。</p>
-<h1 id="iostat命令"><a href="#iostat命令" class="headerlink" title="iostat命令"></a>iostat命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-6.png" alt="1-6"></p>
-<p>r/s, w/s, rkB/s, wkB/s：分别表示每秒读写次数和每秒读写数据量（千字节）。读写量过大，可能会引起性能问题。</p>
-<p>await：IO操作的平均等待时间，单位是毫秒。这是应用程序在和磁盘交互时，需要消耗的时间，包括IO等待和实际操作的耗时。如果这个数值过大，可能是硬件设备遇到了瓶颈或者出现故障。</p>
-<p>avgqu-sz：向设备发出的请求平均数量。如果这个数值大于1，可能是硬件设备已经饱和（部分前端硬件设备支持并行写入）。</p>
-<p>%util：设备利用率。这个数值表示设备的繁忙程度，经验值是如果超过60，可能会影响IO性能（可以参照IO操作平均等待时间）。如果到达100%，说明硬件设备已经饱和。</p>
-<p>如果显示的是逻辑设备的数据，那么设备利用率不代表后端实际的硬件设备已经饱和。值得注意的是，即使IO性能不理想，也不一定意味这应用程序性能会不好，可以利用诸如预读取、写缓存等策略提升应用性能。</p>
-<h1 id="free命令"><a href="#free命令" class="headerlink" title="free命令"></a>free命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-7.png" alt="1-7"></p>
-<p>free命令可以查看系统内存的使用情况，-m参数表示按照兆字节展示。最后两列分别表示用于IO缓存的内存数，和用于文件系统页缓存的内存数。需要注意的是，第二行-/+ buffers/cache，看上去缓存占用了大量内存空间。</p>
-<p>这是Linux系统的内存使用策略，尽可能的利用内存，如果应用程序需要内存，这部分内存会立即被回收并分配给应用程序。因此，这部分内存一般也被当成是可用内存。</p>
-<p>如果可用内存非常少，系统可能会动用交换区（如果配置了的话），这样会增加IO开销（可以在iostat命令中提现），降低系统性能。</p>
-<h1 id="sar命令"><a href="#sar命令" class="headerlink" title="sar命令"></a>sar命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-8-1.png" alt="1-8-1"></p>
-<p>sar命令在这里可以查看网络设备的吞吐率。在排查性能问题时，可以通过网络设备的吞吐量，判断网络设备是否已经饱和。</p>
-<p><img src="http://p10cpl3za.bkt.clouddn.com/1-8-2.png" alt="1-8-2"></p>
-<p>sar命令在这里用于查看TCP连接状态，其中包括：</p>
-<p>active/s：每秒本地发起的TCP连接数，既通过connect调用创建的TCP连接；</p>
-<p>passive/s：每秒远程发起的TCP连接数，即通过accept调用创建的TCP连接；</p>
-<p>retrans/s：每秒TCP重传数量；</p>
-<p>TCP连接数可以用来判断性能问题是否由于建立了过多的连接，进一步可以判断是主动发起的连接，还是被动接受的连接。TCP重传可能是因为网络环境恶劣，或者服务器压</p>
-<h1 id="top命令"><a href="#top命令" class="headerlink" title="top命令"></a>top命令</h1><p><img src="http://p10cpl3za.bkt.clouddn.com/1-9.png" alt="1-9"></p>
-<p>top命令包含了前面好几个命令的检查的内容。比如系统负载情况（uptime）、系统内存使用情况（free）、系统CPU使用情况（vmstat）等。因此通过这个命令，可以相对全面的查看系统负载的来源。同时，top命令支持排序，可以按照不同的列排序，方便查找出诸如内存占用最多的进程、CPU占用率最高的进程等。但是，top命令相对于前面一些命令，输出是一个瞬间值，如果不持续盯着，可能会错过一些线索。这时可能需要暂停top命令刷新，来记录和比对数据。</p>
+        <p>Python的字符串格式化有两种方式: 百分号方式、format方式。</p>
+<p>百分号的方式相对来说比较老，而format方式则是比较先进的方式，企图替换古老的方式，目前两者并存。</p>
+<h1 id="百分号方式"><a href="#百分号方式" class="headerlink" title="百分号方式"></a>百分号方式</h1><p>格式：%[(name)][flags][width].[precision]typecode</p>
+<p>（1）(name)     可选，用于选择指定的key</p>
+<p>（2）flags       可选，可供选择的值有:</p>
+<ul>
+<li>“+”       右对齐；正数前加正好，负数前加负号；</li>
+<li>“-“        左对齐；正数前无符号，负数前加负号；</li>
+<li>空格    右对齐；正数前加空格，负数前加负号；</li>
+<li>0    右对齐；正数前无符号，负数前加负号；用0填充空白处</li>
+</ul>
+<p>（3）    width         可选，占有宽度</p>
+<p>（4）    precision   可选，小数点后保留的位数</p>
+<p>（5） typecode    必选</p>
+<ul>
+<li>s，获取传入对象的<strong>str</strong>方法的返回值，并将其格式化到指定位置</li>
+<li>r，获取传入对象的<strong>repr</strong>方法的返回值，并将其格式化到指定位置</li>
+<li>c，整数：将数字转换成其unicode对应的值，10进制范围为 0 &lt;= i &lt;= 1114111（py27则只支持0-255）；字符：将字符添加到指定位置</li>
+<li>o，将整数转换成 八  进制表示，并将其格式化到指定位置</li>
+<li>x，将整数转换成十六进制表示，并将其格式化到指定位置</li>
+<li>d，将整数、浮点数转换成 十 进制表示，并将其格式化到指定位置</li>
+<li>e，将整数、浮点数转换成科学计数法，并将其格式化到指定位置（小写e）</li>
+<li>E，将整数、浮点数转换成科学计数法，并将其格式化到指定位置（大写E）</li>
+<li>f， 将整数、浮点数转换成浮点数表示，并将其格式化到指定位置（默认保留小数点后6位）</li>
+<li>F，同上</li>
+<li>g，自动调整将整数、浮点数转换成 浮点型或科学计数法表示（超过6位数用科学计数法），并将其格式化到指定位置（如果是科学计数则是e；）</li>
+<li>G，自动调整将整数、浮点数转换成 浮点型或科学计数法表示（超过6位数用科学计数法），并将其格式化到指定位置（如果是科学计数则是E；）</li>
+<li>%，当字符串中存在格式化标志时，需要用 %%表示一个百分号</li>
+</ul>
+<p>注：Python中百分号格式化是不存在自动将整数转换成二进制表示的方式</p>
+<p>常用格式化：</p>
+<pre><code>tpl = &quot;i am %s&quot; % &quot;alex&quot; 
 
+tpl = &quot;i am %s age %d&quot; % (&quot;alex&quot;, 18)
+
+tpl = &quot;i am %(name)s age %(age)d&quot; % {&quot;name&quot;: &quot;alex&quot;, &quot;age&quot;: 18}
+
+tpl = &quot;percent %.2f&quot; % 99.97623
+
+tpl = &quot;i am %(pp).2f&quot; % {&quot;pp&quot;: 123.425556, }
+
+tpl = &quot;i am %.2f %%&quot; % {&quot;pp&quot;: 123.425556, }
+</code></pre><h1 id="Format方式"><a href="#Format方式" class="headerlink" title="Format方式"></a>Format方式</h1><p>格式：[[fill]align][sign][#][0][width][,][.precision][type]</p>
+<p>（1）fill    【可选】空白处填充的字符</p>
+<p>（2）align   【可选】对齐方式（需配合width使用）</p>
+<ul>
+<li>“&lt;”，内容左对齐</li>
+<li>“&gt;”，内容右对齐(默认)</li>
+<li>“＝”，内容右对齐，将符号放置在填充字符的左侧，且只对数字类型有效。 即使：符号+填充物+数字</li>
+<li>“^”，内容居中</li>
+</ul>
+<p>（3）sign    【可选】有无符号数字</p>
+<ul>
+<li>“+”，正号加正，负号加负；</li>
+<li>“-“，正号不变，负号加负；</li>
+<li>空格 ，正号空格，负号加负；</li>
+</ul>
+<p>（4）”#”        【可选】对于二进制、八进制、十六进制，如果加上#，会显示 0b/0o/0x，否则不显示</p>
+<p>（5)”,”      【可选】为数字添加分隔符，如：1,000,000</p>
+<p>（6）width  【可选】格式化位所占宽度</p>
+<p>（7）.precision 【可选】小数位保留精度</p>
+<p>（8）type     【可选】格式化类型</p>
+<p>传入” 字符串类型 “的参数</p>
+<ul>
+<li>s，格式化字符串类型数据</li>
+<li>空白，未指定类型，则默认是None，同s</li>
+</ul>
+<p>传入“ 整数类型 ”的参数</p>
+<ul>
+<li>b，将10进制整数自动转换成2进制表示然后格式化</li>
+<li>c，将10进制整数自动转换为其对应的unicode字符</li>
+<li>d，十进制整数</li>
+<li>o，将10进制整数自动转换成8进制表示然后格式化；</li>
+<li>x，将10进制整数自动转换成16进制表示然后格式化（小写x）</li>
+<li>X，将10进制整数自动转换成16进制表示然后格式化（大写X）</li>
+</ul>
+<p>传入“ 浮点型或小数类型 ”的参数</p>
+<ul>
+<li>e，转换为科学计数法（小写e）表示，然后格式化；</li>
+<li>E，转换为科学计数法（大写E）表示，然后格式化;</li>
+<li>f ，转换为浮点型（默认小数点后保留6位）表示，然后格式化；</li>
+<li>F， 转换为浮点型（默认小数点后保留6位）表示，然后格式化；</li>
+<li>g，自动在e和f中切换</li>
+<li>G，自动在E和F中切换</li>
+<li>%  显示百分比（默认显示小数点后6位）</li>
+</ul>
+<p>常用格式化：</p>
+<pre><code>tpl = &quot;i am {}, age {}, {}&quot;.format(&quot;seven&quot;, 18, &apos;alex&apos;)
+
+tpl = &quot;i am {}, age {}, {}&quot;.format(*[&quot;seven&quot;, 18, &apos;alex&apos;])
+
+tpl = &quot;i am {0}, age {1}, really {0}&quot;.format(&quot;seven&quot;, 18)
+
+tpl = &quot;i am {0}, age {1}, really {0}&quot;.format(*[&quot;seven&quot;, 18])
+
+tpl = &quot;i am {name}, age {age}, really {name}&quot;.format(name=&quot;seven&quot;, age=18)
+
+tpl = &quot;i am {name}, age {age}, really {name}&quot;.format(**{&quot;name&quot;: &quot;seven&quot;, &quot;age&quot;: 18})
+
+tpl = &quot;i am {0[0]}, age {0[1]}, really {0[2]}&quot;.format([1, 2, 3], [11, 22, 33])
+
+tpl = &quot;i am {:s}, age {:d}, money {:f}&quot;.format(&quot;seven&quot;, 18, 88888.1)
+
+tpl = &quot;i am {:s}, age {:d}&quot;.format(*[&quot;seven&quot;, 18])
+
+tpl = &quot;i am {name:s}, age {age:d}&quot;.format(name=&quot;seven&quot;, age=18)
+
+tpl = &quot;i am {name:s}, age {age:d}&quot;.format(**{&quot;name&quot;: &quot;seven&quot;, &quot;age&quot;: 18})
+
+tpl = &quot;numbers: {:b},{:o},{:d},{:x},{:X}, {:%}&quot;.format(15, 15, 15, 15, 15, 15.87623, 2)
+
+tpl = &quot;numbers: {:b},{:o},{:d},{:x},{:X}, {:%}&quot;.format(15, 15, 15, 15, 15, 15.87623, 2)
+
+tpl = &quot;numbers: {0:b},{0:o},{0:d},{0:x},{0:X}, {0:%}&quot;.format(15)
+
+tpl = &quot;numbers: {num:b},{num:o},{num:d},{num:x},{num:X}, {num:%}&quot;.format(num=15)
+</code></pre>
       
     </div>
 
@@ -546,9 +614,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux运维技能/" rel="tag"><i class="fa fa-tag"></i> Linux运维技能</a>
-          
-            <a href="/tags/非原创系列/" rel="tag"><i class="fa fa-tag"></i> 非原创系列</a>
+            <a href="/tags/Python学习笔记/" rel="tag"><i class="fa fa-tag"></i> Python学习笔记</a>
           
         </div>
       
@@ -561,8 +627,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/15/Python当歌（一）：Python入门/" rel="next" title="Python当歌（一）：Python入门">
-                <i class="fa fa-chevron-left"></i> Python当歌（一）：Python入门
+              <a href="/2018/01/17/Python当歌（四）：函数/" rel="next" title="Python当歌（四）：函数">
+                <i class="fa fa-chevron-left"></i> Python当歌（四）：函数
               </a>
             
           </div>
@@ -571,8 +637,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/26/LVS-Keepalived-实现高可用Web集群/" rel="prev" title="LVS + Keepalived 实现高可用Web集群">
-                LVS + Keepalived 实现高可用Web集群 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/01/16/Python当歌（二）：基础数值类型/" rel="prev" title="Python当歌（二）：基础数值类型">
+                Python当歌（二）：基础数值类型 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -794,7 +860,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#uptime命令"><span class="nav-number">1.</span> <span class="nav-text">uptime命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#dmesg命令"><span class="nav-number">2.</span> <span class="nav-text">dmesg命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vmstat命令"><span class="nav-number">3.</span> <span class="nav-text">vmstat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mpstat命令"><span class="nav-number">4.</span> <span class="nav-text">mpstat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pidstat命令"><span class="nav-number">5.</span> <span class="nav-text">pidstat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iostat命令"><span class="nav-number">6.</span> <span class="nav-text">iostat命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#free命令"><span class="nav-number">7.</span> <span class="nav-text">free命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#sar命令"><span class="nav-number">8.</span> <span class="nav-text">sar命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#top命令"><span class="nav-number">9.</span> <span class="nav-text">top命令</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#百分号方式"><span class="nav-number">1.</span> <span class="nav-text">百分号方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Format方式"><span class="nav-number">2.</span> <span class="nav-text">Format方式</span></a></li></ol></div>
             
 
           </div>
