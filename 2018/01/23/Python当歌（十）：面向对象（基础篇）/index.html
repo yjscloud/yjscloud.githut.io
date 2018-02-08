@@ -1,0 +1,1428 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python学习笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="概述（1）面向过程：根据业务逻辑从上到下写垒代码 （2）函数式：将某功能代码封装到函数中，日后便无需重复编写，仅调用函数即可 （3）面向对象：对函数进行分类和封装，让开发“更快更好更强…” 面向过程编程最易被初学者接受，其往往用一长段代码来实现指定功能，开发过程中最常见的操作就是粘贴复制，即：将之前实现的代码块复制到现需功能处。 while True：     if cpu利用率 &amp;gt; 90%">
+<meta name="keywords" content="Python学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python当歌（十）：面向对象（基础篇）">
+<meta property="og:url" content="http://yjscloud.com/2018/01/23/Python当歌（十）：面向对象（基础篇）/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="概述（1）面向过程：根据业务逻辑从上到下写垒代码 （2）函数式：将某功能代码封装到函数中，日后便无需重复编写，仅调用函数即可 （3）面向对象：对函数进行分类和封装，让开发“更快更好更强…” 面向过程编程最易被初学者接受，其往往用一长段代码来实现指定功能，开发过程中最常见的操作就是粘贴复制，即：将之前实现的代码块复制到现需功能处。 while True：     if cpu利用率 &amp;gt; 90%">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/10-1.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/10-2.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/10-3.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/10-4.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/10-5.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/10-6.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/10-7.png">
+<meta property="og:image" content="http://p3q1rwnbl.bkt.clouddn.com/10-8.png">
+<meta property="og:updated_time" content="2018-02-08T10:27:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python当歌（十）：面向对象（基础篇）">
+<meta name="twitter:description" content="概述（1）面向过程：根据业务逻辑从上到下写垒代码 （2）函数式：将某功能代码封装到函数中，日后便无需重复编写，仅调用函数即可 （3）面向对象：对函数进行分类和封装，让开发“更快更好更强…” 面向过程编程最易被初学者接受，其往往用一长段代码来实现指定功能，开发过程中最常见的操作就是粘贴复制，即：将之前实现的代码块复制到现需功能处。 while True：     if cpu利用率 &amp;gt; 90%">
+<meta name="twitter:image" content="http://p3q1rwnbl.bkt.clouddn.com/10-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2018/01/23/Python当歌（十）：面向对象（基础篇）/"/>
+
+
+
+
+
+  <title>Python当歌（十）：面向对象（基础篇） | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/01/23/Python当歌（十）：面向对象（基础篇）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Python当歌（十）：面向对象（基础篇）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T10:30:17+08:00">
+                2018-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/01/23/Python当歌（十）：面向对象（基础篇）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  4,401
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  17
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>（1）面向过程：根据业务逻辑从上到下写垒代码</p>
+<p>（2）函数式：将某功能代码封装到函数中，日后便无需重复编写，仅调用函数即可</p>
+<p>（3）面向对象：对函数进行分类和封装，让开发“更快更好更强…”</p>
+<p>面向过程编程最易被初学者接受，其往往用一长段代码来实现指定功能，开发过程中最常见的操作就是粘贴复制，即：将之前实现的代码块复制到现需功能处。</p>
+<pre><code>while True：
+    if cpu利用率 &gt; 90%:
+        #发送邮件提醒
+        连接邮箱服务器
+        发送邮件
+        关闭连接
+
+    if 硬盘使用空间 &gt; 90%:
+        #发送邮件提醒
+        连接邮箱服务器
+        发送邮件
+        关闭连接
+
+    if 内存占用 &gt; 80%:
+        #发送邮件提醒
+        连接邮箱服务器
+        发送邮件
+        关闭连接
+</code></pre><p>随着时间的推移，开始使用了函数式编程，增强代码的重用性和可读性，就变成了这样：</p>
+<pre><code>def 发送邮件(内容)
+    #发送邮件提醒
+    连接邮箱服务器
+    发送邮件
+    关闭连接
+
+while True：
+
+    if cpu利用率 &gt; 90%:
+        发送邮件(&apos;CPU报警&apos;)
+
+    if 硬盘使用空间 &gt; 90%:
+        发送邮件(&apos;硬盘报警&apos;)
+
+    if 内存占用 &gt; 80%:
+        发送邮件(&apos;内存报警&apos;)
+</code></pre><h1 id="创建类和对象"><a href="#创建类和对象" class="headerlink" title="创建类和对象"></a>创建类和对象</h1><p>面向对象编程是一种编程方式，此编程方式的落地需要使用 “类” 和 “对象” 来实现，所以，面向对象编程其实就是对 “类” 和 “对象” 的使用。</p>
+<p>类就是一个模板，模板里可以包含多个函数，函数里实现一些功能</p>
+<p>对象则是根据模板创建的实例，通过实例对象可以执行类中的函数</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-1.png" alt="10-1"></p>
+<p>（1）class是关键字，表示类</p>
+<p>（2）创建对象，类名称后加括号即可</p>
+<p>ps：类中的函数第一个参数必须是self（详细见：类的三大特性之封装）<br>　　 类中定义的函数叫做 “方法”</p>
+<pre><code># 创建类
+class Foo:
+
+    def Bar(self):
+        print &apos;Bar&apos;
+
+    def Hello(self, name):
+        print &apos;i am %s&apos; %name
+
+# 根据类Foo创建对象obj
+obj = Foo()
+obj.Bar()            #执行Bar方法
+obj.Hello(‘Pan&apos;) #执行Hello方法　
+</code></pre><h1 id="面向对象三大特性"><a href="#面向对象三大特性" class="headerlink" title="面向对象三大特性"></a>面向对象三大特性</h1><p>面向对象的三大特性是指：封装、继承和多态。</p>
+<h2 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h2><p>封装，顾名思义就是将内容封装到某个地方，以后再去调用被封装在某处的内容。要明确的区分内外,内部的实现逻辑，外部无法知晓，并且为封装到内部的逻辑提供一个访问接口给外部使用，类中定义私有的，只在类的内部使用，外部无法访问。所以，在使用面向对象的封装特性时，需要：</p>
+<ul>
+<li>将内容封装到某处</li>
+<li>从某处调用被封装的内容</li>
+</ul>
+<p>第一步：将内容封装到某处</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-2.png" alt="10-2"></p>
+<p>self 是一个形式参数，当执行 obj1 = Foo(‘Pan’, 18 ) 时，self 等于 obj1；</p>
+<p>   当执行 obj2 = Foo(‘xwq’, 78 ) 时，self 等于 obj2</p>
+<p>所以，内容其实被封装到了对象 obj1 和 obj2 中，每个对象中都有 name 和 age 属性，在内存里类似于下图来保存。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-3.png" alt="10-3"></p>
+<p>第二步：从某处调用被封装的内容</p>
+<p>调用被封装的内容时，有两种情况：</p>
+<ul>
+<li>通过对象直接调用</li>
+<li>通过self间接调用</li>
+</ul>
+<p>（1）通过对象直接调用被封装的内容</p>
+<p>上图展示了对象 obj1 和 obj2 在内存中保存的方式，根据保存格式可以如此调用被封装的内容：对象.属性名</p>
+<pre><code>class Foo:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+obj1 = Foo(&apos;Pan&apos;, 18)
+print obj1.name    # 直接调用obj1对象的name属性
+print obj1.age     # 直接调用obj1对象的age属性
+
+obj2 = Foo(&apos;xwq&apos;, 19)
+print obj2.name    # 直接调用obj2对象的name属性
+print obj2.age     # 直接调用obj2对象的age属性
+</code></pre><p>（2）通过self间接调用被封装的内容</p>
+<p>执行类中的方法时，需要通过self间接调用被封装的内容</p>
+<pre><code>class Foo:
+
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def detail(self):
+        print self.name
+        print self.age
+
+obj1 = Foo(&apos;Pan&apos;, 18)
+obj1.detail()  # Python默认会将obj1传给self参数，即：obj1.detail(obj1)，所以，此时方法内部的 self ＝ obj1，即：self.name 是 Pan ；self.age 是 18
+
+obj2 = Foo(&apos;xwq&apos;, 73)
+obj2.detail()  # Python默认会将obj2传给self参数，即：obj1.detail(obj2)，所以，此时方法内部的 self ＝ obj2，即：self.name 是 xwq ； self.age 是 78
+</code></pre><p>综上所述，对于面向对象的封装来说，其实就是使用构造方法将内容封装到对象 中，然后通过对象直接或者self间接获取被封装的内容。</p>
+<p>（3）如何隐藏类的内部属性</p>
+<p>在python中用双下划线开头的方式将属性隐藏起来（设置成私有的），其实这仅仅这是一种变形操作且仅仅只在类定义阶段发生变形，类中所有双下划线开头的名称如<strong>x都会在类定义时自动变形成：_类名</strong>x的形式：</p>
+<pre><code>class A:
+    __N=0 #类的数据属性就应该是共享的,但是语法上是可以把类的数据属性设置成私有的如__N,会变形为_A__N
+    def __init__(self):
+        self.__X=10 #变形为self._A__X
+    def __foo(self): #变形为_A__foo
+        print(&apos;from A&apos;)
+    def bar(self):
+        self.__foo() #只有在类内部才可以通过__foo的形式访问到.
+
+ #A._A__N是可以访问到的，这种，在外部是无法通过__x这个名字访问到。
+</code></pre><p>这种变形需要注意的问题是：</p>
+<p>1.这种机制也并没有真正意义上限制我们从外部直接访问属性，知道了类名和属性名就可以拼出名字：_类名<strong>属性，然后就可以访问了，如a._A</strong>N，即这种操作并不是严格意义上的限制外部访问，仅仅只是一种语法意义上的变形，主要用来限制外部的直接访问。</p>
+<p>2.变形的过程只在类的定义时发生一次,在定义后的赋值操作，不会变形</p>
+<p>3.在继承中，父类如果不想让子类覆盖自己的方法，可以将方法定义为私有的</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-4.png" alt="10-4"></p>
+<p>（4）封装不是单纯意义的隐藏</p>
+<p>1：封装数据：将数据隐藏起来这不是目的。隐藏起来然后对外提供操作该数据的接口，然后我们可以在接口附加上对该数据操作的限制，以此完成对数据属性操作的严格控制。</p>
+<pre><code>class Teacher:
+    def __init__(self,name,age):
+        # self.__name=name
+        # self.__age=age
+        self.set_info(name,age)
+
+    def tell_info(self):
+        print(&apos;姓名:%s,年龄:%s&apos; %(self.__name,self.__age))
+    def set_info(self,name,age):
+        if not isinstance(name,str):
+            raise TypeError(&apos;姓名必须是字符串类型&apos;)
+        if not isinstance(age,int):
+            raise TypeError(&apos;年龄必须是整型&apos;)
+        self.__name=name
+        self.__age=age
+
+
+t=Teacher(&apos;egon&apos;,18)
+t.tell_info()
+
+t.set_info(&apos;egon&apos;,19)
+t.tell_info()
+</code></pre><p>2：封装方法：目的是隔离复杂度</p>
+<p>取款是功能,而这个功能有很多功能组成:插卡、密码认证、输入金额、打印账单、取钱。对使用者来说,只需要知道取款这个功能即可,其余功能我们都可以隐藏起来,很明显这么做。隔离了复杂度,同时也提升了安全性</p>
+<pre><code>class ATM:
+    def __card(self):
+        print(&apos;插卡&apos;)
+    def __auth(self):
+        print(&apos;用户认证&apos;)
+    def __input(self):
+        print(&apos;输入取款金额&apos;)
+    def __print_bill(self):
+        print(&apos;打印账单&apos;)
+    def __take_money(self):
+        print(&apos;取款&apos;)
+
+    def withdraw(self):
+        self.__card()
+        self.__auth()
+        self.__input()
+        self.__print_bill()
+        self.__take_money()
+
+a=ATM()
+a.withdraw()
+</code></pre><p>（5）封装与扩展性</p>
+<p>封装在于明确区分内外，使得类实现者可以修改封装内的东西而不影响外部调用者的代码；而外部使用用者只知道一个接口(函数)，只要接口（函数）名、参数不变，使用者的代码永远无需改变。这就提供一个良好的合作基础——或者说，只要接口这个基础约定不变，则代码改变不足为虑。</p>
+<pre><code>#类的设计者
+class Room:
+    def __init__(self,name,owner,width,length,high):
+        self.name=name
+        self.owner=owner
+        self.__width=width
+        self.__length=length
+        self.__high=high
+    def tell_area(self): #对外提供的接口，隐藏了内部的实现细节，此时我们想求的是面积
+        return self.__width * self.__length
+
+#使用者
+&gt;&gt;&gt; r1=Room(&apos;卧室&apos;,&apos;egon&apos;,20,20,20)
+&gt;&gt;&gt; r1.tell_area() #使用者调用接口tell_area
+
+
+#类的设计者，轻松的扩展了功能，而类的使用者完全不需要改变自己的代码
+class Room:
+    def __init__(self,name,owner,width,length,high):
+        self.name=name
+        self.owner=owner
+        self.__width=width
+        self.__length=length
+        self.__high=high
+    def tell_area(self): #对外提供的接口，隐藏内部实现，此时我们想求的是体积,内部逻辑变了,只需求修该下列一行就可以很简答的实现,而且外部调用感知不到,仍然使用该方法，但是功能已经变了
+
+       return self.__width * self.__length * self.__high
+
+#对于仍然在使用tell_area接口的人来说，根本无需改动自己的代码，就可以用上新功能
+&gt;&gt;&gt; r1.tell_area()
+</code></pre><h1 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h1><p>继承，面向对象中的继承和现实生活中的继承相同，即：子可以继承父的内容。</p>
+<p>例如：<br>　　<br>　　猫可以：喵喵叫、吃、喝、拉、撒</p>
+<p>狗可以：汪汪叫、吃、喝、拉、撒</p>
+<p>如果我们要分别为猫和狗创建一个类，那么就需要为 猫 和 狗 实现他们所有的功能，如下所示：</p>
+<pre><code>(伪代码)
+class cat：
+
+    def cat_mews(self):
+        print (‘喵喵叫’)
+
+    def eat(self):
+        # do something
+
+    def drink(self):
+        # do something
+
+    def pull(self):
+        # do something
+
+    def cast(self):
+        # do something
+
+class dog：
+
+    def bark(self):
+        print (‘汪汪叫’)
+
+    def eat(self):
+        # do something
+
+    def drink(self):
+        # do something
+
+    def pull(self):
+        # do something
+
+    def cast(self):
+        # do something
+</code></pre><p>上述代码不难看出，吃、喝、拉、撒是猫和狗都具有的功能，而我们却分别的猫和狗的类中编写了两次。如果使用 继承 的思想，如下实现：</p>
+<p>　　动物：吃、喝、拉、撒</p>
+<p>　　   猫：喵喵叫（猫继承动物的功能）</p>
+<p>　　   狗：汪汪叫（狗继承动物的功能）</p>
+<pre><code>（伪代码）
+class animal:
+
+    def eat(self):
+        # do something
+
+    def drink(self):
+        # do something
+
+    def pull(self):
+        # do something
+
+    def cast(self):
+        # do something
+
+# 在类后面括号中写入另外一个类名，表示当前类继承另外一个类
+
+class cat(animal)：
+
+    def cat_mews(self):
+        print &apos;喵喵叫&apos;
+
+# 在类后面括号中写入另外一个类名，表示当前类继承另外一个类
+class dog(animal)：
+
+    def bark(self):
+        print &apos;汪汪叫&apos;
+
+（代码实现）
+class Animal:
+    def eat(self):
+        print(&apos;%s eat&apos;%(self.name))
+
+    def drink(self):
+        print(&apos;%s drink&apos; %(self.name))
+
+    def shit(self):
+        print(&apos;%s pull&apos; %(self.name))
+
+    def pee(self):
+        print(&apos;%s cast&apos; %(self.name))
+
+
+class Cat(Animal):
+    def __init__(self, name):
+        self.name = name
+        self.breed = &apos;猫&apos;
+
+    def cry(self):
+        print(&apos;喵喵叫&apos;)
+
+
+class Dog(Animal):
+    def __init__(self, name):
+        self.name = name
+        self.breed = &apos;狗&apos;
+
+    def cry(self):
+        print(&apos;汪汪叫&apos;)
+</code></pre><p># ######### 执行 #########</p>
+<pre><code>c1 = Cat(&apos;小白家的小黑猫&apos;)
+c1.eat()
+
+c2 = Cat(&apos;小黑的小白猫&apos;)
+c2.drink()
+
+d1 = Dog(&apos;胖子家的小瘦狗&apos;)
+d1.eat()
+</code></pre><p>所以，对于面向对象的继承来说，其实就是将多个类共有的方法提取到父类中，子类仅需继承父类而不必一一实现每个方法。</p>
+<p>注：除了子类和父类的称谓，你可能看到过 派生类 和 基类 ，他们与子类和父类只是叫法不同而已。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-5.png" alt="10-5"></p>
+<p>那么问题又来了，多继承呢？</p>
+<p>是否可以继承多个类</p>
+<p>如果继承的多个类每个类中都定了相同的函数，那么那一个会被使用呢？</p>
+<p>1、Python的类可以继承多个类，Java和C#中则只能继承一个类</p>
+<p>2、Python的类如果继承了多个类，那么其寻找方法的方式有两种，分别是：深度优先和广度优先</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-6.png" alt="10-6"></p>
+<p>当类是经典类时，多继承情况下，会按照深度优先方式查找</p>
+<p>当类是新式类时，多继承情况下，会按照广度优先方式查找</p>
+<p>经典类和新式类，从字面上可以看出一个老一个新，新的必然包含了跟多的功能，也是之后推荐的写法，从写法上区分的话，如果当前类或者父类继承了object类，那么该类便是新式类，否则便是经典类。</p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-7.png" alt="10-7"></p>
+<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-8.png" alt="10-8"></p>
+<p>（经典类多继承）<br>class D:</p>
+<pre><code>def bar(self):
+    print (&apos;D.bar&apos;)
+</code></pre><p>class C(D):</p>
+<pre><code>def bar(self):
+    print (&apos;C.bar&apos;)
+</code></pre><p>class B(D):</p>
+<pre><code>def bar(self):
+    print (&apos;B.bar&apos;)
+</code></pre><p>class A(B, C):</p>
+<pre><code>def bar(self):
+    print (&apos;A.bar&apos;)
+
+a = A()
+</code></pre><p>执行bar方法时首先去A类中查找，如果A类中没有，则继续去B类中找，如果B类中么有，则继续去D类中找，如果D类中么有，则继续去C类中找，如果还是未找到，则报错,所以，查找顺序：A –&gt; B –&gt; D –&gt; C。在上述查找bar方法的过程中，一旦找到，则寻找过程立即中断，便不会再继续找了a.bar()</p>
+<pre><code>(新式类多继承)
+class D(object):
+
+    def bar(self):
+        print (&apos;D.bar&apos;)
+
+class C(D):
+
+    def bar(self):
+        print (&apos;C.bar&apos;)
+
+class B(D):
+
+    def bar(self):
+        print (&apos;B.bar&apos;)
+
+class A(B, C):
+
+    def bar(self):
+        print (&apos;A.bar&apos;)
+
+a = A()
+</code></pre><p>执行bar方法时，首先去A类中查找，如果A类中没有，则继续去B类中找，如果B类中么有，则继续去C类中找，如果C类中么有，则继续去D类中找，如果还是未找到，则报错，所以，查找顺序：A –&gt; B –&gt; C –&gt; D，在上述查找bar方法的过程中，一旦找到，则寻找过程立即中断，便不会再继续找了a.bar()</p>
+<p>经典类：首先去A类中查找，如果A类中没有，则继续去B类中找，如果B类中么有，则继续去D类中找，如果D类中么有，则继续去C类中找，如果还是未找到，则报错</p>
+<p>新式类：首先去A类中查找，如果A类中没有，则继续去B类中找，如果B类中么有，则继续去C类中找，如果C类中么有，则继续去D类中找，如果还是未找到，则报错</p>
+<p>注意：在上述查找过程中，一旦找到，则寻找过程立即中断，便不会再继续找了</p>
+<h1 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h1><p>类的继承有两层意义：1、改变  2、扩展</p>
+<p>多态就是类的这两层意义的一个具体的实现机制。即调用不同的类实例化的对象下的相同的方法，实现的过程不一样。python中的标准类型就是多态概念的一个很好的示范。</p>
+<p>多态的概念指出了对象如何通过他们共同的属性和动作来操作及访问，而不需要考虑他们的具体的类。多态一定是反应在运行时的状态。</p>
+<p>（1）理解多态</p>
+<p>多态指的是一类事物有多种形态</p>
+<p>动物有多种形态：人，狗，猪</p>
+<pre><code>import abc
+class Animal(metaclass=abc.ABCMeta): #同一类事物:动物
+    @abc.abstractmethod
+    def talk(self):
+        pass
+
+class People(Animal): #动物的形态之一:人
+    def talk(self):
+        print(&apos;say hello&apos;)
+
+class Dog(Animal): #动物的形态之二:狗
+    def talk(self):
+        print(&apos;say wangwang&apos;)
+
+class Pig(Animal): #动物的形态之三:猪
+    def talk(self):
+        print(&apos;say aoao&apos;)
+</code></pre><p>文件有多种形态：文本文件，可执行文件</p>
+<pre><code>import abc
+class File(metaclass=abc.ABCMeta): #同一类事物:文件
+    @abc.abstractmethod
+    def click(self):
+        pass
+
+class Text(File): #文件的形态之一:文本文件
+    def click(self):
+        print(&apos;open file&apos;)
+
+class ExeFile(File): #文件的形态之二:可执行文件
+    def click(self):
+        print(&apos;execute file&apos;)
+</code></pre><p>（2）多态性</p>
+<p>多态性是指在不考虑实例类型的情况下使用实例</p>
+<p>在面向对象方法中一般是这样表述多态性：向不同的对象发送同一条消息（！！！obj.func():是调用了obj的方法func，又称为向obj发送了一条消息func），不同的对象在接收时会产生不同的行为（即方法）。也就是说，每个对象可以用自己的方式去响应共同的消息。所谓消息，就是调用函数，不同的行为就是指不同的实现，即执行不同的函数。</p>
+<p>比如：老师.下课铃响了（），学生.下课铃响了()，老师执行的是下班操作，学生执行的是放学操作，虽然二者消息一样，但是执行的效果不同。</p>
+<p>多态性分为静态多态性和动态多态性</p>
+<p>静态多态性：如任何类型都可以用运算符+进行运算</p>
+<p>动态多态性：如下</p>
+<pre><code>peo=People()
+dog=Dog()
+pig=Pig()
+
+#peo、dog、pig都是动物,只要是动物肯定有talk方法
+#于是我们可以不用考虑它们三者的具体是什么类型,而直接使用
+peo.talk()
+dog.talk()
+pig.talk()
+
+#更进一步,我们可以定义一个统一的接口来使用
+def func(obj):
+    obj.talk()
+</code></pre><p>（3）为什么要使用多态性</p>
+<p>1.增加了程序的灵活性</p>
+<p>以不变应万变，不论对象千变万化，使用者都是同一种形式去调用，如func(animal)</p>
+<p>2.增加了程序额可扩展性</p>
+<p>通过继承animal类创建了一个新的类，使用者无需更改自己的代码，还是用func(animal)去调用</p>
+<pre><code>class Cat(Animal): #属于动物的另外一种形态：猫
+     def talk(self):
+         print(&apos;say miao&apos;)
+
+def func(animal): #对于使用者来说，自己的代码根本无需改动
+     animal.talk()
+
+cat1=Cat() #实例出一只猫
+func(cat1) #甚至连调用方式也无需改变，就能调用猫的talk功能
+</code></pre><p>这样我们新增了一个形态Cat，由Cat类产生的实例cat1，使用者可以在完全不需要修改自己代码的情况下。使用和人、狗、猪一样的方式调用cat1的talk方法，即func(cat1)</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python学习笔记/" rel="tag"><i class="fa fa-tag"></i> Python学习笔记</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/22/Python当歌（九）：模块/" rel="prev" title="Python当歌（九）：模块">
+                Python当歌（九）：模块 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">40</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建类和对象"><span class="nav-number">2.</span> <span class="nav-text">创建类和对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#面向对象三大特性"><span class="nav-number">3.</span> <span class="nav-text">面向对象三大特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#封装"><span class="nav-number">3.1.</span> <span class="nav-text">封装</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#继承"><span class="nav-number">4.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#多态"><span class="nav-number">5.</span> <span class="nav-text">多态</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<script type="text/javascript">
+  var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cspan id='cnzz_stat_icon_1261789938'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261789938' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+&nbsp;&nbsp;|&nbsp;&nbsp;您是第 <span id="busuanzi_value_site_uv"></span> 位访客
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>
