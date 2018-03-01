@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-03-01T03:22:04.000Z</updated>
+  <updated>2018-03-01T05:46:42.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -16,11 +16,312 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>saltstack自动化运维（一）</title>
+    <link href="http://yjscloud.com/2018/03/01/saltstack%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+    <id>http://yjscloud.com/2018/03/01/saltstack自动化运维（一）/</id>
+    <published>2018-03-01T04:39:43.000Z</published>
+    <updated>2018-03-01T05:46:42.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="saltstack简介"><a href="#saltstack简介" class="headerlink" title="saltstack简介"></a>saltstack简介</h1><p>（1）saltstack介绍</p>
+<p>SaltStack是一个新的基础平台管理工具，只需要花费数分钟即可运行起来，可以支撑管理上万台服务器的规模，数秒钟即可完成数据传递。SaltStack是使用Python语言开发的，同时提供Rest API方便二次开发以及和其它平台进行集成，同时官方也发布了一个Web管理界面halite。</p>
+<p>（2）saltstack运行方式</p>
+<p>saltstack有三种运行方式</p>
+<ul>
+<li>Local</li>
+<li>Master/Minion</li>
+<li>Salt SSH<br>SaltStack的传统运行模式为Master/Minion（C/S结构），需要在被管理的节点上安装Minion。同时SaltStack也支持SSH的方式，无需安装Agent，通过SSH实现管理。</li>
+</ul>
+<p>（3）saltstack目前拥有三大功能</p>
+<ul>
+<li>远程执行</li>
+<li>配置管理</li>
+<li>云管理</li>
+</ul>
+<h1 id="saltstack实战部署"><a href="#saltstack实战部署" class="headerlink" title="saltstack实战部署"></a>saltstack实战部署</h1><p>SaltStack支持多种操作系统，如CentOS、RedHat、Debian、Ubuntu、FreeBSD、Solaris、Fedora、SuSe、Gentoo、MAC OS X、Archlinux等，以及Windows（仅支持Minion）。</p>
+<p>saltstack服务器基本设置：CentOS7.2最小化安装，关闭防火墙，selinux设置为disabled，虚拟机网卡这里为桥接模式</p>
+<h2 id="安装saltstack源"><a href="#安装saltstack源" class="headerlink" title="安装saltstack源"></a>安装saltstack源</h2><p>对于Centos和RedHat用户，使用yum安装时最直接和快捷的。首先需要CentOS和epel仓库。saltstack官方源在国外下载使用需要vpn，我直接将saltstack2016.3的源同步到本地搭建了一个本地yum源，需要下载saltstack源的朋友请自带小飞机到<a href="https://repo.saltstack.com去下载，以下是我的repo的配置文件：" target="_blank" rel="external">https://repo.saltstack.com去下载，以下是我的repo的配置文件：</a></p>
+<p>CentOS和epel的repo：</p>
+<pre><code>[centos]
+name=centos7.2
+baseurl= http://192.168.16.198:8080/centos7.2/7.2/os/x86_64/
+enabled=1
+gpgcheck=0
+
+[epel]
+name=epel
+baseurl= http://192.168.16.198:8080/epel/7/x86_64/
+enabled=1
+gpgcheck=0
+</code></pre><p>saltstack的repo：</p>
+<pre><code>[saltstack]
+name=saltstack-2016.3
+baseurl= http://192.168.16.198:8080/saltstack-2016.3/
+enabled=1
+gpgcheck=0
+</code></pre><h2 id="安装saltstack"><a href="#安装saltstack" class="headerlink" title="安装saltstack"></a>安装saltstack</h2><p>saltstack01为master，saltstack02为minion</p>
+<p>在saltstack01</p>
+<pre><code>yum -y install salt-master salt-minion
+</code></pre><p>在saltstack02</p>
+<pre><code>yum -y install salt-minion
+</code></pre><h2 id="启动saltstack"><a href="#启动saltstack" class="headerlink" title="启动saltstack"></a>启动saltstack</h2><p>在saltstack01上</p>
+<pre><code>systemctl start salt-master
+systemctl enable salt-master
+</code></pre><h2 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h2><p>在saltstack01上</p>
+<pre><code>vim /etc/salt/minion
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-1.png" alt="2-1"></p>
+<p>启动salt-minion</p>
+<pre><code>systemctl start salt-minion
+systemctl enable salt-minion
+</code></pre><p>在saltstack02上</p>
+<pre><code>vim /etc/salt/minion2
+</code></pre><p>启动salt-minion</p>
+<pre><code>systemctl start salt-minion
+systemctl enable salt-minion
+</code></pre><h2 id="远程执行"><a href="#远程执行" class="headerlink" title="远程执行"></a>远程执行</h2><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-2.png" alt="2-2"></p>
+<p>认证命令：salt-key</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-3.png" alt="2-3"></p>
+<p>同意公钥key</p>
+<pre><code>salt-key -a saltstack01
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-4.png" alt="2-4"></p>
+<p>还可以使用通配符：</p>
+<pre><code>salt-key -a saltstack*  #-A表示同意所有
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-5.png" alt="2-5"></p>
+<p>同意后查看pki</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-6.png" alt="2-6"></p>
+<p>远程执行命令:</p>
+<pre><code>语法： 命令 目标 模块.方法 方法参数
+salt &apos;*&apos; test.ping
+</code></pre><p> 上面的命令用来查看有哪些Minion节点连接到Master。* 指的是选定的目标Minion，很显然代表所有。就是所有Minion端了。test.ping是salt远程执行的一个模块。（注意：这并不是一个ICMP ping。）</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-7.png" alt="2-7"></p>
+<pre><code>salt &apos;saltstack01&apos; cmd.run &apos;w&apos;
+</code></pre><p> <img src="http://opnq5yeqm.bkt.clouddn.com/2-8.png" alt="2-8"></p>
+<pre><code>salt &apos;saltstack01&apos; cmd.run &apos;mkdir /tmp/yjscloud&apos;
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-9.png" alt="2-9"></p>
+<h2 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h2><p> Salt使用State模块文件进行配置管理，使用YAML编写，以.sls结尾。如果进行配置管理首先需要再Master的配置文件中指定”file roots”的选项，Salt支持环境的配置，比如开发环节、测试环境、生产环境，但是base环境是必须的。而且Base环境必须包含入口文件top.sls。</p>
+<p>YAML: 三板斧</p>
+<pre><code>1.缩进
+     2个空格，不能试用Tab。
+2.冒号 
+     key: value
+3.短横线  
+      - list1
+      - list2
+</code></pre><p>第一步：设置file_roots<br>在saltstack01修改Master配置文件，指定file_roots：vim /etc/salt/master</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-10.png" alt="2-10"></p>
+<p>重启master: systemctl restart salt-master</p>
+<p>创建目录：mkdir /srv/salt</p>
+<p>第二步：设置top.sls</p>
+<p>在top.sls入口文件设置环境（如生产、开发、测试对应不同的minion和模块）。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-11.png" alt="2-11"></p>
+<p>解释：所有的Minion均执行base目录下的init模块下的pkg-init.sls。我们可以把很多的sls放在一个目录中，方便管理。在top.sls只需要指定目录结构即可。</p>
+<p>第三步：编写状态文件<br>在这个目录下创建web目录，在这个目录下编辑文件apache.sls，文件内容为：</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-12.png" alt="2-12"></p>
+<p>第四步：执行状态</p>
+<p>执行这个文件：salt ‘*’ state.sls web.apache</p>
+<p>根据上面的设置，执行完状态后。Salt会检查Minion上是否有上面编写的三个软件包。如果没有就会自动使用Yum安装上。</p>
+<p>在saltstack02端查看：</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-13.png" alt="2-13"></p>
+<p>saltstack01将描述文件发往saltstack02让其执行</p>
+<h1 id="saltstack与ZeroMQ"><a href="#saltstack与ZeroMQ" class="headerlink" title="saltstack与ZeroMQ"></a>saltstack与ZeroMQ</h1><p>saltstack底层是基于ZeroMQ进行高效的网络通信</p>
+<h2 id="ZeroMQ简介"><a href="#ZeroMQ简介" class="headerlink" title="ZeroMQ简介"></a>ZeroMQ简介</h2><p>ØMQ （也拼写作ZeroMQ，0MQ或ZMQ)是一个为可伸缩的分布式或并发应用程序设计的高性能异步消息库。它提供一个消息队列, 但是与面向消息的中间件不同，ZeroMQ的运行不需要专门的消息代理（message broker）。该库设计成常见的套接字风格的API。能够提供进程内(inproc)、进程间(IPC)、网络(TCP)和广播方式的消息信道， 并支持扇出(fan-out)、发布-订阅(pub-sub)、任务分发（task distribution）、请求/响应（request-reply）等通信模式。</p>
+<h2 id="saltstack第一种模式：发布与订阅"><a href="#saltstack第一种模式：发布与订阅" class="headerlink" title="saltstack第一种模式：发布与订阅"></a>saltstack第一种模式：发布与订阅</h2><p>ZeroMQ支持Publish/Subscribe，即发布与订阅模式，我们经常简称Pub/Sub。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-14.png" alt="2-14"></p>
+<p>Salt Master运行两个网络服务，其中一个是ZeroMQ PUB系统，默认监听4505端口。可以通过修改/etc/salt/master配置文件的publish_port参数设置。它是salt的消息发布系统，如果查看4505端口，会发现所有的Minion连接到Master的4505端口，TCP状态持续保持为ESTABLISHED。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-15.png" alt="2-15"></p>
+<h2 id="saltstack第一种模式：请求与响应"><a href="#saltstack第一种模式：请求与响应" class="headerlink" title="saltstack第一种模式：请求与响应"></a>saltstack第一种模式：请求与响应</h2><p>ZeroMQ支持Request-Reply，即请求与响应模式，我们经常简称REQ/REP。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-16.png" alt="2-16"></p>
+<p>Salt Master运行的第二个网络服务就是ZeroMQ REP系统，默认监听4506端口，可以通过修改/etc/salt/master配置文件的ret_port参数设置。</p>
+<p>它是salt客户端与服务端通信的端口。比如说Minion执行某个命令后的返回值就是发送给Master的4506这个REP端口</p>
+<p>如果安装了python-setproctitle软件包，所以我们可以直接看到Salt Master启动的进程的名称。</p>
+<pre><code>yum  install  -y python-setproctitle
+</code></pre><p>重启master和minion</p>
+<pre><code>systemctl restart salt-master
+systemctl restart salt-minion
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-17.png" alt="2-17"></p>
+<p>备注：</p>
+<pre><code>/usr/bin/salt-master  -d ProcessManager   # 中心进程管理器
+/usr/bin/salt-master  -d _clear_old_jobs   # 清除旧的Jobs文件及更新fileserver
+/usr/bin/salt-master  -d Publisher        # 将任务PUB到Minion端
+/usr/bin/salt-master  -d EventPublisher   # Event Publisher进程
+/usr/bin/salt-master  -d ReqServer_ProcessManager  # ReqServer进程管理器
+/usr/bin/salt-master  -d MWorker   # 工作进程
+/usr/bin/salt-master  -d MWorker   # 工作进程
+/usr/bin/salt-master  -d MWorker   # 工作进程
+/usr/bin/salt-master  -d MWorker   # 工作进程
+/usr/bin/salt-master  -d MWorker   # 工作进程
+/usr/bin/salt-master  -d MWorkerQueue  # 将Ret接口(ROUTER)数据转发到Worker(DEALER)
+</code></pre><h1 id="saltstack数据系统"><a href="#saltstack数据系统" class="headerlink" title="saltstack数据系统"></a>saltstack数据系统</h1><p>saltstack数据系统分为Grian和Pillar</p>
+<h2 id="Grains"><a href="#Grains" class="headerlink" title="Grains"></a>Grains</h2><p>静态数据，当Minion启动的时候收集的MInion本地的相关信息。（包含操作系统版本、内核版本、CPU、内存、硬盘、设备型号等）</p>
+<p>备注：不重启minion，这些信息数据是不会改变的。</p>
+<p> 1)信息管理，包括资产管理</p>
+<p> eg:</p>
+<pre><code>salt  &apos;saltstack01&apos;  grains. ls   # 列出ID为saltstack01的主机，grains的所有key
+salt  &apos; saltstack*&apos;  grains.items   # 列出主机的详细信息，可用于资产管理
+salt  &apos;*&apos;  grains.item os   # 列出所有主机的系统版本
+salt  &apos;*&apos;  grains.item fqdn_ip4   # 列出所有主机的IP地址
+</code></pre><p>2)用于目标选择（查询具体id的主机，查询系统版本为centos的主机等场景）</p>
+<p>eg:</p>
+<pre><code>salt -G  &apos;os:Centos&apos;  test . ping   # 所有主机系统为centos版本ping测试
+salt -G  &apos;os:Centos&apos;  cmd.run  &apos;echo 123&apos;   # 所有主机系统为centos版本执行命令&apos;echo 123&apos;
+</code></pre><p>3)配置管理中使用</p>
+<p>自定义grains的item</p>
+<p>方式一：修改配置文件 vim /etc/salt/minion</p>
+<p> 重启：systemctl restart salt-minion</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-18.png" alt="2-18"></p>
+<p>通过自定义的item，可以实现重启所有角色为apache的主机</p>
+<pre><code>salt  &apos;*&apos;  grains.item roles   # 获取所有主机的roles
+salt -G  &apos;roles:apache&apos;  cmd.run  &apos;systemctl restart httpd&apos;   # 所有主机roles为apache的执行命令systemctl restart httpd
+</code></pre><p>方式二：（生产环境使用）</p>
+<p>修改配置文件 vim /etc/salt/grains，写法</p>
+<pre><code>cloud: openstack
+</code></pre><p>重启:</p>
+<pre><code>systemctl restart salt-minion
+salt  &apos;*&apos;  grains.item cloud   # 获取所有主机的cloud
+</code></pre><p>修改/etc/salt/grains不重启服务的方法，刷新命令如下（备注：方式一和方式二修改配置文件，通过此命令都可以不用重启服务）</p>
+<pre><code>salt &apos;*&apos; saltutil.sync_grains
+</code></pre><p>3）grains在top file中的使用案例</p>
+<pre><code>vim /srv/salt/top.sls
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-19.png" alt="2-19"></p>
+<p>grains脚本目录，必须是base下创建_grains目录（如：/srv/salt/_grains）</p>
+<p>创建一个python脚本在/srv/salt/_grains目录下</p>
+<p>脚本名：my_grains.py</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-20.png" alt="2-20"></p>
+<p>通过master同步脚本文件至每台minion</p>
+<pre><code>salt &apos;*&apos; saltutil.sync_grains
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-21.png" alt="2-21"></p>
+<p>文件放在minion主机的/var/cache/salt/minion/extmods/grains目录下</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-22.png" alt="2-22"></p>
+<pre><code>salt  &apos;*&apos;  grains.item edu   # 获取所有主机的edu
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-23.png" alt="2-23"></p>
+<p>grains优先级（item名称相同的情况下）： </p>
+<ul>
+<li>系统自带 </li>
+<li>grains文件写到 </li>
+<li>minion配置文件写的</li>
+<li>自己写的脚本</li>
+</ul>
+<h2 id="Pillar"><a href="#Pillar" class="headerlink" title="Pillar"></a>Pillar</h2><p>动态数据，给特定的minion指定特定的数据。只有指定的minion自己能看到自己的数据。</p>
+<pre><code>salt  &apos;*&apos;  pillar.items
+</code></pre><p>开启系统自带，修改配置文件</p>
+<pre><code>vim /etc/salt/master
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-24.png" alt="2-24"></p>
+<p>重启systemctl restart salt-master</p>
+<p>执行salt ‘*’ pillar.items 可以看到系统自带的item</p>
+<p>piller存在文件路径设置</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-25.png" alt="2-25"></p>
+<pre><code>mkdir /srv/pillar
+</code></pre><p>重启systemctl restart salt-master</p>
+<p>实现pillar流程</p>
+<p>1）创建一个piller文件，python jinja2写法</p>
+<pre><code>mkdir  /srv/pillar/web
+cd  /srv/pillar/web
+vim apache.sls
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-26.png" alt="2-26"></p>
+<p>2）创建top file文件</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/2-27.png" alt="2-27"></p>
+<pre><code>salt  &apos;*&apos;  saltutil.refresh_pillar   # 刷新
+salt  &apos;*&apos;  pillar.items apache
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-28.png" alt="2-28"></p>
+<p>目标选择</p>
+<pre><code>salt -I  &apos;apache:httpd&apos;  test . ping
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-29.png" alt="2-29"></p>
+<h2 id="Grains-VS-Pillar"><a href="#Grains-VS-Pillar" class="headerlink" title="Grains VS Pillar"></a>Grains VS Pillar</h2><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-30.png" alt="2-30"></p>
+<h1 id="深入学习saltstack远程执行"><a href="#深入学习saltstack远程执行" class="headerlink" title="深入学习saltstack远程执行"></a>深入学习saltstack远程执行</h1><p>语法例： salt ‘*’ cmd.run ‘w’</p>
+<p>命令：  salt</p>
+<p>目标： ‘*’</p>
+<p>模块： cmd.run  自带150+模块。  自己写模块</p>
+<p>返回： 执行后结果返回，Returnners</p>
+<h2 id="目标：Targeting"><a href="#目标：Targeting" class="headerlink" title="目标：Targeting"></a>目标：Targeting</h2><p>两种：一种和Minion　ID有关</p>
+<p>　　　一种和Minion　ID无关</p>
+<p>1)Minion ID有关的方法</p>
+<p> 指定具体的minion ID    </p>
+<pre><code>salt &apos;saltstack01&apos; test.ping
+</code></pre><p> 通配符</p>
+<pre><code>salt  &apos;*&apos;  test . ping 
+salt  &apos;saltstack *&apos;  test . ping
+salt  &apos; saltstack[1|2]&apos;  test . ping
+salt  &apos; saltstack[1-2]&apos;  test . ping
+salt  &apos; saltstack[!2]&apos;  test . ping
+salt  &apos; saltstack?&apos;  test . ping
+</code></pre><p> 列表</p>
+<pre><code>salt -L  &apos;saltstack01 ,saltstack02 &apos;  test . ping
+</code></pre><p> 正则表达式</p>
+<pre><code>salt -E &apos;saltstack(01|02)&apos; test.ping
+salt -E &apos;saltstack(01|02)*&apos; test.ping
+</code></pre><p>备注: 所有匹配目标的方式，都可以用到top file里面来指定目标。minion ID设置方案：IP地址、根据业务来进行设置</p>
+<p>eg:</p>
+<pre><code>redis-node1-redis04-idc04-h5web.example.com
+redis-node1   # redis第一个节点
+redis04   # 集群
+idc04   # 机房
+h5web   # 业务线
+</code></pre><p> 2）minion ID无关的方法</p>
+<p>   IP地址、子网</p>
+<pre><code>salt -S 192.168.16.100 test.ping
+salt -S 192.168.16.0/24 test.ping
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-31.png" alt="2-31"></p>
+<p>分组，需要配置master文件</p>
+<pre><code>vim  /etc/salt/master
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/2-32.png" alt="2-32"></p>
+<p>重启systemctl restart salt-master</p>
+<p>混合匹配</p>
+<p>具体内容查看<a href="https://docs.saltstack.com/en/latest/topics/targeting/compound.html" target="_blank" rel="external">官方文档</a></p>
+<p> 批处理</p>
+<p> 可用于重启所有主机或进程场景，百分比或固定数量的一点一点重启主机或进程</p>
+<p> 具体内容查看<a href="https://docs.saltstack.com/en/latest/topics/targeting/batch.html" target="_blank" rel="external">官方文档</a></p>
+<h1 id="执行模块"><a href="#执行模块" class="headerlink" title="执行模块"></a>执行模块</h1><p>[官方文档]（<a href="https://docs.saltstack.com/en/latest/ref/modules/all/index.html#all-salt-modules）" target="_blank" rel="external">https://docs.saltstack.com/en/latest/ref/modules/all/index.html#all-salt-modules）</a></p>
+<p>列出salt所有模块，以及如何使用的帮助文档</p>
+<p>通过yum默认安装salt所有模块存放路径 /usr/lib/python2.7/site-packages/salt/modules（centos 7）</p>
+<p>eg:</p>
+<pre><code>salt  &apos;*&apos;  network.active_tcp   # 列出所有主机运行的tcp连接
+salt  &apos;*&apos;  network.arp   # 列出所有主机arp
+salt  &apos;*&apos;  service.available sshd   # 列出所有主机sshd
+salt  &apos;*&apos;  service.get_all   # 列出所有主机的所有运行服务
+salt  &apos;*&apos;  service.status sshd   # 列出所有主机sshd运行状态
+salt- cp  &apos;*&apos;  /etc/hosts  /tmp/test   # 将master上/etc/hosts文件拷贝到所有主机的/tmp/test 
+salt  &apos;*&apos;  state.show_top   # 查看top
+salt  &apos;*&apos;  state.single pkg.installed name= lsof   # 所有主机安装lsof
+</code></pre><h1 id="编写执行模块"><a href="#编写执行模块" class="headerlink" title="编写执行模块"></a>编写执行模块</h1><h2 id="放置路径"><a href="#放置路径" class="headerlink" title="放置路径"></a>放置路径</h2><pre><code>cd  /srv/salt
+mkdir  _modules
+</code></pre><h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><p>文件名就是模块名</p>
+<p>eg:</p>
+<pre><code> my_disk.py
+
+vim  /srv/salt/_modules/my_disk .py
+def list():
+     cmd =  &apos;df -h&apos;
+     ret = __salt__[ &apos;cmd.run&apos; ](cmd)
+     return  ret
+</code></pre><h2 id="刷新"><a href="#刷新" class="headerlink" title="刷新"></a>刷新</h2><pre><code>salt  &apos;*&apos;  saltutil.sync_modules
+</code></pre><p> <img src="http://opnq5yeqm.bkt.clouddn.com/2-33.png" alt="2-33"></p>
+<p> 会放到指定目标的/var/cache/salt/minion下:</p>
+<p> <img src="http://opnq5yeqm.bkt.clouddn.com/2-34.png" alt="2-34"></p>
+<h2 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h2><pre><code>salt  &apos;*&apos;  my_disk.list
+</code></pre><p> <img src="http://opnq5yeqm.bkt.clouddn.com/2-35.png" alt="2-35"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;saltstack简介&quot;&gt;&lt;a href=&quot;#saltstack简介&quot; class=&quot;headerlink&quot; title=&quot;saltstack简介&quot;&gt;&lt;/a&gt;saltstack简介&lt;/h1&gt;&lt;p&gt;（1）saltstack介绍&lt;/p&gt;
+&lt;p&gt;SaltStack是一个
+    
+    </summary>
+    
+      <category term="运维技能" scheme="http://yjscloud.com/categories/%E8%BF%90%E7%BB%B4%E6%8A%80%E8%83%BD/"/>
+    
+    
+      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="saltstack" scheme="http://yjscloud.com/tags/saltstack/"/>
+    
+  </entry>
+  
+  <entry>
     <title>cobbler实践指南</title>
     <link href="http://yjscloud.com/2018/03/01/cobbler%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/"/>
     <id>http://yjscloud.com/2018/03/01/cobbler实践指南/</id>
     <published>2018-03-01T01:48:05.000Z</published>
-    <updated>2018-03-01T03:22:04.000Z</updated>
+    <updated>2018-03-01T04:42:46.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="cobbler简介"><a href="#cobbler简介" class="headerlink" title="cobbler简介"></a>cobbler简介</h1><h2 id="cobbler介绍"><a href="#cobbler介绍" class="headerlink" title="cobbler介绍"></a>cobbler介绍</h2><p>Cobbler是一个Linux服务器安装的服务，可以通过网络启动(PXE)的方式来快速安装、重装物理服务器和虚拟机，同时还可以管理DHCP，DNS等。</p>
 <p>Cobbler可以使用命令行方式管理，也提供了基于Web的界面管理工具(cobbler-web)，还提供了API接口，可以方便二次开发使用。</p>
@@ -296,7 +597,7 @@ $yum_config_stanza
     
     </summary>
     
-      <category term="技术分享" scheme="http://yjscloud.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+      <category term="运维技能" scheme="http://yjscloud.com/categories/%E8%BF%90%E7%BB%B4%E6%8A%80%E8%83%BD/"/>
     
     
       <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
@@ -3014,55 +3315,6 @@ Y
     
       &lt;p&gt;kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅&lt;a href=&quot;http://www.cnblogs.com/zhangzhang/archive/2012/02/13/2348928.html&quot;&gt;KMV下磁盘模式raw和qcow2的性能比较&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;下面开始kvm虚拟机快照备份的过程&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="KVM学习笔记" scheme="http://yjscloud.com/tags/KVM%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>kvm学习笔记（三）-设置VNC和时间同步</title>
-    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89-%E8%AE%BE%E7%BD%AEVNC%E5%92%8C%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5/"/>
-    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（三）-设置VNC和时间同步/</id>
-    <published>2017-10-19T18:54:34.000Z</published>
-    <updated>2017-12-02T09:33:25.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="设置VNC"><a href="#设置VNC" class="headerlink" title="设置VNC"></a>设置VNC</h1><p>这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。</p>
-<a id="more"></a>
-<h2 id="修改qemu-conf"><a href="#修改qemu-conf" class="headerlink" title="修改qemu.conf"></a>修改qemu.conf</h2><pre><code># vim  /etc/libvirt/qemu.conf
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.38.png" alt="1.38"></p>
-<p>去掉第12行的注释，保存退出</p>
-<p>注意：vnclisten 默认绑定127.0.0.1 在配置文件里指定VNC 绑定0.0.0.0的IP,就不用在安装kvm虚拟机时指定vnclisten参数了。在虚拟主机上有很多个虚拟机的时候，需要指定每个虚拟机的端口，否则将会很乱。</p>
-<h2 id="修改虚拟机配置文件"><a href="#修改虚拟机配置文件" class="headerlink" title="修改虚拟机配置文件"></a>修改虚拟机配置文件</h2><pre><code># virsh edit clone-1
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.39.png" alt="1.39"></p>
-<p>配置VNC的配置文件,port是指定端口号,autoport是自动分配端口号。</p>
-<h2 id="启动虚拟机并测试VNC"><a href="#启动虚拟机并测试VNC" class="headerlink" title="启动虚拟机并测试VNC"></a>启动虚拟机并测试VNC</h2><p>启动虚拟机</p>
-<pre><code># virsh start clone-1
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.40.png" alt="1.40"></p>
-<p>使用vnc工具登陆</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.41.png" alt="1.41"></p>
-<p>登陆成功</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.42.png" alt="1.42"></p>
-<hr>
-<h1 id="kvm虚拟机时间配置"><a href="#kvm虚拟机时间配置" class="headerlink" title="kvm虚拟机时间配置"></a>kvm虚拟机时间配置</h1><p>在虚拟化环境中，虚拟机在长时间运行过程中，时间会变慢，通常的作法是配置ntpdate定时与时间服务器进行时间同步的计划任务。KVM虚拟机默认采用utc时间，需要专门修改，以及考虑kvm时间同步问题。</p>
-<h2 id="kvm虚拟机修改时间配置文件"><a href="#kvm虚拟机修改时间配置文件" class="headerlink" title="kvm虚拟机修改时间配置文件"></a>kvm虚拟机修改时间配置文件</h2><p>kvm虚拟机采用utc时间，需要先修改配置文件使用KVM虚拟机的时间与虚拟主机同步。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.43.png" alt="1.43"></p>
-<p>修改utc为localtime，保存退出，重启虚拟机</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.44.png" alt="1.44"></p>
-<h2 id="关于kvm虚拟机时间问题解决思路"><a href="#关于kvm虚拟机时间问题解决思路" class="headerlink" title="关于kvm虚拟机时间问题解决思路"></a>关于kvm虚拟机时间问题解决思路</h2><p>(1)虚拟机时间慢是所有虚拟化平台的一共性问题。</p>
-<p>(2)解决时间的最终解决方法就是在生产环境中配置时间服务器，kvm虚拟化服务器与kvm机均都要配置时间同步的计划任务，这才是解决这一个问题最终解决方案。</p>
-<p>示例：如果能访问互联网，最简单了，需要kvm虚拟机与主机时间同步，但是运行一段时间会慢，一定要做时间同步，特别是对时间敏感的环境。   </p>
-<pre><code># crontab -e    
-01 */3 * * * /usr/sbin/ntpdate cn.pool.ntp.org &gt;&gt; /dev/null 2&gt;&amp;1
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;设置VNC&quot;&gt;&lt;a href=&quot;#设置VNC&quot; class=&quot;headerlink&quot; title=&quot;设置VNC&quot;&gt;&lt;/a&gt;设置VNC&lt;/h1&gt;&lt;p&gt;这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。&lt;/p&gt;
     
     </summary>
     
