@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-02-08T10:27:32.000Z</updated>
+  <updated>2018-03-01T03:17:12.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,297 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>cobbler实践指南</title>
+    <link href="http://yjscloud.com/2018/03/01/cobbler%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/"/>
+    <id>http://yjscloud.com/2018/03/01/cobbler实践指南/</id>
+    <published>2018-03-01T01:48:05.000Z</published>
+    <updated>2018-03-01T03:17:12.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="cobbler简介"><a href="#cobbler简介" class="headerlink" title="cobbler简介"></a>cobbler简介</h1><h2 id="cobbler介绍"><a href="#cobbler介绍" class="headerlink" title="cobbler介绍"></a>cobbler介绍</h2><p>Cobbler是一个Linux服务器安装的服务，可以通过网络启动(PXE)的方式来快速安装、重装物理服务器和虚拟机，同时还可以管理DHCP，DNS等。</p>
+<p>Cobbler可以使用命令行方式管理，也提供了基于Web的界面管理工具(cobbler-web)，还提供了API接口，可以方便二次开发使用。</p>
+<p>Cobbler是较早前的kickstart的升级版，优点是比较容易配置，还自带web界面比较易于管理。</p>
+<p>Cobbler内置了一个轻量级配置管理系统，但它也支持和其它配置管理系统集成，如Puppet，暂时不支持SaltStack。</p>
+<h2 id="cobbler集成的服务"><a href="#cobbler集成的服务" class="headerlink" title="cobbler集成的服务"></a>cobbler集成的服务</h2><ul>
+<li>PXE服务支持</li>
+<li>DHCP服务管理</li>
+<li>DNS服务管理(可选bind,dnsmasq)</li>
+<li>电源管理</li>
+<li>Kickstart服务支持</li>
+<li>YUM仓库管理</li>
+<li>TFTP(PXE启动时需要)</li>
+<li>Apache(提供kickstart的安装源，并提供定制化的kickstart配置）</li>
+</ul>
+<h1 id="cobbler部署"><a href="#cobbler部署" class="headerlink" title="cobbler部署"></a>cobbler部署</h1><p>cobbler服务器基本设置：CentOS7最小化安装，关闭防火墙，selinux设置为disabled，虚拟机网卡这里为桥接模式</p>
+<h2 id="安装EPEL源"><a href="#安装EPEL源" class="headerlink" title="安装EPEL源"></a>安装EPEL源</h2><pre><code>rpm -ivh http://mirrors.kernel.org/fedora-epel/7/x86_64/e/epel-release-7-10.noarch.rpm
+yum repolist
+</code></pre><h2 id="yum安装cobbler"><a href="#yum安装cobbler" class="headerlink" title="yum安装cobbler"></a>yum安装cobbler</h2><pre><code>yum install -y httpd dhcp tftp cobbler cobbler-web pykickstart
+</code></pre><p>用命令（rpm -ql cobbler）查看安装的文件，下面列出部分。</p>
+<p>配置文件目录 /etc/cobbler</p>
+<pre><code>/etc/cobbler                  # 配置文件目录
+/etc/cobbler/settings         # cobbler主配置文件，这个文件是YAML格式，Cobbler是python写的程序。
+/etc/cobbler/dhcp.template    # DHCP服务的配置模板
+/etc/cobbler/tftpd.template   # tftp服务的配置模板
+/etc/cobbler/rsync.template   # rsync服务的配置模板
+/etc/cobbler/iso              # iso模板配置文件目录
+/etc/cobbler/pxe              # pxe模板文件目录/etc/cobbler/power            # 电源的配置文件目录
+/etc/cobbler/users.conf       # Web服务授权配置文件
+/etc/cobbler/users.digest     # 用于web访问的用户名密码配置文件
+/etc/cobbler/dnsmasq.template # DNS服务的配置模板
+/etc/cobbler/modules.conf     # Cobbler模块配置文件
+</code></pre><p> 数据目录</p>
+<pre><code>/var/lib/cobbler              # Cobbler数据目录
+/var/lib/cobbler/config       # 用于存放distros,system,profiles等信息配置文件
+/var/lib/cobbler/kickstarts   # 默认存放kickstart文件
+/var/lib/cobbler/loaders      # 存放的各种引导程序
+</code></pre><p> 镜像目录</p>
+<pre><code>/var/www/cobbler              # 系统安装镜像目录
+/var/www/cobbler/ks_mirror    # 导入的发行版系统的所有数据
+/var/www/cobbler/images       # 导入发行版的kernel和initrd镜像用于远程网络启动
+/var/www/cobbler/repo_mirror  # yum源存储目录
+</code></pre><p> 日志目录</p>
+<pre><code>/var/log/cobbler              # 日志目录
+/var/log/cobbler/install.log  # 客户端系统安装日志
+/var/log/cobbler/cobbler.log  # cobbler日志
+</code></pre><h2 id="启动并检测cobbler"><a href="#启动并检测cobbler" class="headerlink" title="启动并检测cobbler"></a>启动并检测cobbler</h2><pre><code>systemctl start httpd
+systemctl enable httpd
+systemctl start cobblerd
+systemctl enable cobblerd
+cobbler check
+</code></pre><p>附加解析：</p>
+<pre><code>cobbler check 核对当前设置是否有问题
+cobbler list 列出所有的cobbler元素
+cobbler report 列出元素的详细信息
+cobbler sync 同步配置到数据目录,更改配置最好都要执行下
+cobbler reposync 同步yum仓库
+cobbler distro 查看导入的发行版系统信息
+cobbler system 查看添加的系统信息
+cobbler profile 查看配置信息
+</code></pre><h2 id="修改cobbler主配置文件"><a href="#修改cobbler主配置文件" class="headerlink" title="修改cobbler主配置文件"></a>修改cobbler主配置文件</h2><pre><code>vim /etc/cobbler/settings
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-1.png" alt="1-1"></p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-2.png" alt="1-2"></p>
+<h2 id="保证xinetd服务为开机自动启动状态"><a href="#保证xinetd服务为开机自动启动状态" class="headerlink" title="保证xinetd服务为开机自动启动状态"></a>保证xinetd服务为开机自动启动状态</h2><pre><code>vim /etc/xinetd.d/tftp
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-3.png" alt="1-3"></p>
+<h2 id="启动rsyncd服务"><a href="#启动rsyncd服务" class="headerlink" title="启动rsyncd服务"></a>启动rsyncd服务</h2><pre><code>systemctl start rsyncd
+cobbler get-loaders
+</code></pre><h2 id="生成cobbler安装系统root初始密码"><a href="#生成cobbler安装系统root初始密码" class="headerlink" title="生成cobbler安装系统root初始密码"></a>生成cobbler安装系统root初始密码</h2><pre><code>openssl passwd -1 -salt &apos;cobler&apos; &apos;cobler&apos;
+$1$cobler$XJnisBweZJlhL651HxAM00
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-4.png" alt="1-4"></p>
+<h2 id="将上面的加密串加入cobbler配置文件中"><a href="#将上面的加密串加入cobbler配置文件中" class="headerlink" title="将上面的加密串加入cobbler配置文件中"></a>将上面的加密串加入cobbler配置文件中</h2><pre><code>vim /etc/cobbler/settings
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-5.png" alt="1-5"></p>
+<h2 id="重启cobblerd服务："><a href="#重启cobblerd服务：" class="headerlink" title="重启cobblerd服务："></a>重启cobblerd服务：</h2><pre><code>systemctl restart cobblerd
+cobbler check
+</code></pre><h2 id="让cobblerd管理dhcp"><a href="#让cobblerd管理dhcp" class="headerlink" title="让cobblerd管理dhcp"></a>让cobblerd管理dhcp</h2><pre><code>vim /etc/cobbler/settings
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-6.png" alt="1-6"></p>
+<h2 id="修改dhcp模板文件："><a href="#修改dhcp模板文件：" class="headerlink" title="修改dhcp模板文件："></a>修改dhcp模板文件：</h2><pre><code>vim /etc/cobbler/dhcp.template
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-7.png" alt="1-7"></p>
+<h2 id="重启cobblerd"><a href="#重启cobblerd" class="headerlink" title="重启cobblerd"></a>重启cobblerd</h2><pre><code>systemctl restart cobblerd
+</code></pre><p>同步：</p>
+<pre><code>cobbler sync
+</code></pre><h2 id="导入镜像"><a href="#导入镜像" class="headerlink" title="导入镜像"></a>导入镜像</h2><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-8.png" alt="1-8"></p>
+<pre><code>mount /dev/cdrom /mnt
+cobbler import --path=/mnt/ --name=CentOS-7-x86_64 --arch=x86_64
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-9.png" alt="1-9"></p>
+<p>导入centos6的步骤在这里略去！</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-10.png" alt="1-10"></p>
+<p>CentOS-6-x86_64.cfg配置文件：</p>
+<pre><code># Kickstart file automatically generated by anaconda.
+
+#version=DEVEL
+
+install  #表示是安装，而不是升级
+
+text #文本方式安装
+
+cdrom #安装方式，如果是网络安装的话可以写成 url ––url ftp://192.168.1.254/dir 或者 nfs --server=192.168.0.241 --dir=/centosinstall
+
+key –skip #这个是我另外添加的，如果是RedHat的系统，会要求输入key，这里配置为跳过，如果不配置安装时会停在那里要求用户输入key
+
+lang en_US.UTF-8  #语言
+
+keyboard us #键盘样式
+
+network --onboot no --device eth0 --noipv4 --noipv6 #网络配置 配置具体参数样例：network –onboot yes --bootproto=static --ip=192.168.1.1 --netmask=255.255.255.0 其他网关，DNS等格式和ifcfg-ethx的方式一样
+
+rootpw  --iscrypted $6$PEJ49S7OkrNra3UM #管理员密码，是加密过的 要是使用不加密的方式则这样写：rootpw 123456
+
+firewall --service=ssh #开启防火墙，并打开ssh端口
+
+authconfig --enableshadow --passalgo=sha512 #用户认证和密码加密方式
+
+selinux --enforcing #强制打开selinux
+
+timezone --utc Etc/GMT+8 #时区设置
+
+zerombr yes #清空磁盘的mbr
+
+bootloader --location=mbr --driveorder=sda #引导程序相关参数
+
+# The following is the partition information you requested
+# Note that any partitions you deleted are not expressed
+# here so unless you clear all partitions first, this is
+# not guaranteed to work
+
+clearpart –all –initlabel #初始化磁盘
+
+part / --fstype=ext4 --size=18000 #开始分区
+part swap --grow --size=1024
+repo --name=&quot;CentOS&quot;  --baseurl=cdrom:sr0 --cost=100
+
+reboot
+
+
+%packages --nobase #安装的软件包，这里由于我安装的是最小mini版，所以只安装了核心软件包组
+@core
+
+
+%post #后安装脚本（这里是我另外添加的，原来文件中没有）
+id lustlost &amp;&gt;; /dev/null || useradd lustlost #检查是否有lustlost用户，如果没有则添加
+echo 123456 | passwd –stdin lustlost #配置密码
+
+cat &gt;&gt; /etc/yum.repos.d/base.repo &lt;&lt; eof
+[base]
+name=baseserver
+baseurl=http://192.168.1.254/yum
+gpgcheck=0
+enable=1
+eof                                 #这里在安装系统成功后执行脚本自动配置一个yum源,其他脚本可以按照需要定义
+
+%end
+</code></pre><p>CentOS-7-x86_64.cfg配置文件：</p>
+<pre><code># Cobbler for Kickstart Configurator for CentOS 7 by clsn
+install
+url --url=$tree
+text
+lang en_US.UTF-8
+keyboard us
+zerombr
+bootloader --location=mbr --driveorder=sda --append=&quot;crashkernel=auto rhgb quiet&quot;
+#Network information
+$SNIPPET(&apos;network_config&apos;)
+#network --bootproto=dhcp --device=eth0 --onboot=yes --noipv6 --    hostname=CentOS7
+timezone --utc Asia/Shanghai
+authconfig --enableshadow --passalgo=sha512
+rootpw  --iscrypted $default_password_crypted
+clearpart --all --initlabel
+part /boot --fstype xfs --size 1024
+part swap --size 1024
+part / --fstype xfs --size 1 --grow
+firstboot --disable
+selinux --disabled
+firewall --disabled
+logging --level=info
+reboot
+
+%pre
+$SNIPPET(&apos;log_ks_pre&apos;)
+$SNIPPET(&apos;kickstart_start&apos;)
+$SNIPPET(&apos;pre_install_network_config&apos;)
+# Enable installation monitoring
+$SNIPPET(&apos;pre_anamon&apos;)
+%end
+
+%packages
+@^minimal
+@compat-libraries
+@core
+@debugging
+@development
+bash-completion
+chrony
+dos2unix
+kexec-tools
+lrzsz
+nmap
+sysstat
+telnet
+tree
+vim
+wget
+%end
+
+%post
+systemctl disable postfix.service
+
+$yum_config_stanza
+%end
+</code></pre><p>上传配置文件到/var/lib/cobbler/kickstarts目录下</p>
+<p>修改自定义配置文件：</p>
+<pre><code>cobbler profile edit --name=CentOS-7-x86_64 --kickstart=/var/lib/cobbler/kickstarts/CentOS-7-x86_64.cfg
+cobbler profile edit --name=CentOS-6-x86_64 --kickstart=/var/lib/cobbler/kickstarts/CentOS-6-x86_64.cfg
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-11.png" alt="1-11">    </p>
+<p>定义自动化安装时centos7的网卡信息文件（自动生成eth1,eth2）</p>
+<pre><code>cobbler profile edit --name=CentOS-7-x86_64 --kopts=&apos;net.ifnames=O biosdevname=O&apos;
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-12.png" alt="1-12"></p>
+<p>cobbler sync #使修改的配置文件生效</p>
+<p>然后随便添加一台虚拟机，开机！</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-13.png" alt="1-13">    </p>
+<p>cobbler服务器端查看日志</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-14.png" alt="1-14"></p>
+<p>（14）安装xinetd</p>
+<pre><code>yum -y install xinetd
+systemctl start xinetd
+</code></pre><p>安装好后就会可以选择安装centos版本，选择对应版本后就会自动执行安装程序！</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-15.png" alt="1-15"><br><img src="http://opnq5yeqm.bkt.clouddn.com/1-16.png" alt="1-16">    </p>
+<h1 id="自动重装和cobbler-web"><a href="#自动重装和cobbler-web" class="headerlink" title="自动重装和cobbler-web"></a>自动重装和cobbler-web</h1><h2 id="安装koan"><a href="#安装koan" class="headerlink" title="安装koan"></a>安装koan</h2><pre><code>yum -y install koan
+</code></pre><p>查看可以重装的系统：</p>
+<pre><code>koan --server=192.168.0.100 --list=profiles    
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-17.png" alt="1-17">    </p>
+<h2 id="指定要重装成centos6："><a href="#指定要重装成centos6：" class="headerlink" title="指定要重装成centos6："></a>指定要重装成centos6：</h2><pre><code>koan --replace-self --server=192.168.0.100 --profile=CentOS-6-x86_64
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-18.png" alt="1-18"></p>
+<h2 id="通过web访问cobbler"><a href="#通过web访问cobbler" class="headerlink" title="通过web访问cobbler"></a>通过web访问cobbler</h2><p>在浏览器输入：<a href="https://192.168.0.100/cobbler_web，用户名和密码都是默认的cobbler" target="_blank" rel="external">https://192.168.0.100/cobbler_web，用户名和密码都是默认的cobbler</a></p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-19.png" alt="1-19"></p>
+<h2 id="cobbler修改密码"><a href="#cobbler修改密码" class="headerlink" title="cobbler修改密码"></a>cobbler修改密码</h2><pre><code>htdigest /etc/cobbler/users.digest &quot;Cobbler&quot; cobbler
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-20.png" alt="1-20"></p>
+<p>所有操作都可在web界面进行</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-21.png" alt="1-21"><br><img src="http://opnq5yeqm.bkt.clouddn.com/1-22.png" alt="1-22"></p>
+<h2 id="修改提示信息的选单"><a href="#修改提示信息的选单" class="headerlink" title="修改提示信息的选单"></a>修改提示信息的选单</h2><pre><code>vim /etc/cobbler/pxe/pxedefault.template
+</code></pre><p>修改前:</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-23.png" alt="1-23"></p>
+<p>修改后：</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-24.png" alt="1-24"></p>
+<p>然后执行命令：cobbler sync</p>
+<p>新建一台虚拟机查看效果：</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-25.png" alt="1-25"></p>
+<h1 id="cobbler自定义yum源"><a href="#cobbler自定义yum源" class="headerlink" title="cobbler自定义yum源"></a>cobbler自定义yum源</h1><h2 id="添加repo"><a href="#添加repo" class="headerlink" title="添加repo"></a>添加repo</h2><pre><code>cobbler repo add --name=openstack-ocata --mirror=http://192.168.0.5:8080/openstack-ocata/ --arch=x86_64 --breed=yum
+</code></pre><p>注：<a href="http://192.168.0.5:8080/openstack-ocata/为我本地搭建的本地yum源" target="_blank" rel="external">http://192.168.0.5:8080/openstack-ocata/为我本地搭建的本地yum源</a></p>
+<h2 id="同步repo"><a href="#同步repo" class="headerlink" title="同步repo"></a>同步repo</h2><pre><code>cobbler reposync
+</code></pre><h2 id="添加repo到对应的repolist"><a href="#添加repo到对应的repolist" class="headerlink" title="添加repo到对应的repolist"></a>添加repo到对应的repolist</h2><pre><code>cobbler profile edit --name=CentOS-7-x86_64 --repos=&quot;openstack-ocata&quot;
+</code></pre><h2 id="修改kicstart文件"><a href="#修改kicstart文件" class="headerlink" title="修改kicstart文件"></a>修改kicstart文件</h2><pre><code>%post
+systemctl disable postfix.service
+
+$yum_config_stanza
+%end
+</code></pre><h2 id="添加定时任务，定期同步repo"><a href="#添加定时任务，定期同步repo" class="headerlink" title="添加定时任务，定期同步repo"></a>添加定时任务，定期同步repo</h2><pre><code>echo &quot;1 3 * * * /usr/bin/cobbler reposync --tries=3 --no-fail&quot; &gt;&gt; /var/spool/cron/root
+</code></pre><h1 id="cobbler自定义系统安装"><a href="#cobbler自定义系统安装" class="headerlink" title="cobbler自定义系统安装"></a>cobbler自定义系统安装</h1><p>##自动化装机平台基本信息</p>
+<p>mac地址：00:50:56:3E:3D:06</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-26.png" alt="1-26"></p>
+<p>主机名：cobbler-test03<br>IP：192.168.0.111<br>掩码：255.255.255.0<br>网关：192.168.0.1<br>DNS：192.168.0.1</p>
+<h2 id="执行安装的命令"><a href="#执行安装的命令" class="headerlink" title="执行安装的命令"></a>执行安装的命令</h2><pre><code>cobbler system add --name=cobbler-test03 --mac=00:50:56:3E:3D:06 --profile=CentOS-7-x86_64 \
+--ip-address=192.168.0.111 --subnet=255.255.255.0 --gateway=192.168.0.1 --intterface=eth0 \
+--static=1 --hostname=cobbler-test03 --name-servers=&quot;192.168.0.1&quot; \
+--kickstart=/var/lib/cobbler/kickstarts/CentOS-7-x86_64.cfg
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-27.png" alt="1-27"></p>
+<p>同步：cobbler sync</p>
+<p>启动虚拟机跳过选择界面自动安装：</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-28.png" alt="1-28"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;cobbler简介&quot;&gt;&lt;a href=&quot;#cobbler简介&quot; class=&quot;headerlink&quot; title=&quot;cobbler简介&quot;&gt;&lt;/a&gt;cobbler简介&lt;/h1&gt;&lt;h2 id=&quot;cobbler介绍&quot;&gt;&lt;a href=&quot;#cobbler介绍&quot; class
+    
+    </summary>
+    
+      <category term="技术分享" scheme="http://yjscloud.com/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/"/>
+    
+    
+      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="cobbler" scheme="http://yjscloud.com/tags/cobbler/"/>
+    
+  </entry>
   
   <entry>
     <title>Python当歌（十）：面向对象（基础篇）</title>
@@ -2773,344 +3064,6 @@ Y
     <summary type="html">
     
       &lt;h1 id=&quot;设置VNC&quot;&gt;&lt;a href=&quot;#设置VNC&quot; class=&quot;headerlink&quot; title=&quot;设置VNC&quot;&gt;&lt;/a&gt;设置VNC&lt;/h1&gt;&lt;p&gt;这里的通过vnc方式访问虚拟机不是在kvm虚拟机安装配置vnc服务器，通过虚拟主机的IP地址与端口进行访问，kvm虚拟化对vnc的支持相对来说比xen要好很多，在虚拟主机上配置VNC访问虚拟机，也是为了多提供一种方式访问虚拟机。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="KVM学习笔记" scheme="http://yjscloud.com/tags/KVM%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>kvm学习笔记（二）-KVM基础学习</title>
-    <link href="http://yjscloud.com/2017/10/18/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89-KVM%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/"/>
-    <id>http://yjscloud.com/2017/10/18/kvm学习笔记（二）-KVM基础学习/</id>
-    <published>2017-10-17T20:06:18.000Z</published>
-    <updated>2017-12-02T09:33:03.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="kvm简绍"><a href="#kvm简绍" class="headerlink" title="kvm简绍"></a>kvm简绍</h1><p>KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的一个内核模块，该内核模块使得 Linux 变成了一个 Hypervisor：</p>
-<ul>
-<li>它由 Quramnet 开发，该公司于 2008年被 Red Hat 收购。</li>
-<li>它支持 x86 (32 and 64 位), s390, Powerpc 等 CPU。</li>
-<li>它从 Linux 2.6.20 起就作为一模块被包含在 Linux 内核中。</li>
-<li>它需要支持虚拟化扩展的 CPU。</li>
-<li>它是完全开源的。</li>
-</ul>
-<a id="more"></a>
-<p>（1）KVM特性</p>
-<p>嵌入到Linux正式Kernel（提高兼容性），代码级资源调用（提高性能），虚拟机就是一个进程（内存易于管理）</p>
-<p>（2）KVM虚拟化架构</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.20.png" alt="1.20"></p>
-<p>（3)KVM CPU性能优化</p>
-<ul>
-<li>一个 KVM 虚机即一个 Linux qemu-kvm 进程，与其他Linux 进程一样被Linux 进程调度器调度。</li>
-<li>KVM 虚机包括虚拟内存、虚拟CPU和虚机 I/O设备，其中，内存和 CPU 的虚拟化由 KVM 内核模块负责实现，I/O 设备的虚拟化由 QEMU 负责实现。</li>
-<li>KVM户机系统的内存是 qumu-kvm 进程的地址空间的一部分。</li>
-<li><p>KVM 虚机的 vCPU 作为 线程运行在 qemu-kvm 进程的上下文中。</p>
-<p>CPU虚拟化<br><img src="http://oxysobnip.bkt.clouddn.com/1.21.png" alt="1.21"></p>
-</li>
-</ul>
-<h1 id="KVM安装"><a href="#KVM安装" class="headerlink" title="KVM安装"></a>KVM安装</h1><h2 id="检查主机是否支持虚拟化"><a href="#检查主机是否支持虚拟化" class="headerlink" title="检查主机是否支持虚拟化"></a>检查主机是否支持虚拟化</h2><p>   打开您的虚拟机的虚拟化引擎</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.22.png" alt="1.22"></p>
-<pre>
-# egrep -c '(vmx|svm)' /proc/cpuinfo
-</pre>
-
-<p>命令结果大于0表示cpu支持虚拟化</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.23.png" alt="1.23"></p>
-<p>最好关闭防火墙和关闭selinux</p>
-<pre>
-# systemctl stop firewalld
-# systemctl disable firewalld
-# vim /etc/selinux/config
-    将enforcing改为disabled
-</pre>
-
-<h2 id="配置本地yum源"><a href="#配置本地yum源" class="headerlink" title="配置本地yum源"></a>配置本地yum源</h2><p>替换CentOS默认源，默认生产环境上不了外网，所以你得想办法用自己的内部Yum源，如果没有，需要搭建一个。让系统上网，然后运行下面命令：</p>
-<pre>
-# cd /etc/yum.repos.d
-# rm -rf *
-# wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
-# wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
-</pre>
-
-<p>在我的实验环境中我已经搭好了本地yum源，在这里我直接使用本地yum源，下面是我的yum配置文件</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.24.png" alt="1.24"></p>
-<h2 id="安装kvm以及相应的依赖包"><a href="#安装kvm以及相应的依赖包" class="headerlink" title="安装kvm以及相应的依赖包"></a>安装kvm以及相应的依赖包</h2><p>安装依赖包</p>
-<pre>
-# yum -y groupinstall "Virtualization Host"
-# yum -y install virt-{install,viewer,manager} 
-</pre>
-
-<p>相关组件介绍</p>
-<p>【1】libvirt：操作和管理KVM虚机的虚拟化 API，使用 C 语言编写，可以由 Python,Ruby, Perl, PHP, Java 等语言调用。可以操作包括 KVM，vmware，XEN，Hyper-v, LXC 等 Hypervisor。</p>
-<p>【2】Virsh：基于 libvirt 的 命令行工具 （CLI）</p>
-<p>【3】Virt-Manager：基于 libvirt 的 GUI 工具</p>
-<p>kvm内核模块</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.25.png" alt="1.25"></p>
-<h2 id="配置网卡为桥接模式"><a href="#配置网卡为桥接模式" class="headerlink" title="配置网卡为桥接模式"></a>配置网卡为桥接模式</h2><pre>
-# cd /etc/sysconfig/network-scripts/
-# cp ifcfg-eno16777736 ifcfg-br0
-</pre>
-
-<p>我的配置文件</p>
-<pre>
-[root@kvm network-scripts]# cat ifcfg-eno16777736 
-TYPE="Ethernet"
-DEVICE="eno16777736"
-NAME="eno16777736"
-BRIDGE=br0
-[root@kvm network-scripts]# cat ifcfg-br0 
-TYPE=Bridge
-NAME=br0
-DEVICE=br0
-IPADDR=172.31.129.95
-NETMASK=255.255.255.0
-GATEWAY=172.31.129.254
-</pre>
-
-<h2 id="创建虚拟机硬盘"><a href="#创建虚拟机硬盘" class="headerlink" title="创建虚拟机硬盘"></a>创建虚拟机硬盘</h2><pre>
-# qemu-img create -f qcow2 /mnt/vm-test/iso/centos-7.2.qcow2 10G
-# chown qemu:qemu /mnt/vm-test/iso/centos-7.2.qcow2 -R
-</pre>
-
-<h2 id="创建虚拟机"><a href="#创建虚拟机" class="headerlink" title="创建虚拟机"></a>创建虚拟机</h2><pre>
-[root@kvm iso]# virt-install --virt-type kvm --name centos-7.2 --ram 512 \    # name 是自己取得
-> --vcpus 1 \        #指定cpu核数
-> --cdrom=CentOS-7-x86_64-DVD-1511.iso \  #指定镜像
-> --disk centos-7.2.qcow2,format=qcow2 \    #disk参数为上面创建的磁盘
-> --network network=default \  #网络设置为默认网络（NAT）
-> --graphics vnc,listen=0.0.0.0 --noautoconsole \ #运行所有网段远程，远程方式采用vnc
-> --os-type=linux --os-variant=rhel7 #指定系统类型
-</pre>
-
-<p>桥接网卡位置</p>
-<pre>
-virt-install --virt-type kvm --name centos-7.2 --ram 512 --vcpus 1 --cdrom=CentOS-7-x86_64-DVD-1511.iso --disk centos7.2.qcow2,format=qcow2 --network bridge=virbr0 --vnc --vncport=5910 --vnclisten=0.0.0.0  --os-type=linux --os-variant=rhel7
-</pre>
-
-<h2 id="远程虚拟机"><a href="#远程虚拟机" class="headerlink" title="远程虚拟机"></a>远程虚拟机</h2><p>查看端口：netstat –natp</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.26.png" alt="1.26"></p>
-<p>在vnc输入172.31.129.95:5900即可远程虚拟机</p>
-<h1 id="KVM命令介绍"><a href="#KVM命令介绍" class="headerlink" title="KVM命令介绍"></a>KVM命令介绍</h1><h2 id="virsh"><a href="#virsh" class="headerlink" title="virsh"></a>virsh</h2><p>virsh:虚拟化交互式终端</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.27.png" alt="1.27"></p>
-<ul>
-<li>virsh list  # 显示本地活动虚拟机</li>
-<li>virsh start kvm_name # 启动非活动虚拟机, kvm_name为你的虚拟机名字</li>
-<li>virsh create kvm_name.xml  # 创建虚拟机（创建后，虚拟机立即执行，成为活动主机）</li>
-<li>virsh suspend kvm_name # 暂停虚拟机</li>
-<li>virsh resume kvm_name # 启动暂停的虚拟机</li>
-<li>virsh shutdown kvm_name # 正常关闭虚拟机</li>
-<li>virsh destroy kvm_name # 强制关闭虚拟机</li>
-<li>virsh dominfo kvm_name # 显示虚拟机的基本信息</li>
-<li>virsh dumpxml kvm_name # 显示虚拟机的当前配置文件</li>
-<li>virsh setmem kvm_name 51200 # 给不活动虚拟机设置内存大小</li>
-<li>virsh setvcpus kvm_name 4  # 给不活动虚拟机设置cpu个数</li>
-<li><p>virsh edit kvm_name # 编辑配置文件（一般用在刚定义完VM）</p>
-<p>虚拟机配置文件路径：/etc/libvirt/qemu</p>
-</li>
-</ul>
-<h2 id="虚拟化vcpu操作"><a href="#虚拟化vcpu操作" class="headerlink" title="虚拟化vcpu操作"></a>虚拟化vcpu操作</h2><pre>
-# yum -y install numactl
-</pre>
-
-<ul>
-<li>nodeinfo #查看节点配置信息</li>
-<li>dominfo    #查看虚拟机节点配置信息</li>
-<li>numactl –hardware #查看节点硬件信息</li>
-<li>numastat –c qemu-kvm</li>
-<li>virsh<ul>
-<li>vcpuinfo kvm_name #查看运行在那个逻辑cpu上</li>
-<li>emulatorpin kvm_name #查看可以调度逻辑cpu</li>
-<li>emulatorpin kvm_name 1-2 –live #限制可以调度逻辑cpu(重启生效)<br><img src="http://oxysobnip.bkt.clouddn.com/1.28.png" alt="1.28"></li>
-</ul>
-</li>
-</ul>
-<p>虚拟机cpu优化</p>
-<p>vcpu单独强制绑定</p>
-<ul>
-<li>vcpupin kvm_name 0 1</li>
-<li>vcpupin kvm_name 1 2</li>
-<li>vcpuinfo</li>
-<li>dumpxml kvm_name</li>
-</ul>
-<p>命令使用参考文章：<br><a href="http://hl914.blog.51cto.com/4128173/1557615/" target="_blank" rel="external">CPU性能监控之二—–Numa架构下进程与CPU绑定</a></p>
-<p><a href="http://blog.csdn.net/shaoyunzhe/article/details/53606584" target="_blank" rel="external">numa总结</a></p>
-<h2 id="安装acpid"><a href="#安装acpid" class="headerlink" title="安装acpid"></a>安装acpid</h2><p>默认情况下virsh工具不能对linux虚拟机进行关机操作，linux操作系统需要开启与启动acpid服务。在安装KVM linux虚拟机必须配置此服务。 </p>
-<pre>
-# yum install -y acpid
-# systemctl enable acpid
-</pre>
-
-<h2 id="克隆虚拟机"><a href="#克隆虚拟机" class="headerlink" title="克隆虚拟机"></a>克隆虚拟机</h2><p>（1）根据模板文件修改</p>
-<ul>
-<li>进入对应目录拷贝模板文件</li>
-</ul>
-<pre>
-# cd /etc/libvirt/qemu
-# cp centos-7.2.xml clone-1.xml
-</pre>
-
-<ul>
-<li>修改虚拟名称</li>
-<li>删除uuid</li>
-</ul>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.29.png" alt="1.29"></p>
-<ul>
-<li>指定disk</li>
-</ul>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.30.png" alt="1.30"></p>
-<ul>
-<li>删除mac</li>
-</ul>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.31.png" alt="1.31"></p>
-<ul>
-<li>修改vnc远程允许端口（可选）</li>
-</ul>
-<p>如果您上面选择桥接模式创建虚拟机且指定了端口5910，请您把5910改为5911，这样可以避免与centos7.3的端口冲突</p>
-<p>（2）复制qcow2文件</p>
-<pre>
-# cp centos-7.2.qcow2 clone-1.qcow2
-</pre>
-
-<p>（3）virsh define 模板文件路径</p>
-<pre>
-# virsh define /etc/libvirt/qemu/clone-1.xml
-</pre>
-
-<p>（4）启动虚拟机</p>
-<pre>
-# virsh start clone-1
-</pre>
-
-<p>（5）删除克隆的虚拟机</p>
-<pre>
-# virsh shutdown clone-1
-# virsh undefine clone-1
-# rm –rf /mnt/vm-test/clone-1.qcow2
-</pre>
-
-<p>（6）一个小坑</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.32.png" alt="1.32"></p>
-<p>这一行位置在第86行，修改配置文件时一定要删除，不知道为什么，它会出现在CentOS7.2版本的系统中，而在CentOS7.3版本的系统中不会出现这一行代码！</p>
-<h2 id="虚拟机快照snapshot"><a href="#虚拟机快照snapshot" class="headerlink" title="虚拟机快照snapshot"></a>虚拟机快照snapshot</h2><pre>
-virsh # snapshot-create-as centos-7.2 kuaizhao #创建虚拟机centos-7.2的快照，快照名字为kuaizhao
-Domain snapshot kuaizhao created
-virsh # snapshot-list centos-7.2 #显示虚拟机快照的名称
- Name                 Creation Time             State
-------------------------------------------------------------
- kuaizhao             2017-10-17 09:53:49 +0800 shutoff
-
-virsh # snapshot-revert centos-7.2 kuaizhao #恢复快照
-</pre>
-
-<h2 id="添加磁盘"><a href="#添加磁盘" class="headerlink" title="添加磁盘"></a>添加磁盘</h2><p>(1)创建磁盘</p>
-<pre>
-# qemu-img create -f qcow2 /mnt/vm-test/ios/testadd.qcow2 10G
-</pre>
-
-<p>(2)修改配置文件</p>
-<pre>
-# virsh edit centos-7.2
-</pre>
-
-<p>添加以下内容并保存配置文件</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">disk</span> <span class="attr">type</span>=<span class="string">'file'</span> <span class="attr">device</span>=<span class="string">'disk'</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">driver</span> <span class="attr">name</span>=<span class="string">'qemu'</span> <span class="attr">type</span>=<span class="string">'qcow2'</span>/&gt;</span></div><div class="line">   	<span class="tag">&lt;<span class="name">source</span> <span class="attr">file</span>=<span class="string">'/mnt/vm-test/ios/testadd.qcow2'</span>/&gt;</span></div><div class="line">   <span class="tag">&lt;<span class="name">target</span> <span class="attr">dev</span>=<span class="string">'vdb'</span> <span class="attr">bus</span>=<span class="string">'virtio'</span>/&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">disk</span>&gt;</span></div></pre></td></tr></table></figure>
-<pre>
-# virsh create /etc/libvirt/qemu/centos-7.2.xml
-# virsh destroy centos-7.2
-# virsh start centos-7.2
-</pre>
-
-<p>重启后进入虚拟机查看</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.33.png" alt="1.33"></p>
-<p>(3)直接扩展qcow2磁盘</p>
-<p>qcow2格式的好处就是支持直接扩展，下面我们关闭虚拟机直接对磁盘进行扩容</p>
-<pre><code># qemu-img resize clone-3.qcow2 +10G
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.35-1.png" alt="1.35-1"></p>
-<p>经过前后对比，磁盘大小已由20G扩展到30G,已扩展,qcow2磁盘格式必须采用此方式进行扩展!</p>
-<h2 id="kvm虚拟机的网络模式"><a href="#kvm虚拟机的网络模式" class="headerlink" title="kvm虚拟机的网络模式"></a>kvm虚拟机的网络模式</h2><p>(1)nat网络模式</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.34.png" alt="1.34"></p>
-<p>(2)桥接模式</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.35.png" alt="1.35"></p>
-<p>（3）添加NAT网络</p>
-<p> 定义一个虚拟网络</p>
-<pre>
-# virsh net-define /usr/share/libvirt/networks/default.xml
-</pre>
-
-<p>添加内容</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">network</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">name</span>&gt;</span>default<span class="tag">&lt;/<span class="name">name</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">bridge</span> <span class="attr">name</span>=<span class="string">"virbr0"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">forward</span>/&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">ip</span> <span class="attr">address</span>=<span class="string">"192.168.122.1"</span> <span class="attr">netmask</span>=<span class="string">"255.255.255.0"</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">dhcp</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">range</span> <span class="attr">start</span>=<span class="string">"192.168.122.2"</span> <span class="attr">end</span>=<span class="string">"192.168.122.254"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">dhcp</span>&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">ip</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">network</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>设置为自动启动</p>
-<pre>
-# virsh net-autostart default
-</pre>
-
-<p>查看网络</p>
-<pre>
-# brctl show
-</pre>
-
-<p>修改/etc/sysctl.conf中参数，允许ip转发</p>
-<pre>
-# net.ipv4.ip_forward=1
-</pre>
-
-<p>修改虚拟机配置文件</p>
-<pre>
-# virsh edit centos-7.2
-</pre>
-
-<p>修改网卡链接模式</p>
-<p>桥接模式</p>
-<pre><code>&lt;interface type=&apos;bridge&apos;&gt;
-    &lt;source bridge=&apos;br0&apos;/&gt;
-    &lt;model type=&apos;virtio&apos;/&gt;
-    &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x02&apos; function=&apos;0x0&apos;/&gt;
-&lt;/interface&gt;
-</code></pre><p>nat模式</p>
-<pre><code>&lt;interface type=&apos;network&apos;&gt;
-    &lt;source network=&apos;default&apos;/&gt;
-    &lt;model type=&apos;virtio&apos;/&gt;
-    &lt;address type=&apos;pci&apos; domain=&apos;0x0000&apos; bus=&apos;0x00&apos; slot=&apos;0x03&apos; function=&apos;0x0&apos;/&gt;
-&lt;/interface&gt; 
-</code></pre><p>修改完之后，保存退出。</p>
-<pre>
-# virsh create /etc/libvirt/qemu/centos-7.2.xml
-</pre>
-
-<ol>
-<li><p>修改桥接后nat不能上网问题</p>
-<p>默认配置文件：（virsh交互界面）</p>
-</li>
-</ol>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.36.png" alt="1.36"></p>
-<p>将默认配置文件修改为：</p>
-<pre>
-# vim /etc/libvirt/qemu/networks/default.xml
-</pre>
-
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.37.png" alt="1.37"></p>
-<p>然后再执行如下命令</p>
-<pre>
-virsh # net-define /etc/libvirt/qemu/networks/default.xml
-virsh # net-destroy default
-virsh # net-start default
-</pre>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;kvm简绍&quot;&gt;&lt;a href=&quot;#kvm简绍&quot; class=&quot;headerlink&quot; title=&quot;kvm简绍&quot;&gt;&lt;/a&gt;kvm简绍&lt;/h1&gt;&lt;p&gt;KVM 全称是 基于内核的虚拟机（Kernel-basedVirtual Machine），它是一个 Linux 的一个内核模块，该内核模块使得 Linux 变成了一个 Hypervisor：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;它由 Quramnet 开发，该公司于 2008年被 Red Hat 收购。&lt;/li&gt;
-&lt;li&gt;它支持 x86 (32 and 64 位), s390, Powerpc 等 CPU。&lt;/li&gt;
-&lt;li&gt;它从 Linux 2.6.20 起就作为一模块被包含在 Linux 内核中。&lt;/li&gt;
-&lt;li&gt;它需要支持虚拟化扩展的 CPU。&lt;/li&gt;
-&lt;li&gt;它是完全开源的。&lt;/li&gt;
-&lt;/ul&gt;
     
     </summary>
     

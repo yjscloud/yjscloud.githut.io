@@ -1,3 +1,4 @@
+http://yjscloud.com/2018/03/01/cobbler实践指南/
 http://yjscloud.com/2018/01/23/Python当歌（十）：面向对象（基础篇）/
 http://yjscloud.com/2018/01/22/Python当歌（九）：模块/
 http://yjscloud.com/2018/01/21/Python当歌（八）：装饰器/
