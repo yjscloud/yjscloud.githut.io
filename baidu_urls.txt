@@ -1,3 +1,4 @@
+http://yjscloud.com/2018/03/08/GitLab安装与汉化/
 http://yjscloud.com/2018/03/01/DNS实战/
 http://yjscloud.com/2018/03/01/saltstack自动化运维（一）/
 http://yjscloud.com/2018/03/01/cobbler实践指南/

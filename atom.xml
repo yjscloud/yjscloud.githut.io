@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-03-01T15:11:15.000Z</updated>
+  <updated>2018-03-08T14:52:02.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,121 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>GitLab安装与汉化</title>
+    <link href="http://yjscloud.com/2018/03/08/GitLab%E5%AE%89%E8%A3%85%E4%B8%8E%E6%B1%89%E5%8C%96/"/>
+    <id>http://yjscloud.com/2018/03/08/GitLab安装与汉化/</id>
+    <published>2018-03-08T14:30:54.000Z</published>
+    <updated>2018-03-08T14:52:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="gitlab-ce安装"><a href="#gitlab-ce安装" class="headerlink" title="gitlab-ce安装"></a>gitlab-ce安装</h1><p>GitLab是一个利用 Ruby on Rails 开发的开源应用程序，实现一个自托管的Git项目仓库，可通过Web界面进行访问公开的或者私人项目。GitLab拥有与Github类似的功能，能够浏览源代码，管理缺陷和注释。可以管理团队对仓库的访问，它非常易于浏览提交过的版本并提供一个文件历史库。它还提供一个代码片段收集功能可以轻松实现代码复用，便于日后有需要的时候进行查找。</p>
+<p>1）基础环境准备</p>
+<pre><code>yum install curl policycoreutils openssh-server openssh-clients postfix
+systemctl start postfix
+systemctl enable postfix
+systemctl enable sshd
+systemctl start sshd
+</code></pre><p> 2）安装gitlab-ce</p>
+<pre><code>curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | sudo bash
+yum install -y gitlab-ce
+</code></pre><p>注：由于网络问题，国内用户，建议使用清华大学的镜像源进行安装：</p>
+<pre><code>[root@git ~]# vim /etc/yum.repos.d/gitlab-ce.repo
+[gitlab-ce]
+name=gitlab-ce
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el7/
+repo_gpgcheck=0
+gpgcheck=0
+enabled=1
+gpgkey=https://packages.gitlab.com/gpg.key
+[root@git ~]# yum makecache
+[root@git ~]# yum install gitlab-ce
+</code></pre><p>3）配置并启动gitlab-ce</p>
+<pre><code>gitlab-ctl reconfigure
+</code></pre><p>可以使用gitlab-ctl管理gitlab，例如查看gitlab状态：</p>
+<pre><code>[root@git ~]# gitlab-ctl status
+run: gitlab-workhorse: (pid 12171) 231s; run: log: (pid 7817) 555s
+run: logrotate: (pid 12175) 230s; run: log: (pid 7832) 548s
+run: nginx: (pid 12181) 230s; run: log: (pid 7823) 549s
+run: postgresql: (pid 12186) 229s; run: log: (pid 7683) 587s
+run: redis: (pid 12194) 229s; run: log: (pid 7600) 592s
+run: sidekiq: (pid 12198) 229s; run: log: (pid 7806) 558s
+run: unicorn: (pid 14967) 6s; run: log: (pid 7774) 560s
+关闭gitlab：[root@git ~]# gitlab-ctl stop
+启动gitlab：[root@git ~]# gitlab-ctl start
+重启gitlab：[root@git ~]# gitlab-ctl restart
+</code></pre><p>登录gitlab</p>
+<p>第一次登录gitlab，需要为root用户修改密码，root用户也是gitlab的超级管理员。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/4-1.png" alt="4-1"></p>
+<p>#配置GitLab主机名</p>
+<p>1）修改/etc/gitlab/gitlab.rb文件</p>
+<pre><code>mkdir -p /etc/gitlab
+touch /etc/gitlab/gitlab.rb
+chmod 600 /etc/gitlab/gitlab.rb
+</code></pre><p>找到如下这段代码，把external_url改成部署机器的域名或者IP地址，如我的电脑ip地址就是 192.168.0.14</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/4-2.png" alt="4-2"></p>
+<p>2）修改/var/opt/gitlab/gitlab-rails/etc/gitlab.yml文件</p>
+<pre><code>vim /var/opt/gitlab/gitlab-rails/etc/gitlab.yml
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/4-3.png" alt="4-3"></p>
+<p>执行命令：gitlab-ctl reconfigure</p>
+<p>如果还是不能正常访问的话，查看80端口是否被占用？ 有时候80端口可能被apache给暂用了，针对此问题，直接停用apache服务，或者修改apache的默认端口。</p>
+<p>到此为止，gitlab的web管理页面就可以正常访问，并通过自定义域名访问了。</p>
+<p>三、端口被占用</p>
+<p>如果出现如下页面可以尝试修改gitlab的端口</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/4-4.png" alt="4-4"></p>
+<pre><code>vim /etc/gitlab/gitlab.rb
+</code></pre><p>将external_url 直接输入 ip加上端口号 ，比如因为80端口被占用，我直接输入7777端口</p>
+<pre><code>external_url &apos;http://192.168.0.14:7777
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/4-5.png" alt="4-5"></p>
+<p>修改NGINX监听的端口为7777</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/4-6.png" alt="4-6"></p>
+<p>修改完毕之后执行命令：gitlab-ctl reconfigure</p>
+<h1 id="修改Gitlab数据存储路径"><a href="#修改Gitlab数据存储路径" class="headerlink" title="修改Gitlab数据存储路径"></a>修改Gitlab数据存储路径</h1><p>默认的Gitlab数据存储路径，在目录/var/opt/gitlab/git-data下，但是新的CentOS服务器根目录分配的空间比较小，为了防止以后数据过大，所以可以修改路径存储为/data/gitlabData。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/4-7.png" alt="4-7"></p>
+<p>修改完毕之后执行命令：gitlab-ctl reconfigure</p>
+<p>设置完后，过一段使用时间，可以看到该目录下的resposities，如下所示：</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/4-8.png" alt="4-8"></p>
+<h1 id="汉化gitlab"><a href="#汉化gitlab" class="headerlink" title="汉化gitlab"></a>汉化gitlab</h1><p>1) 安装git</p>
+<pre><code>yum -y install git
+</code></pre><p>2)克隆获取汉化版本库</p>
+<p>下载最新的汉化包</p>
+<pre><code>git clone https://gitlab.com/xhang/gitlab.git
+</code></pre><p> 如果是要下载老版本的汉化包，需要加上老版本的分支，比如今天已经是10.5.2，我依旧想下载10.0.2，可以运行下面的语句</p>
+<pre><code>git clone https://gitlab.com/xhang/gitlab.git -b v10.0.2-zh
+</code></pre><p>3)查看该汉化补丁及gitlab的版本</p>
+<pre><code>cat /opt/gitlab/embedded/service/gitlab-rails/VERSION
+cat gitlab/VERSION
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/4-9.png" alt="4-9"></p>
+<p>4)停止gitlab服务</p>
+<pre><code>gitlab-ctl stop
+</code></pre><p>5)切换到gitlab汉化包所在的目录（即步骤二获取的汉化版gitlab）</p>
+<pre><code>cd /root/gitlab
+</code></pre><p>6)比较汉化标签和原标签，导出 patch 用的 diff 文件到/root下 </p>
+<pre><code>git diff v10.5.2 v10.5.2-zh &gt; ../10.5.2-zh.diff
+</code></pre><p>7)将10.0.2-zh.diff作为补丁更新到gitlab中 </p>
+<pre><code>cd ~
+yum install patch -y
+patch -d /opt/gitlab/embedded/service/gitlab-rails -p1 &lt; 10.5.2-zh.diff
+</code></pre><p>8)重新配置gitlab </p>
+<pre><code>gitlab-ctl start
+gitlab-ctl reconfigure
+</code></pre><p>登录gitlab界面查看</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/4-10.png" alt="4-10"></p>
+<p>汉化完成！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;gitlab-ce安装&quot;&gt;&lt;a href=&quot;#gitlab-ce安装&quot; class=&quot;headerlink&quot; title=&quot;gitlab-ce安装&quot;&gt;&lt;/a&gt;gitlab-ce安装&lt;/h1&gt;&lt;p&gt;GitLab是一个利用 Ruby on Rails 开发的开源应用程
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Git学习" scheme="http://yjscloud.com/tags/Git%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>DNS实战</title>
@@ -3655,67 +3770,6 @@ Y
     <summary type="html">
     
       &lt;h1 id=&quot;什么是静态迁移？&quot;&gt;&lt;a href=&quot;#什么是静态迁移？&quot; class=&quot;headerlink&quot; title=&quot;什么是静态迁移？&quot;&gt;&lt;/a&gt;什么是静态迁移？&lt;/h1&gt;&lt;p&gt;静态迁移：也叫做常规迁移、离线迁移（Offline Migration）。就是在虚拟机关机或暂停的情况下从一台物理机迁移到另一台物理机。因为虚拟机的文件系统建立在虚拟机镜像上面，所以在虚拟机关机的 情况下，只需要简单的迁移虚拟机镜像和相应的配置文件到另外一台物理主机上；如果需要保存虚拟机迁移之前的状态，在迁移之前将虚拟机暂停，然后拷贝状态至目的主机，最后在目的主机重建虚拟机状态，恢复执行。这种方式的迁移过程需要显式的停止虚拟机的运行。从用户角度看，有明确的一段停机时间，虚拟机上的服务不可用。这种迁移方式简单易行，适用于对服务可用性要求不严格的场合。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="KVM学习笔记" scheme="http://yjscloud.com/tags/KVM%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>kvm学习笔记（五）-kvm虚拟机在线扩展磁盘</title>
-    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%94%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%9C%A8%E7%BA%BF%E6%89%A9%E5%B1%95%E7%A3%81%E7%9B%98/"/>
-    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（五）-kvm虚拟机在线扩展磁盘/</id>
-    <published>2017-10-20T01:08:07.000Z</published>
-    <updated>2017-12-02T09:34:00.000Z</updated>
-    
-    <content type="html"><![CDATA[<p> kvm虚拟机也支持在线扩展磁盘功能,在线扩展有特定的使用环境，主要用于不能随便停用的生产环境中。经过测试KVM在线扩展磁盘功能只适用于RHEL/CentOS/OEL6.x环境,5.x不支持在线的扩展磁盘。</p>
-<p>本次次测试使用centos7.3的虚拟机</p>
-<p>给clone-2虚拟机在线添加磁盘</p>
-<a id="more"></a>
-<h1 id="查看现有磁盘"><a href="#查看现有磁盘" class="headerlink" title="查看现有磁盘"></a>查看现有磁盘</h1><pre><code># virsh start clone-2
-# virsh list –all 
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.60.png" alt="1.60"></p>
-<h1 id="创建一块qcow2虚拟磁盘"><a href="#创建一块qcow2虚拟磁盘" class="headerlink" title="创建一块qcow2虚拟磁盘"></a>创建一块qcow2虚拟磁盘</h1><pre><code># qemu-img create -f qcow2 add01.qcow2 10G
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.61.png" alt="1.61"></p>
-<h1 id="在线添加这台qcow2虚拟磁盘"><a href="#在线添加这台qcow2虚拟磁盘" class="headerlink" title="在线添加这台qcow2虚拟磁盘"></a>在线添加这台qcow2虚拟磁盘</h1><pre><code># virsh attach-disk clone-2 /mnt/kvm/add01.qcow2 vdb --cache=none --subdriver=qcow2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.62.png" alt="1.62"></p>
-<h1 id="进入clone-2虚拟机查看添加磁盘情况"><a href="#进入clone-2虚拟机查看添加磁盘情况" class="headerlink" title="进入clone-2虚拟机查看添加磁盘情况"></a>进入clone-2虚拟机查看添加磁盘情况</h1><p>这里我通过vnc远程登录clone-2即可看见刚才添加到虚拟机的磁盘了</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.63.png" alt="1.63"></p>
-<p>可以看见有两个scsi存储设备</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.64.png" alt="1.64"></p>
-<blockquote>
-<p>注：再次说明只有RHEL/CentOS/OEL6.x版本在线添加磁盘，虚拟机直接可以在线识别。</p>
-</blockquote>
-<h1 id="修改虚拟机配置文件添加新增磁盘配置"><a href="#修改虚拟机配置文件添加新增磁盘配置" class="headerlink" title="修改虚拟机配置文件添加新增磁盘配置"></a>修改虚拟机配置文件添加新增磁盘配置</h1><p>1)查看当前虚拟机配置文件<br>这里查看到的虚拟机配置文件是内存中存放的配置，重启后会消失，需要将新添的磁盘配置保存到配置文件中。</p>
-<pre><code># virsh dumpxml clone-2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.65.png" alt="1.65"></p>
-<p>2)保存新增磁盘配置</p>
-<pre><code># virsh edit clone-2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.66.png" alt="1.66"></p>
-<h1 id="将新增磁盘并入虚拟机逻辑卷中"><a href="#将新增磁盘并入虚拟机逻辑卷中" class="headerlink" title="将新增磁盘并入虚拟机逻辑卷中"></a>将新增磁盘并入虚拟机逻辑卷中</h1><p>(1) 分区过程如下</p>
-<pre><code># fdisk /dev/vdb
-# partprobe
-</code></pre><p>(2) 创建逻辑卷过程如下</p>
-<pre>
-# pvcreate  /dev/vdb
-# vgextend cl_kvm-1 /dev/vdb
-# lvextend –l +100%FREE /dev/cl_kvm-1/root
-# xfs_growfs /dev/cl_kvm-1/root
-</pre>
-
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.67.png" alt="1.67"><br><img src="http://oxysobnip.bkt.clouddn.com/1.68.png" alt="1.68"><br><img src="http://oxysobnip.bkt.clouddn.com/1.69.png" alt="1.69"></p>
-<p>至此clone-2虚拟机在线添加磁盘并在线扩展磁盘成功。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt; kvm虚拟机也支持在线扩展磁盘功能,在线扩展有特定的使用环境，主要用于不能随便停用的生产环境中。经过测试KVM在线扩展磁盘功能只适用于RHEL/CentOS/OEL6.x环境,5.x不支持在线的扩展磁盘。&lt;/p&gt;
-&lt;p&gt;本次次测试使用centos7.3的虚拟机&lt;/p&gt;
-&lt;p&gt;给clone-2虚拟机在线添加磁盘&lt;/p&gt;
     
     </summary>
     
