@@ -109,7 +109,7 @@
 <meta property="og:image" content="http://opnq5yeqm.bkt.clouddn.com/4-8.png">
 <meta property="og:image" content="http://opnq5yeqm.bkt.clouddn.com/4-9.png">
 <meta property="og:image" content="http://opnq5yeqm.bkt.clouddn.com/4-10.png">
-<meta property="og:updated_time" content="2018-03-08T14:52:02.000Z">
+<meta property="og:updated_time" content="2018-03-08T14:59:37.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GitLab安装与汉化">
 <meta name="twitter:description" content="gitlab-ce安装GitLab是一个利用 Ruby on Rails 开发的开源应用程序，实现一个自托管的Git项目仓库，可通过Web界面进行访问公开的或者私人项目。GitLab拥有与Github类似的功能，能够浏览源代码，管理缺陷和注释。可以管理团队对仓库的访问，它非常易于浏览提交过的版本并提供一个文件历史库。它还提供一个代码片段收集功能可以轻松实现代码复用，便于日后有需要的时候进行查找。">
@@ -424,7 +424,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,067
+                  1,066
                 </span>
               
 
@@ -496,8 +496,7 @@ run: unicorn: (pid 14967) 6s; run: log: (pid 7774) 560s
 </code></pre><p>登录gitlab</p>
 <p>第一次登录gitlab，需要为root用户修改密码，root用户也是gitlab的超级管理员。</p>
 <p><img src="http://opnq5yeqm.bkt.clouddn.com/4-1.png" alt="4-1"></p>
-<p>#配置GitLab主机名</p>
-<p>1）修改/etc/gitlab/gitlab.rb文件</p>
+<h1 id="配置GitLab主机名"><a href="#配置GitLab主机名" class="headerlink" title="配置GitLab主机名"></a>配置GitLab主机名</h1><p>1）修改/etc/gitlab/gitlab.rb文件</p>
 <pre><code>mkdir -p /etc/gitlab
 touch /etc/gitlab/gitlab.rb
 chmod 600 /etc/gitlab/gitlab.rb
@@ -509,8 +508,7 @@ chmod 600 /etc/gitlab/gitlab.rb
 <p>执行命令：gitlab-ctl reconfigure</p>
 <p>如果还是不能正常访问的话，查看80端口是否被占用？ 有时候80端口可能被apache给暂用了，针对此问题，直接停用apache服务，或者修改apache的默认端口。</p>
 <p>到此为止，gitlab的web管理页面就可以正常访问，并通过自定义域名访问了。</p>
-<p>三、端口被占用</p>
-<p>如果出现如下页面可以尝试修改gitlab的端口</p>
+<h1 id="端口被占用"><a href="#端口被占用" class="headerlink" title="端口被占用"></a>端口被占用</h1><p>如果出现如下页面可以尝试修改gitlab的端口</p>
 <p><img src="http://opnq5yeqm.bkt.clouddn.com/4-4.png" alt="4-4"></p>
 <pre><code>vim /etc/gitlab/gitlab.rb
 </code></pre><p>将external_url 直接输入 ip加上端口号 ，比如因为80端口被占用，我直接输入7777端口</p>
@@ -541,7 +539,7 @@ cat gitlab/VERSION
 <pre><code>cd /root/gitlab
 </code></pre><p>6)比较汉化标签和原标签，导出 patch 用的 diff 文件到/root下 </p>
 <pre><code>git diff v10.5.2 v10.5.2-zh &gt; ../10.5.2-zh.diff
-</code></pre><p>7)将10.0.2-zh.diff作为补丁更新到gitlab中 </p>
+</code></pre><p>7)将10.5.2-zh.diff作为补丁更新到gitlab中 </p>
 <pre><code>cd ~
 yum install patch -y
 patch -d /opt/gitlab/embedded/service/gitlab-rails -p1 &lt; 10.5.2-zh.diff
@@ -848,7 +846,7 @@ gitlab-ctl reconfigure
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gitlab-ce安装"><span class="nav-number">1.</span> <span class="nav-text">gitlab-ce安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修改Gitlab数据存储路径"><span class="nav-number">2.</span> <span class="nav-text">修改Gitlab数据存储路径</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#汉化gitlab"><span class="nav-number">3.</span> <span class="nav-text">汉化gitlab</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gitlab-ce安装"><span class="nav-number">1.</span> <span class="nav-text">gitlab-ce安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置GitLab主机名"><span class="nav-number">2.</span> <span class="nav-text">配置GitLab主机名</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#端口被占用"><span class="nav-number">3.</span> <span class="nav-text">端口被占用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修改Gitlab数据存储路径"><span class="nav-number">4.</span> <span class="nav-text">修改Gitlab数据存储路径</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#汉化gitlab"><span class="nav-number">5.</span> <span class="nav-text">汉化gitlab</span></a></li></ol></div>
             
 
           </div>
