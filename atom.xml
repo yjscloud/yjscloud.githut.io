@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-03-01T05:46:42.000Z</updated>
+  <updated>2018-03-01T15:11:15.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -16,11 +16,479 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>DNS实战</title>
+    <link href="http://yjscloud.com/2018/03/01/DNS%E5%AE%9E%E6%88%98/"/>
+    <id>http://yjscloud.com/2018/03/01/DNS实战/</id>
+    <published>2018-03-01T13:00:23.000Z</published>
+    <updated>2018-03-01T15:11:15.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="DNS简介"><a href="#DNS简介" class="headerlink" title="DNS简介"></a>DNS简介</h1><h2 id="DNS概况"><a href="#DNS概况" class="headerlink" title="DNS概况"></a>DNS概况</h2><p>DNS（Domain Name System，域名系统），因特网上作为域名和IP地址互相映射的一个分布式数据库，能够使用户更方便的访问互联网，而不用去记住能够被机器直接读取的IP数串。通过主机名，最终得到该主机对应的IP地址的过程叫做域名解析（或主机名解析）。DNS协议运行在UDP协议之上，使用端口号53。</p>
+<p>DNS的分布数据库是以域名为索引的，每个域名实际上就是一棵很大的逆向树中路径，这棵逆向树称为域名空间（domain name space），如下图所示树的最大深度不得超过127层，树中每个节点都有一个可以长达63个字符的文本标号。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-1.png" alt="3-1"></p>
+<h2 id="DNS域名解析过程"><a href="#DNS域名解析过程" class="headerlink" title="DNS域名解析过程"></a>DNS域名解析过程</h2><p>首先，客户端检测自身缓存，如果没有，检测hosts文件，如果没有，客户端发出DNS请求翻译IP地址或者主机名。DNS服务器在收到客户机的请求后：</p>
+<p>1）检查DNS服务器的缓存，若查到请求的地址或名字，即向客户机发出应答信息；</p>
+<p>2）若没有查到，则在数据库中查找，若查到请求的地址或名字，即向客户机发出应答信息；</p>
+<p>3）若没有查到，则将请求发给根域DNS服务器，并依序从根域查找顶级域，由顶级域查找二级域，二级域查找三级，直至找到要解析的地址或名字，即向客户机所在网络的DNS服务器发出应答信息，DNS服务器收到应答后先在缓存中存储，然后将解析结果发给客户机。</p>
+<p>4）若没有找到，则返回错误信息。</p>
+<h2 id="DNS分类"><a href="#DNS分类" class="headerlink" title="DNS分类"></a>DNS分类</h2><p>主DNS服务器：就是一台存储着原始资料的DNS服务。</p>
+<p>从DNS服务器：使用自动更新方式从主DNS服务器同步数据的DNS服务器。也称辅助DNS服务器。</p>
+<p>备注：一般生产环境，主DNS服务器做管理使用，从DNS服务器提供服务。</p>
+<p>缓存服务器：不负责本地解析，采用递归方式转发客户机查询请求，并返回结果给客户机的DNS服务器。同时缓存查询回来的记过，也叫递归服务器。</p>
+<p>转发器：这台DNS发现非本机负责的查询请求时，不再向根域发起请求，而是直接转发给指定的一台或者多台服务器。自身并不缓存查询结果。</p>
+<h2 id="DNS中记录类型"><a href="#DNS中记录类型" class="headerlink" title="DNS中记录类型"></a>DNS中记录类型</h2><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-2.png" alt="3-2"></p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-3.png" alt="3-3"></p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-4.png" alt="3-4"></p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-5.png" alt="3-5"></p>
+<h2 id="DNS命名规范"><a href="#DNS命名规范" class="headerlink" title="DNS命名规范"></a>DNS命名规范</h2><p>1)26个英文字母</p>
+<p>2)“0,1,2,3,4,5,6,7,8,9,”十个数字</p>
+<p>3)“-”（英文中的连词号）</p>
+<p>4)最多63字节长度</p>
+<p>备注：要不按照这个规范命名，bing支不支持？ 支持，不合适，不建议。 非要不按照这个，怎么办？ master-view文件上配置check-name ignore;</p>
+<h2 id="DNS三个命令介绍（dig、host、nslookup）"><a href="#DNS三个命令介绍（dig、host、nslookup）" class="headerlink" title="DNS三个命令介绍（dig、host、nslookup）"></a>DNS三个命令介绍（dig、host、nslookup）</h2><p>安装必要软件包：yum  install  bind-utils -y</p>
+<h3 id="dig"><a href="#dig" class="headerlink" title="dig"></a>dig</h3><p>工具软件dig可以显示整个查询过程</p>
+<pre><code>dig yjscloud.com
+</code></pre><p>上面的命令会输出四段信息；</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-6.png" alt="3-6"></p>
+<p>第一段是查询参数和统计</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-7.png" alt="3-7"></p>
+<p>第二段是查询内容</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-8.png" alt="3-8"></p>
+<p>第三段是DNS服务器的答复。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-9.png" alt="3-9"></p>
+<p>上面结果表示，yjscloud.com的CNAME记录指向yjscloud.github.io.；而yjscloud.github.io.的CNAME记录指向sni.github.map.fastly.net.；也就是说，用户查询yjscloud.com的时候，实际上返回的是sni.github.map.fastly.net.的IP地址。这样的好处是，变更服务器IP地址的时候，只要修改sni.github.map.fastly.net.这个域名就可以了，用户yjscloud.com域名不用修改。sni.github.map.fastly.net.有一个A记录，即一个IP地址。532、3532、4都是TTL值（time to live的缩写），表示缓存时间，即表示在这些时间内不用重新查询。</p>
+<p>第四段是DNS服务器的一些传输信息。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-10.png" alt="3-10"></p>
+<p>上面结果显示，本机的DNS服务器是192.168.16.1，查询端口是53（DNS服务器的默认端口），以及回应长度是117字节。</p>
+<p>如果不想看到这么多内容，可以使用+short参数</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-11.png" alt="3-11"></p>
+<p>使用+trace参数可以显示DNS的整个分级查询过程。</p>
+<pre><code>dig yjscloud.com +trace
+</code></pre><p>上面命令的第一段列出根域名.的所有NS记录，即所有根域名服务器。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-12.png" alt="3-12"></p>
+<p>根据内置的根域名服务器IP地址，DNS服务器向所有这些IP地址发出查询请求，询问yjscloud.com的顶级域名服务器com.的NS记录。</p>
+<p>最先回复的根域名服务器将被缓存，以后只向这台服务器发请求。</p>
+<p>接着是第二段。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-13.png" alt="3-13"></p>
+<p>上面结果显示.com域名的13条NS记录，同时返回的还有每一条记录对应的IP地址。</p>
+<p>然后，DNS服务器向这些顶级域名服务器发出查询请求，询问yjscloud.com的NS记录。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-14.png" alt="3-14"></p>
+<p>上面结果显示yjscloud.com有两条NS记录，同时返回的还有每一条NS记录对应的IP地址。然后，DNS服务器向上面这两台NS服务器查询yjscloud.com的主机名。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-15.png" alt="3-15"></p>
+<p>上面结果显示，yjscloud.com有一条CNAME记录，两条NS记录，最先返回结果的NS服务器是f1g1ns1.dnspod.net.，IP地址为58.247.212.36。</p>
+<h3 id="host"><a href="#host" class="headerlink" title="host"></a>host</h3><p>host命令可以看作dig命令的简化版本，返回当前请求域名的各种记录。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-16.png" alt="3-16"></p>
+<p>host命令也可以用于逆向查询，即从IP地址查询域名，等同于dig -x <ip>。</ip></p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-17.png" alt="3-17"></p>
+<h3 id="nslookup"><a href="#nslookup" class="headerlink" title="nslookup"></a>nslookup</h3><p>nslookup命令用于互动式地查询域名记录。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-18.png" alt="3-18"></p>
+<p><a href="http://www.ruanyifeng.com/blog/2016/06/dns.html" target="_blank" rel="external">DNS入门原理</a></p>
+<h1 id="DNS安装部署"><a href="#DNS安装部署" class="headerlink" title="DNS安装部署"></a>DNS安装部署</h1><h2 id="192-168-16-111（主DNS）安装"><a href="#192-168-16-111（主DNS）安装" class="headerlink" title="192.168.16.111（主DNS）安装"></a>192.168.16.111（主DNS）安装</h2><p>安装DNS： yum  install  -y bind-utils bind bind-devel bind-chroot</p>
+<p>检查是否安装完成：rpm -qa | grep bind</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-19.png" alt="3-19"></p>
+<p>配置named.conf文件</p>
+<pre><code>mv  /etc/named .conf  /etc/named .conf.bak
+vim  /etc/named .conf
+</code></pre><p>配置文件的内容为：</p>
+<pre><code>options {
+   version &quot;1.1.1&quot;;
+   listen-on port 53 {any;};
+   directory &quot;/var/named/chroot/etc/&quot;;
+   pid-file &quot;/var/named/chroot/var/run/named/named.pid&quot;;
+   allow-query { any; };
+   Dump-file &quot;/var/named/chroot/var/log/binddump.db&quot;;
+   Statistics-file &quot;/var/named/chroot/var/log/named_stats&quot;;
+   zone-statistics yes;
+   memstatistics-file &quot;log/mem_stats&quot;;
+   empty-zones-enable no;
+   forwarders {202.106.196.115;8.8.8.8; };
+};
+
+key &quot;rndc-key&quot; {
+        algorithm hmac-md5;
+        secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
+};
+
+controls {
+       inet 127.0.0.1 port 953
+               allow { 127.0.0.1; } keys { &quot;rndc-key&quot;; };
+};
+
+logging {
+    channel warning {
+        file &quot;/var/named/chroot/var/log/dns_warning&quot; versions 10 size 10m;
+        severity warning;
+        print-category yes;
+        print-severity yes;
+        print-time yes;
+ };
+    channel general_dns {
+    file &quot;/var/named/chroot/var/log/dns_log&quot; versions 10 size 100m;
+    severity info;
+    print-category yes;
+    print-severity yes;
+    print-time yes;
+ };
+category default {
+  warning;
+ };
+category queries {
+  general_dns;
+ };
+};
+
+include &quot;/var/named/chroot/etc/view.conf&quot;;
+</code></pre><p>配置rndc.key文件</p>
+<pre><code>vim /etc/rndc.key
+
+key &quot;rndc-key&quot; {
+        algorithm hmac-md5;
+        secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
+};
+</code></pre><p>配置rndc.conf文件</p>
+<pre><code>vim /etc/rndc.conf
+
+key &quot;rndc-key&quot; {
+        algorithm hmac-md5;
+        secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
+};
+
+options {
+        default-key &quot;rndc-key&quot;;
+        default-server 127.0.0.1;
+        default-port 953;
+};
+</code></pre><p>配置view.conf文件</p>
+<pre><code>vim /var/named/chroot/etc/view.conf
+
+view &quot;View&quot; {
+    zone &quot;yjs.com&quot; {
+            type    master;
+            file    &quot;yjscloud.com.zone&quot;;
+            allow-transfer {
+                    192.168.16.112;
+            };
+            notify  yes;
+            also-notify {
+                    192.168.16.112;
+            };
+    };
+};
+</code></pre><p>配置yjscloud.com.zone文件</p>
+<pre><code>vim /var/named/chroot/etc/yjscloud.com.zone
+
+$ORIGIN .
+$TTL 3600       ; 1 hour
+yjs.com                  IN SOA  op.yjs.com. dns.yjs.com. (
+                                2000       ; serial
+                                900        ; refresh (15 minutes)
+                                600        ; retry (10 minutes)
+                                86400      ; expire (1 day)
+                                3600       ; minimum (1 hour)
+                                )
+                        NS      op.yjs.com.
+$ORIGIN yjs.com.
+shanks              A       1.2.3.4
+op              A       1.2.3.4
+a               A       1.2.3.4
+</code></pre><p>1）Serial：只是一个序号，但这个序号可被用来作为slave与master更新的依据。</p>
+<p>举例来说，master序号为100但slave序号为90时，那么这个zone file的资料就会被传送到slave来更新了。由于这个序号代表新旧资料，通常我们建议你可以利用日期来设定。例如上面的资料是在2015/10/20所写的第一次，所以用2015102001作为序号代表。（yyyymmddnn，nn代表这一天是第几次修改）</p>
+<p>2）Refresh：除了根据Serial来判断新旧之外，我们可以利用这个refresh（更新）命令slave多久进行一次主动更新、</p>
+<p>3）Retry：如果到了Refresh的时间，但是slave却无法连接到master时，那么在多久之后，slave会再次的主动尝试与主机连接。</p>
+<p>4）Expire：如果slave一直无法与master连接上，那么经过多久的时间之后，则命令slave不要再连接了。也就是说，此时我们假设masterDNS可能遇到重大问题而无法上线，则等待系统管理员处理完毕后，再重新到slaveDNS重启bind。</p>
+<p>5）Minimum：这个类似TTL。<br>修改目录权限，并启动服务</p>
+<pre><code>cd /var &amp;&amp; chown -R named.named named/
+/etc/init.d/named start
+chkconfig named on
+</code></pre><p>解析测试</p>
+<pre><code>dig @127.0.0.1 a.yjs.com
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-20.png" alt="3-20"></p>
+<h2 id="192-168-16-112（从DNS）"><a href="#192-168-16-112（从DNS）" class="headerlink" title="192.168.16.112（从DNS）"></a>192.168.16.112（从DNS）</h2><pre><code>yum install -y bind-utils bind bind-devel bind-chroot
+</code></pre><p>配置named.conf文件</p>
+<pre><code>mv /etc/named.conf /etc/named.conf.bak
+vim /etc/named.conf
+
+options {
+    version &quot;1.1.1&quot;;
+    listen-on port 53 {any;};
+    directory &quot;/var/named/chroot/etc/&quot;;
+   pid-file &quot;/var/named/chroot/var/run/named/named.pid&quot;;
+   allow-query { any; };
+   Dump-file &quot;/var/named/chroot/var/log/binddump.db&quot;;
+   Statistics-file &quot;/var/named/chroot/var/log/named_stats&quot;;
+   zone-statistics yes;
+   memstatistics-file &quot;log/mem_stats&quot;;
+   empty-zones-enable no;
+   forwarders {202.106.196.115;8.8.8.8; };
+};
+
+key &quot;rndc-key&quot; {
+        algorithm hmac-md5;
+        secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
+};
+
+controls {
+       inet 127.0.0.1 port 953
+               allow { 127.0.0.1; } keys { &quot;rndc-key&quot;; };
+};
+
+logging {
+    channel warning {
+        file &quot;/var/named/chroot/var/log/dns_warning&quot; versions 10 size 10m;
+        severity warning;
+        print-category yes;
+        print-severity yes;
+        print-time yes;
+    };
+    channel general_dns {
+        file &quot;/var/named/chroot/var/log/dns_log&quot; versions 10 size 100m;
+        severity info;
+        print-category yes;
+        print-severity yes;
+        print-time yes;
+   };
+   category default {
+        warning;
+    };
+   category queries {
+     general_dns;
+  };
+};
+
+include &quot;/var/named/chroot/etc/view.conf&quot;;
+</code></pre><p>配置rndc.key文件</p>
+<pre><code>vim /etc/rndc.key
+
+key &quot;rndc-key&quot; {
+          algorithm hmac-md5;
+          secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
+};
+</code></pre><p>配置rndc.conf文件</p>
+<pre><code>vim /etc/rndc.conf
+
+key &quot;rndc-key&quot; {
+         algorithm hmac-md5;
+       secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
+};
+
+options {
+         default-key &quot;rndc-key&quot;;
+       default-server 127.0.0.1;
+         default-port 953;
+};
+</code></pre><p>备注：主从DNS主机配置named.conf、rndc.key、rndc.conf文件一样</p>
+<p>配置view.conf文件</p>
+<pre><code>vim /var/named/chroot/etc/view.conf
+
+view &quot;SlaveView&quot; {
+        zone &quot;yjs.com&quot; {
+                 type    slave;
+                 masters {192.168.16.111; };
+                 file    &quot;slave.yjscloud.com.zone&quot;;
+        };    
+};
+</code></pre><p>修改目录权限，并启动服务</p>
+<pre><code>cd /var &amp;&amp; chown -R named.named named/
+/etc/init.d/named start
+chkconfig named on
+</code></pre><p>进入目录/var/named/chroot/etc</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-21.png" alt="3-21"></p>
+<p>如果有slave。yjscloud.com.zone这个文件说明主从已经同步</p>
+<h2 id="添加A、CNAME、MX、PTR记录（主DNS）"><a href="#添加A、CNAME、MX、PTR记录（主DNS）" class="headerlink" title="添加A、CNAME、MX、PTR记录（主DNS）"></a>添加A、CNAME、MX、PTR记录（主DNS）</h2><h3 id="A记录"><a href="#A记录" class="headerlink" title="A记录"></a>A记录</h3><p>编辑master节点/var/named/chroot/etc/yjscloud.com.zone，在文件末尾添加记录</p>
+<pre><code>a               A       192.168.1.100
+将serial + 1
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-22.png" alt="3-22"></p>
+<p>执行rndc reload</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-23.png" alt="3-23"></p>
+<p>检查从DNS主机，slave.yjscloud.com.zone文件已同步更新。</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-24.png" alt="3-24"></p>
+<h3 id="CNAME记录"><a href="#CNAME记录" class="headerlink" title="CNAME记录"></a>CNAME记录</h3><p>编辑master节点/var/named/chroot/etc/yjscloud.com.zone，在文件末尾添加记录</p>
+<pre><code>cname       CNAME   a.yjs.com.
+将serial + 1
+</code></pre><p>执行rndc reload</p>
+<p>检查从DNS主机，slave.yjscloud.com.zone文件已同步更新。</p>
+<p>测试 host a.swj.com 127.0.0.1</p>
+<h3 id="MX记录"><a href="#MX记录" class="headerlink" title="MX记录"></a>MX记录</h3><p>编辑master节点/var/named/chroot/etc/shhnwangjian.com.zone，在文件末尾添加记录</p>
+<pre><code>mx      MX 5    192.168.1.101
+将serial + 1
+</code></pre><p>执行rndc reload</p>
+<p>检查从DNS主机，slave.shhnwangjian.com.zone文件已同步更新。</p>
+<p>测试 host mx.swj.com 127.0.0.1</p>
+<h2 id="PTR记录（反向解析）"><a href="#PTR记录（反向解析）" class="headerlink" title="PTR记录（反向解析）"></a>PTR记录（反向解析）</h2><p>编辑master节点/var/named/chroot/etc/view.conf，加入ptr的zone配置</p>
+<pre><code>zone &quot;168.192.in-addr.arpa&quot; {
+  type    master;
+ file    &quot;168.192.zone&quot;;
+ allow-transfer{
+       192.168.16.1112;
+ };
+ notify  yes;
+ also-notify{
+     192.168.16.112;
+ };
+};
+</code></pre><p>在下面这个位置加入代码：</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-25.png" alt="3-25"></p>
+<p>编辑master节点/var/named/chroot/etc/168.192.zone</p>
+<pre><code>$TTL 3600       ; 1 hour
+@                   IN SOA  op.yjs.com. dns.yjs.com. (
+                            2003       ; serial
+                            900        ; refresh (15 minutes)
+                            600        ; retry (10 minutes)
+                            86400      ; expire (1 day)
+                            3600       ; minimum (1 hour)
+                            )
+                    NS      op.yjs.com.
+100.1               IN  PTR a.yjs.com.
+</code></pre><p>修改168.192.zone文件属主</p>
+<pre><code>chown named.named 168.192.zone
+rndc reload
+</code></pre><p>编辑slave节点/var/named/chroot/etc/view.conf，加入ptr的zone配置</p>
+<pre><code>zone &quot;168.192.in-addr.arpa&quot; {
+     type    slave;
+     masters {192.168.16.111; };
+     file    &quot;slave.168.192.zone&quot;;
+};
+</code></pre><p>在下面的这个位置加入代码：</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-26.png" alt="3-26"></p>
+<p>执行rndc reload</p>
+<p>slava节点/var/named/chroot/etc目录下生成slave.168.192.zone文件。</p>
+<p>解析测试: host 192.168.1.100 127.0.0.1</p>
+<h2 id="DNS实现服务的负载均衡"><a href="#DNS实现服务的负载均衡" class="headerlink" title="DNS实现服务的负载均衡"></a>DNS实现服务的负载均衡</h2><p>编辑master节点/var/named/chroot/etc/yjscloud.com.zone，在文件末尾添加记录</p>
+<pre><code>a               A       192.168.1.102
+将serial + 1
+</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-27.png" alt="3-27"></p>
+<p>执行rndc reload</p>
+<p>master和slave执行解析：nslookup a.yjs.com 127.0.0.1，结果如下（轮询）</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-28.png" alt="3-28"></p>
+<h3 id="配置DNS视图（智能DNS）"><a href="#配置DNS视图（智能DNS）" class="headerlink" title="配置DNS视图（智能DNS）"></a>配置DNS视图（智能DNS）</h3><p>编辑master节点/var/named/chroot/etc/named.conf，在include上面添加（对客户端IP分组）</p>
+<pre><code>acl group1 {
+ 192.168.137.13;
+};
+
+acl group2 {
+ 192.168.137.14;
+};
+</code></pre><p>编辑master节点/var/named/chroot/etc/view.conf（清空原view.conf文件的内容再添加）</p>
+<pre><code>view &quot;GROUP1&quot; {
+ match-clients { group1; };
+ zone &quot;viewyjs.com&quot; {
+    type master;
+    file &quot;group1.viewyjs.com.zone&quot;;
+  };
+};
+
+view &quot;GROUP2&quot; {
+ match-clients { group2; };
+ zone &quot;viewyjs.com&quot; {
+    type master;
+    file &quot;group2.viewyjs.com.zone&quot;;
+ };
+};
+</code></pre><p>编辑master节点/var/named/chroot/etc/group1.viewyjs.com.zone</p>
+<pre><code>$ORIGIN .
+$TTL 3600       ; 1 hour
+viewyjs.com                  IN SOA  op.viewyjs.com. dns.viewyjs.com. (
+                            2000       ; serial
+                            900        ; refresh (15 minutes)
+                            600        ; retry (10 minutes)
+                            86400      ; expire (1 day)
+                            3600       ; minimum (1 hour)
+                            )
+                    NS      op.viewyjs.com.
+$ORIGIN viewyjs.com.
+view              A       192.168.122.1
+op              A       192.168.122.1
+</code></pre><p>编辑master节点/var/named/chroot/etc/group2.viewyjs.com.zone</p>
+<pre><code>$ORIGIN .
+$TTL 3600       ; 1 hour
+viewyjs.com                  IN SOA  op.viewyjs.com. dns.viewyjs.com. (
+                            2000       ; serial
+                            900        ; refresh (15 minutes)
+                            600        ; retry (10 minutes)
+                            86400      ; expire (1 day)
+                            3600       ; minimum (1 hour)
+                            )
+                    NS      op.viewyjs.com.
+$ORIGIN viewyjs.com.
+view              A       192.168.122.2
+op              A       192.168.122.2
+</code></pre><p>修改文件属主，加载配置</p>
+<pre><code>chown named.named /var/named/chroot/etc/group*.zone
+rndc reload
+</code></pre><p>测试，在192.168.16.111主机上执行host view.viewyjs.com 192.168.16.111</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-29.png" alt="3-29"></p>
+<p>在192.168.16.112主机上执行host view.viewyjs.com 192.168.16.111</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-30.png" alt="3-30"></p>
+<h1 id="构建DNS（企业级）"><a href="#构建DNS（企业级）" class="headerlink" title="构建DNS（企业级）"></a>构建DNS（企业级）</h1><h2 id="硬件选型"><a href="#硬件选型" class="headerlink" title="硬件选型"></a>硬件选型</h2><p>CPU：12C以上配置</p>
+<p>内存：16G</p>
+<p>网络：千兆</p>
+<h2 id="初始化系统配置"><a href="#初始化系统配置" class="headerlink" title="初始化系统配置"></a>初始化系统配置</h2><p>关闭 iptables</p>
+<p>service iptables stop<br>chkconfig iptables off<br>关闭 selinux<br>vi /etc/sysconfig/selinux<br>SELINUX=disabled</p>
+<h2 id="高性能、高可用DNS"><a href="#高性能、高可用DNS" class="headerlink" title="高性能、高可用DNS"></a>高性能、高可用DNS</h2><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-31.png" alt="3-31"></p>
+<p>1）高可用</p>
+<p>物理层：首先确保两台lvs不在同一机柜、同一物理交换机接入；其次确保将所有dns服务器也做到不在同一机柜、同一物理交换机接入；在不通的idc构建多套dns集群，为客户端提供可切换的配置。</p>
+<p>服务层：坚决摒弃lvs上端口检测这种方式，采用自定义脚本检测，为dns的健康检测单独设置一个域名，为了lvs检测dns是否存活而设计。</p>
+<p>客户端层：多idc之间的流量切换是通过客户端的健康检测cron实现的，脚本可以按分钟运行一次，分别检测每个dns集群虚地址的可用性。</p>
+<pre><code>#!/bin/sh
+timeout=5
+Q=&quot;&quot;
+host=&quot;/usr/bin/host&quot;
+if test -z &quot;$1&quot; ; then
+    echo &quot;You need to supply a DNS server to check. Quittind&quot;
+    exit;
+fi
+SERVER=$10
+ERC=`$host -s -w $timeout $Q SERVER &gt; /dev/null 2&gt;$1; echo $?`
+if [ $ERC -eq 0 ] ; then
+    exit 0
+else
+    exit 10
+fi
+</code></pre><p>2）高性能</p>
+<p>   通过lvs可以对每个集群做横向扩容，是否需要扩容的依据是对现有系统的压测结果，以及实时的监控数据。或者可以在最靠近应用层处，加上一次cache-only集群，但前提是你的线上环境中，没有任何系统依赖于dns负载均衡。</p>
+<h2 id="压测"><a href="#压测" class="headerlink" title="压测"></a>压测</h2><p>将bind-9.9.9-P1.tar.gz下载到合适的目录下</p>
+<p>下载bind源码:</p>
+<pre><code>wget http://ftp.isc.org/isc/bind9/9.9.1-P1/bind-9.9.9-P1.tar.gz
+</code></pre><p>解压: </p>
+<pre><code>tar -xvf bind-9.9.9-P1.tar.gz
+cd /bind-9.9.9-P1/contrib/queryperf
+</code></pre><p>编译:</p>
+<pre><code>./configure
+make
+</code></pre><p>此目录下生成queryperf文件</p>
+<pre><code>cp queryperf /usr/bin
+</code></pre><p>压测自己创建的DNS服务，创建一个文件test.txt，内容如下（前面为域名，后面为A记录）</p>
+<pre><code>view.viewyjs.com A
+view.viewyjs.com A
+view.viewyjs.com A
+view.viewyjs.com A
+view.viewyjs.com A
+</code></pre><p>执行命令： </p>
+<pre><code>queryperf -d test.txt -s 192.168.16.111
+</code></pre><p>结果：</p>
+<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-32.png" alt="3-32"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;DNS简介&quot;&gt;&lt;a href=&quot;#DNS简介&quot; class=&quot;headerlink&quot; title=&quot;DNS简介&quot;&gt;&lt;/a&gt;DNS简介&lt;/h1&gt;&lt;h2 id=&quot;DNS概况&quot;&gt;&lt;a href=&quot;#DNS概况&quot; class=&quot;headerlink&quot; title=&quot;DNS
+    
+    </summary>
+    
+      <category term="运维技能" scheme="http://yjscloud.com/categories/%E8%BF%90%E7%BB%B4%E6%8A%80%E8%83%BD/"/>
+    
+    
+      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="DNS" scheme="http://yjscloud.com/tags/DNS/"/>
+    
+  </entry>
+  
+  <entry>
     <title>saltstack自动化运维（一）</title>
     <link href="http://yjscloud.com/2018/03/01/saltstack%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4%EF%BC%88%E4%B8%80%EF%BC%89/"/>
     <id>http://yjscloud.com/2018/03/01/saltstack自动化运维（一）/</id>
     <published>2018-03-01T04:39:43.000Z</published>
-    <updated>2018-03-01T05:46:42.000Z</updated>
+    <updated>2018-03-01T05:53:03.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="saltstack简介"><a href="#saltstack简介" class="headerlink" title="saltstack简介"></a>saltstack简介</h1><p>（1）saltstack介绍</p>
 <p>SaltStack是一个新的基础平台管理工具，只需要花费数分钟即可运行起来，可以支撑管理上万台服务器的规模，数秒钟即可完成数据传递。SaltStack是使用Python语言开发的，同时提供Rest API方便二次开发以及和其它平台进行集成，同时官方也发布了一个Web管理界面halite。</p>
@@ -39,7 +507,7 @@
 </ul>
 <h1 id="saltstack实战部署"><a href="#saltstack实战部署" class="headerlink" title="saltstack实战部署"></a>saltstack实战部署</h1><p>SaltStack支持多种操作系统，如CentOS、RedHat、Debian、Ubuntu、FreeBSD、Solaris、Fedora、SuSe、Gentoo、MAC OS X、Archlinux等，以及Windows（仅支持Minion）。</p>
 <p>saltstack服务器基本设置：CentOS7.2最小化安装，关闭防火墙，selinux设置为disabled，虚拟机网卡这里为桥接模式</p>
-<h2 id="安装saltstack源"><a href="#安装saltstack源" class="headerlink" title="安装saltstack源"></a>安装saltstack源</h2><p>对于Centos和RedHat用户，使用yum安装时最直接和快捷的。首先需要CentOS和epel仓库。saltstack官方源在国外下载使用需要vpn，我直接将saltstack2016.3的源同步到本地搭建了一个本地yum源，需要下载saltstack源的朋友请自带小飞机到<a href="https://repo.saltstack.com去下载，以下是我的repo的配置文件：" target="_blank" rel="external">https://repo.saltstack.com去下载，以下是我的repo的配置文件：</a></p>
+<h2 id="安装saltstack源"><a href="#安装saltstack源" class="headerlink" title="安装saltstack源"></a>安装saltstack源</h2><p>对于Centos和RedHat用户，使用yum安装时最直接和快捷的。首先需要CentOS和epel仓库。saltstack官方源在国外下载使用需要vpn，我直接将saltstack2016.3的源同步到本地搭建了一个本地yum源，需要下载saltstack源的朋友请自带小飞机到<code>https://repo.saltstack.com</code>去下载，以下是我的repo的配置文件：</p>
 <p>CentOS和epel的repo：</p>
 <pre><code>[centos]
 name=centos7.2
@@ -269,7 +737,7 @@ salt -S 192.168.16.0/24 test.ping
 <p> 批处理</p>
 <p> 可用于重启所有主机或进程场景，百分比或固定数量的一点一点重启主机或进程</p>
 <p> 具体内容查看<a href="https://docs.saltstack.com/en/latest/topics/targeting/batch.html" target="_blank" rel="external">官方文档</a></p>
-<h1 id="执行模块"><a href="#执行模块" class="headerlink" title="执行模块"></a>执行模块</h1><p>[官方文档]（<a href="https://docs.saltstack.com/en/latest/ref/modules/all/index.html#all-salt-modules）" target="_blank" rel="external">https://docs.saltstack.com/en/latest/ref/modules/all/index.html#all-salt-modules）</a></p>
+<h1 id="执行模块"><a href="#执行模块" class="headerlink" title="执行模块"></a>执行模块</h1><p>具体内容查看<a href="https://docs.saltstack.com/en/latest/ref/modules/all/index.html#all-salt-modules" target="_blank" rel="external">官方文档</a></p>
 <p>列出salt所有模块，以及如何使用的帮助文档</p>
 <p>通过yum默认安装salt所有模块存放路径 /usr/lib/python2.7/site-packages/salt/modules（centos 7）</p>
 <p>eg:</p>
@@ -3248,73 +3716,6 @@ Y
       &lt;p&gt; kvm虚拟机也支持在线扩展磁盘功能,在线扩展有特定的使用环境，主要用于不能随便停用的生产环境中。经过测试KVM在线扩展磁盘功能只适用于RHEL/CentOS/OEL6.x环境,5.x不支持在线的扩展磁盘。&lt;/p&gt;
 &lt;p&gt;本次次测试使用centos7.3的虚拟机&lt;/p&gt;
 &lt;p&gt;给clone-2虚拟机在线添加磁盘&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="KVM学习笔记" scheme="http://yjscloud.com/tags/KVM%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>kvm学习笔记（四）-kvm虚拟机快照备份</title>
-    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%BF%AB%E7%85%A7%E5%A4%87%E4%BB%BD/"/>
-    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（四）-kvm虚拟机快照备份/</id>
-    <published>2017-10-19T23:42:15.000Z</published>
-    <updated>2017-12-02T09:33:42.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅<a href="http://www.cnblogs.com/zhangzhang/archive/2012/02/13/2348928.html" target="_blank" rel="external">KMV下磁盘模式raw和qcow2的性能比较</a></p>
-<p>下面开始kvm虚拟机快照备份的过程</p>
-<a id="more"></a>
-<h1 id="查看现有磁盘镜像格式与转换"><a href="#查看现有磁盘镜像格式与转换" class="headerlink" title="查看现有磁盘镜像格式与转换"></a>查看现有磁盘镜像格式与转换</h1><p>(1) 查看磁盘格式</p>
-<pre><code># qemu-img info test01.img
-</code></pre><p>raw格式需要转换成qcow2</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.45.png" alt="1.45"></p>
-<p>（2）关闭虚拟机并装换磁盘</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.46.png" alt="1.46"></p>
-<p>(3) 转换磁盘格式</p>
-<pre><code># qemu-img convert -f raw -O qcow2 clone-2.img clone-2.qcow2 
-</code></pre><p>   -f  源镜像的格式</p>
-<p>   -O 目标镜像的格式<br><img src="http://oxysobnip.bkt.clouddn.com/1.47.png" alt="1.47"></p>
-<p>查看转换后的格式，已经转换成了qcow2, 这里是拷贝一份，并将格式转成qcow2</p>
-<pre><code># qemu-img info clone-2.qcow2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.48.png" alt="1.48"></p>
-<h1 id="修改虚拟机配置文件"><a href="#修改虚拟机配置文件" class="headerlink" title="修改虚拟机配置文件"></a>修改虚拟机配置文件</h1><p>修改磁盘格式，与新qcow2格式的磁盘。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.49.png" alt="1.49"></p>
-<h1 id="对虚拟机进行快照管理"><a href="#对虚拟机进行快照管理" class="headerlink" title="对虚拟机进行快照管理"></a>对虚拟机进行快照管理</h1><p>(1) 对clone-2虚拟机创建快照</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.50.png" alt="1.50"></p>
-<p>(2) 查看虚拟机镜像快照的版本</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.51.png" alt="1.51"></p>
-<p>(3) 查看当前虚拟机镜像快照的版本</p>
-<p>   可以看到为当前最新的快照版本。</p>
-<pre><code># virsh snapshot-current clone-2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.52.png" alt="1.52"></p>
-<p>(4) 查看当前虚拟机镜像文件</p>
-<p>  又创建了一个，快照的版本也记录在镜像文件中了。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.53.png" alt="1.53"></p>
-<p>快照配置文件在/var/lib/libvirt/qemu/snapshot/虚拟机名称/下<br><img src="http://oxysobnip.bkt.clouddn.com/1.54.png" alt="1.54"></p>
-<h1 id="恢复虚拟机快照"><a href="#恢复虚拟机快照" class="headerlink" title="恢复虚拟机快照"></a>恢复虚拟机快照</h1><p>(1) 恢复虚拟机快照必须关闭虚拟机。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.55.png" alt="1.55"></p>
-<p>(2) 确认需要恢复的快照时间，这里恢复到1508285665</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.56.png" alt="1.56"></p>
-<p>(3) 执行恢复，并确认恢复版本</p>
-<pre><code># virsh snapshot-revert clone-2 1508285665
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.57.png" alt="1.57"></p>
-<h1 id="删除虚拟机快照"><a href="#删除虚拟机快照" class="headerlink" title="删除虚拟机快照"></a>删除虚拟机快照</h1><p>(1) 查看虚拟机快照</p>
-<pre><code># qemu-img info clone-2.qcow2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.58.png" alt="1.58"></p>
-<p>这里删除第一个快照1378579737</p>
-<p>(2) 删除快照</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.59.png" alt="1.59"></p>
-<p>到此kvm虚拟机快照测试完毕!</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅&lt;a href=&quot;http://www.cnblogs.com/zhangzhang/archive/2012/02/13/2348928.html&quot;&gt;KMV下磁盘模式raw和qcow2的性能比较&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;下面开始kvm虚拟机快照备份的过程&lt;/p&gt;
     
     </summary>
     

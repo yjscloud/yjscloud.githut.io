@@ -134,7 +134,7 @@
 <meta property="og:image" content="http://opnq5yeqm.bkt.clouddn.com/2-33.png">
 <meta property="og:image" content="http://opnq5yeqm.bkt.clouddn.com/2-34.png">
 <meta property="og:image" content="http://opnq5yeqm.bkt.clouddn.com/2-35.png">
-<meta property="og:updated_time" content="2018-03-01T05:46:42.000Z">
+<meta property="og:updated_time" content="2018-03-01T05:53:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="saltstack自动化运维（一）">
 <meta name="twitter:description" content="saltstack简介（1）saltstack介绍 SaltStack是一个新的基础平台管理工具，只需要花费数分钟即可运行起来，可以支撑管理上万台服务器的规模，数秒钟即可完成数据传递。SaltStack是使用Python语言开发的，同时提供Rest API方便二次开发以及和其它平台进行集成，同时官方也发布了一个Web管理界面halite。 （2）saltstack运行方式 saltstack有三种">
@@ -449,7 +449,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  2,833
+                  2,825
                 </span>
               
 
@@ -500,7 +500,7 @@
 </ul>
 <h1 id="saltstack实战部署"><a href="#saltstack实战部署" class="headerlink" title="saltstack实战部署"></a>saltstack实战部署</h1><p>SaltStack支持多种操作系统，如CentOS、RedHat、Debian、Ubuntu、FreeBSD、Solaris、Fedora、SuSe、Gentoo、MAC OS X、Archlinux等，以及Windows（仅支持Minion）。</p>
 <p>saltstack服务器基本设置：CentOS7.2最小化安装，关闭防火墙，selinux设置为disabled，虚拟机网卡这里为桥接模式</p>
-<h2 id="安装saltstack源"><a href="#安装saltstack源" class="headerlink" title="安装saltstack源"></a>安装saltstack源</h2><p>对于Centos和RedHat用户，使用yum安装时最直接和快捷的。首先需要CentOS和epel仓库。saltstack官方源在国外下载使用需要vpn，我直接将saltstack2016.3的源同步到本地搭建了一个本地yum源，需要下载saltstack源的朋友请自带小飞机到<a href="https://repo.saltstack.com去下载，以下是我的repo的配置文件：" target="_blank" rel="external">https://repo.saltstack.com去下载，以下是我的repo的配置文件：</a></p>
+<h2 id="安装saltstack源"><a href="#安装saltstack源" class="headerlink" title="安装saltstack源"></a>安装saltstack源</h2><p>对于Centos和RedHat用户，使用yum安装时最直接和快捷的。首先需要CentOS和epel仓库。saltstack官方源在国外下载使用需要vpn，我直接将saltstack2016.3的源同步到本地搭建了一个本地yum源，需要下载saltstack源的朋友请自带小飞机到<code>https://repo.saltstack.com</code>去下载，以下是我的repo的配置文件：</p>
 <p>CentOS和epel的repo：</p>
 <pre><code>[centos]
 name=centos7.2
@@ -730,7 +730,7 @@ salt -S 192.168.16.0/24 test.ping
 <p> 批处理</p>
 <p> 可用于重启所有主机或进程场景，百分比或固定数量的一点一点重启主机或进程</p>
 <p> 具体内容查看<a href="https://docs.saltstack.com/en/latest/topics/targeting/batch.html" target="_blank" rel="external">官方文档</a></p>
-<h1 id="执行模块"><a href="#执行模块" class="headerlink" title="执行模块"></a>执行模块</h1><p>[官方文档]（<a href="https://docs.saltstack.com/en/latest/ref/modules/all/index.html#all-salt-modules）" target="_blank" rel="external">https://docs.saltstack.com/en/latest/ref/modules/all/index.html#all-salt-modules）</a></p>
+<h1 id="执行模块"><a href="#执行模块" class="headerlink" title="执行模块"></a>执行模块</h1><p>具体内容查看<a href="https://docs.saltstack.com/en/latest/ref/modules/all/index.html#all-salt-modules" target="_blank" rel="external">官方文档</a></p>
 <p>列出salt所有模块，以及如何使用的帮助文档</p>
 <p>通过yum默认安装salt所有模块存放路径 /usr/lib/python2.7/site-packages/salt/modules（centos 7）</p>
 <p>eg:</p>
@@ -824,6 +824,10 @@ def list():
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/01/DNS实战/" rel="next" title="DNS实战">
+                <i class="fa fa-chevron-left"></i> DNS实战
+              </a>
             
           </div>
 
@@ -930,7 +934,7 @@ def list():
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">42</span>
+                <span class="site-state-item-count">43</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -952,7 +956,7 @@ def list():
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1033,6 +1037,10 @@ def list():
               
                 <li class="links-of-blogroll-item">
                   <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://amon1997.com/" title="Amon的博客" target="_blank">Amon的博客</a>
                 </li>
               
             </ul>
