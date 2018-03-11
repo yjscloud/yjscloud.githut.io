@@ -1,3 +1,4 @@
+http://yjscloud.com/2018/03/12/Python当歌（十一）三个class方法/
 http://yjscloud.com/2018/03/08/GitLab安装与汉化/
 http://yjscloud.com/2018/03/01/DNS实战/
 http://yjscloud.com/2018/03/01/saltstack自动化运维（一）/

@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="KVM学习笔记," />
+  <meta name="keywords" content="Python学习笔记," />
 
 
 
@@ -92,33 +92,17 @@
 
 
 
-<meta name="description" content="kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅KMV下磁盘模式raw和qcow2的性能比较 下面开始kvm虚拟机快照备份的过程">
-<meta name="keywords" content="KVM学习笔记">
+<meta name="description" content="Property（特性）什么是特性propertyproperty是一种特殊的属性，访问它时会执行一段功能（函数）然后返回值 例一：BMI指数（bmi是计算而来的，但很明显它听起来像是一个属性而非方法，如果我们将其做成一个属性，更便于理解） 成人的BMI数值： 过轻：低于18.5 正常：18.5-23.9 过重：24-27 肥胖：28-32 非常肥胖, 高于32 　　体质指数（BMI）=体重（kg">
+<meta name="keywords" content="Python学习笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="kvm学习笔记（四）-kvm虚拟机快照备份">
-<meta property="og:url" content="http://yjscloud.com/2017/10/20/kvm学习笔记（四）-kvm虚拟机快照备份/index.html">
+<meta property="og:title" content="Python当歌（十一）三个class方法">
+<meta property="og:url" content="http://yjscloud.com/2018/03/12/Python当歌（十一）三个class方法/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅KMV下磁盘模式raw和qcow2的性能比较 下面开始kvm虚拟机快照备份的过程">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.45.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.46.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.47.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.48.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.49.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.50.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.51.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.52.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.53.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.54.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.55.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.56.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.57.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.58.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/1.59.png">
-<meta property="og:updated_time" content="2017-12-02T09:33:42.000Z">
+<meta property="og:description" content="Property（特性）什么是特性propertyproperty是一种特殊的属性，访问它时会执行一段功能（函数）然后返回值 例一：BMI指数（bmi是计算而来的，但很明显它听起来像是一个属性而非方法，如果我们将其做成一个属性，更便于理解） 成人的BMI数值： 过轻：低于18.5 正常：18.5-23.9 过重：24-27 肥胖：28-32 非常肥胖, 高于32 　　体质指数（BMI）=体重（kg">
+<meta property="og:updated_time" content="2018-03-11T09:56:15.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="kvm学习笔记（四）-kvm虚拟机快照备份">
-<meta name="twitter:description" content="kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅KMV下磁盘模式raw和qcow2的性能比较 下面开始kvm虚拟机快照备份的过程">
-<meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/1.45.png">
+<meta name="twitter:title" content="Python当歌（十一）三个class方法">
+<meta name="twitter:description" content="Property（特性）什么是特性propertyproperty是一种特殊的属性，访问它时会执行一段功能（函数）然后返回值 例一：BMI指数（bmi是计算而来的，但很明显它听起来像是一个属性而非方法，如果我们将其做成一个属性，更便于理解） 成人的BMI数值： 过轻：低于18.5 正常：18.5-23.9 过重：24-27 肥胖：28-32 非常肥胖, 高于32 　　体质指数（BMI）=体重（kg">
 
 
 
@@ -146,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2017/10/20/kvm学习笔记（四）-kvm虚拟机快照备份/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/03/12/Python当歌（十一）三个class方法/"/>
 
 
 
 
 
-  <title>kvm学习笔记（四）-kvm虚拟机快照备份 | 戏子登台</title>
+  <title>Python当歌（十一）三个class方法 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -326,7 +310,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2017/10/20/kvm学习笔记（四）-kvm虚拟机快照备份/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/03/12/Python当歌（十一）三个class方法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -347,7 +331,7 @@
             
             
               
-                kvm学习笔记（四）-kvm虚拟机快照备份
+                Python当歌（十一）三个class方法
               
             
           </h1>
@@ -362,8 +346,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-20T07:42:15+08:00">
-                2017-10-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-12T01:36:41+08:00">
+                2018-03-12
               </time>
             
 
@@ -406,7 +390,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2017/10/20/kvm学习笔记（四）-kvm虚拟机快照备份/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/03/12/Python当歌（十一）三个class方法/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -429,7 +413,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  470
+                  1,903
                 </span>
               
 
@@ -445,7 +429,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  2
+                  8
                 </span>
               
             </div>
@@ -463,51 +447,205 @@
       
 
       
-        <p>kvm虚拟机默认使用raw格式的镜像格式，性能最好，速度最快，它的缺点就是不支持一些新的功能，如支持镜像,zlib磁盘压缩,AES加密等。要使用镜像功能，磁盘格式必须为qcow2。KMV下磁盘模式raw和qcow2的性能比较请参阅<a href="http://www.cnblogs.com/zhangzhang/archive/2012/02/13/2348928.html" target="_blank" rel="external">KMV下磁盘模式raw和qcow2的性能比较</a></p>
-<p>下面开始kvm虚拟机快照备份的过程</p>
-<a id="more"></a>
-<h1 id="查看现有磁盘镜像格式与转换"><a href="#查看现有磁盘镜像格式与转换" class="headerlink" title="查看现有磁盘镜像格式与转换"></a>查看现有磁盘镜像格式与转换</h1><p>(1) 查看磁盘格式</p>
-<pre><code># qemu-img info test01.img
-</code></pre><p>raw格式需要转换成qcow2</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.45.png" alt="1.45"></p>
-<p>（2）关闭虚拟机并装换磁盘</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.46.png" alt="1.46"></p>
-<p>(3) 转换磁盘格式</p>
-<pre><code># qemu-img convert -f raw -O qcow2 clone-2.img clone-2.qcow2 
-</code></pre><p>   -f  源镜像的格式</p>
-<p>   -O 目标镜像的格式<br><img src="http://oxysobnip.bkt.clouddn.com/1.47.png" alt="1.47"></p>
-<p>查看转换后的格式，已经转换成了qcow2, 这里是拷贝一份，并将格式转成qcow2</p>
-<pre><code># qemu-img info clone-2.qcow2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.48.png" alt="1.48"></p>
-<h1 id="修改虚拟机配置文件"><a href="#修改虚拟机配置文件" class="headerlink" title="修改虚拟机配置文件"></a>修改虚拟机配置文件</h1><p>修改磁盘格式，与新qcow2格式的磁盘。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.49.png" alt="1.49"></p>
-<h1 id="对虚拟机进行快照管理"><a href="#对虚拟机进行快照管理" class="headerlink" title="对虚拟机进行快照管理"></a>对虚拟机进行快照管理</h1><p>(1) 对clone-2虚拟机创建快照</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.50.png" alt="1.50"></p>
-<p>(2) 查看虚拟机镜像快照的版本</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.51.png" alt="1.51"></p>
-<p>(3) 查看当前虚拟机镜像快照的版本</p>
-<p>   可以看到为当前最新的快照版本。</p>
-<pre><code># virsh snapshot-current clone-2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.52.png" alt="1.52"></p>
-<p>(4) 查看当前虚拟机镜像文件</p>
-<p>  又创建了一个，快照的版本也记录在镜像文件中了。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.53.png" alt="1.53"></p>
-<p>快照配置文件在/var/lib/libvirt/qemu/snapshot/虚拟机名称/下<br><img src="http://oxysobnip.bkt.clouddn.com/1.54.png" alt="1.54"></p>
-<h1 id="恢复虚拟机快照"><a href="#恢复虚拟机快照" class="headerlink" title="恢复虚拟机快照"></a>恢复虚拟机快照</h1><p>(1) 恢复虚拟机快照必须关闭虚拟机。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.55.png" alt="1.55"></p>
-<p>(2) 确认需要恢复的快照时间，这里恢复到1508285665</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.56.png" alt="1.56"></p>
-<p>(3) 执行恢复，并确认恢复版本</p>
-<pre><code># virsh snapshot-revert clone-2 1508285665
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.57.png" alt="1.57"></p>
-<h1 id="删除虚拟机快照"><a href="#删除虚拟机快照" class="headerlink" title="删除虚拟机快照"></a>删除虚拟机快照</h1><p>(1) 查看虚拟机快照</p>
-<pre><code># qemu-img info clone-2.qcow2
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/1.58.png" alt="1.58"></p>
-<p>这里删除第一个快照1378579737</p>
-<p>(2) 删除快照</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.59.png" alt="1.59"></p>
-<p>到此kvm虚拟机快照测试完毕!</p>
+        <h1 id="Property（特性）"><a href="#Property（特性）" class="headerlink" title="Property（特性）"></a>Property（特性）</h1><h2 id="什么是特性property"><a href="#什么是特性property" class="headerlink" title="什么是特性property"></a>什么是特性property</h2><p>property是一种特殊的属性，访问它时会执行一段功能（函数）然后返回值</p>
+<p>例一：BMI指数（bmi是计算而来的，但很明显它听起来像是一个属性而非方法，如果我们将其做成一个属性，更便于理解）</p>
+<p>成人的BMI数值：</p>
+<p>过轻：低于18.5</p>
+<p>正常：18.5-23.9</p>
+<p>过重：24-27</p>
+<p>肥胖：28-32</p>
+<p>非常肥胖, 高于32</p>
+<p>　　体质指数（BMI）=体重（kg）÷身高^2（m）</p>
+<p>EX：70kg÷（1.75×1.75）=22.86</p>
+<pre><code>class People:
+    def __init__(self,name,weight,height):
+       self.name=name
+       self.weight=weight
+       self.height=height
+   @property
+    def bmi(self):
+       return self.weight / (self.height**2)
 
+p1=People(&apos;egon&apos;,75,1.85)
+print(p1.bmi)
+</code></pre><p>例二：圆的周长和面积</p>
+<pre><code>import math
+class Circle:
+    def __init__(self,radius): #圆的半径radius
+       self.radius=radius
+
+    @property
+    def area(self):
+       return math.pi * self.radius**2 #计算面积
+
+    @property
+    def perimeter(self):
+       return 2*math.pi*self.radius #计算周长
+
+c=Circle(10)
+print(c.radius)
+print(c.area) #可以向访问数据属性一样去访问area,会触发一个函数的执行,动态计算出一个值
+print(c.perimeter) #同上
+</code></pre><p>输出结果:</p>
+<p>314.1592653589793</p>
+<p>62.83185307179586</p>
+<p>注意：此时的特性arear和perimeter不能被赋值，c.area=3 #为特性area赋值</p>
+<h2 id="为什么要用property"><a href="#为什么要用property" class="headerlink" title="为什么要用property"></a>为什么要用property</h2><p>将一个类的函数定义成特性以后，对象再去使用的时候obj.name,根本无法察觉自己的name是执行了一个函数然后计算出来的，这种特性的使用方式遵循了统一访问的原则。</p>
+<p>除此之外，看下</p>
+<p>ps：面向对象的封装有三种方式:</p>
+<p>【public】</p>
+<p>这种其实就是不封装,是对外公开的</p>
+<p>【protected】</p>
+<p>这种封装方式对外不公开,但对朋友(friend)或者子类(形象的说法是“儿子”,但我不知道为什么大家 不说“女儿”,就像“parent”本来是“父母”的意思,但中文都是叫“父类”)公开</p>
+<p>【private】</p>
+<p>这种封装对谁都不公开</p>
+<p>python并没有在语法上把它们三个内建到自己的class机制中，在C++里一般会将所有的所有的数据都设置为私有的，然后提供set和get方法（接口）去设置和获取，在python中通过property方法可以实现。</p>
+<pre><code>class Foo:
+    def __init__(self,val):
+   self.__NAME=val #将所有的数据属性都隐藏起来
+
+    @property
+    def name(self):
+       return self.__NAME #obj.name访问的是self.__NAME(这也是真实值的存放位置)
+
+    @name.setter
+    def name(self,value):
+       if not isinstance(value,str):  #在设定值之前进行类型检查
+          raise TypeError(&apos;%s must be str&apos; %value)
+       self.__NAME=value #通过类型检查后,将值value存放到真实的位置self.__NAME
+
+    @name.deleter
+    def name(self):
+       raise TypeError(&apos;Can not delete&apos;)
+
+f=Foo(&apos;egon&apos;)
+print(f.name)
+# f.name=10 #抛出异常&apos;TypeError: 10 must be str&apos;
+del f.name #抛出异常&apos;TypeError: Can not delete&apos;
+</code></pre><p>不用装饰器</p>
+<pre><code>class Foo:
+    def __init__(self,val):
+          self.__NAME=val #将所有的数据属性都隐藏起来
+
+    def getname(self):
+       return self.__NAME #obj.name访问的是self.__NAME(这也是真实值的存放位置)
+
+    def setname(self,value):
+       if not isinstance(value,str):  #在设定值之前进行类型检查
+          raise TypeError(&apos;%s must be str&apos; %value)
+        self.__NAME=value #通过类型检查后,将值value存放到真实的位置self.__NAME
+
+    def delname(self):
+       raise TypeError(&apos;Can not delete&apos;)
+
+    name=property(getname,setname,delname) #不如装饰器的方式清晰
+</code></pre><h1 id="staticmethod（静态方法）"><a href="#staticmethod（静态方法）" class="headerlink" title="staticmethod（静态方法）"></a>staticmethod（静态方法）</h1><p>通常情况下，在类中定义的所有函数（注意了，这里说的就是所有，跟self啥的没关系，self也只是一个再普通不过的参数而已）都是对象的绑定方法，对象在调用绑定方法时会自动将自己作为参数传递给方法的第一个参数。除此之外还有两种常见的方法：静态方法和类方法，二者是为类量身定制的，但是实例非要使用，也不会报错。静态方法的好处是可以不实例化就可以调用类。</p>
+<p>是一种普通函数，位于类定义的命名空间中，不会对任何实例类型进行操作，python为我们内置了函数staticmethod来把类中的函数定义成静态方法</p>
+<pre><code>class Foo:
+    def spam(x,y,z): #类中的一个函数，千万不要懵逼，self和x啥的没有不同都是参数名
+       print(x,y,z)
+spam=staticmethod(spam) #把spam函数做成静态方法
+</code></pre><p>基于之前所学装饰器的知识，@staticmethod 等同于spam=staticmethod(spam),于是</p>
+<pre><code>class Foo:
+    @staticmethod #装饰器
+    def spam(x,y,z):
+       print(x,y,z)
+</code></pre><p>使用演示</p>
+<pre><code>print(type(Foo.spam)) #类型本质就是函数
+Foo.spam(1,2,3) #调用函数应该有几个参数就传几个参数
+
+f1=Foo()
+f1.spam(3,3,3) #实例也可以使用,但通常静态方法都是给类用的,实例在使用时丧失了自动传值的机制
+
+&lt;class &apos;function&apos;&gt;
+2 3
+3 3
+</code></pre><p>应用场景:编写类时需要采用很多不同的方式来创建实例，而我们只有一个<strong>init</strong>函数，此时静态方法就派上用场了</p>
+<pre><code>class Date:
+    def __init__(self,year,month,day):
+       self.year=year
+       self.month=month
+        self.day=day
+    @staticmethod
+    def now(): #用Date.now()的形式去产生实例,该实例用的是当前时间
+       t=time.localtime() #获取结构化的时间格式
+        return Date(t.tm_year,t.tm_mon,t.tm_mday) #新建实例并且返回
+    @staticmethod
+    def tomorrow():#用Date.tomorrow()的形式去产生实例,该实例用的是明天的时间
+       t=time.localtime(time.time()+86400)
+        return Date(t.tm_year,t.tm_mon,t.tm_mday)
+
+a=Date(&apos;1987&apos;,11,27) #自己定义时间
+b=Date.now() #采用当前时间
+c=Date.tomorrow() #采用明天的时间
+
+print(a.year,a.month,a.day)
+print(b.year,b.month,b.day)
+print(c.year,c.month,c.day)
+</code></pre><h1 id="classmethod（类方法）"><a href="#classmethod（类方法）" class="headerlink" title="classmethod（类方法）"></a>classmethod（类方法）</h1><p>classmethod修饰符对应的函数不需要实例化，不需要 self 参数，但第一个参数需要是表示自身类的cls参数，可以来调用类的属性，类的方法，实例化对象等。</p>
+<p>类方法是给类用的，类在使用时会将类本身当做参数传给类方法的第一个参数，python为我们内置了函数classmethod来把类中的函数定义成类方法</p>
+<pre><code>class A:
+    x=1
+    @classmethod
+    def test(cls):
+       print(cls,cls.x)
+
+class B(A):
+    x=2
+B.test()
+</code></pre><p>输出结果:</p>
+<pre><code>&lt;class &apos;__main__.B&apos;&gt; 2
+</code></pre><p>应用场景：</p>
+<pre><code>import time
+class Date:
+    def __init__(self,year,month,day):
+       self.year=year
+        self.month=month
+        self.day=day
+    @staticmethod
+    def now():
+       t=time.localtime()
+        return Date(t.tm_year,t.tm_mon,t.tm_mday)
+
+class EuroDate(Date):
+    def __str__(self):
+       return &apos;year:%s month:%s day:%s&apos; %(self.year,self.month,self.day)
+
+e=EuroDate.now()
+print(e) #我们的意图是想触发EuroDate.__str__,但是结果为
+</code></pre><p>输出结果:</p>
+<pre><code>&lt;__main__.Date object at 0x1013f9d68&gt;
+</code></pre><p>因为e就是用Date类产生的,所以根本不会触发EuroDate._str__,解决方法就是用classmethod</p>
+<pre><code>import time
+class Date:
+    def __init__(self,year,month,day):
+        self.year=year
+        self.month=month
+        self.day=day
+    # @staticmethod
+    # def now():
+    #         t=time.localtime()
+    #          return Date(t.tm_year,t.tm_mon,t.tm_mday)
+
+    @classmethod #改成类方法
+    def now(cls):
+       t=time.localtime()
+        return cls(t.tm_year,t.tm_mon,t.tm_mday) #哪个类来调用,即用哪个类cls来实例化
+
+class EuroDate(Date):
+    def __str__(self):
+       return &apos;year:%s month:%s day:%s&apos; %(self.year,self.month,self.day)
+
+e=EuroDate.now()
+print(e) #我们的意图是想触发EuroDate.__str__,此时e就是由EuroDate产生的,所以会如我们所愿
+</code></pre><p>输出结果:</p>
+<pre><code>year:2017 month:3 day:3
+</code></pre><p>强调，注意注意注意：静态方法和类方法虽然是给类准备的，但是如果实例去用，也是可以用的，只不过实例去调用的时候容易让人混淆，不知道你要干啥</p>
+<pre><code>x=e.now() #通过实例e去调用类方法也一样可以使用,静态方法也一样
+print(x)
+</code></pre><p>输出结果:</p>
+<pre><code>year:2017 month:3 day:3
+</code></pre>
       
     </div>
 
@@ -558,7 +696,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/KVM学习笔记/" rel="tag"><i class="fa fa-tag"></i> KVM学习笔记</a>
+            <a href="/tags/Python学习笔记/" rel="tag"><i class="fa fa-tag"></i> Python学习笔记</a>
           
         </div>
       
@@ -571,18 +709,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/20/kvm学习笔记（五）-kvm虚拟机在线扩展磁盘/" rel="next" title="kvm学习笔记（五）-kvm虚拟机在线扩展磁盘">
-                <i class="fa fa-chevron-left"></i> kvm学习笔记（五）-kvm虚拟机在线扩展磁盘
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/10/20/kvm学习笔记（三）-设置VNC和时间同步/" rel="prev" title="kvm学习笔记（三）-设置VNC和时间同步">
-                kvm学习笔记（三）-设置VNC和时间同步 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/03/08/GitLab安装与汉化/" rel="prev" title="GitLab安装与汉化">
+                GitLab安装与汉化 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -808,7 +942,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#查看现有磁盘镜像格式与转换"><span class="nav-number">1.</span> <span class="nav-text">查看现有磁盘镜像格式与转换</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修改虚拟机配置文件"><span class="nav-number">2.</span> <span class="nav-text">修改虚拟机配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对虚拟机进行快照管理"><span class="nav-number">3.</span> <span class="nav-text">对虚拟机进行快照管理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#恢复虚拟机快照"><span class="nav-number">4.</span> <span class="nav-text">恢复虚拟机快照</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#删除虚拟机快照"><span class="nav-number">5.</span> <span class="nav-text">删除虚拟机快照</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Property（特性）"><span class="nav-number">1.</span> <span class="nav-text">Property（特性）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是特性property"><span class="nav-number">1.1.</span> <span class="nav-text">什么是特性property</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要用property"><span class="nav-number">1.2.</span> <span class="nav-text">为什么要用property</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#staticmethod（静态方法）"><span class="nav-number">2.</span> <span class="nav-text">staticmethod（静态方法）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#classmethod（类方法）"><span class="nav-number">3.</span> <span class="nav-text">classmethod（类方法）</span></a></li></ol></div>
             
 
           </div>

@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-03-08T14:59:37.000Z</updated>
+  <updated>2018-03-11T09:56:15.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,226 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Python当歌（十一）三个class方法</title>
+    <link href="http://yjscloud.com/2018/03/12/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89%E4%B8%89%E4%B8%AAclass%E6%96%B9%E6%B3%95/"/>
+    <id>http://yjscloud.com/2018/03/12/Python当歌（十一）三个class方法/</id>
+    <published>2018-03-11T17:36:41.000Z</published>
+    <updated>2018-03-11T09:56:15.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Property（特性）"><a href="#Property（特性）" class="headerlink" title="Property（特性）"></a>Property（特性）</h1><h2 id="什么是特性property"><a href="#什么是特性property" class="headerlink" title="什么是特性property"></a>什么是特性property</h2><p>property是一种特殊的属性，访问它时会执行一段功能（函数）然后返回值</p>
+<p>例一：BMI指数（bmi是计算而来的，但很明显它听起来像是一个属性而非方法，如果我们将其做成一个属性，更便于理解）</p>
+<p>成人的BMI数值：</p>
+<p>过轻：低于18.5</p>
+<p>正常：18.5-23.9</p>
+<p>过重：24-27</p>
+<p>肥胖：28-32</p>
+<p>非常肥胖, 高于32</p>
+<p>　　体质指数（BMI）=体重（kg）÷身高^2（m）</p>
+<p>EX：70kg÷（1.75×1.75）=22.86</p>
+<pre><code>class People:
+    def __init__(self,name,weight,height):
+       self.name=name
+       self.weight=weight
+       self.height=height
+   @property
+    def bmi(self):
+       return self.weight / (self.height**2)
+
+p1=People(&apos;egon&apos;,75,1.85)
+print(p1.bmi)
+</code></pre><p>例二：圆的周长和面积</p>
+<pre><code>import math
+class Circle:
+    def __init__(self,radius): #圆的半径radius
+       self.radius=radius
+
+    @property
+    def area(self):
+       return math.pi * self.radius**2 #计算面积
+
+    @property
+    def perimeter(self):
+       return 2*math.pi*self.radius #计算周长
+
+c=Circle(10)
+print(c.radius)
+print(c.area) #可以向访问数据属性一样去访问area,会触发一个函数的执行,动态计算出一个值
+print(c.perimeter) #同上
+</code></pre><p>输出结果:</p>
+<p>314.1592653589793</p>
+<p>62.83185307179586</p>
+<p>注意：此时的特性arear和perimeter不能被赋值，c.area=3 #为特性area赋值</p>
+<h2 id="为什么要用property"><a href="#为什么要用property" class="headerlink" title="为什么要用property"></a>为什么要用property</h2><p>将一个类的函数定义成特性以后，对象再去使用的时候obj.name,根本无法察觉自己的name是执行了一个函数然后计算出来的，这种特性的使用方式遵循了统一访问的原则。</p>
+<p>除此之外，看下</p>
+<p>ps：面向对象的封装有三种方式:</p>
+<p>【public】</p>
+<p>这种其实就是不封装,是对外公开的</p>
+<p>【protected】</p>
+<p>这种封装方式对外不公开,但对朋友(friend)或者子类(形象的说法是“儿子”,但我不知道为什么大家 不说“女儿”,就像“parent”本来是“父母”的意思,但中文都是叫“父类”)公开</p>
+<p>【private】</p>
+<p>这种封装对谁都不公开</p>
+<p>python并没有在语法上把它们三个内建到自己的class机制中，在C++里一般会将所有的所有的数据都设置为私有的，然后提供set和get方法（接口）去设置和获取，在python中通过property方法可以实现。</p>
+<pre><code>class Foo:
+    def __init__(self,val):
+   self.__NAME=val #将所有的数据属性都隐藏起来
+
+    @property
+    def name(self):
+       return self.__NAME #obj.name访问的是self.__NAME(这也是真实值的存放位置)
+
+    @name.setter
+    def name(self,value):
+       if not isinstance(value,str):  #在设定值之前进行类型检查
+          raise TypeError(&apos;%s must be str&apos; %value)
+       self.__NAME=value #通过类型检查后,将值value存放到真实的位置self.__NAME
+
+    @name.deleter
+    def name(self):
+       raise TypeError(&apos;Can not delete&apos;)
+
+f=Foo(&apos;egon&apos;)
+print(f.name)
+# f.name=10 #抛出异常&apos;TypeError: 10 must be str&apos;
+del f.name #抛出异常&apos;TypeError: Can not delete&apos;
+</code></pre><p>不用装饰器</p>
+<pre><code>class Foo:
+    def __init__(self,val):
+          self.__NAME=val #将所有的数据属性都隐藏起来
+
+    def getname(self):
+       return self.__NAME #obj.name访问的是self.__NAME(这也是真实值的存放位置)
+
+    def setname(self,value):
+       if not isinstance(value,str):  #在设定值之前进行类型检查
+          raise TypeError(&apos;%s must be str&apos; %value)
+        self.__NAME=value #通过类型检查后,将值value存放到真实的位置self.__NAME
+
+    def delname(self):
+       raise TypeError(&apos;Can not delete&apos;)
+
+    name=property(getname,setname,delname) #不如装饰器的方式清晰
+</code></pre><h1 id="staticmethod（静态方法）"><a href="#staticmethod（静态方法）" class="headerlink" title="staticmethod（静态方法）"></a>staticmethod（静态方法）</h1><p>通常情况下，在类中定义的所有函数（注意了，这里说的就是所有，跟self啥的没关系，self也只是一个再普通不过的参数而已）都是对象的绑定方法，对象在调用绑定方法时会自动将自己作为参数传递给方法的第一个参数。除此之外还有两种常见的方法：静态方法和类方法，二者是为类量身定制的，但是实例非要使用，也不会报错。静态方法的好处是可以不实例化就可以调用类。</p>
+<p>是一种普通函数，位于类定义的命名空间中，不会对任何实例类型进行操作，python为我们内置了函数staticmethod来把类中的函数定义成静态方法</p>
+<pre><code>class Foo:
+    def spam(x,y,z): #类中的一个函数，千万不要懵逼，self和x啥的没有不同都是参数名
+       print(x,y,z)
+spam=staticmethod(spam) #把spam函数做成静态方法
+</code></pre><p>基于之前所学装饰器的知识，@staticmethod 等同于spam=staticmethod(spam),于是</p>
+<pre><code>class Foo:
+    @staticmethod #装饰器
+    def spam(x,y,z):
+       print(x,y,z)
+</code></pre><p>使用演示</p>
+<pre><code>print(type(Foo.spam)) #类型本质就是函数
+Foo.spam(1,2,3) #调用函数应该有几个参数就传几个参数
+
+f1=Foo()
+f1.spam(3,3,3) #实例也可以使用,但通常静态方法都是给类用的,实例在使用时丧失了自动传值的机制
+
+&lt;class &apos;function&apos;&gt;
+2 3
+3 3
+</code></pre><p>应用场景:编写类时需要采用很多不同的方式来创建实例，而我们只有一个<strong>init</strong>函数，此时静态方法就派上用场了</p>
+<pre><code>class Date:
+    def __init__(self,year,month,day):
+       self.year=year
+       self.month=month
+        self.day=day
+    @staticmethod
+    def now(): #用Date.now()的形式去产生实例,该实例用的是当前时间
+       t=time.localtime() #获取结构化的时间格式
+        return Date(t.tm_year,t.tm_mon,t.tm_mday) #新建实例并且返回
+    @staticmethod
+    def tomorrow():#用Date.tomorrow()的形式去产生实例,该实例用的是明天的时间
+       t=time.localtime(time.time()+86400)
+        return Date(t.tm_year,t.tm_mon,t.tm_mday)
+
+a=Date(&apos;1987&apos;,11,27) #自己定义时间
+b=Date.now() #采用当前时间
+c=Date.tomorrow() #采用明天的时间
+
+print(a.year,a.month,a.day)
+print(b.year,b.month,b.day)
+print(c.year,c.month,c.day)
+</code></pre><h1 id="classmethod（类方法）"><a href="#classmethod（类方法）" class="headerlink" title="classmethod（类方法）"></a>classmethod（类方法）</h1><p>classmethod修饰符对应的函数不需要实例化，不需要 self 参数，但第一个参数需要是表示自身类的cls参数，可以来调用类的属性，类的方法，实例化对象等。</p>
+<p>类方法是给类用的，类在使用时会将类本身当做参数传给类方法的第一个参数，python为我们内置了函数classmethod来把类中的函数定义成类方法</p>
+<pre><code>class A:
+    x=1
+    @classmethod
+    def test(cls):
+       print(cls,cls.x)
+
+class B(A):
+    x=2
+B.test()
+</code></pre><p>输出结果:</p>
+<pre><code>&lt;class &apos;__main__.B&apos;&gt; 2
+</code></pre><p>应用场景：</p>
+<pre><code>import time
+class Date:
+    def __init__(self,year,month,day):
+       self.year=year
+        self.month=month
+        self.day=day
+    @staticmethod
+    def now():
+       t=time.localtime()
+        return Date(t.tm_year,t.tm_mon,t.tm_mday)
+
+class EuroDate(Date):
+    def __str__(self):
+       return &apos;year:%s month:%s day:%s&apos; %(self.year,self.month,self.day)
+
+e=EuroDate.now()
+print(e) #我们的意图是想触发EuroDate.__str__,但是结果为
+</code></pre><p>输出结果:</p>
+<pre><code>&lt;__main__.Date object at 0x1013f9d68&gt;
+</code></pre><p>因为e就是用Date类产生的,所以根本不会触发EuroDate._str__,解决方法就是用classmethod</p>
+<pre><code>import time
+class Date:
+    def __init__(self,year,month,day):
+        self.year=year
+        self.month=month
+        self.day=day
+    # @staticmethod
+    # def now():
+    #         t=time.localtime()
+    #          return Date(t.tm_year,t.tm_mon,t.tm_mday)
+
+    @classmethod #改成类方法
+    def now(cls):
+       t=time.localtime()
+        return cls(t.tm_year,t.tm_mon,t.tm_mday) #哪个类来调用,即用哪个类cls来实例化
+
+class EuroDate(Date):
+    def __str__(self):
+       return &apos;year:%s month:%s day:%s&apos; %(self.year,self.month,self.day)
+
+e=EuroDate.now()
+print(e) #我们的意图是想触发EuroDate.__str__,此时e就是由EuroDate产生的,所以会如我们所愿
+</code></pre><p>输出结果:</p>
+<pre><code>year:2017 month:3 day:3
+</code></pre><p>强调，注意注意注意：静态方法和类方法虽然是给类准备的，但是如果实例去用，也是可以用的，只不过实例去调用的时候容易让人混淆，不知道你要干啥</p>
+<pre><code>x=e.now() #通过实例e去调用类方法也一样可以使用,静态方法也一样
+print(x)
+</code></pre><p>输出结果:</p>
+<pre><code>year:2017 month:3 day:3
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;Property（特性）&quot;&gt;&lt;a href=&quot;#Property（特性）&quot; class=&quot;headerlink&quot; title=&quot;Property（特性）&quot;&gt;&lt;/a&gt;Property（特性）&lt;/h1&gt;&lt;h2 id=&quot;什么是特性property&quot;&gt;&lt;a href=&quot;#
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>GitLab安装与汉化</title>
@@ -3696,78 +3916,6 @@ Y
     <summary type="html">
     
       &lt;h1 id=&quot;什么叫动态迁移？&quot;&gt;&lt;a href=&quot;#什么叫动态迁移？&quot; class=&quot;headerlink&quot; title=&quot;什么叫动态迁移？&quot;&gt;&lt;/a&gt;什么叫动态迁移？&lt;/h1&gt;&lt;p&gt;动态迁移（Live Migration）：也叫在线迁移（Online Migration）。就是在保证虚拟机上服务正常运行的同时，将一个虚拟机系统从一个物理主机移动到另一个物理主机的过程。该过程不会对最终用户造成明 显的影响，从而使得管理员能够在不影响用户正常使用的情况下，对物理服务器进行离线维修或者升级。与静态迁移不同的是，为了保证迁移过程中虚拟机服务的可用，迁移过程仅有非常短暂的停机时间。迁移的前面阶段，服务在源主机的虚拟机上运行，当迁移进行到一定阶段，目的主机已经具备了运行虚拟机系统的必须资源，经过一个非常短暂的切换，源主机将控制权转移到目的主机，虚拟机系统在目的主机上继续运行。对于虚拟机服务本身而言，由于切换的时间非常短暂，用户感 觉不到服务的中断，因而迁移过程对用户是透明的。动态迁移适用于对虚拟机服务可用性要求很高的场合。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="KVM学习笔记" scheme="http://yjscloud.com/tags/KVM%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>kvm学习笔记（六）-kvm虚拟机静态迁移</title>
-    <link href="http://yjscloud.com/2017/10/20/kvm%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%85%AD%EF%BC%89-kvm%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%9D%99%E6%80%81%E8%BF%81%E7%A7%BB/"/>
-    <id>http://yjscloud.com/2017/10/20/kvm学习笔记（六）-kvm虚拟机静态迁移/</id>
-    <published>2017-10-20T01:28:43.000Z</published>
-    <updated>2017-12-02T09:34:18.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="什么是静态迁移？"><a href="#什么是静态迁移？" class="headerlink" title="什么是静态迁移？"></a>什么是静态迁移？</h1><p>静态迁移：也叫做常规迁移、离线迁移（Offline Migration）。就是在虚拟机关机或暂停的情况下从一台物理机迁移到另一台物理机。因为虚拟机的文件系统建立在虚拟机镜像上面，所以在虚拟机关机的 情况下，只需要简单的迁移虚拟机镜像和相应的配置文件到另外一台物理主机上；如果需要保存虚拟机迁移之前的状态，在迁移之前将虚拟机暂停，然后拷贝状态至目的主机，最后在目的主机重建虚拟机状态，恢复执行。这种方式的迁移过程需要显式的停止虚拟机的运行。从用户角度看，有明确的一段停机时间，虚拟机上的服务不可用。这种迁移方式简单易行，适用于对服务可用性要求不严格的场合。</p>
-<a id="more"></a>
-<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>(1)虚拟主机各自使用本地存储存放虚拟机磁盘文件</p>
-<p>本文实现基于本地磁盘存储虚拟机磁盘文件的迁移方式</p>
-<p>(2)虚拟主机之间使用共享存储存放虚拟机磁盘文件</p>
-<p>该方式只是在目标虚拟主机上重新定义虚拟机就可以了</p>
-<h1 id="静态迁移过程"><a href="#静态迁移过程" class="headerlink" title="静态迁移过程"></a>静态迁移过程</h1><p>(1)确定虚拟机关闭状态</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.70.png" alt="1.70"></p>
-<p>(2)准备迁移clone-3虚拟机，查看该虚拟机配置的磁盘文件</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.71.png" alt="1.71"></p>
-<p>(3)导入虚拟机配置文件</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.72.png" alt="1.72"></p>
-<p>(4)拷贝配置文件到目标虚拟主机上</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.73.png" alt="1.73"></p>
-<p>拷贝虚拟磁盘文件</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.74.png" alt="1.74"></p>
-<h1 id="目标虚拟主机"><a href="#目标虚拟主机" class="headerlink" title="目标虚拟主机"></a>目标虚拟主机</h1><p>上面已经将虚拟机磁盘文件与配置文件都已经复制到目标虚拟主机上了。下面开始配置与启动。</p>
-<p>(1)    查看目标虚拟主机环境</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.75.png" alt="1.75"></p>
-<p>如果上面没有显示虚拟主机，就需要对虚拟主机进行注册</p>
-<pre><code># virsh define /etc/libvirt/qemu/clone-3.xml
-</code></pre><p>查看虚拟机磁盘文件，目录结构与源虚拟主机一致。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.76.png" alt="1.76"></p>
-<p>(2)启动虚拟主机并确认</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.77.png" alt="1.77"></p>
-<p>成功连接</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.78.png" alt="1.78"></p>
-<p>至此虚拟机静态迁移完成。</p>
-<h1 id="kvm的那些坑"><a href="#kvm的那些坑" class="headerlink" title="kvm的那些坑"></a>kvm的那些坑</h1><p>（1）如果您遇到如下报错您可以这样处理</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.79.png" alt="1.79"></p>
-<p>查看包版本：</p>
-<pre><code># yum info device-mapper-libs         
-</code></pre><p>更新软件包：</p>
-<pre><code># yum update device-mapper-libs  
-</code></pre><p>然后运行如下命令</p>
-<pre>
-# sed -i 's/#listen_tls = 0/listen_tls = 0/g' /etc/libvirt/libvirtd.conf
-# sed -i 's/#listen_tcp = 1/listen_tcp = 1/g' /etc/libvirt/libvirtd.conf
-# sed -i 's/#auth_tcp = "sasl"/auth_tcp = "none"/g' /etc/libvirt/libvirtd.conf
-# sed -i 's/#LIBVIRTD_ARGS="--listen"/LIBVIRTD_ARGS="--listen"/g' /etc/sysconfig/libvirtd
-# systemctl restart libvirtd
-</pre>
-
-<p>（2）如果您把您的虚拟机静态迁移到不同平台（不同型号的cpu）的主机上报了如下错误</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.80.png" alt="1.80"></p>
-<p>您可以根据提示修改您的虚拟机配置文件</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.81.png" alt="1.81"></p>
-<p>Broadwell是原cpu类型，这里根据报错信息将其修改为Broadwell-noTSX</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/1.82.png" alt="1.82"></p>
-<p>修改后即可启动虚拟机了！</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;什么是静态迁移？&quot;&gt;&lt;a href=&quot;#什么是静态迁移？&quot; class=&quot;headerlink&quot; title=&quot;什么是静态迁移？&quot;&gt;&lt;/a&gt;什么是静态迁移？&lt;/h1&gt;&lt;p&gt;静态迁移：也叫做常规迁移、离线迁移（Offline Migration）。就是在虚拟机关机或暂停的情况下从一台物理机迁移到另一台物理机。因为虚拟机的文件系统建立在虚拟机镜像上面，所以在虚拟机关机的 情况下，只需要简单的迁移虚拟机镜像和相应的配置文件到另外一台物理主机上；如果需要保存虚拟机迁移之前的状态，在迁移之前将虚拟机暂停，然后拷贝状态至目的主机，最后在目的主机重建虚拟机状态，恢复执行。这种方式的迁移过程需要显式的停止虚拟机的运行。从用户角度看，有明确的一段停机时间，虚拟机上的服务不可用。这种迁移方式简单易行，适用于对服务可用性要求不严格的场合。&lt;/p&gt;
     
     </summary>
     
