@@ -1,6 +1,6 @@
 http://yjscloud.com/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/
-http://yjscloud.com/2018/03/25/OpenStack-O版搭建（二）：Contrller节点部署/
 http://yjscloud.com/2018/03/25/OpenStack-O版搭建（三）：Compute节点部署/
+http://yjscloud.com/2018/03/25/OpenStack-O版搭建（二）：Contrller节点部署/
 http://yjscloud.com/2018/03/25/OpenStack-O版搭建（一）：环境初始化/
 http://yjscloud.com/2018/03/11/Python当歌（十二）面向对象进阶/
 http://yjscloud.com/2018/03/11/Python当歌（十一）三个class方法/
