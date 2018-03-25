@@ -1,0 +1,1077 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OpenStack O版搭建," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在controller节点上配置创建数据库用户并赋予权限CREATE DATABASE cinder; GRANT ALL PRIVILEGES ON cinder.* TO &amp;apos;cinder&amp;apos;@&amp;apos;localhost&amp;apos; IDENTIFIED BY &amp;apos;devops&amp;apos;; GRANT ALL PRIVILEGES ON cinder.* TO &amp;">
+<meta name="keywords" content="OpenStack O版搭建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenStack O版搭建（四）：Cinder节点部署">
+<meta property="og:url" content="http://yjscloud.com/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="在controller节点上配置创建数据库用户并赋予权限CREATE DATABASE cinder; GRANT ALL PRIVILEGES ON cinder.* TO &amp;apos;cinder&amp;apos;@&amp;apos;localhost&amp;apos; IDENTIFIED BY &amp;apos;devops&amp;apos;; GRANT ALL PRIVILEGES ON cinder.* TO &amp;">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/o-25.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/o-26.png">
+<meta property="og:updated_time" content="2018-03-25T14:58:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenStack O版搭建（四）：Cinder节点部署">
+<meta name="twitter:description" content="在controller节点上配置创建数据库用户并赋予权限CREATE DATABASE cinder; GRANT ALL PRIVILEGES ON cinder.* TO &amp;apos;cinder&amp;apos;@&amp;apos;localhost&amp;apos; IDENTIFIED BY &amp;apos;devops&amp;apos;; GRANT ALL PRIVILEGES ON cinder.* TO &amp;">
+<meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/o-25.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/"/>
+
+
+
+
+
+  <title>OpenStack O版搭建（四）：Cinder节点部署 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                OpenStack O版搭建（四）：Cinder节点部署
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-25T22:28:38+08:00">
+                2018-03-25
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenStack学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenStack学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,099
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="在controller节点上配置"><a href="#在controller节点上配置" class="headerlink" title="在controller节点上配置"></a>在controller节点上配置</h1><h2 id="创建数据库用户并赋予权限"><a href="#创建数据库用户并赋予权限" class="headerlink" title="创建数据库用户并赋予权限"></a>创建数据库用户并赋予权限</h2><pre><code>CREATE DATABASE cinder;
+GRANT ALL PRIVILEGES ON cinder.* TO &apos;cinder&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON cinder.* TO &apos;cinder&apos;@&apos;%&apos; IDENTIFIED BY &apos;devops&apos;;
+</code></pre><h2 id="创建cinder用户并赋予admin权限"><a href="#创建cinder用户并赋予admin权限" class="headerlink" title="创建cinder用户并赋予admin权限"></a>创建cinder用户并赋予admin权限</h2><pre><code>source /root/admin-openrc
+openstack user create --domain default cinder --password devops
+openstack role add --project service --user cinder admin
+</code></pre><h2 id="创建volume服务"><a href="#创建volume服务" class="headerlink" title="创建volume服务"></a>创建volume服务</h2><pre><code>openstack service create --name cinder --description &quot;OpenStack Block Storage&quot; volume
+openstack service create --name cinderv2 --description &quot;OpenStack Block Storage&quot; volumev2
+</code></pre><h2 id="创建endpoint"><a href="#创建endpoint" class="headerlink" title="创建endpoint"></a>创建endpoint</h2><pre><code>openstack endpoint create --region RegionOne volume public http://controller:8776/v1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne volume internal http://controller:8776/v1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne volume admin http://controller:8776/v1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne volumev2 public http://controller:8776/v2/%\(tenant_id\)s
+openstack endpoint create --region RegionOne volumev2 internal http://controller:8776/v2/%\(tenant_id\)s
+openstack endpoint create --region RegionOne volumev2 admin http://controller:8776/v2/%\(tenant_id\)s
+</code></pre><h2 id="安装cinder相关服务"><a href="#安装cinder相关服务" class="headerlink" title="安装cinder相关服务"></a>安装cinder相关服务</h2><pre><code>yum install openstack-cinder -y
+</code></pre><h2 id="配置cinder配置文件"><a href="#配置cinder配置文件" class="headerlink" title="配置cinder配置文件"></a>配置cinder配置文件</h2><pre><code>cp /etc/cinder/cinder.conf /etc/cinder/cinder.conf.bak
+&gt;/etc/cinder/cinder.conf
+openstack-config --set /etc/cinder/cinder.conf DEFAULT transport_url rabbit://openstack:devops@controller
+openstack-config --set /etc/cinder/cinder.conf DEFAULT my_ip 10.1.1.120
+openstack-config --set /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
+openstack-config --set /etc/cinder/cinder.conf database connection mysql+pymysql://cinder:devops@controller/cinder
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_uri http://controller:5000
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_url http://controller:35357
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken memcached_servers controller:11211
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_type password
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken project_domain_name default
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken user_domain_name default
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken project_name service
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken username cinder
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken password devops
+openstack-config --set /etc/cinder/cinder.conf oslo_concurrency lock_path /var/lib/cinder/tmp
+</code></pre><h2 id="同步数据库"><a href="#同步数据库" class="headerlink" title="同步数据库"></a>同步数据库</h2><pre><code>su -s /bin/sh -c &quot;cinder-manage db sync&quot; cinder
+</code></pre><h2 id="在controller上启动cinder服务，并设置开机启动"><a href="#在controller上启动cinder服务，并设置开机启动" class="headerlink" title="在controller上启动cinder服务，并设置开机启动"></a>在controller上启动cinder服务，并设置开机启动</h2><pre><code>systemctl enable openstack-cinder-api.service openstack-cinder-scheduler.service
+systemctl restart openstack-cinder-api.service openstack-cinder-scheduler.service
+systemctl status openstack-cinder-api.service openstack-cinder-scheduler.service
+</code></pre><h1 id="在cinder节点上配置"><a href="#在cinder节点上配置" class="headerlink" title="在cinder节点上配置"></a>在cinder节点上配置</h1><p>Cinder节点这里我们需要额外的添加一个硬盘（/dev/sdb)用作cinder的存储服务 (注意！这一步是在cinder节点操作的）</p>
+<pre><code>yum install lvm2 -y
+</code></pre><p>启动服务并设置为开机自启 (注意！这一步是在cinder节点操作的）</p>
+<pre><code>systemctl enable lvm2-lvmetad.service
+systemctl start lvm2-lvmetad.service
+systemctl status lvm2-lvmetad.service
+</code></pre><p>创建lvm, 这里的/dev/sdb就是额外添加的硬盘 (注意！这一步是在cinder节点操作的）</p>
+<pre><code>fdisk -l
+pvcreate /dev/vdb
+vgcreate cinder-volumes /dev/vdb
+</code></pre><p>编辑存储节点lvm.conf文件 (注意！这一步是在cinder节点操作的）</p>
+<pre><code>vim /etc/lvm/lvm.conf
+</code></pre><p>在devices 下面添加 filter = [ “a/vda/“, “a/vdb/“, “r/.*/“] ，130行 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-25.png" alt="o-25"></p>
+<p>然后重启下lvm2服务：</p>
+<pre><code>systemctl restart lvm2-lvmetad.service
+systemctl status lvm2-lvmetad.service
+</code></pre><p>安装openstack-cinder、targetcli (注意！这一步是在cinder节点操作的）</p>
+<pre><code>yum install openstack-cinder openstack-utils targetcli python-keystone ntpdate -y
+</code></pre><p>配置cinder配置文件 (注意！这一步是在cinder节点操作的）</p>
+<pre><code>cp /etc/cinder/cinder.conf /etc/cinder/cinder.conf.bak
+&gt;/etc/cinder/cinder.conf
+openstack-config --set /etc/cinder/cinder.conf DEFAULT auth_strategy keystone
+openstack-config --set /etc/cinder/cinder.conf DEFAULT my_ip 10.1.1.122
+openstack-config --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm
+openstack-config --set /etc/cinder/cinder.conf DEFAULT glance_api_servers http://controller:9292
+openstack-config --set /etc/cinder/cinder.conf DEFAULT glance_api_version 2
+openstack-config --set /etc/cinder/cinder.conf DEFAULT enable_v1_api True
+openstack-config --set /etc/cinder/cinder.conf DEFAULT enable_v2_api True
+openstack-config --set /etc/cinder/cinder.conf DEFAULT enable_v3_api True
+openstack-config --set /etc/cinder/cinder.conf DEFAULT storage_availability_zone nova
+openstack-config --set /etc/cinder/cinder.conf DEFAULT default_availability_zone nova
+openstack-config --set /etc/cinder/cinder.conf DEFAULT os_region_name RegionOne
+openstack-config --set /etc/cinder/cinder.conf DEFAULT api_paste_config /etc/cinder/api-paste.ini
+openstack-config --set /etc/cinder/cinder.conf DEFAULT transport_url rabbit://openstack:devops@controller
+openstack-config --set /etc/cinder/cinder.conf database connection mysql+pymysql://cinder:devops@controller/cinder
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_uri http://controller:5000
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_url http://controller:35357
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken memcached_servers controller:11211
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_type password
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken project_domain_name default
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken user_domain_name default
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken project_name service
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken username cinder
+openstack-config --set /etc/cinder/cinder.conf keystone_authtoken password devops
+openstack-config --set /etc/cinder/cinder.conf lvm volume_driver cinder.volume.drivers.lvm.LVMVolumeDriver
+openstack-config --set /etc/cinder/cinder.conf lvm volume_group cinder-volumes
+openstack-config --set /etc/cinder/cinder.conf lvm iscsi_protocol iscsi
+openstack-config --set /etc/cinder/cinder.conf lvm iscsi_helper lioadm
+openstack-config --set /etc/cinder/cinder.conf oslo_concurrency lock_path /var/lib/cinder/tmp
+</code></pre><p>启动openstack-cinder-volume和target并设置开机启动 (注意！这一步是在cinder节点操作的）</p>
+<pre><code>systemctl enable openstack-cinder-volume.service target.service
+systemctl restart openstack-cinder-volume.service target.service
+systemctl status openstack-cinder-volume.service target.service
+</code></pre><p>验证cinder服务是否正常</p>
+<pre><code>source /root/admin-openrc
+cinder service-list
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-26.png" alt="o-26"></p>
+<p>至此手动搭建openstack ocata分布式集群完成部署（ps：适用于实验和教学环境，企业还需修改更多参数）</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/OpenStack-O版搭建/" rel="tag"><i class="fa fa-tag"></i> OpenStack O版搭建</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/25/OpenStack-O版搭建（二）：Contrller节点部署/" rel="prev" title="OpenStack O版搭建（二）：Contrller节点部署">
+                OpenStack O版搭建（二）：Contrller节点部署 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">50</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://amon1997.com/" title="Amon的博客" target="_blank">Amon的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#在controller节点上配置"><span class="nav-number">1.</span> <span class="nav-text">在controller节点上配置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建数据库用户并赋予权限"><span class="nav-number">1.1.</span> <span class="nav-text">创建数据库用户并赋予权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建cinder用户并赋予admin权限"><span class="nav-number">1.2.</span> <span class="nav-text">创建cinder用户并赋予admin权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建volume服务"><span class="nav-number">1.3.</span> <span class="nav-text">创建volume服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建endpoint"><span class="nav-number">1.4.</span> <span class="nav-text">创建endpoint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装cinder相关服务"><span class="nav-number">1.5.</span> <span class="nav-text">安装cinder相关服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置cinder配置文件"><span class="nav-number">1.6.</span> <span class="nav-text">配置cinder配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步数据库"><span class="nav-number">1.7.</span> <span class="nav-text">同步数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在controller上启动cinder服务，并设置开机启动"><span class="nav-number">1.8.</span> <span class="nav-text">在controller上启动cinder服务，并设置开机启动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#在cinder节点上配置"><span class="nav-number">2.</span> <span class="nav-text">在cinder节点上配置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+<script type="text/javascript">
+  var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cspan id='cnzz_stat_icon_1261789938'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s95.cnzz.com/z_stat.php%3Fid%3D1261789938' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+
+&nbsp;&nbsp;|&nbsp;&nbsp;本站总点击 <span id="busuanzi_value_site_pv"></span> 次
+&nbsp;&nbsp;|&nbsp;&nbsp;您是第 <span id="busuanzi_value_site_uv"></span> 位访客
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>
