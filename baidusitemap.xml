@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>http://yjscloud.com/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AController%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/</loc>
+    <lastmod>2018-03-25T22:55:20.000Z</lastmod>
+    <data>
+        <display>
+        <title>OpenStack O版搭建（二）：Controller节点部署</title>
+        <pubTime>2018-03-25T14:15:37.000Z</pubTime>
+        
+        <tag>OpenStack O版搭建</tag>
+         
+         
+           
+             
+              <breadCrumb title="OpenStack学习笔记" url="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yjscloud.com/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ACompute%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/</loc>
     <lastmod>2018-03-25T15:00:09.000Z</lastmod>
     <data>
@@ -30,26 +50,6 @@
         <display>
         <title>OpenStack O版搭建（四）：Cinder节点部署</title>
         <pubTime>2018-03-25T14:28:38.000Z</pubTime>
-        
-        <tag>OpenStack O版搭建</tag>
-         
-         
-           
-             
-              <breadCrumb title="OpenStack学习笔记" url="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yjscloud.com/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AContrller%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/</loc>
-    <lastmod>2018-03-25T14:54:33.000Z</lastmod>
-    <data>
-        <display>
-        <title>OpenStack O版搭建（二）：Contrller节点部署</title>
-        <pubTime>2018-03-25T14:15:37.000Z</pubTime>
         
         <tag>OpenStack O版搭建</tag>
          
