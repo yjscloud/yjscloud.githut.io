@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-03-25T14:58:01.000Z</updated>
+  <updated>2018-05-17T13:30:24.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,434 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Kolla容器化部署OpenStack：多节点部署</title>
+    <link href="http://yjscloud.com/2018/04/14/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%A4%9A%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.com/2018/04/14/Kolla容器化部署OpenStack：多节点部署/</id>
+    <published>2018-04-14T12:59:18.000Z</published>
+    <updated>2018-05-17T13:30:24.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>前面我们已经部署了单节点的OpenStack环境，这次我们尝试部署一个多节点的环境(包括1个controller节点，1个compute节点，1个storage节点)，之前的单节点因为已经安装了kolla-ansible和docker registry，我们把它当做部署节点。</p>
+<h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>准备三台服务器，分别作为controller节点，compute节点，storage节点。其中controller节点3张网卡，compute、storage节点2张网卡。操作系统为centos7.4</p>
+<p>1）关闭Selinux </p>
+<pre><code>vi /etc/sysconfig/selinux
+SELINUX=disabled
+</code></pre><p>2）关闭firewalld</p>
+<pre><code>systemctl stop firewalld
+systemctl disable firewalld
+</code></pre><p>3）设置主机名，hosts文件 </p>
+<pre><code>vi /etc/hosts
+172.16.31.130 control01 
+172.16.31.131 controller 
+172.16.31.132 compute 
+172.16.31.133 storage
+</code></pre><p>4）storage节点加盘 </p>
+<p>为storage节点划分磁盘，作为cinder的lvm后端，storage节点有13tb的硬盘采用parted分区，分区过程略去</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-17.png" alt="k-17"></p>
+<p>创建pv、vg</p>
+<pre><code>[root@storage ~]# pvcreate /dev/sdb
+Physical volume &quot;/dev/sdb&quot; successfully created.
+[root@storage ~]# vgcreate cinder-volumes /dev/sdb
+Volume group &quot;cinder-volumes&quot; successfully created
+</code></pre><p>修改配置 </p>
+<pre><code>vi /etc/lvm/lvm.conf
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/k-18.png" alt="k-18"></p>
+<p>重启lvm服务</p>
+<pre><code>systemctl restart lvm2-lvmetad.service
+</code></pre><p>5）确认节点配置</p>
+<p>controller 3 张网卡 </p>
+<p>compute 2 张网卡 </p>
+<p>storage 2 张网卡(其实一张即可，因为不需要tunnel网络) </p>
+<p>storage 磁盘已经分区</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-19.png" alt="k-19"></p>
+<h1 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h1><p>1）下载相关docker rpm包</p>
+<p>这里我已经到docker把docker的rpm下载下来了，我们上传的相关的目录下，当然还是需要配centos和epel的源才能正常安装的</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-20.png" alt="k-20"></p>
+<p>2）安装Docker 1.12.6（三台服务器都要安装）</p>
+<pre><code>yum install docker-engine-* -y
+</code></pre><p>在各个节点安装</p>
+<pre><code>yum install python-docker-py -y
+</code></pre><p>3）设置Docker</p>
+<pre><code>mkdir /etc/systemd/system/docker.service.d
+tee /etc/systemd/system/docker.service.d/kolla.conf &lt;&lt; &apos;EOF&apos;
+[Service]
+MountFlags=shared
+EOF
+</code></pre><p>4）重启相关服务</p>
+<pre><code>systemctl daemon-reload
+systemctl enable docker
+systemctl restart docker
+</code></pre><p>5）编辑/usr/lib/systemd/system/docker.service文件</p>
+<pre><code>ExecStart=/usr/bin/dockerd --insecure-registry 172.16.31.130:4000
+</code></pre><p>6）重启Docker服务</p>
+<pre><code>systemctl daemon-reload
+systemctl restart docker
+</code></pre><h1 id="配置免密登录"><a href="#配置免密登录" class="headerlink" title="配置免密登录"></a>配置免密登录</h1><p>部署节点和其他节点免密登陆</p>
+<pre><code>[root@control01 ~]# ssh-keygen 
+[root@control01 ~]# ssh-copy-id controller 
+[root@control01 ~]# ssh-copy-id compute 
+[root@control01 ~]# ssh-copy-id storage
+</code></pre><h1 id="部署OpenStack"><a href="#部署OpenStack" class="headerlink" title="部署OpenStack"></a>部署OpenStack</h1><p>1）停止部署节点容器</p>
+<p>因为部署节点之前已经部署了All in One的OpenStack，为了降低资源占用，我们可以先停止本节的OpenStack相关容器。</p>
+<pre><code>[root@control01 ~]# cd /root/kolla-ansible-4.0.3.dev36/tools/
+[root@control01 tools]# . kolla-ansible stop
+</code></pre><p>2）修改multinode文件</p>
+<pre><code>[root@control01 ~]# cd /root/kolla-ansible-4.0.3.dev36/
+[root@control01 kolla-ansible-4.0.3.dev36]# cp ansible/inventory/* /home/
+[root@control01 ~]# cd /home
+[root@control01 home]# ls
+all-in-one  multinode
+[root@control01 home]# cp multinode mymultinode
+[root@control01 home]# vi mymultinode
+
+[control]
+controller  
+[network]
+controller
+[compute]
+compute
+[monitoring]
+controller
+[storage]
+storage
+......
+</code></pre><p>里面的内容很好理解，表示一个控制节点 controller，网络节点也安装到控制节点，一个计算节点 compute ，一个存储节点 storage，后面的部分不用修改</p>
+<p>3）修改global和password配置文件</p>
+<pre><code>[root@control01 ~]# cd /etc/kolla/
+[root@control01 kolla]# vi globals.yml
+</code></pre><p>————————————分割线———————————————</p>
+<pre><code>kolla_internal_vip_address: &quot;172.16.31.131&quot;    外部访问地址，如果是非HA环境，是控制节点IP
+
+docker_registry: &quot;172.16.31.130:4000&quot;   镜像库，用部署节点的镜像库
+docker_namespace: &quot;99cloud&quot;                 
+
+network_interface: &quot;eno1&quot;   网络接口，默认就这一个接口，这里我们以eth0作为API网络                    
+api_interface: &quot;{{ network_interface }}&quot;   用的是eno2
+tunnel_interface: &quot;eno2&quot;                   eno2作为vxlan的承载网络
+neutron_external_interface: &quot;eno3&quot;          eno3作为外部网络
+
+enable_cinder: &quot;yes&quot;                启用cinder
+enable_cinder_backend_lvm: &quot;yes&quot;    cinder后端用lvm
+cinder_volume_group: &quot;cinder-volumes&quot;  
+
+enable_haproxy: &quot;no&quot;   不启用haproxy
+</code></pre><p>————————————分割线———————————————</p>
+<pre><code>[root@control01 kolla]# vi passwords.yml
+keystone_admin_password: admin  admin用户登录密码
+</code></pre><p>4）部署前检查</p>
+<pre><code>[root@control01 ~]# cd /root/kolla-ansible-4.0.3.dev36/tools/
+[root@control01 ~]# . kolla-ansible prechecks -i /home/mymultinode
+</code></pre><p>没有报错即可正常部署</p>
+<p>5）部署</p>
+<pre><code>[root@control01 tools]# . kolla-ansible deploy -i /home/mymultinode
+</code></pre><p>开始部署，等待大约20分钟，部署完成，一般不会有什么问题，如果有问题，则需要根据报错及容器日志查找原因</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-21.png" alt="k-21"></p>
+<p>登录dashboard<br><a href="http://172.16.31.131" target="_blank" rel="external">http://172.16.31.131</a></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-22.png" alt="k-22"></p>
+<p>登录系统，查看各个服务正常，表明部署成功。</p>
+<p>可以通过docker ps命令查看各个节点运行的容器</p>
+<p>controller节点：</p>
+<pre><code>[root@controller ~]# docker ps
+CONTAINER ID        IMAGE                                                                        COMMAND             CREATED             STATUS              PORTS               NAMES
+1ecab1b4246e        172.16.31.130:4000/99cloud/centos-source-horizon:4.0.2.1                     &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             horizon
+b264ea5467ff        172.16.31.130:4000/99cloud/centos-source-heat-engine:4.0.2.1                 &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             heat_engine
+08ab0aa8603c        172.16.31.130:4000/99cloud/centos-source-heat-api-cfn:4.0.2.1                &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             heat_api_cfn
+6f6aba4804a2        172.16.31.130:4000/99cloud/centos-source-heat-api:4.0.2.1                    &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             heat_api
+67729f946b23        172.16.31.130:4000/99cloud/centos-source-neutron-metadata-agent:4.0.2.1      &quot;kolla_start&quot;       24 hours ago        Up 24 hours                      neutron_metadata_agent
+f8f8d9f766e9        172.16.31.130:4000/99cloud/centos-source-neutron-l3-agent:4.0.2.1            &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             neutron_l3_agent
+fd3a8ca63fdf        172.16.31.130:4000/99cloud/centos-source-neutron-dhcp-agent:4.0.2.1          &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             neutron_dhcp_agent
+c9f9f72090a4        172.16.31.130:4000/99cloud/centos-source-neutron-openvswitch-agent:4.0.2.1   &quot;kolla_start&quot;       24 hours ago        Up 24 hours                  neutron_openvswitch_agent
+9f19bca0759c        172.16.31.130:4000/99cloud/centos-source-neutron-server:4.0.2.1              &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             neutron_server
+e1286083b3f7        172.16.31.130:4000/99cloud/centos-source-openvswitch-vswitchd:4.0.2.1        &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             openvswitch_vswitchd
+dd4986364575        172.16.31.130:4000/99cloud/centos-source-openvswitch-db-server:4.0.2.1       &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             openvswitch_db
+a6692acea93f        172.16.31.130:4000/99cloud/centos-source-nova-novncproxy:4.0.2.1             &quot;kolla_start&quot;       36 hours ago        Up 36 hours                             nova_novncproxy
+cd704f0bc2c7        172.16.31.130:4000/99cloud/centos-source-nova-consoleauth:4.0.2.1            &quot;kolla_start&quot;       36 hours ago        Up 36 hours                             nova_consoleauth
+105978eda1a9        172.16.31.130:4000/99cloud/centos-source-nova-conductor:4.0.2.1              &quot;kolla_start&quot;       36 hours ago        Up 36 hours                             nova_conductor
+9d9e7571d7dd        172.16.31.130:4000/99cloud/centos-source-nova-scheduler:4.0.2.1              &quot;kolla_start&quot;       36 hours ago        Up 36 hours                             nova_scheduler
+7436ca003817        172.16.31.130:4000/99cloud/centos-source-nova-api:4.0.2.1                    &quot;kolla_start&quot;       36 hours ago        Up 36 hours                             nova_api
+ae8d830091d3        172.16.31.130:4000/99cloud/centos-source-nova-placement-api:4.0.2.1          &quot;kolla_start&quot;       36 hours ago        Up 36 hours                             placement_api
+f053087cfde5        172.16.31.130:4000/99cloud/centos-source-cinder-scheduler:4.0.2.1            &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             cinder_scheduler
+8c849182ee63        172.16.31.130:4000/99cloud/centos-source-cinder-api:4.0.2.1                  &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             cinder_api
+129996bd76ee        172.16.31.130:4000/99cloud/centos-source-glance-registry:4.0.2.1             &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             glance_registry
+fcc184936be5        172.16.31.130:4000/99cloud/centos-source-glance-api:4.0.2.1                  &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             glance_api
+06a35ba7eb7f        172.16.31.130:4000/99cloud/centos-source-keystone:4.0.2.1                    &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             keystone
+6821886162bc        172.16.31.130:4000/99cloud/centos-source-rabbitmq:4.0.2.1                    &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             rabbitmq
+04b556da8365        172.16.31.130:4000/99cloud/centos-source-mariadb:4.0.2.1                     &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             mariadb
+859a1d8d0137        172.16.31.130:4000/99cloud/centos-source-cron:4.0.2.1                        &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             cron
+4e7230af5339        172.16.31.130:4000/99cloud/centos-source-kolla-toolbox:4.0.2.1               &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             kolla_toolbox
+50be20c91704        172.16.31.130:4000/99cloud/centos-source-fluentd:4.0.2.1                     &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             fluentd
+72b2538e1beb        172.16.31.130:4000/99cloud/centos-source-memcached:4.0.2.1                   &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             memcached
+</code></pre><p>compute节点：</p>
+<pre><code>[root@compute ~]# docker ps
+CONTAINER ID        IMAGE                                                                        COMMAND             CREATED             STATUS              PORTS               NAMES
+0f954ef9095e        172.16.31.130:4000/99cloud/centos-source-neutron-openvswitch-agent:4.0.2.1   &quot;kolla_start&quot;       24 hours ago        Up 24 hours                  neutron_openvswitch_agent
+8f62c376e2b5        172.16.31.130:4000/99cloud/centos-source-openvswitch-vswitchd:4.0.2.1        &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             openvswitch_vswitchd
+005c3dd582a9        172.16.31.130:4000/99cloud/centos-source-openvswitch-db-server:4.0.2.1       &quot;kolla_start&quot;       24 hours ago        Up 24 hours                             openvswitch_db
+d6a9b676c0ad        172.16.31.130:4000/99cloud/centos-source-nova-compute:4.0.2.1                &quot;kolla_start&quot;       36 hours ago        Up 36 hours                             nova_compute
+fbc66c3f40ba        172.16.31.130:4000/99cloud/centos-source-nova-libvirt:4.0.2.1                &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             nova_libvirt
+6f942f376c83        172.16.31.130:4000/99cloud/centos-source-nova-ssh:4.0.2.1                    &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             nova_ssh
+4872cfb2b025        172.16.31.130:4000/99cloud/centos-source-iscsid:4.0.2.1                      &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             iscsid
+c55ec16b0752        172.16.31.130:4000/99cloud/centos-source-cron:4.0.2.1                        &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             cron
+426d77add095        172.16.31.130:4000/99cloud/centos-source-kolla-toolbox:4.0.2.1               &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             kolla_toolbox
+5f959b2372f0        172.16.31.130:4000/99cloud/centos-sourc
+</code></pre><p>stroage节点：</p>
+<pre><code>[root@cinder ~]# docker ps
+CONTAINER ID        IMAGE                                                            COMMAND             CREATED             STATUS              PORTS               NAMES
+7eca045eeff1        172.16.31.130:4000/99cloud/centos-source-cinder-backup:4.0.2.1   &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             cinder_backup
+bcdf196510f2        172.16.31.130:4000/99cloud/centos-source-cinder-volume:4.0.2.1   &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             cinder_volume
+d59fc8ec7716        172.16.31.130:4000/99cloud/centos-source-tgtd:4.0.2.1            &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             tgtd
+7a8d9dab2755        172.16.31.130:4000/99cloud/centos-source-iscsid:4.0.2.1          &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             iscsid
+ea471af172de        172.16.31.130:4000/99cloud/centos-source-cron:4.0.2.1            &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             cron
+4b41ebf3ea62        172.16.31.130:4000/99cloud/centos-source-kolla-toolbox:4.0.2.1   &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             kolla_toolbox
+91c086f63421        172.16.31.130:4000/99cloud/centos-source-fluentd:4.0.2.1         &quot;kolla_start&quot;       37 hours ago        Up 37 hours                             fluentd
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前面我们已经部署了单节点的OpenStack环境，这次我们尝试部署一个多节点的环境(包括1个controller节点，1个compute节点，1个storage节点)，之前的单节点因为已经安装了kolla-ansible和docker registry，我们把它当做部署节点
+    
+    </summary>
+    
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kolla容器化部署OpenStack：单点部署</title>
+    <link href="http://yjscloud.com/2018/04/13/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%8D%95%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.com/2018/04/13/Kolla容器化部署OpenStack：单点部署/</id>
+    <published>2018-04-13T12:37:32.000Z</published>
+    <updated>2018-05-17T13:27:26.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。</p>
+<p>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。 </p>
+<p>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
+<h1 id="all-in-one部署步骤"><a href="#all-in-one部署步骤" class="headerlink" title="all in one部署步骤"></a>all in one部署步骤</h1><p>（1）使用iso引导，选择 install centos7.3 and kolla</p>
+<p>可以使用tab键，修改ip地址和主机名，默认ip地址为10.99.0.2，主机名为control01</p>
+<p>这里需要注意，安装完成后，需要设置好网卡1、网卡2的IP地址，最好固定ip地址！网卡名称分别为em1和em2，IP地址分别为192.168.0.130和172.16.31.130</p>
+<p>（2）安装系统后，登录系统(root密码为99cloud)，首先要进行如下修改：</p>
+<p>1）/etc/hosts 文件需要修改<br>10.99.0.2 control01 改为 172.16.31.0.130 control01 </p>
+<p>2）/etc/kolla/globals.yml 文件里面2个IP地址由10.99.0.2替换为172.16.31.130</p>
+<p>3）/etc/kolla/globals.yml 文件中  neutron_external_interface: “docker0” 改为neutron_external_interface: “em2”</p>
+<p>然后进行部署：</p>
+<pre><code>/root/kolla-ansible-4.0.3.dev36/tools/kolla-ansible deploy
+</code></pre><p>部署过程中，如果发现下面类似的错误，则需要进入容器，查看日志进行排错。<br>下面这个错误原因就是RabbitMQ容器中的服务没有正常启动(问题1造成)而导致nova-compute服务无法启动。 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-1.png" alt="k-1"></p>
+<p>遇到的最后一个问题，就是  neutron_openvswitch_agent 容器无法正常启动，排查的结果是  openvswitch_vswitchd 容器里面的 br-ex 下面的port应该由docker0改为em2(外网网卡)</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-2.png" alt="k-2"></p>
+<p>dashboard访问地址  <a href="http://172.16.31.130/" target="_blank" rel="external">http://172.16.31.130/</a> </p>
+<p>username admin </p>
+<p>password 99cloud</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-3.png" alt="k-3"></p>
+<h1 id="后续测试"><a href="#后续测试" class="headerlink" title="后续测试"></a>后续测试</h1><p>1）上传镜像cirros </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-4.png" alt="k-4"></p>
+<p>2）创建flavor </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-5.png" alt="k-5"></p>
+<p>3）创建一个vxlan网络 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-6.png" alt="k-6"></p>
+<p>4）创建一个外部网络 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-7.png" alt="k-7"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-8.png" alt="k-8"></p>
+<p>5）添加路由router1，可以让内部网络连接到外网</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-9.png" alt="k-9"></p>
+<p>6）启动2个实例，其中给test1添加浮动IP </p>
+<p>如果实例无法启动的话进行如下修改（物理机环境不会出现这个情况） </p>
+<p>问题描述： </p>
+<p>VMware虚拟机作为OpenStack计算节点，如果安装的操作系统是CentOS7.3，则在此计算节点放置的虚拟机无法正常启动，报如下错误： </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-10.png" alt="k-10"></p>
+<p>在创建计算节点时，为了能让 KVM 能创建嵌套的虚机，要把 CPU 的虚拟化功能打开。如下图在 VMWare 中设置以下 CPU 的模式。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-11.png" alt="k-11"></p>
+<p>用以下命令确认 CPU 支持虚拟化。 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-12.png" alt="k-12"></p>
+<p>nova的配置如下：</p>
+<pre><code>/etc/nova/nova.conf
+[libvirt]
+virt_type = kvm
+</code></pre><p>已经验证，如果计算节点安装的是CentOS7.2或Ubuntu操作系统，则不会报上面的错误。</p>
+<p>解决方案： </p>
+<p>修改nova的配置：</p>
+<pre><code>/etc/nova/nova.conf
+[libvirt]
+virt_type = qemu
+cpu_mode = none
+</code></pre><p>重启 nova-compute即可。</p>
+<p>就算CPU支持虚拟化，也得设置 virt_type = qemu ，否则还是报错。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-13.png" alt="k-13"></p>
+<p>7) 默认安全组添加两条规则，支持外部ping通内部、ssh登陆内部 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-14.png" alt="k-14"></p>
+<p>8）ping测试</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-15.png" alt="k-15"></p>
+<p>虚拟机之间可以互相通信</p>
+<p>绑定浮动ip后ping外网ip</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-16.png" alt="k-16"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。&lt;/p&gt;
+&lt;p&gt;首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0
+    
+    </summary>
+    
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OpenStack排错（一）：cinder僵尸卷删除</title>
+    <link href="http://yjscloud.com/2018/04/12/OpenStack%E6%8E%92%E9%94%99-%E4%B8%80-cinder%E5%83%B5%E5%B0%B8%E5%8D%B7%E5%88%A0%E9%99%A4/"/>
+    <id>http://yjscloud.com/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/</id>
+    <published>2018-04-12T12:14:21.000Z</published>
+    <updated>2018-05-17T13:24:04.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="处理报错的大致思路"><a href="#处理报错的大致思路" class="headerlink" title="处理报错的大致思路"></a>处理报错的大致思路</h1><p>(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted；</p>
+<p>(2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程；</p>
+<p>(3)应用命令lvremove来删除相应的卷；</p>
+<p>(4)此时问题貌似已经解决，因为已经可以正确地执行cinder中命令，要删除的卷的记录也已经删除。但是这里还有个问题，默认的建立卷的最大数目为10，如果之前删除的僵尸卷的数目为1，但是此时当你建立卷的数目为9个时，再尝试建立新卷时，就会提示已经达到卷的数目的最大值。解决方法就是到cinder数据表中找到quota_usages，将其中in_use中的数据减少相应的删除的僵尸卷的数目即可。</p>
+<p>备注：fuser命令在psmisc包中</p>
+<h1 id="第一种情况的僵尸卷"><a href="#第一种情况的僵尸卷" class="headerlink" title="第一种情况的僵尸卷"></a>第一种情况的僵尸卷</h1><p><img src="http://oxysobnip.bkt.clouddn.com/err-1.png" alt="err-1"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/err-2.png" alt="err-2"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/err-3.png" alt="err-3"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/err-4.png" alt="err-4"></p>
+<p>执行完上面的操作后进入云平台系统，更改需要删除云硬盘状态为“可用配额”，然后“删除云硬盘”，如果再界面上删除依旧没有执行成功或者依旧一直再删除中，就采用比较暴力的方式，修改云硬盘再数据库中的状态，因为此时云硬盘再存储设备（物理机）上已经删除了，仅仅还有数据库中还有该记录信息，但不能直接删除这条记录，数据库有外键依赖，而是要把cinder盘的deleted改成“1”,“1”即为删除，0为不删除。</p>
+<p>进入数据库：</p>
+<pre><code>mysql -uxxxx -pxxxx
+</code></pre><p>选择数据库表：</p>
+<pre><code>use cinder;
+</code></pre><p>关闭数据库的键外查询：</p>
+<pre><code>set foreign_key_checks=0;
+</code></pre><p>select找到出错的数据：</p>
+<pre><code>select id, status, display_name from volumes where id=&quot;af3e36ce-10ab-4daa-80e3-b71f16836a3b&quot;
+</code></pre><p>修改数据库记录状体：</p>
+<pre><code>update volumes set deleted=1 where id=&quot;af3e36ce-10ab-4daa-80e3-b71f16836a3b&quot;
+</code></pre><p>操作完成后开启数据库的键外查询：</p>
+<pre><code>set foreign_key_checks=0;
+</code></pre><p>此时如果dashboard界面卷存储还没有恢复正常就需要进行如下操作！！！</p>
+<p>（1）use cinder;</p>
+<p>（2）select  *  from volumes;</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/err-5.png" alt="err-5"></p>
+<p>在删除数据条目之前要临时关闭键值检查，否则删除操作无法进行：set foreign_key_checks=0;</p>
+<p>删除操作完成后再运行此命令开启键值检查，确保数据库安全</p>
+<p>找到之前出问题的卷并删除条目信息：</p>
+<pre><code>delete from volumes where id=&apos;f0a030a6-7ff0-4765-ac47-1f1eed3c7582&apos;;
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/err-6.png" alt="err-6"></p>
+<p>然后把in_use的数值修改为0即可</p>
+<p>这里我就很暴力了直接删除了了条目：</p>
+<pre><code>delete from quota_usages where project_id=&apos;232b14de024647159470ed97873ce774&apos;;
+</code></pre><p>等下新建卷的时候就会恢复的，不建议这么做哦。</p>
+<h1 id="第二种情况的僵尸卷"><a href="#第二种情况的僵尸卷" class="headerlink" title="第二种情况的僵尸卷"></a>第二种情况的僵尸卷</h1><p>思路和第一中情况差不多；</p>
+<p>（1）通过lvdisplay |grep查询cinder对应的卷地址。</p>
+<pre><code>root@compute:~# lvdisplay | grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
+LV Path                /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3
+LV Name                volume-8580f464-02e1-411c-bd94-a4af35e499a3
+</code></pre><p>（2）通过lsof | grep查询占用cinder卷的端口</p>
+<pre><code>lsof| grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
+kill -9 76568
+</code></pre><p>（3）通过lvremove删除相应的卷</p>
+<pre><code>lvremove /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3
+</code></pre><p>（4）报错处理<br>报错：device-mapper: remove ioctl on failed: Deviceor resource busy。设备繁忙</p>
+<p>查看是否被打开：</p>
+<pre><code>dmsetup info -c /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3 #查看是否被打开,如果看到open为4或者数字说明它被打开了，所以remove不掉。
+</code></pre><p>查看被谁打开：</p>
+<pre><code>fuser -m /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3 #查看是谁打开的，显示产用进程号
+</code></pre><p>把占用设备的进程杀掉：</p>
+<pre><code>kill -9 xxxx xxxx xxxx xxxx
+</code></pre><p>重新执行上面验证的几个步骤，验证是否还有进程占用，如果看到open为0，表示现在没有进程占用，再执行lvremove删除相应的卷</p>
+<p>（5）验证是否已经删除</p>
+<pre><code>root@compute:~# lvdisplay | grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
+</code></pre><p>（6）进入云平台系统，更改需要删除云硬盘状态为“可用配额”，然后“删除云硬盘”，如果再界面上删除依旧没有执行成功或者依旧一直再删除中，就采用比较暴力的方式，修改云硬盘再数据库中的状态，因为此时云硬盘再存储设备（物理机）上已经删除了，仅仅还有数据库中还有该记录信息，但不能直接删除这条记录，数据库有外键依赖，而是要把cinder盘的deleted改成“1”,“1”即为删除，0为不删除。</p>
+<p>进入数据库：</p>
+<pre><code>mysql -uxxxx -pxxxx
+</code></pre><p>选择数据库表</p>
+<pre><code>use cinder;
+</code></pre><p>select找到出错的数据:</p>
+<pre><code>select id, status, display_name from volumes where id=&apos;2d5d206d-0720-42aa-b178-3f3238177583&apos;;
+</code></pre><p>修改数据库记录状体：</p>
+<pre><code>update volumes set deleted=1 where id=&apos;2d5d206d-0720-42aa-b178-3f3238177583&apos;;
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;处理报错的大致思路&quot;&gt;&lt;a href=&quot;#处理报错的大致思路&quot; class=&quot;headerlink&quot; title=&quot;处理报错的大致思路&quot;&gt;&lt;/a&gt;处理报错的大致思路&lt;/h1&gt;&lt;p&gt;(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由err
+    
+    </summary>
+    
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>制作OpenStack镜像模板</title>
+    <link href="http://yjscloud.com/2018/04/04/%E5%88%B6%E4%BD%9COpenStack%E9%95%9C%E5%83%8F%E6%A8%A1%E6%9D%BF/"/>
+    <id>http://yjscloud.com/2018/04/04/制作OpenStack镜像模板/</id>
+    <published>2018-04-04T11:57:11.000Z</published>
+    <updated>2018-05-17T13:25:36.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>在kvm服务器上安装一个虚拟机，然后进行如下配置：</p>
+<h1 id="模板默认配置"><a href="#模板默认配置" class="headerlink" title="模板默认配置"></a>模板默认配置</h1><p>制作模版要配置yum源，安装常用软件，yum源可以配置为阿里的源，163的源最好有自己的源<br>需要安装的常用软件：</p>
+<pre><code>yum install net-tools wget vim ntpdate bash-completion -y
+</code></pre><h1 id="配置网卡"><a href="#配置网卡" class="headerlink" title="配置网卡"></a>配置网卡</h1><p>删除网卡配置文件中的UUID，网卡设为DHCP（如果内网有DHCP服务器）</p>
+<p>（1）网卡配置文件一般如下</p>
+<pre><code>TYPE=Ethernet
+DEVICE=eth0
+ONBOOT=yes
+BOOTPROTO=dhcp
+NM_CONTROLLED=no
+</code></pre><p>（2）centos6需要执行rm -rf /etc/udev/rules.d/70-persistent-net.rules（centos7不用）</p>
+<p>（3）vim /etc/sysconfig/network<br>    添加如下内容：</p>
+<pre><code>NOZERCONF=yes
+</code></pre><p>NOZERCONF=yes的意思是禁用ZERCONF路由，ZERCONF又被叫做IPv4 Link-Local和Automatic Private IP Addressing。它是一个动态配置协议，系统可以通过它来连接到网络。很多linux发行版本都默认安装该服务，当系统无法连接DHCP server的时候，就会尝试通过ZERCONF来获取IP，一般这个IP地址段为169.254.0.0，我们在做openstack镜像的时候，这个需要禁用，因为VM如果DHCP获取不到IP就让它获取不到，别让它获取其他IP段的地址，所以这里我们禁用。</p>
+<h1 id="安装cloud服务"><a href="#安装cloud服务" class="headerlink" title="安装cloud服务"></a>安装cloud服务</h1><pre><code>yum -y install cloud-utils cloud-init parted
+</code></pre><h1 id="编辑cloud的配置文件"><a href="#编辑cloud的配置文件" class="headerlink" title="编辑cloud的配置文件"></a>编辑cloud的配置文件</h1><pre><code>vim /etc/cloud/cloud.cfg    
+修改如下内容：
+ssh_pwauth:    1
+在cloud_init_modules:下面添加一个参数                                                                                          - resolv-conf
+</code></pre><h1 id="配置脚本文件"><a href="#配置脚本文件" class="headerlink" title="配置脚本文件"></a>配置脚本文件</h1><pre><code>vim /etc/rc.d/rc.local
+覆盖配置这个脚本（Netron配置文件）
+chmod +x /etc/rc.d/rc.local
+systemctl enable cloud-config.service cloud-final.service cloud-init-local.service cloud-init.service
+</code></pre><p>最后重启系统</p>
+<pre><code>reboot
+</code></pre><h1 id="尝试运行命令检查服务"><a href="#尝试运行命令检查服务" class="headerlink" title="尝试运行命令检查服务"></a>尝试运行命令检查服务</h1><pre><code>systemctl list-dependencies
+</code></pre><p>出现四个（cloud-）开头的服务且是绿色的就说明cloud-init安装成功</p>
+<h1 id="关机和压缩"><a href="#关机和压缩" class="headerlink" title="关机和压缩"></a>关机和压缩</h1><p>找到刚才创建的镜像压缩一下</p>
+<p>这里我们进入cd /opt目录压缩（ps：不能在镜像目录下压缩）</p>
+<pre><code>virt-sparsify --compress /var/lib/libvirt/images/CentOS7.1 CentOS7.1.qcow2
+</code></pre><p>原大小是2.5g压缩后是500mb左右（特别费时间）</p>
+<pre><code>du -sh CentOS7.1.qcow2    #查看镜像大小
+</code></pre><h1 id="安装windows模版"><a href="#安装windows模版" class="headerlink" title="安装windows模版"></a>安装windows模版</h1><p>安装windows的步骤就不再赘述</p>
+<p>需要注意的两点是：</p>
+<p>网卡选择 virtio模式</p>
+<p>usb模式选择Hypervisor default </p>
+<p>然后配置一下远程桌面</p>
+<p>安装cloud-init（版本为0.99.dev26）,安装步骤较为简单不再赘述</p>
+<p>要设置用户下一次登陆要修改密码，这是为了安全着想。</p>
+<p>最后对cloud Initialization service Properties服务属性设置为 local system account</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在kvm服务器上安装一个虚拟机，然后进行如下配置：&lt;/p&gt;
+&lt;h1 id=&quot;模板默认配置&quot;&gt;&lt;a href=&quot;#模板默认配置&quot; class=&quot;headerlink&quot; title=&quot;模板默认配置&quot;&gt;&lt;/a&gt;模板默认配置&lt;/h1&gt;&lt;p&gt;制作模版要配置yum源，安装常用软件，yu
+    
+    </summary>
+    
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
+    
+  </entry>
   
   <entry>
     <title>OpenStack O版搭建（四）：Cinder节点部署</title>
@@ -4440,660 +4868,6 @@ while True:
     
       &lt;h1 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;headerlink&quot; title=&quot;介绍&quot;&gt;&lt;/a&gt;介绍&lt;/h1&gt;&lt;p&gt;计算机系统分为：计算机硬件，操作系统，应用程序三部分。&lt;/p&gt;
 &lt;p&gt;我们用python或其他语言编写的应用程序若想要把数据永久保存下来，必
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（四）：函数</title>
-    <link href="http://yjscloud.com/2018/01/17/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%87%BD%E6%95%B0/"/>
-    <id>http://yjscloud.com/2018/01/17/Python当歌（四）：函数/</id>
-    <published>2018-01-17T01:49:07.000Z</published>
-    <updated>2018-02-07T11:13:02.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="函数基础"><a href="#函数基础" class="headerlink" title="函数基础"></a>函数基础</h1><p>函数是什么?</p>
-<p>想象生活中的例子，修理工需要实现准备好工具箱里面放好锤子，扳手，钳子等工具，然后遇到锤钉子的场景，拿来锤子用就可以，而无需临时再制造一把锤子。</p>
-<p>修理工===&gt;程序员</p>
-<p>具备某一功能的工具===&gt;函数</p>
-<p>要想使用工具，需要事先准备好，然后拿来就用且可以重复使用要想用函数，需要先定义，再使用。</p>
-<h1 id="函数分类"><a href="#函数分类" class="headerlink" title="函数分类"></a>函数分类</h1><p>（1）内置函数</p>
-<p>为了方便我们的开发，针对一些简单的功能，python解释器已经为我们定义好了的函数即内置函数。对于内置函数，我们可以拿来就用而无需事先定义，如len(),sum(),max()</p>
-<p>（2）自定义函数</p>
-<p>很明显内置函数所能提供的功能是有限的，这就需要我们自己根据需求，事先定制好我们自己的函数来实现某种功能，以后，在遇到应用场景时，调用自定义的函数即可。</p>
-<p>（3）如何自定义函数？</p>
-<pre><code>语法：
-    def 函数名(参数1,参数2,参数3,...):
-        &apos;&apos;&apos;注释&apos;&apos;&apos;
-        函数体
-        return 返回的值
-</code></pre><p>ps:函数名要能反映其意义</p>
-<p>（4）函数使用的原则：先定义，再调用</p>
-<p>函数即“变量”，“变量”必须先定义后引用。未定义而直接引用函数，就相当于在引用一个不存在的变量名</p>
-<p>测试一：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-1.png" alt="3-1"></p>
-<p>测试二：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-2.png" alt="3-2"></p>
-<p>结论:函数的使用,必须遵循原则:先定义,后调用；我们在使用函数时,一定要明确地区分定义阶段和调用阶段。</p>
-<pre><code>#定义阶段
-def foo():
-    print(&apos;from foo&apos;)
-    bar()
-def bar():
-    print(&apos;from bar&apos;)
-#调用阶段
-foo()
-</code></pre><p>ps:函数在定义阶段只检测语法，不执行代码。也就说，语法错误在函数定义阶段就会检测出来，而代码的逻辑错误只有在执行时才会知道</p>
-<p>(5)定义函数的三种形式</p>
-<p>1、无参：应用场景仅仅只是执行一些操作，比如与用户交互，打印</p>
-<p>2、有参：需要根据外部传进来的参数，才能执行相应的逻辑，比如统计长度，求最大值最小值</p>
-<p>3、空函数：设计代码结构</p>
-<p>例子：<br>    <img src="http://p3q1rwnbl.bkt.clouddn.com/3-3.png" alt="3-3"></p>
-<p>结论：定义时无参，意味着调用时也无需传入参数；定义时有参，意味着调用时则必须传入参数</p>
-<p>（6)调用函数</p>
-<p>函数的调用：函数名加括号</p>
-<ul>
-<li><p>先找到名字</p>
-</li>
-<li><p>根据名字调用代码</p>
-</li>
-</ul>
-<p>函数调用的三种形式：</p>
-<ul>
-<li><p>语句形式：foo()</p>
-</li>
-<li><p>表达式形式：3*len(‘hello’)</p>
-</li>
-<li><p>当中另外一个函数的参数：range(len(‘hello’))</p>
-</li>
-</ul>
-<p>函数返回值：</p>
-<ul>
-<li><p>无return-&gt;None</p>
-</li>
-<li><p>return 1个值-&gt;返回1个值</p>
-</li>
-<li><p>return 逗号分隔多个值-&gt;元组</p>
-</li>
-</ul>
-<p>什么时候该有返回值？</p>
-<p>调用函数，经过一系列的操作，最后要拿到一个明确的结果，则必须要有返回值（通常有参函数需要有返回值，输入参数，经过计算，得到一个最终的结果）</p>
-<p>什么时候不需要有返回值？</p>
-<p>调用函数，仅仅只是执行一系列的操作，最后不需要得到什么结果，则无需有返回值（通常无参函数不需要有返回值）</p>
-<p>（7）函数的参数<br>形参即变量名，实参即变量值，函数调用时，将值绑定到变量名上，函数调用结束，解除绑定。</p>
-<p>1、位置参数：按照从左到右的顺序定义的参数</p>
-<p>   位置形参：必选参数</p>
-<p>   位置实参：按照位置给形参传值</p>
-<p>2、关键字参数：按照key=value的形式定义的实参</p>
-<p>   无需按照位置为形参传值</p>
-<p>   注意的问题：</p>
-<ul>
-<li>关键字实参必须在位置实参右面</li>
-<li>对同一个形参不能重复传值</li>
-</ul>
-<p>3、默认参数：形参在定义时就已经为其赋值</p>
-<p>可以传值也可以不传值，经常需要变得参数定义成位置形参，变化较小的参数定义成默认参数（形参）</p>
-<p> 注意的问题：</p>
-<ul>
-<li>只在定义时赋值一次</li>
-<li>默认参数的定义应该在位置形参右面</li>
-<li>默认参数通常应该定义成不可变类型</li>
-</ul>
-<p>4、可变长参数：</p>
-<p>  可变长指的是实参值的个数不固定</p>
-<p>  而实参有按位置和按关键字两种形式定义，针对这两种形式的可变长，形参对应有两种解决方案来完整地存放它们，分别是<em>args（列表），*</em>kwargs（字典）</p>
-<p>测试：*args</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-4.png" alt="3-4"></p>
-<p>测试：**kwargs</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-5.png" alt="3-5"></p>
-<p>5、命名关键字参数：*后定义的参数，必须被传值（有默认值的除外），且必须按照关键字实参的形式传递可以保证，传入的参数中一定包含某些关键字。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-6.png" alt="3-6"></p>
-<h1 id="函数的变量、递归以及内置函数"><a href="#函数的变量、递归以及内置函数" class="headerlink" title="函数的变量、递归以及内置函数"></a>函数的变量、递归以及内置函数</h1><h2 id="局部变量和全局变量"><a href="#局部变量和全局变量" class="headerlink" title="局部变量和全局变量"></a>局部变量和全局变量</h2><p>在子程序中定义的变量称为局部变量，在程序的一开始定义的变量称为全局变量。</p>
-<p>全局变量作用域是整个程序，局部变量作用域是定义该变量的子程序。</p>
-<p>当全局变量与局部变量同名时：在定义局部变量的子程序内，局部变量起作用；在其它地方全局变量起作用。</p>
-<pre><code>name=&apos;xwq&apos;
-def change_name():
-    print(&apos;我的名字&apos;,name)    #全局变量起作用
-change_name()
-
-def change_name():
-    name=&apos;帅了一笔&apos;
-    print(&apos;我的名字&apos;,name)        #局部变量起作用
-    change_name()
-print(name)
-
-def change_name():
-    global name
-    name=&apos;帅了一笔&apos;
-    print(&apos;我的名字&apos;,name)        #因为global参数全局变量变为‘帅了一笔’而非xwq,
-change_name()
-</code></pre><p>ps：nonlocal参数</p>
-<pre><code>name = &quot;lf&quot;
-def weihou():
-    name = &quot;xwq&quot;
-    def weiweihou():
-        nonlocal name   # nonlocal，指定上一级变量，如果没有就继续往上直到找到为止
-        name = &quot;冷静&quot;    
-    weiweihou()
-    print(name)
-print(name)
-weihou()
-print(name)
-</code></pre><p>运行结果为：</p>
-<pre><code>lf
-冷静
-lf
-</code></pre><h2 id="嵌套函数和作用域"><a href="#嵌套函数和作用域" class="headerlink" title="嵌套函数和作用域"></a>嵌套函数和作用域</h2><pre><code>name = &quot;xwq&quot;
-
-def change_name():
-    name = &quot;xwq2&quot;
-
-    def change_name2():
-        name = &quot;xwq3&quot;
-        print(&quot;第3层打印&quot;,name)
-
-    change_name2() #调用内层函数
-    print(&quot;第2层打印&quot;,name)
-
-change_name()
-print(&quot;最外层打印&quot;,name)
-</code></pre><p>此时，在最外层调用change_name2()会出现什么效果？没错，出错了， 为什么呢？<br>作用域在定义函数时就已经固定住了，不会随着调用位置的改变而改变。</p>
-<p>例一：</p>
-<pre><code>name=&apos;alex&apos;
-
-def foo():
-    name=&apos;lhf&apos;
-    def bar():
-        print(name)
-    return bar
-
-func=foo()
-func()
-</code></pre><p>例二：</p>
-<pre><code>name=&apos;alex&apos;
-
-def foo():
-    name=&apos;lhf&apos;
-    def bar():
-        name=&apos;wupeiqi&apos;
-        def tt():
-            print(name)
-        return tt
-    return bar
-
-func=foo()
-func()()
-</code></pre><h2 id="递归调用"><a href="#递归调用" class="headerlink" title="递归调用"></a>递归调用</h2><p>在函数内部，可以调用其他函数。如果在调用一个函数的过程中直接或间接调用自身本身</p>
-<pre><code>def calc(n):
-    print(n)
-    if int(n/2) ==0:
-        return n
-    return calc(int(n/2))
-
-calc(10)
-</code></pre><p>输出：</p>
-<pre><code>10
-5
-2
-1
-</code></pre><p>递归特性:</p>
-<ul>
-<li>必须有一个明确的结束条件</li>
-<li>每次进入更深一层递归时，问题规模相比上次递归都应有所减少</li>
-<li>递归效率不高，递归层次过多会导致栈溢出（在计算机中，函数调用是通过栈（stack）这种数据结构实现的，每当进入一个函数调用，栈就会加一层栈帧，每当函数返回，栈就会减一层栈帧。由于栈的大小不是无限的，所以，递归调用的次数过多，会导致栈溢出）</li>
-</ul>
-<h2 id="内置函数"><a href="#内置函数" class="headerlink" title="内置函数"></a>内置函数</h2><p>（1）zip()函数</p>
-<p>zip()函数接受0个或多个序列作为参数，返回一个tuple列表。 </p>
-<p>zip()函数具体的工作机制是，将每个列表中同一位置的元素取出来组成一个元组，存放到一个列表中，然后返回这个列表。举例说明：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-7.png" alt="3-7"></p>
-<p>对于长度不同的seq，zip()函数处理;</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-8.png" alt="3-8"><br>从上面的例子可以看出，当seq的长度不一致时，zip()会以最短的那个seq为主，进行处理，然后将多余的舍弃掉.</p>
-<p>zip()对只有一个seq的处理：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-9.png" alt="3-9"></p>
-<p>(2)map()函数</p>
-<p>map()函数接收两个参数，一个是函数，一个是Iterable，map将传入的函数依次作用到序列的每个元素，并把结果作为新的Iterator返回。举例说明：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-10.png" alt="3-10"></p>
-<p>map()传入的第一个参数是f，即函数对象本身。由于结果r是一个Iterator，Iterator是惰性序列，因此通过list()函数让它把整个序列都计算出来并返回一个list。</p>
-<p>map（）可以计算任意复杂的函数，比如，把这个list所有数字转为字符串：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-11.png" alt="3-11"></p>
-<p>(3)reduce()函数</p>
-<p>reduce把一个函数作用在一个序列[x1, x2, x3, …]上，这个函数必须接收两个参数，reduce把结果继续和序列的下一个元素做累积计算。举例说明：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-12.png" alt="3-12"></p>
-<p>(4)filter()函数</p>
-<p>和map()类似，filter()也接收一个函数和一个序列。和map()不同的是，filter()把传入的函数依次作用于每个元素，然后根据返回值是True还是False决定保留还是丢弃该元素。</p>
-<p>例如，在一个list中，删掉偶数，只保留奇数，可以这么写：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-13.png" alt="3-13"></p>
-<p>把一个序列中的空字符串删掉，可以这么写：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-14.png" alt="3-14"></p>
-<p>可见用filter()这个高阶函数，关键在于正确实现一个“筛选”函数。</p>
-<p>注意到filter()函数返回的是一个Iterator，也就是一个惰性序列，所以要强迫filter()完成计算结果，需要用list()函数获得所有结果并返回list。</p>
-<p>(5)sorted() 函数对所有可迭代的对象进行排序操作。</p>
-<p>sort 与 sorted 区别：sort 是应用在 list 上的方法，sorted 可以对所有可迭代的对象进行排序操作。list 的 sort 方法返回的是对已经存在的列表进行操作，而内建函数 sorted 方法返回的是一个新的 list，而不是在原来的基础上进行的操作。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-15.png" alt="3-15"></p>
-<p>此外，sorted()函数也是一个高阶函数，它还可以接收一个key函数来实现自定义的排序，例如按绝对值大小排序：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-16.png" alt="3-16"></p>
-<p>(6)max()/min()函数</p>
-<p>max(iterable, key, default) 求迭代器的最大值，其中iterable 为迭代器，max会for i in … 遍历一遍这个迭代器，然后将迭代器的每一个返回值当做参数传给key=func 中的func(一般用lambda表达式定义) ，然后将func的执行结果传给key，然后以key为标准进行大小的判断。</p>
-<p>以下根据不同的判断条件返回最大值也不同</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/3-17.png" alt="3-17"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;函数基础&quot;&gt;&lt;a href=&quot;#函数基础&quot; class=&quot;headerlink&quot; title=&quot;函数基础&quot;&gt;&lt;/a&gt;函数基础&lt;/h1&gt;&lt;p&gt;函数是什么?&lt;/p&gt;
-&lt;p&gt;想象生活中的例子，修理工需要实现准备好工具箱里面放好锤子，扳手，钳子等工具，然后遇到锤钉子的场景
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（三）：字符串格式化</title>
-    <link href="http://yjscloud.com/2018/01/17/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%A0%BC%E5%BC%8F%E5%8C%96/"/>
-    <id>http://yjscloud.com/2018/01/17/Python当歌（三）：字符串格式化/</id>
-    <published>2018-01-17T01:13:30.000Z</published>
-    <updated>2018-02-07T11:12:38.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Python的字符串格式化有两种方式: 百分号方式、format方式。</p>
-<p>百分号的方式相对来说比较老，而format方式则是比较先进的方式，企图替换古老的方式，目前两者并存。</p>
-<h1 id="百分号方式"><a href="#百分号方式" class="headerlink" title="百分号方式"></a>百分号方式</h1><p>格式：%[(name)][flags][width].[precision]typecode</p>
-<p>（1）(name)     可选，用于选择指定的key</p>
-<p>（2）flags       可选，可供选择的值有:</p>
-<ul>
-<li>“+”       右对齐；正数前加正好，负数前加负号；</li>
-<li>“-“        左对齐；正数前无符号，负数前加负号；</li>
-<li>空格    右对齐；正数前加空格，负数前加负号；</li>
-<li>0    右对齐；正数前无符号，负数前加负号；用0填充空白处</li>
-</ul>
-<p>（3）    width         可选，占有宽度</p>
-<p>（4）    precision   可选，小数点后保留的位数</p>
-<p>（5） typecode    必选</p>
-<ul>
-<li>s，获取传入对象的<strong>str</strong>方法的返回值，并将其格式化到指定位置</li>
-<li>r，获取传入对象的<strong>repr</strong>方法的返回值，并将其格式化到指定位置</li>
-<li>c，整数：将数字转换成其unicode对应的值，10进制范围为 0 &lt;= i &lt;= 1114111（py27则只支持0-255）；字符：将字符添加到指定位置</li>
-<li>o，将整数转换成 八  进制表示，并将其格式化到指定位置</li>
-<li>x，将整数转换成十六进制表示，并将其格式化到指定位置</li>
-<li>d，将整数、浮点数转换成 十 进制表示，并将其格式化到指定位置</li>
-<li>e，将整数、浮点数转换成科学计数法，并将其格式化到指定位置（小写e）</li>
-<li>E，将整数、浮点数转换成科学计数法，并将其格式化到指定位置（大写E）</li>
-<li>f， 将整数、浮点数转换成浮点数表示，并将其格式化到指定位置（默认保留小数点后6位）</li>
-<li>F，同上</li>
-<li>g，自动调整将整数、浮点数转换成 浮点型或科学计数法表示（超过6位数用科学计数法），并将其格式化到指定位置（如果是科学计数则是e；）</li>
-<li>G，自动调整将整数、浮点数转换成 浮点型或科学计数法表示（超过6位数用科学计数法），并将其格式化到指定位置（如果是科学计数则是E；）</li>
-<li>%，当字符串中存在格式化标志时，需要用 %%表示一个百分号</li>
-</ul>
-<p>注：Python中百分号格式化是不存在自动将整数转换成二进制表示的方式</p>
-<p>常用格式化：</p>
-<pre><code>tpl = &quot;i am %s&quot; % &quot;alex&quot; 
-
-tpl = &quot;i am %s age %d&quot; % (&quot;alex&quot;, 18)
-
-tpl = &quot;i am %(name)s age %(age)d&quot; % {&quot;name&quot;: &quot;alex&quot;, &quot;age&quot;: 18}
-
-tpl = &quot;percent %.2f&quot; % 99.97623
-
-tpl = &quot;i am %(pp).2f&quot; % {&quot;pp&quot;: 123.425556, }
-
-tpl = &quot;i am %.2f %%&quot; % {&quot;pp&quot;: 123.425556, }
-</code></pre><h1 id="Format方式"><a href="#Format方式" class="headerlink" title="Format方式"></a>Format方式</h1><p>格式：[[fill]align][sign][#][0][width][,][.precision][type]</p>
-<p>（1）fill    【可选】空白处填充的字符</p>
-<p>（2）align   【可选】对齐方式（需配合width使用）</p>
-<ul>
-<li>“&lt;”，内容左对齐</li>
-<li>“&gt;”，内容右对齐(默认)</li>
-<li>“＝”，内容右对齐，将符号放置在填充字符的左侧，且只对数字类型有效。 即使：符号+填充物+数字</li>
-<li>“^”，内容居中</li>
-</ul>
-<p>（3）sign    【可选】有无符号数字</p>
-<ul>
-<li>“+”，正号加正，负号加负；</li>
-<li>“-“，正号不变，负号加负；</li>
-<li>空格 ，正号空格，负号加负；</li>
-</ul>
-<p>（4）”#”        【可选】对于二进制、八进制、十六进制，如果加上#，会显示 0b/0o/0x，否则不显示</p>
-<p>（5)”,”      【可选】为数字添加分隔符，如：1,000,000</p>
-<p>（6）width  【可选】格式化位所占宽度</p>
-<p>（7）.precision 【可选】小数位保留精度</p>
-<p>（8）type     【可选】格式化类型</p>
-<p>传入” 字符串类型 “的参数</p>
-<ul>
-<li>s，格式化字符串类型数据</li>
-<li>空白，未指定类型，则默认是None，同s</li>
-</ul>
-<p>传入“ 整数类型 ”的参数</p>
-<ul>
-<li>b，将10进制整数自动转换成2进制表示然后格式化</li>
-<li>c，将10进制整数自动转换为其对应的unicode字符</li>
-<li>d，十进制整数</li>
-<li>o，将10进制整数自动转换成8进制表示然后格式化；</li>
-<li>x，将10进制整数自动转换成16进制表示然后格式化（小写x）</li>
-<li>X，将10进制整数自动转换成16进制表示然后格式化（大写X）</li>
-</ul>
-<p>传入“ 浮点型或小数类型 ”的参数</p>
-<ul>
-<li>e，转换为科学计数法（小写e）表示，然后格式化；</li>
-<li>E，转换为科学计数法（大写E）表示，然后格式化;</li>
-<li>f ，转换为浮点型（默认小数点后保留6位）表示，然后格式化；</li>
-<li>F， 转换为浮点型（默认小数点后保留6位）表示，然后格式化；</li>
-<li>g，自动在e和f中切换</li>
-<li>G，自动在E和F中切换</li>
-<li>%  显示百分比（默认显示小数点后6位）</li>
-</ul>
-<p>常用格式化：</p>
-<pre><code>tpl = &quot;i am {}, age {}, {}&quot;.format(&quot;seven&quot;, 18, &apos;alex&apos;)
-
-tpl = &quot;i am {}, age {}, {}&quot;.format(*[&quot;seven&quot;, 18, &apos;alex&apos;])
-
-tpl = &quot;i am {0}, age {1}, really {0}&quot;.format(&quot;seven&quot;, 18)
-
-tpl = &quot;i am {0}, age {1}, really {0}&quot;.format(*[&quot;seven&quot;, 18])
-
-tpl = &quot;i am {name}, age {age}, really {name}&quot;.format(name=&quot;seven&quot;, age=18)
-
-tpl = &quot;i am {name}, age {age}, really {name}&quot;.format(**{&quot;name&quot;: &quot;seven&quot;, &quot;age&quot;: 18})
-
-tpl = &quot;i am {0[0]}, age {0[1]}, really {0[2]}&quot;.format([1, 2, 3], [11, 22, 33])
-
-tpl = &quot;i am {:s}, age {:d}, money {:f}&quot;.format(&quot;seven&quot;, 18, 88888.1)
-
-tpl = &quot;i am {:s}, age {:d}&quot;.format(*[&quot;seven&quot;, 18])
-
-tpl = &quot;i am {name:s}, age {age:d}&quot;.format(name=&quot;seven&quot;, age=18)
-
-tpl = &quot;i am {name:s}, age {age:d}&quot;.format(**{&quot;name&quot;: &quot;seven&quot;, &quot;age&quot;: 18})
-
-tpl = &quot;numbers: {:b},{:o},{:d},{:x},{:X}, {:%}&quot;.format(15, 15, 15, 15, 15, 15.87623, 2)
-
-tpl = &quot;numbers: {:b},{:o},{:d},{:x},{:X}, {:%}&quot;.format(15, 15, 15, 15, 15, 15.87623, 2)
-
-tpl = &quot;numbers: {0:b},{0:o},{0:d},{0:x},{0:X}, {0:%}&quot;.format(15)
-
-tpl = &quot;numbers: {num:b},{num:o},{num:d},{num:x},{num:X}, {num:%}&quot;.format(num=15)
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Python的字符串格式化有两种方式: 百分号方式、format方式。&lt;/p&gt;
-&lt;p&gt;百分号的方式相对来说比较老，而format方式则是比较先进的方式，企图替换古老的方式，目前两者并存。&lt;/p&gt;
-&lt;h1 id=&quot;百分号方式&quot;&gt;&lt;a href=&quot;#百分号方式&quot; class=&quot;
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（二）：基础数值类型</title>
-    <link href="http://yjscloud.com/2018/01/16/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E6%95%B0%E5%80%BC%E7%B1%BB%E5%9E%8B/"/>
-    <id>http://yjscloud.com/2018/01/16/Python当歌（二）：基础数值类型/</id>
-    <published>2018-01-16T10:31:58.000Z</published>
-    <updated>2018-02-07T11:12:22.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h1><p>所有的功能，都放在int里</p>
-<p>int:将字符串转换为数字</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%881%EF%BC%89.png" alt="二（1）"></p>
-<p>bit_lenght：当前数字的二进制，至少用n位表示</p>
-<pre><code>r = age.bit_length()
-</code></pre><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%882%EF%BC%89.png" alt="二（2）"></p>
-<h1 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h1><p>如：’wupeiqi’、’alex’</p>
-<p>注：字符串一旦创建，不可修改，一旦修改或者拼接，都会造成重新生成字符串。</p>
-<p>每个字符串都具备如下功能：</p>
-<p>（1）首字母大写</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%883%EF%BC%89.png" alt="二（3）"></p>
-<p>（2）所有变小写，casefold（）更牛逼，很多未知的对相应变小写</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%884%EF%BC%89.png" alt="二（4）"></p>
-<p>（3）设置宽度，并将内容居中</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%885%EF%BC%89.png" alt="二（5）"></p>
-<p>注：20代指总长度，*空白未知填充，一个字符，可有可无</p>
-<p>设置宽度，并将内容居右：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%886%EF%BC%89.png" alt="二（6）"></p>
-<p>设置宽度，并将内容居左： </p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%887%EF%BC%89.png" alt="二（7）"></p>
-<p>（4）去字符串中寻找，寻找子序列的出现次数：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%888%EF%BC%89.png" alt="二（8）"></p>
-<p>也可在限定范围内寻找</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%889%EF%BC%89.png" alt="二（9）"></p>
-<p>（5）以什么什么结尾：endswith（），以什么什么开始：startswith（）</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8810%EF%BC%89.png" alt="二（10）"></p>
-<p>（6）断句方法</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8811%EF%BC%89.png" alt="二（11）"></p>
-<p>注：20的意思是以20个字符为空格作为断句</p>
-<p>（7）从开始往后找，找到第一个之后，获取其未知</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8812%EF%BC%89.png" alt="二（12）"></p>
-<p>（8）Index（）找不到，报错 </p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8813%EF%BC%89.png" alt="二（13）"></p>
-<p>（9）格式化，将一个字符串中的占位符替换为指定的值 </p>
-<p>使用关键字进行匹配</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8814%EF%BC%89.png" alt="二（14）"></p>
-<p>使用数字进行匹配</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%BA%8C%EF%BC%8815%EF%BC%89.png" alt="二（15）"></p>
-<p>(10)格式化，传入的值 {“name”: ‘alex’, “a”: 19} </p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-16.png" alt="2-16"></p>
-<p>（11）字符串中是否只包含字母和数字</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-17.png" alt="2-17"></p>
-<p>（12）是否是字母和汉字</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-18.png" alt="2-18"></p>
-<p>（13）当前输入是否是数字</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-19.png" alt="2-19"></p>
-<p>（14）是否存在不可显示的字符</p>
-<pre><code># \t   制表符
-# \n   换行
-</code></pre><p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-20.png" alt="2-20"></p>
-<p>(15)判断是否全部是空格</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-21.png" alt="2-21"></p>
-<p>（16）判断是否是标题</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-22.png" alt="2-22"></p>
-<p>(17)将字符串中的每一个元素按照指定分隔符进行拼接</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-23.png" alt="2-23"></p>
-<p>（18)判断是否全部是大小写和转换为大小写</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-24.png" alt="2-24"></p>
-<p>(19)移除指定字符串，有限最多匹配</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-25.png" alt="2-25"></p>
-<p>lstrip()和rstrip()去除左右空白，也可以去除去除\t \n</p>
-<p>（20）分割为三部分</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-26.png" alt="2-26"></p>
-<p>（21）分割为指定个数</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-27.png" alt="2-27"></p>
-<p>（22）分割，只能根据，true，false：是否保留换行</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-28.png" alt="2-28"></p>
-<p>(23)以xxx开头，以xx结尾</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-29.png" alt="2-29"></p>
-<p>(24)大小写转换</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-30.png" alt="2-30"></p>
-<p>(25)字母，数字，下划线 ： 标识符 def  class</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-31.png" alt="2-31"></p>
-<p>(26)将指定字符串替换为指定字符串</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-32.png" alt="2-32"></p>
-<p>以上方法中join、split、find、strip、upper、lower、replace这7个方法比较常用</p>
-<h1 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h1><p>如：[11,22,33]、[‘wupeiqi’, ‘alex’]</p>
-<p>每个列表都具备如下功能：</p>
-<p>（1)原来值最后追加</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-33.png" alt="2-33"></p>
-<p>(2)清空列表</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-34.png" alt="2-34"></p>
-<p>(3)拷贝，浅拷贝</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-35.png" alt="2-35"></p>
-<p>(4)计算元素出现的次数</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-36.png" alt="2-36"></p>
-<p>(5)根据值获取当前值索引位置（左边优先）</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-37.png" alt="2-37"></p>
-<p>(6)在指定索引位置插入元素</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-38.png" alt="2-38"></p>
-<p>(7)删除某个值(1.指定索引；2. 默认最后一个)，并获取删除的值</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-39.png" alt="2-39"></p>
-<p>还可以指定索引来删除</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-40.png" alt="2-40"></p>
-<p>(8)删除列表中的指定值，左边优先</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-41.png" alt="2-41"></p>
-<p>(9)将当前列表进行翻转</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-42.png" alt="2-42"></p>
-<p>(10)列表的排序</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-43-1.png" alt="2-43"></p>
-<p>注：列表中可以嵌套任何类型，列表是有序的，列表中的元素可以是数字，字符串,列表，布尔值…所有的都能放进去，列表元素可以被查询、修改和删除，可以通过索引和切片进行查找，可以用in操作判断一个元素是否在列表中例如：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-43.png" alt="2-44"></p>
-<p>取嵌套列表中的元素例如：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-44.png" alt="2-45"></p>
-<p>也可以将字符串转换列表，其内部使用for循环，例如：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-45.png" alt="2-46"></p>
-<p>也可以将列表转换成字符串，需要自己写for循环一个一个处理： 既有数字又有字符串，例如：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-46.png" alt="2-47"></p>
-<p>也可以直接使用字符串join方法：列表中的元素只有字符串，例如：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-47.png" alt="2-48"></p>
-<h1 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h1><p>如：(11,22,33)、(‘wupeiqi’, ‘alex’)</p>
-<p>元组，元素不可被修改，不能被增加或者删除，元组同样可以通过切片索引查询元素</p>
-<p>每个元组都具备如下功能：</p>
-<p>(1)可以被for循环，可迭代对象</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-48.png" alt="2-49"></p>
-<p>(2)转换</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-49.png" alt="2-50"></p>
-<p>(3)元组的一级元素不可修改/删除/增加，元组是有序的。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-50.png" alt="2-51"></p>
-<h1 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h1><p>如：{‘name’: ‘wupeiqi’, ‘age’: 18} 、{‘host’: ‘2.2.2.2’, ‘port’: 80]}</p>
-<p>ps：循环时，默认循环key</p>
-<p>字典两大特点：无序，键唯一</p>
-<p>每个字典都具备如下功能：</p>
-<p>(1)根据序列，创建字典，并指定统一的值</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-51.png" alt="2-52"></p>
-<p>(2)根据Key获取值，key不存在时，可以指定默认值（None）</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-52.png" alt="2-53"></p>
-<p>(3)删除并获取值</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-53.png" alt="2-54"></p>
-<p>(4)设置值，已存在，不设置，获取当前key对应的值：不存在，设置，获取当前key对应的值</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-54.png" alt="2-55"></p>
-<p>(5)更新</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-55.png" alt="2-56"></p>
-<p>(6)字典的value可以是任何值</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-56.png" alt="2-57"></p>
-<p>(7)布尔值(1,0)、列表、字典不能作为字典的key</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-57.png" alt="2-58"></p>
-<p>(8)索引方式找到指定元素</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-58.png" alt="2-59"></p>
-<p>(9)字典支持 del 删除</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-59.png" alt="2-60"></p>
-<p>(10)for循环</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-60.png" alt="2-61"></p>
-<h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><p>set是一个无序且不重复的元素集合</p>
-<p>每个集合都具备如下功能：</p>
-<p>(1)添加</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-61.png" alt="2-62"></p>
-<p>(2)清空</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-62.png" alt="2-63"></p>
-<p>(3)拷贝</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-63.png" alt="2-64"></p>
-<p>(4)随机删</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-64.png" alt="2-65"></p>
-<p>(5)指定删除</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-65.png" alt="2-66"></p>
-<p>(6)求交集</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-66.png" alt="2-67"></p>
-<p>(7)求并集</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-67.png" alt="2-68"></p>
-<p>(8)差集</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-68.png" alt="2-69"></p>
-<p>(9)交叉补集</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-69.png" alt="2-70"></p>
-<p>(10)集合值更新</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-70.png" alt="2-71"></p>
-<p>(11)去除集合中的重复值</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/2-71.png" alt="2-72"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;数字&quot;&gt;&lt;a href=&quot;#数字&quot; class=&quot;headerlink&quot; title=&quot;数字&quot;&gt;&lt;/a&gt;数字&lt;/h1&gt;&lt;p&gt;所有的功能，都放在int里&lt;/p&gt;
-&lt;p&gt;int:将字符串转换为数字&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://p3q1rwnbl.b
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（一）：Python入门</title>
-    <link href="http://yjscloud.com/2018/01/15/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9APython%E5%85%A5%E9%97%A8/"/>
-    <id>http://yjscloud.com/2018/01/15/Python当歌（一）：Python入门/</id>
-    <published>2018-01-15T08:47:45.000Z</published>
-    <updated>2018-02-07T11:12:03.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="第一句Python代码"><a href="#第一句Python代码" class="headerlink" title="第一句Python代码"></a>第一句Python代码</h1><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%881%EF%BC%89.png" alt="一（1）"></p>
-<p>python内部执行过程如下：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%882%EF%BC%89.png" alt="一（2）"></p>
-<h1 id="内容编码"><a href="#内容编码" class="headerlink" title="内容编码"></a>内容编码</h1><p>python解释器在加载 .py 文件中的代码时，会对内容进行编码（默认ascill）<br>ASCII（American Standard Code for Information Interchange，美国标准信息交换代码）是基于拉丁字母的一套电脑编码系统，主要用于显示现代英语和其他西欧语言，其最多只能用 8 位来表示（一个字节），即：2**8 = 256，所以，ASCII码最多只能表示 256 个符号。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%883%EF%BC%89.png" alt="一（3）"><br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%884%EF%BC%89.png" alt="一（4）"></p>
-<p>显然ASCII码无法将世界上的各种文字和符号全部表示，所以，就需要新出一种可以代表所有字符和符号的编码，即：Unicode<br>Unicode（统一码、万国码、单一码）是一种在计算机上使用的字符编码。Unicode 是为了解决传统的字符编码方案的局限而产生的，它为每种语言中的每个字符设定了统一并且唯一的二进制编码，规定虽有的字符和符号最少由 16 位来表示（2个字节），即：2 **16 = 65536。</p>
-<p>注：此处说的的是最少2个字节，可能更多UTF-8，是对Unicode编码的压缩和优化，他不再使用最少使用2个字节，而是将所有的字符和符号进行分类：ascii码中的内容用1个字节保存、欧洲的字符用2个字节保存，东亚的字符用3个字节保存。<br>注：在python2中如果在.py文中有中文会报错，需要在文件开头添加一行注释：# -<em>- coding: utf-8 -</em>-，就不会报错，而知python3中可以不用添加，python3已经可以很好的支持中文了。</p>
-<h1 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h1><p>当行注视：# 被注释内容<br>多行注释：””” 被注释内容 “””</p>
-<h1 id="执行脚本传入参数"><a href="#执行脚本传入参数" class="headerlink" title="执行脚本传入参数"></a>执行脚本传入参数</h1><p>Python有大量的模块，从而使得开发Python程序非常简洁。类库有包括三中：</p>
-<p>•    Python内部提供的模块</p>
-<p>•    业内开源的模块</p>
-<p>•    程序员自己开发的模块</p>
-<p>Python内部提供一个 sys 的模块，其中的 sys.argv 用来捕获执行执行python脚本时传入的参数</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%885%EF%BC%89.png" alt="一（5）"></p>
-<h1 id="pyc-文件"><a href="#pyc-文件" class="headerlink" title="pyc 文件"></a>pyc 文件</h1><p>执行Python代码时，如果导入了其他的 .py 文件，那么，执行过程中会自动生成一个与其同名的 .pyc 文件，该文件就是Python解释器编译之后产生的字节码。<br>ps：代码经过编译可以产生字节码；字节码通过反编译也可以得到代码。</p>
-<h1 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h1><h2 id="声明变量"><a href="#声明变量" class="headerlink" title="声明变量"></a>声明变量</h2><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%886%EF%BC%89.png" alt="一（6）"></p>
-<p>上述代码声明了一个变量，变量名为： name，变量name的值为：”xwq”<br>变量的作用：昵称，其代指内存里某个地址中保存的内容</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%887%EF%BC%89.png" alt="一（7）"></p>
-<p>变量定义的规则：</p>
-<p>变量名只能是 字母、数字或下划线的任意组合，变量名的第一个字符不能是数字</p>
-<p>以下关键字不能声明为变量名：[‘and’, ‘as’, ‘assert’, ‘break’, ‘class’, ‘continue’, ‘def’, ‘del’, ‘elif’, ‘else’, ‘except’, ‘exec’, ‘finally’, ‘for’, ‘from’, ‘global’, ‘if’, ‘import’, ‘in’, ‘is’, ‘lambda’, ‘not’, ‘or’, ‘pass’, ‘print’, ‘raise’, ‘return’, ‘try’, ‘while’, ‘with’, ‘yield’]</p>
-<h2 id="变量的赋值"><a href="#变量的赋值" class="headerlink" title="变量的赋值"></a>变量的赋值</h2><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%888%EF%BC%89.png" alt="一（8）"></p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%809.png" alt="一9"></p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%889%EF%BC%89.png" alt="一（9）"></p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8810%EF%BC%89.png" alt="一（10）"></p>
-<h1 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h1><p><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8811%EF%BC%89.png" alt="一（11）"></p>
-<h1 id="初识基本数据类型"><a href="#初识基本数据类型" class="headerlink" title="初识基本数据类型"></a>初识基本数据类型</h1><h2 id="数字"><a href="#数字" class="headerlink" title="数字"></a>数字</h2><p>2是一个整数的例子。<br>长整数不过是大一些的整数。</p>
-<p>3.23和52.3E-4是浮点数的例子。E标记表示10的幂。在这里，52.3E-4表示52.3 * 10-4。<br>(-5+4j)和(2.3-4.6j)是复数的例子。</p>
-<p>int（整型）</p>
-<p>　　在32位机器上，整数的位数为32位，取值范围为-2<strong>31～2</strong>31-1，即-2147483648～2147483647<br>　　在64位系统上，整数的位数为64位，取值范围为-2<strong>63～2</strong>63-1，即-9223372036854775808～9223372036854775807<br>　　<br>long（长整型）<br>　　<br>　　跟C语言不同，Python的长整数没有指定位宽，即：Python没有限制长整数数值的大小，但实际上由于机器内存有限，我们使用的长整数数值不可能无限大。<br>　　注意，自从Python2.2起，如果整数发生溢出，Python会自动将整数数据转换为长整数，所以如今在长整数数据后面不加字母L也不会导致严重后果了。</p>
-<p>float（浮点型）<br>　　<br>　　浮点数用来处理实数，即带有小数的数字。类似于C语言中的double类型，占8个字节（64位），其中52位表示底，11位表示指数，剩下的一位表示符号。</p>
-<p>complex（复数）<br>　　<br>　　复数由实数部分和虚数部分组成，一般形式为x＋yj，其中的x是复数的实数部分，y是复数的虚数部分，这里的x和y都是实数。<br>注：Python中存在小数字池：-5 ～ 257</p>
-<h2 id="布尔值"><a href="#布尔值" class="headerlink" title="布尔值"></a>布尔值</h2><p>　　真或假<br>　　<br>　　1 或 0
-　　</p>
-<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><p>“hello world”</p>
-<p>万恶的字符串拼接：python中的字符串在C语言中体现为是一个字符数组，每次创建字符串时候需要在内存中开辟一块连续的空，并且一旦需要修改字符串的话，就需要再次开辟空间，万恶的+号每出现一次就会在内从中重新开辟一块空间。</p>
-<p>字符串格式化:<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8812%EF%BC%89.png" alt="一（12）"></p>
-<p>PS: 字符串是 %s;整数 %d;浮点数%f</p>
-<p>字符串常用功能：移除空白、分割、长度、索引、切片</p>
-<h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><p>创建列表：</p>
-<p>name_list = [‘alex’, ‘seven’, ‘eric’]</p>
-<p>基本操作：索引、切片、追加、删除、长度、切片、循环、包含</p>
-<h2 id="元祖"><a href="#元祖" class="headerlink" title="元祖"></a>元祖</h2><p>创建元祖：ages = (11, 22, 33, 44, 55)</p>
-<p>基本操作：索引、切片、循环、长度、包含</p>
-<h2 id="字典（无序）"><a href="#字典（无序）" class="headerlink" title="字典（无序）"></a>字典（无序）</h2><p>创建字典：person = {“name”: “mr.wu”, ‘age’: 18}</p>
-<p>常用操作：索引，新增，删除，键、值、键值对，循环，长度</p>
-<p>PS：循环，range，continue 和 break</p>
-<h1 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h1><p>算数运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8813%EF%BC%89.png" alt="一（13）"></p>
-<p>比较运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8814%EF%BC%89.png" alt="一（14）"></p>
-<p>赋值运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8815%EF%BC%89.png" alt="一（15）"></p>
-<p>逻辑运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8816%EF%BC%89.png" alt="一（16）"></p>
-<p>成员运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8818%EF%BC%89.png" alt="一（17）"></p>
-<p>身份运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8818%EF%BC%89.png" alt="一（18）"></p>
-<p>位运算：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8819%EF%BC%89.png" alt="一（19）"></p>
-<p>运算符优先级：<br><img src="http://p3q1rwnbl.bkt.clouddn.com/%E4%B8%80%EF%BC%8820%EF%BC%89.png" alt="一（20）"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;第一句Python代码&quot;&gt;&lt;a href=&quot;#第一句Python代码&quot; class=&quot;headerlink&quot; title=&quot;第一句Python代码&quot;&gt;&lt;/a&gt;第一句Python代码&lt;/h1&gt;&lt;p&gt;&lt;img src=&quot;http://p3q1rwnbl.bkt.clo
     
     </summary>
     
