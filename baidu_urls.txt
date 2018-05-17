@@ -1,6 +1,6 @@
+http://yjscloud.com/2018/04/21/Kolla容器化部署OpenStack：多节点部署/
 http://yjscloud.com/2018/04/20/Kolla容器化部署OpenStack：单点部署/
 http://yjscloud.com/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/
-http://yjscloud.com/2018/04/11/Kolla容器化部署OpenStack：多节点部署/
 http://yjscloud.com/2018/04/04/制作openstack镜像模板/
 http://yjscloud.com/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/
 http://yjscloud.com/2018/03/25/OpenStack-O版搭建（三）：Compute节点部署/
