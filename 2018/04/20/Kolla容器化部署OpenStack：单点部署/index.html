@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="OpenStack技能," />
+  <meta name="keywords" content="Kolla自动化部署," />
 
 
 
@@ -92,17 +92,34 @@
 
 
 
-<meta name="description" content="在kvm服务器上安装一个虚拟机，然后进行如下配置： 模板默认配置制作模版要配置yum源，安装常用软件，yum源可以配置为阿里的源，163的源最好有自己的源需要安装的常用软件： yum install net-tools wget vim ntpdate bash-completion -y 配置网卡删除网卡配置文件中的UUID，网卡设为DHCP（如果内网有DHCP服务器） （1）网卡配置文件一般如">
-<meta name="keywords" content="OpenStack技能">
+<meta name="description" content="陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。注意硬盘至少需要200G(安装完成后实际占用空间为25G">
+<meta name="keywords" content="Kolla自动化部署">
 <meta property="og:type" content="article">
-<meta property="og:title" content="制作OpenStack镜像模板">
-<meta property="og:url" content="http://yjscloud.com/2018/04/04/制作openstack镜像模板/index.html">
+<meta property="og:title" content="Kolla容器化部署OpenStack：单点部署">
+<meta property="og:url" content="http://yjscloud.com/2018/04/20/Kolla容器化部署OpenStack：单点部署/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="在kvm服务器上安装一个虚拟机，然后进行如下配置： 模板默认配置制作模版要配置yum源，安装常用软件，yum源可以配置为阿里的源，163的源最好有自己的源需要安装的常用软件： yum install net-tools wget vim ntpdate bash-completion -y 配置网卡删除网卡配置文件中的UUID，网卡设为DHCP（如果内网有DHCP服务器） （1）网卡配置文件一般如">
-<meta property="og:updated_time" content="2018-05-17T15:43:09.000Z">
+<meta property="og:description" content="陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。注意硬盘至少需要200G(安装完成后实际占用空间为25G">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-1.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-2.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-3.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-4.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-5.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-6.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-7.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-8.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-9.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-10.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-11.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-12.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-13.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-14.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-15.png">
+<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-16.png">
+<meta property="og:updated_time" content="2018-05-17T23:51:51.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="制作OpenStack镜像模板">
-<meta name="twitter:description" content="在kvm服务器上安装一个虚拟机，然后进行如下配置： 模板默认配置制作模版要配置yum源，安装常用软件，yum源可以配置为阿里的源，163的源最好有自己的源需要安装的常用软件： yum install net-tools wget vim ntpdate bash-completion -y 配置网卡删除网卡配置文件中的UUID，网卡设为DHCP（如果内网有DHCP服务器） （1）网卡配置文件一般如">
+<meta name="twitter:title" content="Kolla容器化部署OpenStack：单点部署">
+<meta name="twitter:description" content="陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。注意硬盘至少需要200G(安装完成后实际占用空间为25G">
+<meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/k-1.png">
 
 
 
@@ -130,13 +147,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2018/04/04/制作openstack镜像模板/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/04/20/Kolla容器化部署OpenStack：单点部署/"/>
 
 
 
 
 
-  <title>制作OpenStack镜像模板 | 戏子登台</title>
+  <title>Kolla容器化部署OpenStack：单点部署 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -310,7 +327,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/04/04/制作openstack镜像模板/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/04/20/Kolla容器化部署OpenStack：单点部署/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -331,7 +348,7 @@
             
             
               
-                制作OpenStack镜像模板
+                Kolla容器化部署OpenStack：单点部署
               
             
           </h1>
@@ -346,8 +363,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-04T19:57:11+08:00">
-                2018-04-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-20T20:37:32+08:00">
+                2018-04-20
               </time>
             
 
@@ -390,7 +407,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2018/04/04/制作openstack镜像模板/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/04/20/Kolla容器化部署OpenStack：单点部署/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -413,7 +430,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  635
+                  811
                 </span>
               
 
@@ -447,46 +464,65 @@
       
 
       
-        <p>在kvm服务器上安装一个虚拟机，然后进行如下配置：</p>
-<h1 id="模板默认配置"><a href="#模板默认配置" class="headerlink" title="模板默认配置"></a>模板默认配置</h1><p>制作模版要配置yum源，安装常用软件，yum源可以配置为阿里的源，163的源最好有自己的源<br>需要安装的常用软件：</p>
-<pre><code>yum install net-tools wget vim ntpdate bash-completion -y
-</code></pre><h1 id="配置网卡"><a href="#配置网卡" class="headerlink" title="配置网卡"></a>配置网卡</h1><p>删除网卡配置文件中的UUID，网卡设为DHCP（如果内网有DHCP服务器）</p>
-<p>（1）网卡配置文件一般如下</p>
-<pre><code>TYPE=Ethernet
-DEVICE=eth0
-ONBOOT=yes
-BOOTPROTO=dhcp
-NM_CONTROLLED=no
-</code></pre><p>（2）centos6需要执行rm -rf /etc/udev/rules.d/70-persistent-net.rules（centos7不用）</p>
-<p>（3）vim /etc/sysconfig/network<br>    添加如下内容：</p>
-<pre><code>NOZERCONF=yes
-</code></pre><p>NOZERCONF=yes的意思是禁用ZERCONF路由，ZERCONF又被叫做IPv4 Link-Local和Automatic Private IP Addressing。它是一个动态配置协议，系统可以通过它来连接到网络。很多linux发行版本都默认安装该服务，当系统无法连接DHCP server的时候，就会尝试通过ZERCONF来获取IP，一般这个IP地址段为169.254.0.0，我们在做openstack镜像的时候，这个需要禁用，因为VM如果DHCP获取不到IP就让它获取不到，别让它获取其他IP段的地址，所以这里我们禁用。</p>
-<h1 id="安装cloud服务"><a href="#安装cloud服务" class="headerlink" title="安装cloud服务"></a>安装cloud服务</h1><pre><code>yum -y install cloud-utils cloud-init parted
-</code></pre><h1 id="编辑cloud的配置文件"><a href="#编辑cloud的配置文件" class="headerlink" title="编辑cloud的配置文件"></a>编辑cloud的配置文件</h1><pre><code>vim /etc/cloud/cloud.cfg    
-修改如下内容：
-ssh_pwauth:    1
-在cloud_init_modules:下面添加一个参数                                                                                          - resolv-conf
-</code></pre><h1 id="配置脚本文件"><a href="#配置脚本文件" class="headerlink" title="配置脚本文件"></a>配置脚本文件</h1><pre><code>vim /etc/rc.d/rc.local
-覆盖配置这个脚本（Netron配置文件）
-chmod +x /etc/rc.d/rc.local
-systemctl enable cloud-config.service cloud-final.service cloud-init-local.service cloud-init.service
-</code></pre><p>最后重启系统</p>
-<pre><code>reboot
-</code></pre><h1 id="尝试运行命令检查服务"><a href="#尝试运行命令检查服务" class="headerlink" title="尝试运行命令检查服务"></a>尝试运行命令检查服务</h1><pre><code>systemctl list-dependencies
-</code></pre><p>出现四个（cloud-）开头的服务且是绿色的就说明cloud-init安装成功</p>
-<h1 id="关机和压缩"><a href="#关机和压缩" class="headerlink" title="关机和压缩"></a>关机和压缩</h1><p>找到刚才创建的镜像压缩一下</p>
-<p>这里我们进入cd /opt目录压缩（ps：不能在镜像目录下压缩）</p>
-<pre><code>virt-sparsify --compress /var/lib/libvirt/images/CentOS7.1 CentOS7.1.qcow2
-</code></pre><p>原大小是2.5g压缩后是500mb左右（特别费时间）</p>
-<pre><code>du -sh CentOS7.1.qcow2    #查看镜像大小
-</code></pre><h1 id="安装windows模版"><a href="#安装windows模版" class="headerlink" title="安装windows模版"></a>安装windows模版</h1><p>安装windows的步骤就不再赘述</p>
-<p>需要注意的两点是：</p>
-<p>网卡选择 virtio模式</p>
-<p>usb模式选择Hypervisor default </p>
-<p>然后配置一下远程桌面</p>
-<p>安装cloud-init（版本为0.99.dev26）,安装步骤较为简单不再赘述</p>
-<p>要设置用户下一次登陆要修改密码，这是为了安全着想。</p>
-<p>最后对cloud Initialization service Properties服务属性设置为 local system account</p>
+        <p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。<br>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。<br>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
+<h1 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h1><p>（1）使用iso引导，选择 install centos7.3 and kolla</p>
+<p>可以使用tab键，修改ip地址和主机名，默认ip地址为10.99.0.2，主机名为control01</p>
+<p>这里需要注意，安装完成后，需要设置好网卡1、网卡2的IP地址，最好固定ip地址！网卡名称分别为em1和em2，IP地址分别为192.168.0.130和172.16.31.130</p>
+<p>（2）安装系统后，登录系统(root密码为99cloud)，首先要进行如下修改：</p>
+<p>1）/etc/hosts 文件需要修改<br>10.99.0.2 control01 改为 172.16.31.0.130 control01 </p>
+<p>2）/etc/kolla/globals.yml 文件里面2个IP地址由10.99.0.2替换为172.16.31.130</p>
+<p>3）/etc/kolla/globals.yml 文件中  neutron_external_interface: “docker0” 改为neutron_external_interface: “em2”</p>
+<p>然后进行部署：</p>
+<pre><code>/root/kolla-ansible-4.0.3.dev36/tools/kolla-ansible deploy
+</code></pre><p>部署过程中，如果发现下面类似的错误，则需要进入容器，查看日志进行排错。<br>下面这个错误原因就是RabbitMQ容器中的服务没有正常启动(问题1造成)而导致nova-compute服务无法启动。 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-1.png" alt="k-1"></p>
+<p>遇到的最后一个问题，就是  neutron_openvswitch_agent 容器无法正常启动，排查的结果是  openvswitch_vswitchd 容器里面的 br-ex 下面的port应该由docker0改为em2(外网网卡)</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-2.png" alt="k-2"></p>
+<p>dashboard访问地址  <a href="http://172.16.31.130/" target="_blank" rel="external">http://172.16.31.130/</a> </p>
+<p>username admin </p>
+<p>password 99cloud</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-3.png" alt="k-3"></p>
+<h1 id="后续测试"><a href="#后续测试" class="headerlink" title="后续测试"></a>后续测试</h1><p>1）上传镜像cirros </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-4.png" alt="k-4"></p>
+<p>2）创建flavor </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-5.png" alt="k-5"></p>
+<p>3）创建一个vxlan网络 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-6.png" alt="k-6"></p>
+<p>4）创建一个外部网络 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-7.png" alt="k-7"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-8.png" alt="k-8"></p>
+<p>5）添加路由router1，可以让内部网络连接到外网</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-9.png" alt="k-9"></p>
+<p>6）启动2个实例，其中给test1添加浮动IP </p>
+<p>如果实例无法启动的话进行如下修改（物理机环境不会出现这个情况） </p>
+<p>问题描述： </p>
+<p>VMware虚拟机作为OpenStack计算节点，如果安装的操作系统是CentOS7.3，则在此计算节点放置的虚拟机无法正常启动，报如下错误： </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-10.png" alt="k-10"></p>
+<p>在创建计算节点时，为了能让 KVM 能创建嵌套的虚机，要把 CPU 的虚拟化功能打开。如下图在 VMWare 中设置以下 CPU 的模式。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-11.png" alt="k-11"></p>
+<p>用以下命令确认 CPU 支持虚拟化。 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-12.png" alt="k-12"></p>
+<p>nova的配置如下：</p>
+<pre><code>/etc/nova/nova.conf
+[libvirt]
+virt_type = kvm
+</code></pre><p>已经验证，如果计算节点安装的是CentOS7.2或Ubuntu操作系统，则不会报上面的错误。</p>
+<p>解决方案： </p>
+<p>修改nova的配置：</p>
+<pre><code>/etc/nova/nova.conf
+[libvirt]
+virt_type = qemu
+cpu_mode = none
+</code></pre><p>重启 nova-compute即可。</p>
+<p>就算CPU支持虚拟化，也得设置 virt_type = qemu ，否则还是报错。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-13.png" alt="k-13"></p>
+<p>7) 默认安全组添加两条规则，支持外部ping通内部、ssh登陆内部 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-14.png" alt="k-14"></p>
+<p>8）ping测试</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-15.png" alt="k-15"></p>
+<p>虚拟机之间可以互相通信</p>
+<p>绑定浮动ip后ping外网ip</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-16.png" alt="k-16"></p>
 
       
     </div>
@@ -538,7 +574,7 @@ systemctl enable cloud-config.service cloud-final.service cloud-init-local.servi
       
         <div class="post-tags">
           
-            <a href="/tags/OpenStack技能/" rel="tag"><i class="fa fa-tag"></i> OpenStack技能</a>
+            <a href="/tags/Kolla自动化部署/" rel="tag"><i class="fa fa-tag"></i> Kolla自动化部署</a>
           
         </div>
       
@@ -551,18 +587,14 @@ systemctl enable cloud-config.service cloud-final.service cloud-init-local.servi
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/11/Kolla容器化部署OpenStack：多节点部署/" rel="next" title="Kolla容器化部署OpenStack：多节点部署">
-                <i class="fa fa-chevron-left"></i> Kolla容器化部署OpenStack：多节点部署
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/" rel="prev" title="OpenStack O版搭建（四）：Cinder节点部署">
-                OpenStack O版搭建（四）：Cinder节点部署 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/" rel="prev" title="OpenStack排错（一）：Cinder僵尸卷删除">
+                OpenStack排错（一）：Cinder僵尸卷删除 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -788,7 +820,7 @@ systemctl enable cloud-config.service cloud-final.service cloud-init-local.servi
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#模板默认配置"><span class="nav-number">1.</span> <span class="nav-text">模板默认配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置网卡"><span class="nav-number">2.</span> <span class="nav-text">配置网卡</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装cloud服务"><span class="nav-number">3.</span> <span class="nav-text">安装cloud服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编辑cloud的配置文件"><span class="nav-number">4.</span> <span class="nav-text">编辑cloud的配置文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置脚本文件"><span class="nav-number">5.</span> <span class="nav-text">配置脚本文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#尝试运行命令检查服务"><span class="nav-number">6.</span> <span class="nav-text">尝试运行命令检查服务</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关机和压缩"><span class="nav-number">7.</span> <span class="nav-text">关机和压缩</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装windows模版"><span class="nav-number">8.</span> <span class="nav-text">安装windows模版</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#部署步骤"><span class="nav-number">1.</span> <span class="nav-text">部署步骤</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#后续测试"><span class="nav-number">2.</span> <span class="nav-text">后续测试</span></a></li></ol></div>
             
 
           </div>

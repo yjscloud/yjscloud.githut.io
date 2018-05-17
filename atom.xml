@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-05-17T23:38:30.000Z</updated>
+  <updated>2018-05-17T23:51:51.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -16,11 +16,178 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Kolla容器化部署OpenStack:多节点部署</title>
-    <link href="http://yjscloud.com/2018/04/14/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%A4%9A%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
-    <id>http://yjscloud.com/2018/04/14/Kolla容器化部署OpenStack：多节点部署/</id>
-    <published>2018-04-14T12:59:18.000Z</published>
-    <updated>2018-05-17T23:38:30.000Z</updated>
+    <title>Kolla容器化部署OpenStack：单点部署</title>
+    <link href="http://yjscloud.com/2018/04/20/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%8D%95%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.com/2018/04/20/Kolla容器化部署OpenStack：单点部署/</id>
+    <published>2018-04-20T12:37:32.000Z</published>
+    <updated>2018-05-17T23:51:51.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。<br>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。<br>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
+<h1 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h1><p>（1）使用iso引导，选择 install centos7.3 and kolla</p>
+<p>可以使用tab键，修改ip地址和主机名，默认ip地址为10.99.0.2，主机名为control01</p>
+<p>这里需要注意，安装完成后，需要设置好网卡1、网卡2的IP地址，最好固定ip地址！网卡名称分别为em1和em2，IP地址分别为192.168.0.130和172.16.31.130</p>
+<p>（2）安装系统后，登录系统(root密码为99cloud)，首先要进行如下修改：</p>
+<p>1）/etc/hosts 文件需要修改<br>10.99.0.2 control01 改为 172.16.31.0.130 control01 </p>
+<p>2）/etc/kolla/globals.yml 文件里面2个IP地址由10.99.0.2替换为172.16.31.130</p>
+<p>3）/etc/kolla/globals.yml 文件中  neutron_external_interface: “docker0” 改为neutron_external_interface: “em2”</p>
+<p>然后进行部署：</p>
+<pre><code>/root/kolla-ansible-4.0.3.dev36/tools/kolla-ansible deploy
+</code></pre><p>部署过程中，如果发现下面类似的错误，则需要进入容器，查看日志进行排错。<br>下面这个错误原因就是RabbitMQ容器中的服务没有正常启动(问题1造成)而导致nova-compute服务无法启动。 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-1.png" alt="k-1"></p>
+<p>遇到的最后一个问题，就是  neutron_openvswitch_agent 容器无法正常启动，排查的结果是  openvswitch_vswitchd 容器里面的 br-ex 下面的port应该由docker0改为em2(外网网卡)</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-2.png" alt="k-2"></p>
+<p>dashboard访问地址  <a href="http://172.16.31.130/" target="_blank" rel="external">http://172.16.31.130/</a> </p>
+<p>username admin </p>
+<p>password 99cloud</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-3.png" alt="k-3"></p>
+<h1 id="后续测试"><a href="#后续测试" class="headerlink" title="后续测试"></a>后续测试</h1><p>1）上传镜像cirros </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-4.png" alt="k-4"></p>
+<p>2）创建flavor </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-5.png" alt="k-5"></p>
+<p>3）创建一个vxlan网络 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-6.png" alt="k-6"></p>
+<p>4）创建一个外部网络 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-7.png" alt="k-7"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-8.png" alt="k-8"></p>
+<p>5）添加路由router1，可以让内部网络连接到外网</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-9.png" alt="k-9"></p>
+<p>6）启动2个实例，其中给test1添加浮动IP </p>
+<p>如果实例无法启动的话进行如下修改（物理机环境不会出现这个情况） </p>
+<p>问题描述： </p>
+<p>VMware虚拟机作为OpenStack计算节点，如果安装的操作系统是CentOS7.3，则在此计算节点放置的虚拟机无法正常启动，报如下错误： </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-10.png" alt="k-10"></p>
+<p>在创建计算节点时，为了能让 KVM 能创建嵌套的虚机，要把 CPU 的虚拟化功能打开。如下图在 VMWare 中设置以下 CPU 的模式。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-11.png" alt="k-11"></p>
+<p>用以下命令确认 CPU 支持虚拟化。 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-12.png" alt="k-12"></p>
+<p>nova的配置如下：</p>
+<pre><code>/etc/nova/nova.conf
+[libvirt]
+virt_type = kvm
+</code></pre><p>已经验证，如果计算节点安装的是CentOS7.2或Ubuntu操作系统，则不会报上面的错误。</p>
+<p>解决方案： </p>
+<p>修改nova的配置：</p>
+<pre><code>/etc/nova/nova.conf
+[libvirt]
+virt_type = qemu
+cpu_mode = none
+</code></pre><p>重启 nova-compute即可。</p>
+<p>就算CPU支持虚拟化，也得设置 virt_type = qemu ，否则还是报错。</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-13.png" alt="k-13"></p>
+<p>7) 默认安全组添加两条规则，支持外部ping通内部、ssh登陆内部 </p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-14.png" alt="k-14"></p>
+<p>8）ping测试</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-15.png" alt="k-15"></p>
+<p>虚拟机之间可以互相通信</p>
+<p>绑定浮动ip后ping外网ip</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/k-16.png" alt="k-16"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。&lt;br&gt;首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)
+    
+    </summary>
+    
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="Kolla自动化部署" scheme="http://yjscloud.com/tags/Kolla%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OpenStack排错（一）：Cinder僵尸卷删除</title>
+    <link href="http://yjscloud.com/2018/04/12/OpenStack%E6%8E%92%E9%94%99-%E4%B8%80-cinder%E5%83%B5%E5%B0%B8%E5%8D%B7%E5%88%A0%E9%99%A4/"/>
+    <id>http://yjscloud.com/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/</id>
+    <published>2018-04-12T12:14:21.000Z</published>
+    <updated>2018-05-17T15:45:30.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="处理报错的大致思路"><a href="#处理报错的大致思路" class="headerlink" title="处理报错的大致思路"></a>处理报错的大致思路</h1><p>(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted；</p>
+<p>(2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程；</p>
+<p>(3)应用命令lvremove来删除相应的卷；</p>
+<p>(4)此时问题貌似已经解决，因为已经可以正确地执行cinder中命令，要删除的卷的记录也已经删除。但是这里还有个问题，默认的建立卷的最大数目为10，如果之前删除的僵尸卷的数目为1，但是此时当你建立卷的数目为9个时，再尝试建立新卷时，就会提示已经达到卷的数目的最大值。解决方法就是到cinder数据表中找到quota_usages，将其中in_use中的数据减少相应的删除的僵尸卷的数目即可。</p>
+<p>备注：fuser命令在psmisc包中</p>
+<h1 id="第一种情况的僵尸卷"><a href="#第一种情况的僵尸卷" class="headerlink" title="第一种情况的僵尸卷"></a>第一种情况的僵尸卷</h1><p><img src="http://oxysobnip.bkt.clouddn.com/err-1.png" alt="err-1"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/err-2.png" alt="err-2"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/err-3.png" alt="err-3"></p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/err-4.png" alt="err-4"></p>
+<p>执行完上面的操作后进入云平台系统，更改需要删除云硬盘状态为“可用配额”，然后“删除云硬盘”，如果再界面上删除依旧没有执行成功或者依旧一直再删除中，就采用比较暴力的方式，修改云硬盘再数据库中的状态，因为此时云硬盘再存储设备（物理机）上已经删除了，仅仅还有数据库中还有该记录信息，但不能直接删除这条记录，数据库有外键依赖，而是要把cinder盘的deleted改成“1”,“1”即为删除，0为不删除。</p>
+<p>进入数据库：</p>
+<pre><code>mysql -uxxxx -pxxxx
+</code></pre><p>选择数据库表：</p>
+<pre><code>use cinder;
+</code></pre><p>关闭数据库的键外查询：</p>
+<pre><code>set foreign_key_checks=0;
+</code></pre><p>select找到出错的数据：</p>
+<pre><code>select id, status, display_name from volumes where id=&quot;af3e36ce-10ab-4daa-80e3-b71f16836a3b&quot;
+</code></pre><p>修改数据库记录状体：</p>
+<pre><code>update volumes set deleted=1 where id=&quot;af3e36ce-10ab-4daa-80e3-b71f16836a3b&quot;
+</code></pre><p>操作完成后开启数据库的键外查询：</p>
+<pre><code>set foreign_key_checks=0;
+</code></pre><p>此时如果dashboard界面卷存储还没有恢复正常就需要进行如下操作！！！</p>
+<p>（1）use cinder;</p>
+<p>（2）select  *  from volumes;</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/err-5.png" alt="err-5"></p>
+<p>在删除数据条目之前要临时关闭键值检查，否则删除操作无法进行：set foreign_key_checks=0;</p>
+<p>删除操作完成后再运行此命令开启键值检查，确保数据库安全</p>
+<p>找到之前出问题的卷并删除条目信息：</p>
+<pre><code>delete from volumes where id=&apos;f0a030a6-7ff0-4765-ac47-1f1eed3c7582&apos;;
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/err-6.png" alt="err-6"></p>
+<p>然后把in_use的数值修改为0即可</p>
+<p>这里我就很暴力了直接删除了了条目：</p>
+<pre><code>delete from quota_usages where project_id=&apos;232b14de024647159470ed97873ce774&apos;;
+</code></pre><p>等下新建卷的时候就会恢复的，不建议这么做哦。</p>
+<h1 id="第二种情况的僵尸卷"><a href="#第二种情况的僵尸卷" class="headerlink" title="第二种情况的僵尸卷"></a>第二种情况的僵尸卷</h1><p>思路和第一中情况差不多；</p>
+<p>（1）通过lvdisplay |grep查询cinder对应的卷地址。</p>
+<pre><code>root@compute:~# lvdisplay | grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
+LV Path                /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3
+LV Name                volume-8580f464-02e1-411c-bd94-a4af35e499a3
+</code></pre><p>（2）通过lsof | grep查询占用cinder卷的端口</p>
+<pre><code>lsof| grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
+kill -9 76568
+</code></pre><p>（3）通过lvremove删除相应的卷</p>
+<pre><code>lvremove /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3
+</code></pre><p>（4）报错处理<br>报错：device-mapper: remove ioctl on failed: Deviceor resource busy。设备繁忙</p>
+<p>查看是否被打开：</p>
+<pre><code>dmsetup info -c /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3 #查看是否被打开,如果看到open为4或者数字说明它被打开了，所以remove不掉。
+</code></pre><p>查看被谁打开：</p>
+<pre><code>fuser -m /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3 #查看是谁打开的，显示产用进程号
+</code></pre><p>把占用设备的进程杀掉：</p>
+<pre><code>kill -9 xxxx xxxx xxxx xxxx
+</code></pre><p>重新执行上面验证的几个步骤，验证是否还有进程占用，如果看到open为0，表示现在没有进程占用，再执行lvremove删除相应的卷</p>
+<p>（5）验证是否已经删除</p>
+<pre><code>root@compute:~# lvdisplay | grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
+</code></pre><p>（6）进入云平台系统，更改需要删除云硬盘状态为“可用配额”，然后“删除云硬盘”，如果再界面上删除依旧没有执行成功或者依旧一直再删除中，就采用比较暴力的方式，修改云硬盘再数据库中的状态，因为此时云硬盘再存储设备（物理机）上已经删除了，仅仅还有数据库中还有该记录信息，但不能直接删除这条记录，数据库有外键依赖，而是要把cinder盘的deleted改成“1”,“1”即为删除，0为不删除。</p>
+<p>进入数据库：</p>
+<pre><code>mysql -uxxxx -pxxxx
+</code></pre><p>选择数据库表</p>
+<pre><code>use cinder;
+</code></pre><p>select找到出错的数据:</p>
+<pre><code>select id, status, display_name from volumes where id=&apos;2d5d206d-0720-42aa-b178-3f3238177583&apos;;
+</code></pre><p>修改数据库记录状体：</p>
+<pre><code>update volumes set deleted=1 where id=&apos;2d5d206d-0720-42aa-b178-3f3238177583&apos;;
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;处理报错的大致思路&quot;&gt;&lt;a href=&quot;#处理报错的大致思路&quot; class=&quot;headerlink&quot; title=&quot;处理报错的大致思路&quot;&gt;&lt;/a&gt;处理报错的大致思路&lt;/h1&gt;&lt;p&gt;(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由err
+    
+    </summary>
+    
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kolla容器化部署OpenStack：多节点部署</title>
+    <link href="http://yjscloud.com/2018/04/11/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%A4%9A%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.com/2018/04/11/Kolla容器化部署OpenStack：多节点部署/</id>
+    <published>2018-04-11T13:59:18.000Z</published>
+    <updated>2018-05-17T23:52:17.000Z</updated>
     
     <content type="html"><![CDATA[<p>前面我们已经部署了单节点的OpenStack环境，这次我们尝试部署一个多节点的环境(包括1个controller节点，1个compute节点，1个storage节点)，之前的单节点因为已经安装了kolla-ansible和docker registry，我们把它当做部署节点。</p>
 <h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>准备三台服务器，分别作为controller节点，compute节点，storage节点。其中controller节点3张网卡，compute、storage节点2张网卡。操作系统为centos7.4</p>
@@ -207,173 +374,6 @@ ea471af172de        172.16.31.130:4000/99cloud/centos-source-cron:4.0.2.1       
     
     
       <category term="Kolla自动化部署" scheme="http://yjscloud.com/tags/Kolla%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kolla容器化部署OpenStack:单点部署</title>
-    <link href="http://yjscloud.com/2018/04/13/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%8D%95%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
-    <id>http://yjscloud.com/2018/04/13/Kolla容器化部署OpenStack：单点部署/</id>
-    <published>2018-04-13T12:37:32.000Z</published>
-    <updated>2018-05-17T23:36:48.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。<br>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。<br>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
-<h1 id="all-in-one部署步骤"><a href="#all-in-one部署步骤" class="headerlink" title="all in one部署步骤"></a>all in one部署步骤</h1><p>（1）使用iso引导，选择 install centos7.3 and kolla</p>
-<p>可以使用tab键，修改ip地址和主机名，默认ip地址为10.99.0.2，主机名为control01</p>
-<p>这里需要注意，安装完成后，需要设置好网卡1、网卡2的IP地址，最好固定ip地址！网卡名称分别为em1和em2，IP地址分别为192.168.0.130和172.16.31.130</p>
-<p>（2）安装系统后，登录系统(root密码为99cloud)，首先要进行如下修改：</p>
-<p>1）/etc/hosts 文件需要修改<br>10.99.0.2 control01 改为 172.16.31.0.130 control01 </p>
-<p>2）/etc/kolla/globals.yml 文件里面2个IP地址由10.99.0.2替换为172.16.31.130</p>
-<p>3）/etc/kolla/globals.yml 文件中  neutron_external_interface: “docker0” 改为neutron_external_interface: “em2”</p>
-<p>然后进行部署：</p>
-<pre><code>/root/kolla-ansible-4.0.3.dev36/tools/kolla-ansible deploy
-</code></pre><p>部署过程中，如果发现下面类似的错误，则需要进入容器，查看日志进行排错。<br>下面这个错误原因就是RabbitMQ容器中的服务没有正常启动(问题1造成)而导致nova-compute服务无法启动。 </p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-1.png" alt="k-1"></p>
-<p>遇到的最后一个问题，就是  neutron_openvswitch_agent 容器无法正常启动，排查的结果是  openvswitch_vswitchd 容器里面的 br-ex 下面的port应该由docker0改为em2(外网网卡)</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-2.png" alt="k-2"></p>
-<p>dashboard访问地址  <a href="http://172.16.31.130/" target="_blank" rel="external">http://172.16.31.130/</a> </p>
-<p>username admin </p>
-<p>password 99cloud</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-3.png" alt="k-3"></p>
-<h1 id="后续测试"><a href="#后续测试" class="headerlink" title="后续测试"></a>后续测试</h1><p>1）上传镜像cirros </p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-4.png" alt="k-4"></p>
-<p>2）创建flavor </p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-5.png" alt="k-5"></p>
-<p>3）创建一个vxlan网络 </p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-6.png" alt="k-6"></p>
-<p>4）创建一个外部网络 </p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-7.png" alt="k-7"></p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-8.png" alt="k-8"></p>
-<p>5）添加路由router1，可以让内部网络连接到外网</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-9.png" alt="k-9"></p>
-<p>6）启动2个实例，其中给test1添加浮动IP </p>
-<p>如果实例无法启动的话进行如下修改（物理机环境不会出现这个情况） </p>
-<p>问题描述： </p>
-<p>VMware虚拟机作为OpenStack计算节点，如果安装的操作系统是CentOS7.3，则在此计算节点放置的虚拟机无法正常启动，报如下错误： </p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-10.png" alt="k-10"></p>
-<p>在创建计算节点时，为了能让 KVM 能创建嵌套的虚机，要把 CPU 的虚拟化功能打开。如下图在 VMWare 中设置以下 CPU 的模式。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-11.png" alt="k-11"></p>
-<p>用以下命令确认 CPU 支持虚拟化。 </p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-12.png" alt="k-12"></p>
-<p>nova的配置如下：</p>
-<pre><code>/etc/nova/nova.conf
-[libvirt]
-virt_type = kvm
-</code></pre><p>已经验证，如果计算节点安装的是CentOS7.2或Ubuntu操作系统，则不会报上面的错误。</p>
-<p>解决方案： </p>
-<p>修改nova的配置：</p>
-<pre><code>/etc/nova/nova.conf
-[libvirt]
-virt_type = qemu
-cpu_mode = none
-</code></pre><p>重启 nova-compute即可。</p>
-<p>就算CPU支持虚拟化，也得设置 virt_type = qemu ，否则还是报错。</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-13.png" alt="k-13"></p>
-<p>7) 默认安全组添加两条规则，支持外部ping通内部、ssh登陆内部 </p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-14.png" alt="k-14"></p>
-<p>8）ping测试</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-15.png" alt="k-15"></p>
-<p>虚拟机之间可以互相通信</p>
-<p>绑定浮动ip后ping外网ip</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/k-16.png" alt="k-16"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。&lt;br&gt;首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)
-    
-    </summary>
-    
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Kolla自动化部署" scheme="http://yjscloud.com/tags/Kolla%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>OpenStack排错（一）：Cinder僵尸卷删除</title>
-    <link href="http://yjscloud.com/2018/04/12/OpenStack%E6%8E%92%E9%94%99-%E4%B8%80-cinder%E5%83%B5%E5%B0%B8%E5%8D%B7%E5%88%A0%E9%99%A4/"/>
-    <id>http://yjscloud.com/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/</id>
-    <published>2018-04-12T12:14:21.000Z</published>
-    <updated>2018-05-17T15:45:30.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="处理报错的大致思路"><a href="#处理报错的大致思路" class="headerlink" title="处理报错的大致思路"></a>处理报错的大致思路</h1><p>(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted；</p>
-<p>(2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程；</p>
-<p>(3)应用命令lvremove来删除相应的卷；</p>
-<p>(4)此时问题貌似已经解决，因为已经可以正确地执行cinder中命令，要删除的卷的记录也已经删除。但是这里还有个问题，默认的建立卷的最大数目为10，如果之前删除的僵尸卷的数目为1，但是此时当你建立卷的数目为9个时，再尝试建立新卷时，就会提示已经达到卷的数目的最大值。解决方法就是到cinder数据表中找到quota_usages，将其中in_use中的数据减少相应的删除的僵尸卷的数目即可。</p>
-<p>备注：fuser命令在psmisc包中</p>
-<h1 id="第一种情况的僵尸卷"><a href="#第一种情况的僵尸卷" class="headerlink" title="第一种情况的僵尸卷"></a>第一种情况的僵尸卷</h1><p><img src="http://oxysobnip.bkt.clouddn.com/err-1.png" alt="err-1"></p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/err-2.png" alt="err-2"></p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/err-3.png" alt="err-3"></p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/err-4.png" alt="err-4"></p>
-<p>执行完上面的操作后进入云平台系统，更改需要删除云硬盘状态为“可用配额”，然后“删除云硬盘”，如果再界面上删除依旧没有执行成功或者依旧一直再删除中，就采用比较暴力的方式，修改云硬盘再数据库中的状态，因为此时云硬盘再存储设备（物理机）上已经删除了，仅仅还有数据库中还有该记录信息，但不能直接删除这条记录，数据库有外键依赖，而是要把cinder盘的deleted改成“1”,“1”即为删除，0为不删除。</p>
-<p>进入数据库：</p>
-<pre><code>mysql -uxxxx -pxxxx
-</code></pre><p>选择数据库表：</p>
-<pre><code>use cinder;
-</code></pre><p>关闭数据库的键外查询：</p>
-<pre><code>set foreign_key_checks=0;
-</code></pre><p>select找到出错的数据：</p>
-<pre><code>select id, status, display_name from volumes where id=&quot;af3e36ce-10ab-4daa-80e3-b71f16836a3b&quot;
-</code></pre><p>修改数据库记录状体：</p>
-<pre><code>update volumes set deleted=1 where id=&quot;af3e36ce-10ab-4daa-80e3-b71f16836a3b&quot;
-</code></pre><p>操作完成后开启数据库的键外查询：</p>
-<pre><code>set foreign_key_checks=0;
-</code></pre><p>此时如果dashboard界面卷存储还没有恢复正常就需要进行如下操作！！！</p>
-<p>（1）use cinder;</p>
-<p>（2）select  *  from volumes;</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/err-5.png" alt="err-5"></p>
-<p>在删除数据条目之前要临时关闭键值检查，否则删除操作无法进行：set foreign_key_checks=0;</p>
-<p>删除操作完成后再运行此命令开启键值检查，确保数据库安全</p>
-<p>找到之前出问题的卷并删除条目信息：</p>
-<pre><code>delete from volumes where id=&apos;f0a030a6-7ff0-4765-ac47-1f1eed3c7582&apos;;
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/err-6.png" alt="err-6"></p>
-<p>然后把in_use的数值修改为0即可</p>
-<p>这里我就很暴力了直接删除了了条目：</p>
-<pre><code>delete from quota_usages where project_id=&apos;232b14de024647159470ed97873ce774&apos;;
-</code></pre><p>等下新建卷的时候就会恢复的，不建议这么做哦。</p>
-<h1 id="第二种情况的僵尸卷"><a href="#第二种情况的僵尸卷" class="headerlink" title="第二种情况的僵尸卷"></a>第二种情况的僵尸卷</h1><p>思路和第一中情况差不多；</p>
-<p>（1）通过lvdisplay |grep查询cinder对应的卷地址。</p>
-<pre><code>root@compute:~# lvdisplay | grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
-LV Path                /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3
-LV Name                volume-8580f464-02e1-411c-bd94-a4af35e499a3
-</code></pre><p>（2）通过lsof | grep查询占用cinder卷的端口</p>
-<pre><code>lsof| grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
-kill -9 76568
-</code></pre><p>（3）通过lvremove删除相应的卷</p>
-<pre><code>lvremove /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3
-</code></pre><p>（4）报错处理<br>报错：device-mapper: remove ioctl on failed: Deviceor resource busy。设备繁忙</p>
-<p>查看是否被打开：</p>
-<pre><code>dmsetup info -c /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3 #查看是否被打开,如果看到open为4或者数字说明它被打开了，所以remove不掉。
-</code></pre><p>查看被谁打开：</p>
-<pre><code>fuser -m /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3 #查看是谁打开的，显示产用进程号
-</code></pre><p>把占用设备的进程杀掉：</p>
-<pre><code>kill -9 xxxx xxxx xxxx xxxx
-</code></pre><p>重新执行上面验证的几个步骤，验证是否还有进程占用，如果看到open为0，表示现在没有进程占用，再执行lvremove删除相应的卷</p>
-<p>（5）验证是否已经删除</p>
-<pre><code>root@compute:~# lvdisplay | grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
-</code></pre><p>（6）进入云平台系统，更改需要删除云硬盘状态为“可用配额”，然后“删除云硬盘”，如果再界面上删除依旧没有执行成功或者依旧一直再删除中，就采用比较暴力的方式，修改云硬盘再数据库中的状态，因为此时云硬盘再存储设备（物理机）上已经删除了，仅仅还有数据库中还有该记录信息，但不能直接删除这条记录，数据库有外键依赖，而是要把cinder盘的deleted改成“1”,“1”即为删除，0为不删除。</p>
-<p>进入数据库：</p>
-<pre><code>mysql -uxxxx -pxxxx
-</code></pre><p>选择数据库表</p>
-<pre><code>use cinder;
-</code></pre><p>select找到出错的数据:</p>
-<pre><code>select id, status, display_name from volumes where id=&apos;2d5d206d-0720-42aa-b178-3f3238177583&apos;;
-</code></pre><p>修改数据库记录状体：</p>
-<pre><code>update volumes set deleted=1 where id=&apos;2d5d206d-0720-42aa-b178-3f3238177583&apos;;
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;处理报错的大致思路&quot;&gt;&lt;a href=&quot;#处理报错的大致思路&quot; class=&quot;headerlink&quot; title=&quot;处理报错的大致思路&quot;&gt;&lt;/a&gt;处理报错的大致思路&lt;/h1&gt;&lt;p&gt;(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由err
-    
-    </summary>
-    
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
     
   </entry>
   
