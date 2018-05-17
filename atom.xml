@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-05-17T15:53:11.000Z</updated>
+  <updated>2018-05-17T23:38:30.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -17,10 +17,10 @@
   
   <entry>
     <title>Kolla容器化部署OpenStack:多节点部署</title>
-    <link href="http://yjscloud.com/2018/04/14/kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%A4%9A%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
-    <id>http://yjscloud.com/2018/04/14/kolla容器化部署OpenStack：多节点部署/</id>
+    <link href="http://yjscloud.com/2018/04/14/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%A4%9A%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.com/2018/04/14/Kolla容器化部署OpenStack：多节点部署/</id>
     <published>2018-04-14T12:59:18.000Z</published>
-    <updated>2018-05-17T15:53:11.000Z</updated>
+    <updated>2018-05-17T23:38:30.000Z</updated>
     
     <content type="html"><![CDATA[<p>前面我们已经部署了单节点的OpenStack环境，这次我们尝试部署一个多节点的环境(包括1个controller节点，1个compute节点，1个storage节点)，之前的单节点因为已经安装了kolla-ansible和docker registry，我们把它当做部署节点。</p>
 <h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>准备三台服务器，分别作为controller节点，compute节点，storage节点。其中controller节点3张网卡，compute、storage节点2张网卡。操作系统为centos7.4</p>
@@ -206,20 +206,18 @@ ea471af172de        172.16.31.130:4000/99cloud/centos-source-cron:4.0.2.1       
       <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
+      <category term="Kolla自动化部署" scheme="http://yjscloud.com/tags/Kolla%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
   <entry>
     <title>Kolla容器化部署OpenStack:单点部署</title>
-    <link href="http://yjscloud.com/2018/04/13/kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%8D%95%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
-    <id>http://yjscloud.com/2018/04/13/kolla容器化部署OpenStack：单点部署/</id>
+    <link href="http://yjscloud.com/2018/04/13/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%8D%95%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.com/2018/04/13/Kolla容器化部署OpenStack：单点部署/</id>
     <published>2018-04-13T12:37:32.000Z</published>
-    <updated>2018-05-17T15:52:38.000Z</updated>
+    <updated>2018-05-17T23:36:48.000Z</updated>
     
-    <content type="html"><![CDATA[<p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。</p>
-<p>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。 </p>
-<p>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
+    <content type="html"><![CDATA[<p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。<br>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。<br>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
 <h1 id="all-in-one部署步骤"><a href="#all-in-one部署步骤" class="headerlink" title="all in one部署步骤"></a>all in one部署步骤</h1><p>（1）使用iso引导，选择 install centos7.3 and kolla</p>
 <p>可以使用tab键，修改ip地址和主机名，默认ip地址为10.99.0.2，主机名为control01</p>
 <p>这里需要注意，安装完成后，需要设置好网卡1、网卡2的IP地址，最好固定ip地址！网卡名称分别为em1和em2，IP地址分别为192.168.0.130和172.16.31.130</p>
@@ -282,15 +280,14 @@ cpu_mode = none
     
     <summary type="html">
     
-      &lt;p&gt;陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。&lt;/p&gt;
-&lt;p&gt;首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0
+      &lt;p&gt;陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。&lt;br&gt;首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)
     
     </summary>
     
       <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
+      <category term="Kolla自动化部署" scheme="http://yjscloud.com/tags/Kolla%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   

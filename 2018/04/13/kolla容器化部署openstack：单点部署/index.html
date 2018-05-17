@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="OpenStack技能," />
+  <meta name="keywords" content="Kolla自动化部署," />
 
 
 
@@ -92,13 +92,13 @@
 
 
 
-<meta name="description" content="陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。 首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。  注意硬盘至少需要200G(安装完成后实际占用空间为">
-<meta name="keywords" content="OpenStack技能">
+<meta name="description" content="陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。注意硬盘至少需要200G(安装完成后实际占用空间为25G">
+<meta name="keywords" content="Kolla自动化部署">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kolla容器化部署OpenStack:单点部署">
-<meta property="og:url" content="http://yjscloud.com/2018/04/13/kolla容器化部署OpenStack：单点部署/index.html">
+<meta property="og:url" content="http://yjscloud.com/2018/04/13/Kolla容器化部署OpenStack：单点部署/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。 首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。  注意硬盘至少需要200G(安装完成后实际占用空间为">
+<meta property="og:description" content="陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。注意硬盘至少需要200G(安装完成后实际占用空间为25G">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-1.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-2.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-3.png">
@@ -115,10 +115,10 @@
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-14.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-15.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/k-16.png">
-<meta property="og:updated_time" content="2018-05-17T15:52:38.000Z">
+<meta property="og:updated_time" content="2018-05-17T23:36:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kolla容器化部署OpenStack:单点部署">
-<meta name="twitter:description" content="陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。 首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。  注意硬盘至少需要200G(安装完成后实际占用空间为">
+<meta name="twitter:description" content="陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。注意硬盘至少需要200G(安装完成后实际占用空间为25G">
 <meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/k-1.png">
 
 
@@ -147,7 +147,7 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2018/04/13/kolla容器化部署OpenStack：单点部署/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/04/13/Kolla容器化部署OpenStack：单点部署/"/>
 
 
 
@@ -327,7 +327,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/04/13/kolla容器化部署OpenStack：单点部署/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/04/13/Kolla容器化部署OpenStack：单点部署/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -407,7 +407,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2018/04/13/kolla容器化部署OpenStack：单点部署/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/04/13/Kolla容器化部署OpenStack：单点部署/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -464,9 +464,7 @@
       
 
       
-        <p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。</p>
-<p>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。 </p>
-<p>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
+        <p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。<br>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。<br>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
 <h1 id="all-in-one部署步骤"><a href="#all-in-one部署步骤" class="headerlink" title="all in one部署步骤"></a>all in one部署步骤</h1><p>（1）使用iso引导，选择 install centos7.3 and kolla</p>
 <p>可以使用tab键，修改ip地址和主机名，默认ip地址为10.99.0.2，主机名为control01</p>
 <p>这里需要注意，安装完成后，需要设置好网卡1、网卡2的IP地址，最好固定ip地址！网卡名称分别为em1和em2，IP地址分别为192.168.0.130和172.16.31.130</p>
@@ -576,7 +574,7 @@ cpu_mode = none
       
         <div class="post-tags">
           
-            <a href="/tags/OpenStack技能/" rel="tag"><i class="fa fa-tag"></i> OpenStack技能</a>
+            <a href="/tags/Kolla自动化部署/" rel="tag"><i class="fa fa-tag"></i> Kolla自动化部署</a>
           
         </div>
       
@@ -589,7 +587,7 @@ cpu_mode = none
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/14/kolla容器化部署OpenStack：多节点部署/" rel="next" title="Kolla容器化部署OpenStack:多节点部署">
+              <a href="/2018/04/14/Kolla容器化部署OpenStack：多节点部署/" rel="next" title="Kolla容器化部署OpenStack:多节点部署">
                 <i class="fa fa-chevron-left"></i> Kolla容器化部署OpenStack:多节点部署
               </a>
             
@@ -720,7 +718,7 @@ cpu_mode = none
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
