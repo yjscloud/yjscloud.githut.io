@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-05-21T11:21:22.000Z</updated>
+  <updated>2018-05-21T13:09:45.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,490 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL系列（七）：MySQL备份与恢复实战</title>
+    <link href="http://yjscloud.com/2018/05/20/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9AMySQL%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E5%AE%9E%E6%88%98/"/>
+    <id>http://yjscloud.com/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/</id>
+    <published>2018-05-20T12:49:10.000Z</published>
+    <updated>2018-05-21T13:09:45.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="全量备份与增量备份"><a href="#全量备份与增量备份" class="headerlink" title="全量备份与增量备份"></a>全量备份与增量备份</h1><h2 id="全量备份"><a href="#全量备份" class="headerlink" title="全量备份"></a>全量备份</h2><p>全量数据就是数据库中所有的数据，全量备份就是把数据库中所有的数据进行备份。</p>
+<p>例：</p>
+<p>备份所有数据：</p>
+<pre><code>mysqldump -uroot -pyjscloud -F -B -A|gzip &gt;/server/backup/mysqlbak_$(date +%F).sql.gz
+</code></pre><p>备份一个库：</p>
+<pre><code>mysqldump -uroot -pyjscloud -F -B yjs_stu|gzip &gt;/server/backup/mysqlbak_$(date +%F).sql.gz
+</code></pre><h2 id="增量备份"><a href="#增量备份" class="headerlink" title="增量备份"></a>增量备份</h2><p>增量数据是从上次全量备份之后，更新的新数据。对于MySQL来说，binlog日志就是MySQL的增量数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-128.png" alt="m-128"></p>
+<h2 id="企业场景全量和增量的频率"><a href="#企业场景全量和增量的频率" class="headerlink" title="企业场景全量和增量的频率"></a>企业场景全量和增量的频率</h2><p>1）中小公司，全量一般是每天一次，业务流量低谷执行全备，备份时会锁表</p>
+<p>2）单台数据库，如何增量。用rsync（配合定时任务频率大点或者inotify，主从复制把所有binlog备份到远程服务器，尽量做主从复制）</p>
+<p>增量备份的例子：</p>
+<pre><code>rsync -avz /application/mysql/data/mysql-bin.*     rsync_backup@192.168.0.30::backup --password-file=/etc/rsync.password
+</code></pre><p>3）大公司周备，每周六00点一次全量，下周日-下周六00点前都是增量</p>
+<p>优点：节约备份时间，减小备份压力。缺点：增量的binlog文件副本太多，还原会很多麻烦</p>
+<p>4）一主五从，会有一个从库做备份，延迟同步。</p>
+<p>mysql的mysqldump备份什么时候派上用场？</p>
+<ul>
+<li><p>迁移或者升级数据库时。</p>
+</li>
+<li><p>增加从库时候</p>
+</li>
+<li><p>因为硬件或特殊异常情况，主库或从库宕机，从库可以互相切换，无需备份。</p>
+</li>
+<li><p>人为的DDL，DML语句，主从库没有办法了，所有库都会执行。此时需要备份。</p>
+</li>
+<li><p>跨机房灾备，需要备份到异地。</p>
+</li>
+</ul>
+<h2 id="几个问题"><a href="#几个问题" class="headerlink" title="几个问题"></a>几个问题</h2><p>1）什么情况下需要增量恢复？</p>
+<p>我们再在生产工作中一般常用一主多从的数据库架构，常见的备份方案是在某一个不对外服务的从库上开启binlog，然后实施定时全备和实时增量备份。</p>
+<p>什么是增量恢复？</p>
+<p>利用二进制日志和全备进行的恢复过程，被称为增量恢复。那么到底什么情况下才需要数据库增量恢复呢？</p>
+<p>1、主或者从库宕机（硬件损坏）是否需要增量恢复？</p>
+<p>答：不需要增量恢复，主库宕机，只需要把其中一个同步最快的从库切换为主库即可。从库宕机，直接不用就好了（一般都会配LVS负载均衡）。或者正常修复。</p>
+<p>2、人为操作数据库SQL语句破坏主库是否需要增量恢复？</p>
+<p>在数据库主库内部命令误操作，会导致所有的数据库（包括主从库）数据丢失，例如：在主库执行了drop database test; 这样的删除语句，这时所有的从库也会执行这个drop database test;语句，从而导致所有的数据库上的test库数据丢失，这样的场景是需要增量恢复的。</p>
+<p>3）只有一个主库是否需要增量恢复？</p>
+<p>如果公司只有一个主库的情况，首先应该做定时全量备份（每天一次）及增量备份（每隔1-10分钟对binlog日志做切割然后备份到其他的服务器上，或者本地其他的硬盘里）或者写到网络文件系统（备份服务器）里。如果不允许数据丢失，最好的办法就是做从库，通过drdb（基于磁盘块的）同步。</p>
+<p>正常情况下：</p>
+<ul>
+<li><p>主库同步：除了分担读写分离压力外，还可以防止物理设备损坏数据丢失的恢复。</p>
+</li>
+<li><p>从库备份：在从库进行全量和增量方式的备份，可以防止人为对主库的误操作导致数据丢失。确保备份的从库实时和主库是同步状态。</p>
+</li>
+</ul>
+<p>小结：一般由人为（或程序）逻辑的方式在数据库执行的SQL语句误操作，需要增量恢复，因为此时所有的从库也执行了误操作的语句。</p>
+<h1 id="MySQL增量恢复必备条件"><a href="#MySQL增量恢复必备条件" class="headerlink" title="MySQL增量恢复必备条件"></a>MySQL增量恢复必备条件</h1><h2 id="开启MySQL-log-bin日志功能"><a href="#开启MySQL-log-bin日志功能" class="headerlink" title="开启MySQL log-bin日志功能"></a>开启MySQL log-bin日志功能</h2><p>mysql数据库开启log-bin参数记录binlog日志功能如下：</p>
+<pre><code>[root@master ~]# grep log-bin /etc/my.cnf
+log-bin=mysql-bin
+</code></pre><p>提示：主库和备份的从库都需要开启binlog记录功能。</p>
+<p>小结：增量恢复的条件：存在一份全备加上全备之后的时刻到处问题时刻的所有增量binlog文件备份</p>
+<h2 id="存在mysql数据库备份"><a href="#存在mysql数据库备份" class="headerlink" title="存在mysql数据库备份"></a>存在mysql数据库备份</h2><p>1）生产环境mysqldump备份命令</p>
+<p>备份命令如下：</p>
+<pre><code>mysqldump -uroot -pyjscloud --single-transaction -F -B yjs_stu |gzip &gt; /server/backup/mysql_$(date +%F).sql.gz
+</code></pre><p>innodb引擎备份：</p>
+<pre><code>mysqldump -u$MYUSER -p$MYPASS -F --single-transaction -A -B | gzip &gt; $DATA_FILE
+mysqldump -u$MYUSER -p$MYPASS -F -A -B --lock-all-tables | gzip &gt; $DATA_FILE
+</code></pre><p>MySQL增量恢复案例图解</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-129.png" alt="m-129"></p>
+<h1 id="场景模拟"><a href="#场景模拟" class="headerlink" title="场景模拟"></a>场景模拟</h1><h2 id="建库建表"><a href="#建库建表" class="headerlink" title="建库建表"></a>建库建表</h2><p>1）创建学生表</p>
+<pre><code>create database yjs_stu;
+use yjs_stu;
+create table student(
+Sno int(10) NOT NULL COMMENT &apos;学号&apos;,
+Sname varchar(16) NOT NULL COMMENT &apos;姓名&apos;,
+Ssex char(2) NOT NULL COMMENT &apos;性别&apos;,
+Sage tinyint(2)  NOT NULL default &apos;0&apos; COMMENT &apos;学生年龄&apos;,
+Sdept varchar(16)  default NULL  COMMENT &apos;学生所在系别&apos;,
+PRIMARY KEY  (Sno) ,
+key index_Sname (Sname)
+);
+</code></pre><p>2）学生表插入数据：</p>
+<pre><code>INSERT INTO student values(0001,&apos;路飞&apos;,&apos;男&apos;,17,&apos;计算机网络&apos;);
+INSERT INTO student values(0002,&apos;索隆&apos;,&apos;男&apos;,19,&apos;网络安全&apos;);
+INSERT INTO student values(0003,&apos;乌索普&apos;,&apos;男&apos;,18,&apos;网络媒体&apos;);
+INSERT INTO student values(0004,&apos;娜美&apos;,&apos;女&apos;,17,&apos;旅游管理&apos;);
+INSERT INTO student values(0005,&apos;香吉士&apos;,&apos;男&apos;,22,&apos;新东方厨校&apos;);
+INSERT INTO student values(0006,&apos;妮可罗宾&apos;,&apos;女&apos;,28,&apos;古代历史&apos;);
+</code></pre><p>3）检查数据库及数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-130.png" alt="m-130"></p>
+<p>4）定时任务备份数据</p>
+<p>这里我们使用脚本备份数据</p>
+<pre><code>#!/bin/sh
+
+#parameter defined
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+#MYSOCK=/application/mysql/tmp/mysql.sock
+DBNAME=&quot;yjs_stu&quot;
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysql_logs_$(date +%F).log
+DATA_FILE=${DATA_PATH}/mysql_backup_$(date +%F).sql.gz
+
+#command defined
+MYSQL_PATH=/application/mysql/bin
+MYSQL_DUMP=&quot;$MYSQL_PATH/mysqldump -u$MYUSER -p$MYPASS -F -B --master-data=2 --single-transaction -e  $DBNAME&quot;
+
+#backup command
+${MYSQL_DUMP} | gzip &gt; $DATA_FILE
+
+#check backup result
+du -sh $DATA_FILE&gt;$LOG_FILE
+</code></pre><p>5）备份完成后插入新数据</p>
+<pre><code>INSERT INTO student values(0007,&apos;弗兰奇&apos;,&apos;男&apos;,38,&apos;机械工程&apos;);
+INSERT INTO student values(0008,&apos;布鲁克&apos;,&apos;男&apos;,58,&apos;音乐学院&apos;);
+</code></pre><p>6）模拟用户误删数据</p>
+<pre><code>mysql&gt; drop database yjs_stu;
+</code></pre><p>7）检查破坏结果</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-131.png" alt="m-131"></p>
+<h1 id="增量恢复全过程"><a href="#增量恢复全过程" class="headerlink" title="增量恢复全过程"></a>增量恢复全过程</h1><h2 id="允许锁库的的情景"><a href="#允许锁库的的情景" class="headerlink" title="允许锁库的的情景"></a>允许锁库的的情景</h2><p>通过防火墙禁止web等应用向主库写数据或或者锁表。让主库暂时停止更新。然后再进行恢复。</p>
+<p>1）检查全备</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-132.png" alt="m-132"></p>
+<p>2）检查全备后的所有binlog</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-133.png" alt="m-133"></p>
+<p>3）立即刷新并备份出binlog</p>
+<pre><code>mysqladmin -uroot -pyjscloud flush-logs
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-134.png" alt="m-134"></p>
+<p>备份刷新出来的binlog</p>
+<pre><code>cp mysql-bin.000009 /server/backup/
+</code></pre><p>将新的mysql-bin文件转换为sql文件</p>
+<pre><code>mysqlbinlog -d yjs_stu mysql-bin.000009 &gt; bin.sql
+</code></pre><p>4）编辑bin.sql</p>
+<pre><code>vim bin.sql 
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-135.png" alt="m-135"></p>
+<p>5）往数据导入数据</p>
+<pre><code>mysql -uroot -pyjscloud &lt; mysql_backup_2018-05-20.sql
+mysql -uroot -pyjscloud &lt; bin.sql 
+</code></pre><p>6）查看数据库</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-136.png" alt="m-136"></p>
+<p>数据恢复完成</p>
+<h2 id="不锁库情景下恢复思想"><a href="#不锁库情景下恢复思想" class="headerlink" title="不锁库情景下恢复思想"></a>不锁库情景下恢复思想</h2><p>1）停止一个从库，然后在主库刷新binlog，把mysql-bin.000009恢复成bin.sql（去掉drop语句）</p>
+<p>2）把全备mysql_backup_2018-05-20.sql及新插入数据前的增量bin.sql恢复到从库</p>
+<p>3）切换到从库提供服务，会有数据丢失插入数据后刷新binlog以后的数据mysql-bin.000010</p>
+<p>4）把mysql-bin.000010解析为sql，恢复到从库</p>
+<p>以上解决办法会有主键冲突问题</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;全量备份与增量备份&quot;&gt;&lt;a href=&quot;#全量备份与增量备份&quot; class=&quot;headerlink&quot; title=&quot;全量备份与增量备份&quot;&gt;&lt;/a&gt;全量备份与增量备份&lt;/h1&gt;&lt;h2 id=&quot;全量备份&quot;&gt;&lt;a href=&quot;#全量备份&quot; class=&quot;headerli
+    
+    </summary>
+    
+      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL系列（六）：MySQL主从复制高级应用</title>
+    <link href="http://yjscloud.com/2018/05/18/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%AB%98%E7%BA%A7%E5%BA%94%E7%94%A8/"/>
+    <id>http://yjscloud.com/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/</id>
+    <published>2018-05-18T11:24:35.000Z</published>
+    <updated>2018-05-21T13:16:23.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h1><h2 id="mysql主从同步配置步骤"><a href="#mysql主从同步配置步骤" class="headerlink" title="mysql主从同步配置步骤"></a>mysql主从同步配置步骤</h2><p>1）准备两台数据库环境，或者单台多实例环境，能否正常启动和登陆</p>
+<p>2）配置my.cnf文件，主库配置log-bin和server-id参数，从库配置server-id，不能和主库以及其他从库一样，一般不开启从库log-bin功能，注意：配置参数后要重启生效。</p>
+<p>3）登陆主库增加用于从库连接主库同步的账户如：rep，并授权replication slave同步的权限。</p>
+<p>4）登陆主库，整个锁表flush table with read lock （窗口关闭后即失效，超时参数到了也失效）；然后show master status查看binlog的位置状态。</p>
+<p>5）新窗口，linux命令行备份或导出原有的数据库数据，并拷贝到从库所在的服务器目录。如果数据量很大，并允许停机，可以停机打包，而不用mysqldump</p>
+<p>6）解锁主库，unlock tables;</p>
+<p>7）把主库导出的原有数据恢复到从库</p>
+<p>8）根据主库的show master status查看binlog的位置状态，在从库执行change master to…语句</p>
+<p>9）从库开启同步开关，start slave</p>
+<p>10）从库show slave status\G ,检查同步状态，并在主库进行更新测试。</p>
+<h2 id="mysql主从复制原理要点"><a href="#mysql主从复制原理要点" class="headerlink" title="mysql主从复制原理要点"></a>mysql主从复制原理要点</h2><p>1）异步方式同步。</p>
+<p>2）逻辑同步模式，多种模式，默认是通过SQL语句执行</p>
+<p>3）主库通过记录binlog实现对从库的同步。binlog记录数据库的更新语句。</p>
+<p>4）主库1个IO线程，从库由1个IO线程和一个SQL线程来完成的</p>
+<p>5）从库关键文件master.info,relay-log,relay-info功能</p>
+<p>6）如果从库还想级联从库，需要打开log-bin和log-slave-updates参数。</p>
+<h2 id="生产场景快速配置mysql主从复制方案"><a href="#生产场景快速配置mysql主从复制方案" class="headerlink" title="生产场景快速配置mysql主从复制方案"></a>生产场景快速配置mysql主从复制方案</h2><p>1）安装好要配置从库的数据库，配置好log-bin和server-id参数</p>
+<p>2）无需配置主库my.cnf文件，主库的log-bin和server-id参数默认就是配置好的</p>
+<p>3）登陆主库增加用于从库连接主库同步的账号例如：rep，并授权replication slave同步的权限</p>
+<p>4）使用半夜mysqldump带–master-data=1备份的全备数据恢复到从库。</p>
+<p>5）在从库执行change master to…语句，无需binlog文件及对应位置点。</p>
+<p>6）从库开启同步开关，start slave。</p>
+<p>7）从库show slave status\G ,检查同步状态，并在主库进行更新测试。</p>
+<h1 id="生产环境主从库同步配置注意事项"><a href="#生产环境主从库同步配置注意事项" class="headerlink" title="生产环境主从库同步配置注意事项"></a>生产环境主从库同步配置注意事项</h1><h2 id="第一次做从库如何做？"><a href="#第一次做从库如何做？" class="headerlink" title="第一次做从库如何做？"></a>第一次做从库如何做？</h2><p>1）申请设备资源，用来做从库服务器</p>
+<p>2）撰写方案文档和实施步骤。</p>
+<p>假如你的服务器只有主库，而且已经跑了生产线上应用了，现在由于业务需要第一次做从库，<br>此时可能需要和公司申请停机维护时间（要确认这个时间段内可以做一次全备），集在用户访问量最小，且不影响内部其他业务运转的时间点来停机（包括锁表）配置主从复制，一般都是凌晨进行。<br>注意：停机（锁表，停库）的最小时间段，为锁表备份的时间，也就是说无需等待主从配置好。<br>当然也可以不申请停机时间，在定时任务备份时，每天的夜里的定时备份时做一些措施即可实现。</p>
+<h2 id="无须熬夜在工作时间轻松配置从库"><a href="#无须熬夜在工作时间轻松配置从库" class="headerlink" title="无须熬夜在工作时间轻松配置从库"></a>无须熬夜在工作时间轻松配置从库</h2><p>全备及全备过程中binlog位置的信息或者直接用–master-data参数解决。</p>
+<p>1）一键做主从复制脚本</p>
+<p>1、锁表备份全备一份</p>
+<p>2、锁表前后取得showmaster status值记录日志里这样就可以在白天从容的实现主从同步了。这个脚本还是很容易实现的，如：</p>
+<p>脚本方法1：</p>
+<pre><code>#!/bin/sh
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+MYSOCK=/application/mysql/tmp/mysql.sock
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysqllogs_&apos;date +%F&apos;.log
+DATA_FILE=${DATA_PATH}/mysql_backup_&apos;date +%F&apos;.sql.gz
+MYSQL_PATH=/application/mysql/bin
+MYSQL_CMD=&quot;$MYSQL_PATH/mysql -u$MYUSER -p$MYPASS -S $MYSOCK&quot;
+MYSQL_DUMP=&quot;$MYSQL_PATH/mysqldump -u$MYUSER -p$MYPASS -S $MYSOCK -A -B --single-transaction -e&quot;
+cat |$MYSQL_CMD&lt;&lt;EOF
+flush tables with read lock;
+system echo &quot;-----show master status result------&quot;&gt;&gt;$LOG_FILE;
+system $MYSQL_CMD -e &quot;show master status&quot;|tail -1 &gt;&gt;$LOG_FILE;
+system ${MYSQL_DUMP} | gzip &gt; $DATA_FILE;
+EOF
+$MYSQL_CMD -e &quot;unlock tables;&quot;
+</code></pre><p>脚本方法2：</p>
+<pre><code>#!/bin/sh
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+MYSOCK=/application/mysql/tmp/mysql.sock
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysqllogs_&apos;date +%F&apos;.log
+DATA_FILE=${DATA_PATH}/mysql_backup_&apos;date +%F&apos;.sql.gz
+MYSQL_PATH=/application/mysql/bin
+MYSQL_CMD=&quot;$MYSQL_PATH/mysql -u$MYUSER -p$MYPASS -S $MYSOCK&quot;
+MYSQL_DUMP=&quot;$MYSQL_PATH/mysqldump -u$MYUSER -p$MYPASS -S $MYSOCK -A -B --master-data=1 --single-transaction -e&quot;
+${MYSQL_DUMP} | gzip &gt; $DATA_FILE;
+</code></pre><p>有了mysql_backup_xxxx-xx-xx.sql.gz和mysqllogs_xxxx-xx-xx.log内容做从库就不远了</p>
+<h2 id="不停主库一键批量创建从库"><a href="#不停主库一键批量创建从库" class="headerlink" title="不停主库一键批量创建从库"></a>不停主库一键批量创建从库</h2><h3 id="一键创建从库方法1"><a href="#一键创建从库方法1" class="headerlink" title="一键创建从库方法1"></a>一键创建从库方法1</h3><p>把上面备份的mysql_backup_xxxx-xx-xx.sql.gz发布到想做从库同步的机器上，可以做多台。<br>然后再制造如下批量做从库脚本，一键完成多台机器从库的制作</p>
+<pre><code>#!/bin/sh
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+MYSOCK=/application/mysql/tmp/mysql.sock
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysqllogs_&apos;date +%F&apos;.log
+DATA_FILE=${DATA_PATH}/mysql_backup_&apos;date +%F&apos;.sql.gz
+MYSQL_PATH=/application/mysql/bin
+MYSQL_CMD=&quot;$MYSQL_PATH/mysql -u$MYUSER -p$MYPASS -S $MYSOCK&quot;
+
+#recover
+cd ${DATA_PATH}
+gzip -d mysql_backup_&apos;date +%F&apos;.sql.gz
+$MYSQL_CMD &lt;  mysql_backup_&apos;date +%F&apos;.sql
+
+#config slave
+cat |$MYSQL_CMD&lt;&lt;EOF
+CHANGE MASTER TO
+MASTER_HOST=&apos;192.168.0.30&apos;,
+MASTER_PORT=3306,
+MASTER_USER=&apos;rep&apos;,
+MASTER_PASSWORD=&apos;yjscloud123&apos;,
+MASTER_LOG_FILE=&apos;mysql-bin.000005&apos;,
+MASTER_LOG_POS=338;
+EOF
+
+$MYSQL_CMD -e &quot;start slave;&quot;
+$MYSQL_CMD -e &quot;show salve status\G&quot; |egrep &quot;IO_Running|SQL_Running&quot;&gt;$LOG_FILE
+mail -s &quot;mysql slave result&quot; yjscloud@gmail.com &lt; $LOG_FILE
+</code></pre><p>特别提醒：</p>
+<p>此脚本中change master参数要根据mysqllog_xxxx-xx-xx.log修改</p>
+<h3 id="一键创建从库方法2"><a href="#一键创建从库方法2" class="headerlink" title="一键创建从库方法2"></a>一键创建从库方法2</h3><pre><code>#!/bin/sh
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+MYSOCK=/application/mysql/tmp/mysql.sock
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysqllogs_&apos;date +%F&apos;.log
+DATA_FILE=${DATA_PATH}/mysql_backup_&apos;date +%F&apos;.sql.gz
+MYSQL_PATH=/application/mysql/bin
+MYSQL_CMD=&quot;$MYSQL_PATH/mysql -u$MYUSER -p$MYPASS -S $MYSOCK&quot;
+
+#recover
+cd ${DATA_PATH}
+gzip -d mysql_backup_&apos;date +%F&apos;.sql.gz
+$MYSQL_CMD &lt;  mysql_backup_&apos;date +%F&apos;.sql
+
+#config slave
+cat |$MYSQL_CMD&lt;&lt;EOF
+CHANGE MASTER TO
+MASTER_HOST=&apos;192.168.0.30&apos;,
+MASTER_PORT=3306,
+MASTER_USER=&apos;rep&apos;,
+MASTER_PASSWORD=&apos;yjscloud123&apos;,
+EOF
+
+$MYSQL_CMD -e &quot;start slave;&quot;
+$MYSQL_CMD -e &quot;show salve status\G&quot; |egrep &quot;IO_Running|SQL_Running&quot;&gt;$LOG_FILE
+mail -s &quot;mysql slave result&quot; yjscloud@gmail.com &lt; $LOG_FILE
+</code></pre><h2 id="相关mysql主从复制技术技巧概览"><a href="#相关mysql主从复制技术技巧概览" class="headerlink" title="相关mysql主从复制技术技巧概览"></a>相关mysql主从复制技术技巧概览</h2><h3 id="登陆数据库查看mysql线程同步状态"><a href="#登陆数据库查看mysql线程同步状态" class="headerlink" title="登陆数据库查看mysql线程同步状态"></a>登陆数据库查看mysql线程同步状态</h3><p>主库：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-116.png" alt="m-116"></p>
+<p>从库：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-117.png" alt="m-117"></p>
+<h3 id="复制主线程状态"><a href="#复制主线程状态" class="headerlink" title="复制主线程状态"></a>复制主线程状态</h3><p>下面列出了主服务器的Binlog Dump线程的state列最常见的状态。如果你没有在主服务器上看见任何binlog dump线程，这说明复制没有在运行，即目前没有连接任何从服务器。</p>
+<p>Sending binlog events to slave<br>(二进制日志由各种事件组成，一个事件通常为一个跟新加一些其它信息，线程已经从二进制日志读取了一个事件并且正将它发送到从服务器)</p>
+<p>Finished reading one binlog;switchingto next binlog<br>(线程已经读完二进制日志文件并且正打开下一个发送到服务器的日志文件)</p>
+<p>Has sent all binlog to slave;waitingfor binlog to be updated<br>(线程已经从二进制日志读取所有主要的跟新并已经发送到从服务器线程正空闲，等待由主服务器上新的跟新导致的出现在二进制日志中新事件)</p>
+<p>Waiting to finalize termination<br>(线程停止时发生一个很简单的状态。)</p>
+<h3 id="复制从I-O线程状态"><a href="#复制从I-O线程状态" class="headerlink" title="复制从I/O线程状态"></a>复制从I/O线程状态</h3><p>下面列出了从服务器的I/O线程的state列的最常见的状态。该状态也出现在Slave_IO_State列，由SHOW SLAVE STATUS显示，这说明你可以通过该语句仔细浏览所发生的事情</p>
+<p>Connecting to master(线程正试图连接主服务器)</p>
+<p>Checking master version(建立同主服务器之间的连接后立即临时出现的状态)</p>
+<p>Registering slave on master(建立同主服务器之间的连接后立即临时出现的状态)</p>
+<p>Requesting binlog dump(建立同主服务器之间的连接后立即临时出现的状态。线程向主服务器发送索取从请求的二进制日志文件名和位置开始的二进制日志的内容)</p>
+<p>Waiting to reconnect after a failed binlog dump request(如果二进制日志转储请求失败[由于没有连接]，线程进入睡眠状态，然新连接，可以使用–master-connect-retry 选项指定重试之间的间隔)</p>
+<p>Reconnecting after a failed binlog dump request<br>(线程正尝试重新连接主服务器)</p>
+<p>Waiting for master to send event<br>(线程已经连接上主服务器，正等待二进制日志事件到达，如果主服务器正空闲，会持续较长的时间。如果等待继续slave_read_timeout秒，则发生超时，此时线程认为连接被中断并企图重新连接。)</p>
+<p>Queueing master event to the relay log<br>(线程已经读取一个事件，正将它复制到中继日志供SQL线程来处理)</p>
+<p>Waiting to reconnect after a failed master event read<br>(读取时（由于没有连接）出现错误。线程企图重新连接前将睡眠master-connect-retry秒。)</p>
+<p>Reconnecting after a failed master event read<br>(线程正尝试重新连接主服务器。当连接重新建立后，状态变为Waiting for master to send event)</p>
+<p>Waiting for the slave SQL thread to free enough relay log space<br>正使用一个非零relay_log_space_limit值，中继日志已经增长到其组合大小超过该值。I/O线程正(等待直到SQL线程处理中继日志内容并删除部分中继日志文件来释放足够的空间。)</p>
+<p>Waiting for slave mutex on exit<br>(线程停止时发生的一个很简单的状态。)</p>
+<h3 id="复制从SQL线程状态"><a href="#复制从SQL线程状态" class="headerlink" title="复制从SQL线程状态"></a>复制从SQL线程状态</h3><p>下面列出了从服务器的SQL线程的State列的最常见的状态。</p>
+<p>Reading event from the relay log<br>(线程已经从中继日志读取一个事件，可以对事件进行处理了)</p>
+<p>Has read all relay log; waiting for the slave I/0 thread to update it<br>(线程已经处理了中继日志文件中的所有事件，现在正等待I/O线程将新事件写入中继日志；)</p>
+<p>Waiting for slave mutex on exit<br>(线程停止发生的一个简单的状态I/O线程的state列也可以显示语句的文本。这说明线程已经从中继日志读取了一个事件。从中提取了语句，并且正在执行语句。)</p>
+<h3 id="查看mysql线程同步状态的用途"><a href="#查看mysql线程同步状态的用途" class="headerlink" title="查看mysql线程同步状态的用途"></a>查看mysql线程同步状态的用途</h3><p>通过mysql线程同步状态查看数据库同步时是否完成，用于主库宕机或者人工数据库主从切换迁移等。<br>主库宕机选择最快的从库提升为主，就需要查看，当然也可以利用mysql的半同步功能，选择固定库的提升为主。</p>
+<h1 id="生产场景mysql主从复制读写分离授权方案实战"><a href="#生产场景mysql主从复制读写分离授权方案实战" class="headerlink" title="生产场景mysql主从复制读写分离授权方案实战"></a>生产场景mysql主从复制读写分离授权方案实战</h1><p>当配置好mysql主从复制后，所有对数据库内容的更新就必须在主服务器上进行。因为数据复制时单向的，只有在主库上更新，才能避免用户对主服务器上数据库内容的更新与从库上数据库内容的更新一致，而不发生冲突。</p>
+<h2 id="生产mysql复制环境用户授权方案"><a href="#生产mysql复制环境用户授权方案" class="headerlink" title="生产mysql复制环境用户授权方案"></a>生产mysql复制环境用户授权方案</h2><p>假设为博客数据库授权，大家可以做下面的授权</p>
+<p>1、生产环境主库用户授权：</p>
+<pre><code>grant select,insert,update,delete on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>提示：特殊业务可能权限会略多，如果业务安全性要求不高，也可以all privileges权限</p>
+<p>2、生产环境从库用户的授权：</p>
+<pre><code>grant select,insert,update,delete on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+revoke insert ,update,delete on blog.* from &apos;blog&apos;@&apos;192.168.0.%&apos;;
+</code></pre><p>提示：可以结合read-only参数共同做。</p>
+<p>3、生产授权案例说明：这里表示给192.168.0.0/24的用户blog管理数据库的所有表（*表示所有表）只读权限（select）密码为yjscloud。</p>
+<pre><code>grant select,insert,update,delete on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>生产环境主从库用户授权：</p>
+<p>主库：</p>
+<pre><code>grant select,insert,update,delete on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>从库：</p>
+<pre><code>grant select on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>实现上述授权方案最简单的办法是在主库配置binlog-ignore-db=mysql</p>
+<h2 id="通过忽略授权表的方式防止数据写从库方法及实践"><a href="#通过忽略授权表的方式防止数据写从库方法及实践" class="headerlink" title="通过忽略授权表的方式防止数据写从库方法及实践"></a>通过忽略授权表的方式防止数据写从库方法及实践</h2><h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>生产环境中一般会采取忽略授权表方式的同步，然后对从服务器（slave）上的用户仅授权select读权限。不同步mysql库，这样我们就保证主库和从库相同的用户可以授权不同的权限。忽略mysql库和information_schema库的主从同步</p>
+<pre><code>replicate-ignore-db = mysql
+binlog-ignore-db = mysql
+binlog-ignore-db = performance_schema
+binlog-ignore-db = information_schema
+</code></pre><p>提示：忽略记录binlog日志的参数binlog-ignore-db一般用于系统的库和表</p>
+<p>结论：如果想要在从库上忽略mysql库的同步，方法：</p>
+<p>1、只有在[主从]库上分别设置replicate-ignore-db = mysql才可以做到从库不同步mysql库。</p>
+<p>2、在主库上设置binlog-ignore-db=mysql不记录有关mysql库更新binlog，来达到从库不同步mysql库</p>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>修改配置文件my.cnf将如下代码复制到[mysqld]标签下</p>
+<pre><code>replicate-ignore-db = mysql
+binlog-ignore-db = mysql
+binlog-ignore-db = performance_schema
+binlog-ignore-db = information_schema
+</code></pre><p>修改配置文件后需要重启数据库</p>
+<pre><code>/etc/init.d/mysqld restart
+</code></pre><p>重启的时候我遇到了一个报错ERROR! MySQL server PID file could not be found<br>可能进程里已经存在mysql进程</p>
+<p>解决方法：用命令“ps -ef|grep mysqld”查看是否有mysqld进程，如果有使用“kill -9  进程号”杀死，然后重新启动mysqld！</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-118.png" alt="m-118"></p>
+<p><a href="http://blog.51cto.com/dahui09/1841627" target="_blank" rel="external">更多解决办法请参考博客</a></p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>在主库</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-119.png" alt="m-119"></p>
+<p>在从库</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-120.png" alt="m-120"></p>
+<p>在主库创建数据库查看主从同步是否正常</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-121.png" alt="m-121"></p>
+<p>在从库查看</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-122.png" alt="m-122"></p>
+<h2 id="mysql主从复制指定不同库表同步参数说明"><a href="#mysql主从复制指定不同库表同步参数说明" class="headerlink" title="mysql主从复制指定不同库表同步参数说明"></a>mysql主从复制指定不同库表同步参数说明</h2><p>master端：</p>
+<pre><code>--binlog-do-db 二进制日志记录的数据库（多数据库用逗号，隔开）
+--binlog-ignore-db 二进制日志中忽略数据库 （多数据库用逗号，隔开）
+</code></pre><p>以下是mysql主从忽略授权表的方法案例：</p>
+<p>master端：</p>
+<pre><code>binlog-do-db=YYY 需要同步的数据库。不添加这行表示同步所有
+binlog-ignore-db = mysql   这是不记录binlog，来达到从库不同步mysql库，以确保各自权限
+binlog-ignore-db = performance_schema
+binlog-ignore-db = information_schema
+</code></pre><p>slave端：</p>
+<pre><code>--replication-do-db    设定需要复制的数据库（多数据库使用逗号，隔开）
+--replication-ignore-db 设定需要忽略的复制数据库 （多数据库使用逗号，隔开）
+--replication-do-table   设定需要复制的表
+--replication-ignore-table 设定需要忽略的复制表
+--replication-wild-do-table 同replication-do-table功能一样，但是可以通配符
+--replication-wild-ignore-table 同replication-ignore-table功能一样，但是可以加通配符
+</code></pre><p>互为同步配置实例：</p>
+<p>1）A、B互为主从同步test，不同步mysql:</p>
+<p>两个数据库配置中均配置：</p>
+<pre><code>binlog-do-db=test
+binlog-ignore-db=mysql
+replication-do-db=test
+replication-ignore-db=mysql
+</code></pre><p>2）A、B互为为主从同步test，不同步其他数据库，新库创建的也不会同步</p>
+<p>两个数据库配置中均配置：</p>
+<pre><code>binlog-do-db=test
+replication-do-db=test
+</code></pre><p>3）A、B互为为主从不同步mysql，同步其他数据库，譬如新创建的数据库也会同步</p>
+<pre><code>binlog-ignore-db=mysql
+replication-ignore-db=mysql
+</code></pre><p>4）A、B互为主从同步所有数据库，包括新建的数据库:</p>
+<p>两个数据库配置中均不设置上述四项</p>
+<h2 id="通过read-only参数防止数据写入从库方法"><a href="#通过read-only参数防止数据写入从库方法" class="headerlink" title="通过read-only参数防止数据写入从库方法"></a>通过read-only参数防止数据写入从库方法</h2><p>除了上面在从库仅做select的授权外，还可以在slave服务器启动选项增加参数或者在my.cnf配置文件中加read-only参数来确保从库只读，当然授权用户和read-only参数二者同时操作效果更佳，这也是生产环境中使用的方案。read-only参数可以让slave服务器只允许来自slave服务器线程或具有super权限的用户更新。可以确保slave服务器不接受来自普通用户的更新，slave服务器启动项增加–read-only也是同样功能</p>
+<p>注意：</p>
+<p>1、my.cnf里加入read-only后，重启服务使参数生效</p>
+<p>2、root用户及all权限的用户可以插入，删除数据</p>
+<p>3、具备insert,update,delete等权限的用户无法通过read-only的限制</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-123.png" alt="m-123"></p>
+<p>重新启动mysql</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-124.png" alt="m-124"></p>
+<p>进入从库创建一个用户</p>
+<pre><code>mysql&gt; grant select,insert,update,delete on *.* to &apos;t_user&apos;@&apos;localhost&apos; identified by &apos;123&apos;;
+mysql&gt; flush privileges;
+</code></pre><p>然后用这个用户登录数据库，尝试插入数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-125.png" alt="m-125"></p>
+<p>提示为只读，无权插入数据</p>
+<h1 id="模拟故障"><a href="#模拟故障" class="headerlink" title="模拟故障"></a>模拟故障</h1><h2 id="模拟故障-1"><a href="#模拟故障-1" class="headerlink" title="模拟故障"></a>模拟故障</h2><p>MySQL从库数据冲突导致同步停止在slave创建一个库，然后master创建一个同名的库就会出现这种错误</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-126.png" alt="m-126"></p>
+<p>解决办法一：</p>
+<pre><code>stop slave;
+set global sql_slave_skip_counter =1;
+start slave;
+</code></pre><p>1）对于普通的互联网业务，忽略问题不是很大，当然，要确定不影响公司业务的前题下</p>
+<p>2）企业场景解决主从同步，主从不一致对当前业务更重要，然后如果主从数据一致也很重要，在找个时间恢复一下这个从库。</p>
+<p>这样slave就会和master去同步，主要关键点：</p>
+<pre><code>Slave_IO_Running: Yes
+Slave_SQL_Running: Yes
+Seconds_Behind_Master: 0   #0表示已经同步状态
+</code></pre><p>提示：set global sql_slave_skip_counter =n;  #取值&gt;0忽略执行N个更新。</p>
+<p>方法二：根据错误号跳过指定的错误</p>
+<pre><code>slave-skip-errors = 1032,1062,1007   #一般由于入库重复导致的失败就可以忽略
+</code></pre><p>对于错误代码，应使用slave服务器错误日志中错误消息提供的编码和show slave status的输出。也可以使用不推荐的all值忽略所有错误消息，不考虑所发生的错误。无需而言，如果使用该值，我们不能保证数据的完整性。在这种情况下，如果slave服务器的数据与master服务器上的不相近请不要<br>抱怨，已经警告过你了</p>
+<p>附：<a href="https://blog.csdn.net/aidenliu/article/details/5925604" target="_blank" rel="external">mysql错误代码大全</a></p>
+<h2 id="让MySQL从库记录binlog方法"><a href="#让MySQL从库记录binlog方法" class="headerlink" title="让MySQL从库记录binlog方法"></a>让MySQL从库记录binlog方法</h2><p>需要记录binlog的情况</p>
+<p>1、当前从库还要作为其他从库的主库</p>
+<p>2、把从库作为备份服务器时需要开启binlog</p>
+<p>在从库的my.cnf中加入如下参数</p>
+<pre><code>log-slave-updates
+log-bin=mysql-bin
+expire_logs_days = 7
+</code></pre><p>应用场景：级联复制或从库做数据备份。A–&gt;B–&gt;C，B服务器要开启记录binlog日志功能</p>
+<h2 id="主多从宕机从库切换主继续和从同步过程详解"><a href="#主多从宕机从库切换主继续和从同步过程详解" class="headerlink" title="主多从宕机从库切换主继续和从同步过程详解"></a>主多从宕机从库切换主继续和从同步过程详解</h2><h3 id="看两个线程的更新状态"><a href="#看两个线程的更新状态" class="headerlink" title="看两个线程的更新状态"></a>看两个线程的更新状态</h3><p>登陆从库show processlist\G</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-127.png" alt="m-127"></p>
+<p>登陆从库31,32分别查看：</p>
+<pre><code>cat /application/mysql/data/master.info
+</code></pre><p>确保更新完毕，看看那个从库那个最快，经过测试没有延迟的情况POS差距很小，甚至是一致的</p>
+<h3 id="授权同步用户和主库一样"><a href="#授权同步用户和主库一样" class="headerlink" title="授权同步用户和主库一样"></a>授权同步用户和主库一样</h3><p>1）确保所有relay log全部更新完毕</p>
+<p>在每个从库执行stop slave io_thread; show processlist;<br>直到看到Has read all relay log;表示从库更新都执行完毕；</p>
+<p>2）登陆要提升权限的从库</p>
+<pre><code>stop slave;
+retset master;
+quit;
+</code></pre><p>3）进到数据库数据目录</p>
+<p>删除master.info relay-log.info</p>
+<pre><code>cd /application/mysql/data
+rm -f master.info relay-log.info
+</code></pre><p>检查授权表，read-only等参数</p>
+<p>4）提升从库为主库</p>
+<pre><code>vi /etc/my.cnf
+</code></pre><p>开启：</p>
+<pre><code>log-bin = mysql-bin
+</code></pre><p>如果存在log-slave-updates，read-only等一并注释</p>
+<p>重启数据库<br>    /etc/init.d/mysqld restart</p>
+<p>到此为止，提升主库完毕</p>
+<p>5）如果主库服务器没有宕，需要去主库拉取binlog补全提升主库的从库</p>
+<p>6）其他从库操作</p>
+<p>已检查（同步user rep均存在）</p>
+<p>登陆从库</p>
+<pre><code>stop slave;
+change master to master_host = &apos;192.168.0.31&apos;;   #如果不同步，就指定位置点
+start slave；
+show slave status\G
+</code></pre><p>主库宕机切换到此完成</p>
+<p>7）修理损坏的主库，完成后作从库使用或者切换</p>
+<p>现在是主库意外宕机，假如我们又计划切换。怎么做？</p>
+<p>a、主库锁表。</p>
+<p>b、登陆所有的库查看同步状态，是否完成。</p>
+<p>其他与前面的一样。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;回顾&quot;&gt;&lt;a href=&quot;#回顾&quot; class=&quot;headerlink&quot; title=&quot;回顾&quot;&gt;&lt;/a&gt;回顾&lt;/h1&gt;&lt;h2 id=&quot;mysql主从同步配置步骤&quot;&gt;&lt;a href=&quot;#mysql主从同步配置步骤&quot; class=&quot;headerlink&quot; title=
+    
+    </summary>
+    
+      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL系列（五）：MySQL主从复制</title>
@@ -4773,762 +5257,6 @@ def list():
       <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
     
       <category term="saltstack" scheme="http://yjscloud.com/tags/saltstack/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>cobbler实践指南</title>
-    <link href="http://yjscloud.com/2018/03/01/cobbler%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97/"/>
-    <id>http://yjscloud.com/2018/03/01/cobbler实践指南/</id>
-    <published>2018-03-01T01:48:05.000Z</published>
-    <updated>2018-03-01T04:42:46.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="cobbler简介"><a href="#cobbler简介" class="headerlink" title="cobbler简介"></a>cobbler简介</h1><h2 id="cobbler介绍"><a href="#cobbler介绍" class="headerlink" title="cobbler介绍"></a>cobbler介绍</h2><p>Cobbler是一个Linux服务器安装的服务，可以通过网络启动(PXE)的方式来快速安装、重装物理服务器和虚拟机，同时还可以管理DHCP，DNS等。</p>
-<p>Cobbler可以使用命令行方式管理，也提供了基于Web的界面管理工具(cobbler-web)，还提供了API接口，可以方便二次开发使用。</p>
-<p>Cobbler是较早前的kickstart的升级版，优点是比较容易配置，还自带web界面比较易于管理。</p>
-<p>Cobbler内置了一个轻量级配置管理系统，但它也支持和其它配置管理系统集成，如Puppet，暂时不支持SaltStack。</p>
-<h2 id="cobbler集成的服务"><a href="#cobbler集成的服务" class="headerlink" title="cobbler集成的服务"></a>cobbler集成的服务</h2><ul>
-<li>PXE服务支持</li>
-<li>DHCP服务管理</li>
-<li>DNS服务管理(可选bind,dnsmasq)</li>
-<li>电源管理</li>
-<li>Kickstart服务支持</li>
-<li>YUM仓库管理</li>
-<li>TFTP(PXE启动时需要)</li>
-<li>Apache(提供kickstart的安装源，并提供定制化的kickstart配置）</li>
-</ul>
-<h1 id="cobbler部署"><a href="#cobbler部署" class="headerlink" title="cobbler部署"></a>cobbler部署</h1><p>cobbler服务器基本设置：CentOS7最小化安装，关闭防火墙，selinux设置为disabled，虚拟机网卡这里为桥接模式</p>
-<h2 id="安装EPEL源"><a href="#安装EPEL源" class="headerlink" title="安装EPEL源"></a>安装EPEL源</h2><pre><code>rpm -ivh http://mirrors.kernel.org/fedora-epel/7/x86_64/e/epel-release-7-10.noarch.rpm
-yum repolist
-</code></pre><h2 id="yum安装cobbler"><a href="#yum安装cobbler" class="headerlink" title="yum安装cobbler"></a>yum安装cobbler</h2><pre><code>yum install -y httpd dhcp tftp cobbler cobbler-web pykickstart
-</code></pre><p>用命令（rpm -ql cobbler）查看安装的文件，下面列出部分。</p>
-<p>配置文件目录 /etc/cobbler</p>
-<pre><code>/etc/cobbler                  # 配置文件目录
-/etc/cobbler/settings         # cobbler主配置文件，这个文件是YAML格式，Cobbler是python写的程序。
-/etc/cobbler/dhcp.template    # DHCP服务的配置模板
-/etc/cobbler/tftpd.template   # tftp服务的配置模板
-/etc/cobbler/rsync.template   # rsync服务的配置模板
-/etc/cobbler/iso              # iso模板配置文件目录
-/etc/cobbler/pxe              # pxe模板文件目录/etc/cobbler/power            # 电源的配置文件目录
-/etc/cobbler/users.conf       # Web服务授权配置文件
-/etc/cobbler/users.digest     # 用于web访问的用户名密码配置文件
-/etc/cobbler/dnsmasq.template # DNS服务的配置模板
-/etc/cobbler/modules.conf     # Cobbler模块配置文件
-</code></pre><p> 数据目录</p>
-<pre><code>/var/lib/cobbler              # Cobbler数据目录
-/var/lib/cobbler/config       # 用于存放distros,system,profiles等信息配置文件
-/var/lib/cobbler/kickstarts   # 默认存放kickstart文件
-/var/lib/cobbler/loaders      # 存放的各种引导程序
-</code></pre><p> 镜像目录</p>
-<pre><code>/var/www/cobbler              # 系统安装镜像目录
-/var/www/cobbler/ks_mirror    # 导入的发行版系统的所有数据
-/var/www/cobbler/images       # 导入发行版的kernel和initrd镜像用于远程网络启动
-/var/www/cobbler/repo_mirror  # yum源存储目录
-</code></pre><p> 日志目录</p>
-<pre><code>/var/log/cobbler              # 日志目录
-/var/log/cobbler/install.log  # 客户端系统安装日志
-/var/log/cobbler/cobbler.log  # cobbler日志
-</code></pre><h2 id="启动并检测cobbler"><a href="#启动并检测cobbler" class="headerlink" title="启动并检测cobbler"></a>启动并检测cobbler</h2><pre><code>systemctl start httpd
-systemctl enable httpd
-systemctl start cobblerd
-systemctl enable cobblerd
-cobbler check
-</code></pre><p>附加解析：</p>
-<pre><code>cobbler check 核对当前设置是否有问题
-cobbler list 列出所有的cobbler元素
-cobbler report 列出元素的详细信息
-cobbler sync 同步配置到数据目录,更改配置最好都要执行下
-cobbler reposync 同步yum仓库
-cobbler distro 查看导入的发行版系统信息
-cobbler system 查看添加的系统信息
-cobbler profile 查看配置信息
-</code></pre><h2 id="修改cobbler主配置文件"><a href="#修改cobbler主配置文件" class="headerlink" title="修改cobbler主配置文件"></a>修改cobbler主配置文件</h2><pre><code>vim /etc/cobbler/settings
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-1.png" alt="1-1"></p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-2.png" alt="1-2"></p>
-<h2 id="保证xinetd服务为开机自动启动状态"><a href="#保证xinetd服务为开机自动启动状态" class="headerlink" title="保证xinetd服务为开机自动启动状态"></a>保证xinetd服务为开机自动启动状态</h2><pre><code>vim /etc/xinetd.d/tftp
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-3.png" alt="1-3"></p>
-<h2 id="启动rsyncd服务"><a href="#启动rsyncd服务" class="headerlink" title="启动rsyncd服务"></a>启动rsyncd服务</h2><pre><code>systemctl start rsyncd
-cobbler get-loaders
-</code></pre><h2 id="生成cobbler安装系统root初始密码"><a href="#生成cobbler安装系统root初始密码" class="headerlink" title="生成cobbler安装系统root初始密码"></a>生成cobbler安装系统root初始密码</h2><pre><code>openssl passwd -1 -salt &apos;cobler&apos; &apos;cobler&apos;
-$1$cobler$XJnisBweZJlhL651HxAM00
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-4.png" alt="1-4"></p>
-<h2 id="将上面的加密串加入cobbler配置文件中"><a href="#将上面的加密串加入cobbler配置文件中" class="headerlink" title="将上面的加密串加入cobbler配置文件中"></a>将上面的加密串加入cobbler配置文件中</h2><pre><code>vim /etc/cobbler/settings
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-5.png" alt="1-5"></p>
-<h2 id="重启cobblerd服务："><a href="#重启cobblerd服务：" class="headerlink" title="重启cobblerd服务："></a>重启cobblerd服务：</h2><pre><code>systemctl restart cobblerd
-cobbler check
-</code></pre><h2 id="让cobblerd管理dhcp"><a href="#让cobblerd管理dhcp" class="headerlink" title="让cobblerd管理dhcp"></a>让cobblerd管理dhcp</h2><pre><code>vim /etc/cobbler/settings
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-6.png" alt="1-6"></p>
-<h2 id="修改dhcp模板文件："><a href="#修改dhcp模板文件：" class="headerlink" title="修改dhcp模板文件："></a>修改dhcp模板文件：</h2><pre><code>vim /etc/cobbler/dhcp.template
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-7.png" alt="1-7"></p>
-<h2 id="重启cobblerd"><a href="#重启cobblerd" class="headerlink" title="重启cobblerd"></a>重启cobblerd</h2><pre><code>systemctl restart cobblerd
-</code></pre><p>同步：</p>
-<pre><code>cobbler sync
-</code></pre><h2 id="导入镜像"><a href="#导入镜像" class="headerlink" title="导入镜像"></a>导入镜像</h2><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-8.png" alt="1-8"></p>
-<pre><code>mount /dev/cdrom /mnt
-cobbler import --path=/mnt/ --name=CentOS-7-x86_64 --arch=x86_64
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-9.png" alt="1-9"></p>
-<p>导入centos6的步骤在这里略去！</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-10.png" alt="1-10"></p>
-<p>CentOS-6-x86_64.cfg配置文件：</p>
-<pre><code># Kickstart file automatically generated by anaconda.
-
-#version=DEVEL
-
-install  #表示是安装，而不是升级
-
-text #文本方式安装
-
-cdrom #安装方式，如果是网络安装的话可以写成 url ––url ftp://192.168.1.254/dir 或者 nfs --server=192.168.0.241 --dir=/centosinstall
-
-key –skip #这个是我另外添加的，如果是RedHat的系统，会要求输入key，这里配置为跳过，如果不配置安装时会停在那里要求用户输入key
-
-lang en_US.UTF-8  #语言
-
-keyboard us #键盘样式
-
-network --onboot no --device eth0 --noipv4 --noipv6 #网络配置 配置具体参数样例：network –onboot yes --bootproto=static --ip=192.168.1.1 --netmask=255.255.255.0 其他网关，DNS等格式和ifcfg-ethx的方式一样
-
-rootpw  --iscrypted $6$PEJ49S7OkrNra3UM #管理员密码，是加密过的 要是使用不加密的方式则这样写：rootpw 123456
-
-firewall --service=ssh #开启防火墙，并打开ssh端口
-
-authconfig --enableshadow --passalgo=sha512 #用户认证和密码加密方式
-
-selinux --enforcing #强制打开selinux
-
-timezone --utc Etc/GMT+8 #时区设置
-
-zerombr yes #清空磁盘的mbr
-
-bootloader --location=mbr --driveorder=sda #引导程序相关参数
-
-# The following is the partition information you requested
-# Note that any partitions you deleted are not expressed
-# here so unless you clear all partitions first, this is
-# not guaranteed to work
-
-clearpart –all –initlabel #初始化磁盘
-
-part / --fstype=ext4 --size=18000 #开始分区
-part swap --grow --size=1024
-repo --name=&quot;CentOS&quot;  --baseurl=cdrom:sr0 --cost=100
-
-reboot
-
-
-%packages --nobase #安装的软件包，这里由于我安装的是最小mini版，所以只安装了核心软件包组
-@core
-
-
-%post #后安装脚本（这里是我另外添加的，原来文件中没有）
-id lustlost &amp;&gt;; /dev/null || useradd lustlost #检查是否有lustlost用户，如果没有则添加
-echo 123456 | passwd –stdin lustlost #配置密码
-
-cat &gt;&gt; /etc/yum.repos.d/base.repo &lt;&lt; eof
-[base]
-name=baseserver
-baseurl=http://192.168.1.254/yum
-gpgcheck=0
-enable=1
-eof                                 #这里在安装系统成功后执行脚本自动配置一个yum源,其他脚本可以按照需要定义
-
-%end
-</code></pre><p>CentOS-7-x86_64.cfg配置文件：</p>
-<pre><code># Cobbler for Kickstart Configurator for CentOS 7 by clsn
-install
-url --url=$tree
-text
-lang en_US.UTF-8
-keyboard us
-zerombr
-bootloader --location=mbr --driveorder=sda --append=&quot;crashkernel=auto rhgb quiet&quot;
-#Network information
-$SNIPPET(&apos;network_config&apos;)
-#network --bootproto=dhcp --device=eth0 --onboot=yes --noipv6 --    hostname=CentOS7
-timezone --utc Asia/Shanghai
-authconfig --enableshadow --passalgo=sha512
-rootpw  --iscrypted $default_password_crypted
-clearpart --all --initlabel
-part /boot --fstype xfs --size 1024
-part swap --size 1024
-part / --fstype xfs --size 1 --grow
-firstboot --disable
-selinux --disabled
-firewall --disabled
-logging --level=info
-reboot
-
-%pre
-$SNIPPET(&apos;log_ks_pre&apos;)
-$SNIPPET(&apos;kickstart_start&apos;)
-$SNIPPET(&apos;pre_install_network_config&apos;)
-# Enable installation monitoring
-$SNIPPET(&apos;pre_anamon&apos;)
-%end
-
-%packages
-@^minimal
-@compat-libraries
-@core
-@debugging
-@development
-bash-completion
-chrony
-dos2unix
-kexec-tools
-lrzsz
-nmap
-sysstat
-telnet
-tree
-vim
-wget
-%end
-
-%post
-systemctl disable postfix.service
-
-$yum_config_stanza
-%end
-</code></pre><p>上传配置文件到/var/lib/cobbler/kickstarts目录下</p>
-<p>修改自定义配置文件：</p>
-<pre><code>cobbler profile edit --name=CentOS-7-x86_64 --kickstart=/var/lib/cobbler/kickstarts/CentOS-7-x86_64.cfg
-cobbler profile edit --name=CentOS-6-x86_64 --kickstart=/var/lib/cobbler/kickstarts/CentOS-6-x86_64.cfg
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-11.png" alt="1-11">    </p>
-<p>定义自动化安装时centos7的网卡信息文件（自动生成eth1,eth2）</p>
-<pre><code>cobbler profile edit --name=CentOS-7-x86_64 --kopts=&apos;net.ifnames=O biosdevname=O&apos;
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-12.png" alt="1-12"></p>
-<p>cobbler sync #使修改的配置文件生效</p>
-<p>然后随便添加一台虚拟机，开机！</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-13.png" alt="1-13">    </p>
-<p>cobbler服务器端查看日志</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-14.png" alt="1-14"></p>
-<p>（14）安装xinetd</p>
-<pre><code>yum -y install xinetd
-systemctl start xinetd
-</code></pre><p>安装好后就会可以选择安装centos版本，选择对应版本后就会自动执行安装程序！</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-15.png" alt="1-15"><br><img src="http://opnq5yeqm.bkt.clouddn.com/1-16.png" alt="1-16">    </p>
-<h1 id="自动重装和cobbler-web"><a href="#自动重装和cobbler-web" class="headerlink" title="自动重装和cobbler-web"></a>自动重装和cobbler-web</h1><h2 id="安装koan"><a href="#安装koan" class="headerlink" title="安装koan"></a>安装koan</h2><pre><code>yum -y install koan
-</code></pre><p>查看可以重装的系统：</p>
-<pre><code>koan --server=192.168.0.100 --list=profiles    
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-17.png" alt="1-17">    </p>
-<h2 id="指定要重装成centos6："><a href="#指定要重装成centos6：" class="headerlink" title="指定要重装成centos6："></a>指定要重装成centos6：</h2><pre><code>koan --replace-self --server=192.168.0.100 --profile=CentOS-6-x86_64
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-18.png" alt="1-18"></p>
-<h2 id="通过web访问cobbler"><a href="#通过web访问cobbler" class="headerlink" title="通过web访问cobbler"></a>通过web访问cobbler</h2><p>在浏览器输入：<a href="https://192.168.0.100/cobbler_web，用户名和密码都是默认的cobbler" target="_blank" rel="external">https://192.168.0.100/cobbler_web，用户名和密码都是默认的cobbler</a></p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-19.png" alt="1-19"></p>
-<h2 id="cobbler修改密码"><a href="#cobbler修改密码" class="headerlink" title="cobbler修改密码"></a>cobbler修改密码</h2><pre><code>htdigest /etc/cobbler/users.digest &quot;Cobbler&quot; cobbler
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-20.png" alt="1-20"></p>
-<p>所有操作都可在web界面进行</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-21.png" alt="1-21"><br><img src="http://opnq5yeqm.bkt.clouddn.com/1-22.png" alt="1-22"></p>
-<h2 id="修改提示信息的选单"><a href="#修改提示信息的选单" class="headerlink" title="修改提示信息的选单"></a>修改提示信息的选单</h2><pre><code>vim /etc/cobbler/pxe/pxedefault.template
-</code></pre><p>修改前:</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-23.png" alt="1-23"></p>
-<p>修改后：</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-24.png" alt="1-24"></p>
-<p>然后执行命令：cobbler sync</p>
-<p>新建一台虚拟机查看效果：</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-25.png" alt="1-25"></p>
-<h1 id="cobbler自定义yum源"><a href="#cobbler自定义yum源" class="headerlink" title="cobbler自定义yum源"></a>cobbler自定义yum源</h1><h2 id="添加repo"><a href="#添加repo" class="headerlink" title="添加repo"></a>添加repo</h2><pre><code>cobbler repo add --name=openstack-ocata --mirror=http://192.168.0.5:8080/openstack-ocata/ --arch=x86_64 --breed=yum
-</code></pre><p>注：<a href="http://192.168.0.5:8080/openstack-ocata/为我本地搭建的本地yum源" target="_blank" rel="external">http://192.168.0.5:8080/openstack-ocata/为我本地搭建的本地yum源</a></p>
-<h2 id="同步repo"><a href="#同步repo" class="headerlink" title="同步repo"></a>同步repo</h2><pre><code>cobbler reposync
-</code></pre><h2 id="添加repo到对应的repolist"><a href="#添加repo到对应的repolist" class="headerlink" title="添加repo到对应的repolist"></a>添加repo到对应的repolist</h2><pre><code>cobbler profile edit --name=CentOS-7-x86_64 --repos=&quot;openstack-ocata&quot;
-</code></pre><h2 id="修改kicstart文件"><a href="#修改kicstart文件" class="headerlink" title="修改kicstart文件"></a>修改kicstart文件</h2><pre><code>%post
-systemctl disable postfix.service
-
-$yum_config_stanza
-%end
-</code></pre><h2 id="添加定时任务，定期同步repo"><a href="#添加定时任务，定期同步repo" class="headerlink" title="添加定时任务，定期同步repo"></a>添加定时任务，定期同步repo</h2><pre><code>echo &quot;1 3 * * * /usr/bin/cobbler reposync --tries=3 --no-fail&quot; &gt;&gt; /var/spool/cron/root
-</code></pre><h1 id="cobbler自定义系统安装"><a href="#cobbler自定义系统安装" class="headerlink" title="cobbler自定义系统安装"></a>cobbler自定义系统安装</h1><h2 id="自动化装机平台基本信息"><a href="#自动化装机平台基本信息" class="headerlink" title="自动化装机平台基本信息"></a>自动化装机平台基本信息</h2><p>mac地址：00:50:56:3E:3D:06</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-26.png" alt="1-26"></p>
-<p>主机名：cobbler-test03<br>IP：192.168.0.111<br>掩码：255.255.255.0<br>网关：192.168.0.1<br>DNS：192.168.0.1</p>
-<h2 id="执行安装的命令"><a href="#执行安装的命令" class="headerlink" title="执行安装的命令"></a>执行安装的命令</h2><pre><code>cobbler system add --name=cobbler-test03 --mac=00:50:56:3E:3D:06 --profile=CentOS-7-x86_64 \
---ip-address=192.168.0.111 --subnet=255.255.255.0 --gateway=192.168.0.1 --intterface=eth0 \
---static=1 --hostname=cobbler-test03 --name-servers=&quot;192.168.0.1&quot; \
---kickstart=/var/lib/cobbler/kickstarts/CentOS-7-x86_64.cfg
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/1-27.png" alt="1-27"></p>
-<p>同步：cobbler sync</p>
-<p>启动虚拟机跳过选择界面自动安装：</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/1-28.png" alt="1-28"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;cobbler简介&quot;&gt;&lt;a href=&quot;#cobbler简介&quot; class=&quot;headerlink&quot; title=&quot;cobbler简介&quot;&gt;&lt;/a&gt;cobbler简介&lt;/h1&gt;&lt;h2 id=&quot;cobbler介绍&quot;&gt;&lt;a href=&quot;#cobbler介绍&quot; class
-    
-    </summary>
-    
-      <category term="运维技能" scheme="http://yjscloud.com/categories/%E8%BF%90%E7%BB%B4%E6%8A%80%E8%83%BD/"/>
-    
-    
-      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
-    
-      <category term="cobbler" scheme="http://yjscloud.com/tags/cobbler/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（十）：面向对象（基础篇）</title>
-    <link href="http://yjscloud.com/2018/01/23/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%8D%81%EF%BC%89%EF%BC%9A%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%EF%BC%88%E5%9F%BA%E7%A1%80%E7%AF%87%EF%BC%89/"/>
-    <id>http://yjscloud.com/2018/01/23/Python当歌（十）：面向对象（基础篇）/</id>
-    <published>2018-01-23T02:30:17.000Z</published>
-    <updated>2018-02-08T10:27:32.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>（1）面向过程：根据业务逻辑从上到下写垒代码</p>
-<p>（2）函数式：将某功能代码封装到函数中，日后便无需重复编写，仅调用函数即可</p>
-<p>（3）面向对象：对函数进行分类和封装，让开发“更快更好更强…”</p>
-<p>面向过程编程最易被初学者接受，其往往用一长段代码来实现指定功能，开发过程中最常见的操作就是粘贴复制，即：将之前实现的代码块复制到现需功能处。</p>
-<pre><code>while True：
-    if cpu利用率 &gt; 90%:
-        #发送邮件提醒
-        连接邮箱服务器
-        发送邮件
-        关闭连接
-
-    if 硬盘使用空间 &gt; 90%:
-        #发送邮件提醒
-        连接邮箱服务器
-        发送邮件
-        关闭连接
-
-    if 内存占用 &gt; 80%:
-        #发送邮件提醒
-        连接邮箱服务器
-        发送邮件
-        关闭连接
-</code></pre><p>随着时间的推移，开始使用了函数式编程，增强代码的重用性和可读性，就变成了这样：</p>
-<pre><code>def 发送邮件(内容)
-    #发送邮件提醒
-    连接邮箱服务器
-    发送邮件
-    关闭连接
-
-while True：
-
-    if cpu利用率 &gt; 90%:
-        发送邮件(&apos;CPU报警&apos;)
-
-    if 硬盘使用空间 &gt; 90%:
-        发送邮件(&apos;硬盘报警&apos;)
-
-    if 内存占用 &gt; 80%:
-        发送邮件(&apos;内存报警&apos;)
-</code></pre><h1 id="创建类和对象"><a href="#创建类和对象" class="headerlink" title="创建类和对象"></a>创建类和对象</h1><p>面向对象编程是一种编程方式，此编程方式的落地需要使用 “类” 和 “对象” 来实现，所以，面向对象编程其实就是对 “类” 和 “对象” 的使用。</p>
-<p>类就是一个模板，模板里可以包含多个函数，函数里实现一些功能</p>
-<p>对象则是根据模板创建的实例，通过实例对象可以执行类中的函数</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-1.png" alt="10-1"></p>
-<p>（1）class是关键字，表示类</p>
-<p>（2）创建对象，类名称后加括号即可</p>
-<p>ps：类中的函数第一个参数必须是self（详细见：类的三大特性之封装）<br>　　 类中定义的函数叫做 “方法”</p>
-<pre><code># 创建类
-class Foo:
-
-    def Bar(self):
-        print &apos;Bar&apos;
-
-    def Hello(self, name):
-        print &apos;i am %s&apos; %name
-
-# 根据类Foo创建对象obj
-obj = Foo()
-obj.Bar()            #执行Bar方法
-obj.Hello(‘Pan&apos;) #执行Hello方法　
-</code></pre><h1 id="面向对象三大特性"><a href="#面向对象三大特性" class="headerlink" title="面向对象三大特性"></a>面向对象三大特性</h1><p>面向对象的三大特性是指：封装、继承和多态。</p>
-<h2 id="封装"><a href="#封装" class="headerlink" title="封装"></a>封装</h2><p>封装，顾名思义就是将内容封装到某个地方，以后再去调用被封装在某处的内容。要明确的区分内外,内部的实现逻辑，外部无法知晓，并且为封装到内部的逻辑提供一个访问接口给外部使用，类中定义私有的，只在类的内部使用，外部无法访问。所以，在使用面向对象的封装特性时，需要：</p>
-<ul>
-<li>将内容封装到某处</li>
-<li>从某处调用被封装的内容</li>
-</ul>
-<p>第一步：将内容封装到某处</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-2.png" alt="10-2"></p>
-<p>self 是一个形式参数，当执行 obj1 = Foo(‘Pan’, 18 ) 时，self 等于 obj1；</p>
-<p>   当执行 obj2 = Foo(‘xwq’, 78 ) 时，self 等于 obj2</p>
-<p>所以，内容其实被封装到了对象 obj1 和 obj2 中，每个对象中都有 name 和 age 属性，在内存里类似于下图来保存。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-3.png" alt="10-3"></p>
-<p>第二步：从某处调用被封装的内容</p>
-<p>调用被封装的内容时，有两种情况：</p>
-<ul>
-<li>通过对象直接调用</li>
-<li>通过self间接调用</li>
-</ul>
-<p>（1）通过对象直接调用被封装的内容</p>
-<p>上图展示了对象 obj1 和 obj2 在内存中保存的方式，根据保存格式可以如此调用被封装的内容：对象.属性名</p>
-<pre><code>class Foo:
-
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-
-obj1 = Foo(&apos;Pan&apos;, 18)
-print obj1.name    # 直接调用obj1对象的name属性
-print obj1.age     # 直接调用obj1对象的age属性
-
-obj2 = Foo(&apos;xwq&apos;, 19)
-print obj2.name    # 直接调用obj2对象的name属性
-print obj2.age     # 直接调用obj2对象的age属性
-</code></pre><p>（2）通过self间接调用被封装的内容</p>
-<p>执行类中的方法时，需要通过self间接调用被封装的内容</p>
-<pre><code>class Foo:
-
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-
-    def detail(self):
-        print self.name
-        print self.age
-
-obj1 = Foo(&apos;Pan&apos;, 18)
-obj1.detail()  # Python默认会将obj1传给self参数，即：obj1.detail(obj1)，所以，此时方法内部的 self ＝ obj1，即：self.name 是 Pan ；self.age 是 18
-
-obj2 = Foo(&apos;xwq&apos;, 73)
-obj2.detail()  # Python默认会将obj2传给self参数，即：obj1.detail(obj2)，所以，此时方法内部的 self ＝ obj2，即：self.name 是 xwq ； self.age 是 78
-</code></pre><p>综上所述，对于面向对象的封装来说，其实就是使用构造方法将内容封装到对象 中，然后通过对象直接或者self间接获取被封装的内容。</p>
-<p>（3）如何隐藏类的内部属性</p>
-<p>在python中用双下划线开头的方式将属性隐藏起来（设置成私有的），其实这仅仅这是一种变形操作且仅仅只在类定义阶段发生变形，类中所有双下划线开头的名称如<strong>x都会在类定义时自动变形成：_类名</strong>x的形式：</p>
-<pre><code>class A:
-    __N=0 #类的数据属性就应该是共享的,但是语法上是可以把类的数据属性设置成私有的如__N,会变形为_A__N
-    def __init__(self):
-        self.__X=10 #变形为self._A__X
-    def __foo(self): #变形为_A__foo
-        print(&apos;from A&apos;)
-    def bar(self):
-        self.__foo() #只有在类内部才可以通过__foo的形式访问到.
-
- #A._A__N是可以访问到的，这种，在外部是无法通过__x这个名字访问到。
-</code></pre><p>这种变形需要注意的问题是：</p>
-<p>1.这种机制也并没有真正意义上限制我们从外部直接访问属性，知道了类名和属性名就可以拼出名字：_类名<strong>属性，然后就可以访问了，如a._A</strong>N，即这种操作并不是严格意义上的限制外部访问，仅仅只是一种语法意义上的变形，主要用来限制外部的直接访问。</p>
-<p>2.变形的过程只在类的定义时发生一次,在定义后的赋值操作，不会变形</p>
-<p>3.在继承中，父类如果不想让子类覆盖自己的方法，可以将方法定义为私有的</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-4.png" alt="10-4"></p>
-<p>（4）封装不是单纯意义的隐藏</p>
-<p>1：封装数据：将数据隐藏起来这不是目的。隐藏起来然后对外提供操作该数据的接口，然后我们可以在接口附加上对该数据操作的限制，以此完成对数据属性操作的严格控制。</p>
-<pre><code>class Teacher:
-    def __init__(self,name,age):
-        # self.__name=name
-        # self.__age=age
-        self.set_info(name,age)
-
-    def tell_info(self):
-        print(&apos;姓名:%s,年龄:%s&apos; %(self.__name,self.__age))
-    def set_info(self,name,age):
-        if not isinstance(name,str):
-            raise TypeError(&apos;姓名必须是字符串类型&apos;)
-        if not isinstance(age,int):
-            raise TypeError(&apos;年龄必须是整型&apos;)
-        self.__name=name
-        self.__age=age
-
-
-t=Teacher(&apos;egon&apos;,18)
-t.tell_info()
-
-t.set_info(&apos;egon&apos;,19)
-t.tell_info()
-</code></pre><p>2：封装方法：目的是隔离复杂度</p>
-<p>取款是功能,而这个功能有很多功能组成:插卡、密码认证、输入金额、打印账单、取钱。对使用者来说,只需要知道取款这个功能即可,其余功能我们都可以隐藏起来,很明显这么做。隔离了复杂度,同时也提升了安全性</p>
-<pre><code>class ATM:
-    def __card(self):
-        print(&apos;插卡&apos;)
-    def __auth(self):
-        print(&apos;用户认证&apos;)
-    def __input(self):
-        print(&apos;输入取款金额&apos;)
-    def __print_bill(self):
-        print(&apos;打印账单&apos;)
-    def __take_money(self):
-        print(&apos;取款&apos;)
-
-    def withdraw(self):
-        self.__card()
-        self.__auth()
-        self.__input()
-        self.__print_bill()
-        self.__take_money()
-
-a=ATM()
-a.withdraw()
-</code></pre><p>（5）封装与扩展性</p>
-<p>封装在于明确区分内外，使得类实现者可以修改封装内的东西而不影响外部调用者的代码；而外部使用用者只知道一个接口(函数)，只要接口（函数）名、参数不变，使用者的代码永远无需改变。这就提供一个良好的合作基础——或者说，只要接口这个基础约定不变，则代码改变不足为虑。</p>
-<pre><code>#类的设计者
-class Room:
-    def __init__(self,name,owner,width,length,high):
-        self.name=name
-        self.owner=owner
-        self.__width=width
-        self.__length=length
-        self.__high=high
-    def tell_area(self): #对外提供的接口，隐藏了内部的实现细节，此时我们想求的是面积
-        return self.__width * self.__length
-
-#使用者
-&gt;&gt;&gt; r1=Room(&apos;卧室&apos;,&apos;egon&apos;,20,20,20)
-&gt;&gt;&gt; r1.tell_area() #使用者调用接口tell_area
-
-
-#类的设计者，轻松的扩展了功能，而类的使用者完全不需要改变自己的代码
-class Room:
-    def __init__(self,name,owner,width,length,high):
-        self.name=name
-        self.owner=owner
-        self.__width=width
-        self.__length=length
-        self.__high=high
-    def tell_area(self): #对外提供的接口，隐藏内部实现，此时我们想求的是体积,内部逻辑变了,只需求修该下列一行就可以很简答的实现,而且外部调用感知不到,仍然使用该方法，但是功能已经变了
-
-       return self.__width * self.__length * self.__high
-
-#对于仍然在使用tell_area接口的人来说，根本无需改动自己的代码，就可以用上新功能
-&gt;&gt;&gt; r1.tell_area()
-</code></pre><h1 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h1><p>继承，面向对象中的继承和现实生活中的继承相同，即：子可以继承父的内容。</p>
-<p>例如：<br>　　<br>　　猫可以：喵喵叫、吃、喝、拉、撒</p>
-<p>狗可以：汪汪叫、吃、喝、拉、撒</p>
-<p>如果我们要分别为猫和狗创建一个类，那么就需要为 猫 和 狗 实现他们所有的功能，如下所示：</p>
-<pre><code>(伪代码)
-class cat：
-
-    def cat_mews(self):
-        print (‘喵喵叫’)
-
-    def eat(self):
-        # do something
-
-    def drink(self):
-        # do something
-
-    def pull(self):
-        # do something
-
-    def cast(self):
-        # do something
-
-class dog：
-
-    def bark(self):
-        print (‘汪汪叫’)
-
-    def eat(self):
-        # do something
-
-    def drink(self):
-        # do something
-
-    def pull(self):
-        # do something
-
-    def cast(self):
-        # do something
-</code></pre><p>上述代码不难看出，吃、喝、拉、撒是猫和狗都具有的功能，而我们却分别的猫和狗的类中编写了两次。如果使用 继承 的思想，如下实现：</p>
-<p>　　动物：吃、喝、拉、撒</p>
-<p>　　   猫：喵喵叫（猫继承动物的功能）</p>
-<p>　　   狗：汪汪叫（狗继承动物的功能）</p>
-<pre><code>（伪代码）
-class animal:
-
-    def eat(self):
-        # do something
-
-    def drink(self):
-        # do something
-
-    def pull(self):
-        # do something
-
-    def cast(self):
-        # do something
-
-# 在类后面括号中写入另外一个类名，表示当前类继承另外一个类
-
-class cat(animal)：
-
-    def cat_mews(self):
-        print &apos;喵喵叫&apos;
-
-# 在类后面括号中写入另外一个类名，表示当前类继承另外一个类
-class dog(animal)：
-
-    def bark(self):
-        print &apos;汪汪叫&apos;
-
-（代码实现）
-class Animal:
-    def eat(self):
-        print(&apos;%s eat&apos;%(self.name))
-
-    def drink(self):
-        print(&apos;%s drink&apos; %(self.name))
-
-    def shit(self):
-        print(&apos;%s pull&apos; %(self.name))
-
-    def pee(self):
-        print(&apos;%s cast&apos; %(self.name))
-
-
-class Cat(Animal):
-    def __init__(self, name):
-        self.name = name
-        self.breed = &apos;猫&apos;
-
-    def cry(self):
-        print(&apos;喵喵叫&apos;)
-
-
-class Dog(Animal):
-    def __init__(self, name):
-        self.name = name
-        self.breed = &apos;狗&apos;
-
-    def cry(self):
-        print(&apos;汪汪叫&apos;)
-</code></pre><p># ######### 执行 #########</p>
-<pre><code>c1 = Cat(&apos;小白家的小黑猫&apos;)
-c1.eat()
-
-c2 = Cat(&apos;小黑的小白猫&apos;)
-c2.drink()
-
-d1 = Dog(&apos;胖子家的小瘦狗&apos;)
-d1.eat()
-</code></pre><p>所以，对于面向对象的继承来说，其实就是将多个类共有的方法提取到父类中，子类仅需继承父类而不必一一实现每个方法。</p>
-<p>注：除了子类和父类的称谓，你可能看到过 派生类 和 基类 ，他们与子类和父类只是叫法不同而已。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-5.png" alt="10-5"></p>
-<p>那么问题又来了，多继承呢？</p>
-<p>是否可以继承多个类</p>
-<p>如果继承的多个类每个类中都定了相同的函数，那么那一个会被使用呢？</p>
-<p>1、Python的类可以继承多个类，Java和C#中则只能继承一个类</p>
-<p>2、Python的类如果继承了多个类，那么其寻找方法的方式有两种，分别是：深度优先和广度优先</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-6.png" alt="10-6"></p>
-<p>当类是经典类时，多继承情况下，会按照深度优先方式查找</p>
-<p>当类是新式类时，多继承情况下，会按照广度优先方式查找</p>
-<p>经典类和新式类，从字面上可以看出一个老一个新，新的必然包含了跟多的功能，也是之后推荐的写法，从写法上区分的话，如果当前类或者父类继承了object类，那么该类便是新式类，否则便是经典类。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-7.png" alt="10-7"></p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/10-8.png" alt="10-8"></p>
-<p>（经典类多继承）<br>class D:</p>
-<pre><code>def bar(self):
-    print (&apos;D.bar&apos;)
-</code></pre><p>class C(D):</p>
-<pre><code>def bar(self):
-    print (&apos;C.bar&apos;)
-</code></pre><p>class B(D):</p>
-<pre><code>def bar(self):
-    print (&apos;B.bar&apos;)
-</code></pre><p>class A(B, C):</p>
-<pre><code>def bar(self):
-    print (&apos;A.bar&apos;)
-
-a = A()
-</code></pre><p>执行bar方法时首先去A类中查找，如果A类中没有，则继续去B类中找，如果B类中么有，则继续去D类中找，如果D类中么有，则继续去C类中找，如果还是未找到，则报错,所以，查找顺序：A –&gt; B –&gt; D –&gt; C。在上述查找bar方法的过程中，一旦找到，则寻找过程立即中断，便不会再继续找了a.bar()</p>
-<pre><code>(新式类多继承)
-class D(object):
-
-    def bar(self):
-        print (&apos;D.bar&apos;)
-
-class C(D):
-
-    def bar(self):
-        print (&apos;C.bar&apos;)
-
-class B(D):
-
-    def bar(self):
-        print (&apos;B.bar&apos;)
-
-class A(B, C):
-
-    def bar(self):
-        print (&apos;A.bar&apos;)
-
-a = A()
-</code></pre><p>执行bar方法时，首先去A类中查找，如果A类中没有，则继续去B类中找，如果B类中么有，则继续去C类中找，如果C类中么有，则继续去D类中找，如果还是未找到，则报错，所以，查找顺序：A –&gt; B –&gt; C –&gt; D，在上述查找bar方法的过程中，一旦找到，则寻找过程立即中断，便不会再继续找了a.bar()</p>
-<p>经典类：首先去A类中查找，如果A类中没有，则继续去B类中找，如果B类中么有，则继续去D类中找，如果D类中么有，则继续去C类中找，如果还是未找到，则报错</p>
-<p>新式类：首先去A类中查找，如果A类中没有，则继续去B类中找，如果B类中么有，则继续去C类中找，如果C类中么有，则继续去D类中找，如果还是未找到，则报错</p>
-<p>注意：在上述查找过程中，一旦找到，则寻找过程立即中断，便不会再继续找了</p>
-<h1 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h1><p>类的继承有两层意义：1、改变  2、扩展</p>
-<p>多态就是类的这两层意义的一个具体的实现机制。即调用不同的类实例化的对象下的相同的方法，实现的过程不一样。python中的标准类型就是多态概念的一个很好的示范。</p>
-<p>多态的概念指出了对象如何通过他们共同的属性和动作来操作及访问，而不需要考虑他们的具体的类。多态一定是反应在运行时的状态。</p>
-<p>（1）理解多态</p>
-<p>多态指的是一类事物有多种形态</p>
-<p>动物有多种形态：人，狗，猪</p>
-<pre><code>import abc
-class Animal(metaclass=abc.ABCMeta): #同一类事物:动物
-    @abc.abstractmethod
-    def talk(self):
-        pass
-
-class People(Animal): #动物的形态之一:人
-    def talk(self):
-        print(&apos;say hello&apos;)
-
-class Dog(Animal): #动物的形态之二:狗
-    def talk(self):
-        print(&apos;say wangwang&apos;)
-
-class Pig(Animal): #动物的形态之三:猪
-    def talk(self):
-        print(&apos;say aoao&apos;)
-</code></pre><p>文件有多种形态：文本文件，可执行文件</p>
-<pre><code>import abc
-class File(metaclass=abc.ABCMeta): #同一类事物:文件
-    @abc.abstractmethod
-    def click(self):
-        pass
-
-class Text(File): #文件的形态之一:文本文件
-    def click(self):
-        print(&apos;open file&apos;)
-
-class ExeFile(File): #文件的形态之二:可执行文件
-    def click(self):
-        print(&apos;execute file&apos;)
-</code></pre><p>（2）多态性</p>
-<p>多态性是指在不考虑实例类型的情况下使用实例</p>
-<p>在面向对象方法中一般是这样表述多态性：向不同的对象发送同一条消息（！！！obj.func():是调用了obj的方法func，又称为向obj发送了一条消息func），不同的对象在接收时会产生不同的行为（即方法）。也就是说，每个对象可以用自己的方式去响应共同的消息。所谓消息，就是调用函数，不同的行为就是指不同的实现，即执行不同的函数。</p>
-<p>比如：老师.下课铃响了（），学生.下课铃响了()，老师执行的是下班操作，学生执行的是放学操作，虽然二者消息一样，但是执行的效果不同。</p>
-<p>多态性分为静态多态性和动态多态性</p>
-<p>静态多态性：如任何类型都可以用运算符+进行运算</p>
-<p>动态多态性：如下</p>
-<pre><code>peo=People()
-dog=Dog()
-pig=Pig()
-
-#peo、dog、pig都是动物,只要是动物肯定有talk方法
-#于是我们可以不用考虑它们三者的具体是什么类型,而直接使用
-peo.talk()
-dog.talk()
-pig.talk()
-
-#更进一步,我们可以定义一个统一的接口来使用
-def func(obj):
-    obj.talk()
-</code></pre><p>（3）为什么要使用多态性</p>
-<p>1.增加了程序的灵活性</p>
-<p>以不变应万变，不论对象千变万化，使用者都是同一种形式去调用，如func(animal)</p>
-<p>2.增加了程序额可扩展性</p>
-<p>通过继承animal类创建了一个新的类，使用者无需更改自己的代码，还是用func(animal)去调用</p>
-<pre><code>class Cat(Animal): #属于动物的另外一种形态：猫
-     def talk(self):
-         print(&apos;say miao&apos;)
-
-def func(animal): #对于使用者来说，自己的代码根本无需改动
-     animal.talk()
-
-cat1=Cat() #实例出一只猫
-func(cat1) #甚至连调用方式也无需改变，就能调用猫的talk功能
-</code></pre><p>这样我们新增了一个形态Cat，由Cat类产生的实例cat1，使用者可以在完全不需要修改自己代码的情况下。使用和人、狗、猪一样的方式调用cat1的talk方法，即func(cat1)</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;&lt;p&gt;（1）面向过程：根据业务逻辑从上到下写垒代码&lt;/p&gt;
-&lt;p&gt;（2）函数式：将某功能代码封装到函数中，日后便无需重复编写，仅调用函数即可&lt;/p
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   

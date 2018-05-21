@@ -1,0 +1,1116 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MySQL系列," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="全量备份与增量备份全量备份全量数据就是数据库中所有的数据，全量备份就是把数据库中所有的数据进行备份。 例： 备份所有数据： mysqldump -uroot -pyjscloud -F -B -A|gzip &amp;gt;/server/backup/mysqlbak_$(date +%F).sql.gz 备份一个库： mysqldump -uroot -pyjscloud -F -B yjs_stu|">
+<meta name="keywords" content="MySQL系列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL系列（七）：MySQL备份与恢复实战">
+<meta property="og:url" content="http://yjscloud.com/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="全量备份与增量备份全量备份全量数据就是数据库中所有的数据，全量备份就是把数据库中所有的数据进行备份。 例： 备份所有数据： mysqldump -uroot -pyjscloud -F -B -A|gzip &amp;gt;/server/backup/mysqlbak_$(date +%F).sql.gz 备份一个库： mysqldump -uroot -pyjscloud -F -B yjs_stu|">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-128.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-129.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-130.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-131.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-132.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-133.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-134.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-135.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-136.png">
+<meta property="og:updated_time" content="2018-05-21T13:09:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL系列（七）：MySQL备份与恢复实战">
+<meta name="twitter:description" content="全量备份与增量备份全量备份全量数据就是数据库中所有的数据，全量备份就是把数据库中所有的数据进行备份。 例： 备份所有数据： mysqldump -uroot -pyjscloud -F -B -A|gzip &amp;gt;/server/backup/mysqlbak_$(date +%F).sql.gz 备份一个库： mysqldump -uroot -pyjscloud -F -B yjs_stu|">
+<meta name="twitter:image" content="http://p924w4b7r.bkt.clouddn.com/m-128.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/"/>
+
+
+
+
+
+  <title>MySQL系列（七）：MySQL备份与恢复实战 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MySQL系列（七）：MySQL备份与恢复实战
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-20T20:49:10+08:00">
+                2018-05-20
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  1,813
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  7
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="全量备份与增量备份"><a href="#全量备份与增量备份" class="headerlink" title="全量备份与增量备份"></a>全量备份与增量备份</h1><h2 id="全量备份"><a href="#全量备份" class="headerlink" title="全量备份"></a>全量备份</h2><p>全量数据就是数据库中所有的数据，全量备份就是把数据库中所有的数据进行备份。</p>
+<p>例：</p>
+<p>备份所有数据：</p>
+<pre><code>mysqldump -uroot -pyjscloud -F -B -A|gzip &gt;/server/backup/mysqlbak_$(date +%F).sql.gz
+</code></pre><p>备份一个库：</p>
+<pre><code>mysqldump -uroot -pyjscloud -F -B yjs_stu|gzip &gt;/server/backup/mysqlbak_$(date +%F).sql.gz
+</code></pre><h2 id="增量备份"><a href="#增量备份" class="headerlink" title="增量备份"></a>增量备份</h2><p>增量数据是从上次全量备份之后，更新的新数据。对于MySQL来说，binlog日志就是MySQL的增量数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-128.png" alt="m-128"></p>
+<h2 id="企业场景全量和增量的频率"><a href="#企业场景全量和增量的频率" class="headerlink" title="企业场景全量和增量的频率"></a>企业场景全量和增量的频率</h2><p>1）中小公司，全量一般是每天一次，业务流量低谷执行全备，备份时会锁表</p>
+<p>2）单台数据库，如何增量。用rsync（配合定时任务频率大点或者inotify，主从复制把所有binlog备份到远程服务器，尽量做主从复制）</p>
+<p>增量备份的例子：</p>
+<pre><code>rsync -avz /application/mysql/data/mysql-bin.*     rsync_backup@192.168.0.30::backup --password-file=/etc/rsync.password
+</code></pre><p>3）大公司周备，每周六00点一次全量，下周日-下周六00点前都是增量</p>
+<p>优点：节约备份时间，减小备份压力。缺点：增量的binlog文件副本太多，还原会很多麻烦</p>
+<p>4）一主五从，会有一个从库做备份，延迟同步。</p>
+<p>mysql的mysqldump备份什么时候派上用场？</p>
+<ul>
+<li><p>迁移或者升级数据库时。</p>
+</li>
+<li><p>增加从库时候</p>
+</li>
+<li><p>因为硬件或特殊异常情况，主库或从库宕机，从库可以互相切换，无需备份。</p>
+</li>
+<li><p>人为的DDL，DML语句，主从库没有办法了，所有库都会执行。此时需要备份。</p>
+</li>
+<li><p>跨机房灾备，需要备份到异地。</p>
+</li>
+</ul>
+<h2 id="几个问题"><a href="#几个问题" class="headerlink" title="几个问题"></a>几个问题</h2><p>1）什么情况下需要增量恢复？</p>
+<p>我们再在生产工作中一般常用一主多从的数据库架构，常见的备份方案是在某一个不对外服务的从库上开启binlog，然后实施定时全备和实时增量备份。</p>
+<p>什么是增量恢复？</p>
+<p>利用二进制日志和全备进行的恢复过程，被称为增量恢复。那么到底什么情况下才需要数据库增量恢复呢？</p>
+<p>1、主或者从库宕机（硬件损坏）是否需要增量恢复？</p>
+<p>答：不需要增量恢复，主库宕机，只需要把其中一个同步最快的从库切换为主库即可。从库宕机，直接不用就好了（一般都会配LVS负载均衡）。或者正常修复。</p>
+<p>2、人为操作数据库SQL语句破坏主库是否需要增量恢复？</p>
+<p>在数据库主库内部命令误操作，会导致所有的数据库（包括主从库）数据丢失，例如：在主库执行了drop database test; 这样的删除语句，这时所有的从库也会执行这个drop database test;语句，从而导致所有的数据库上的test库数据丢失，这样的场景是需要增量恢复的。</p>
+<p>3）只有一个主库是否需要增量恢复？</p>
+<p>如果公司只有一个主库的情况，首先应该做定时全量备份（每天一次）及增量备份（每隔1-10分钟对binlog日志做切割然后备份到其他的服务器上，或者本地其他的硬盘里）或者写到网络文件系统（备份服务器）里。如果不允许数据丢失，最好的办法就是做从库，通过drdb（基于磁盘块的）同步。</p>
+<p>正常情况下：</p>
+<ul>
+<li><p>主库同步：除了分担读写分离压力外，还可以防止物理设备损坏数据丢失的恢复。</p>
+</li>
+<li><p>从库备份：在从库进行全量和增量方式的备份，可以防止人为对主库的误操作导致数据丢失。确保备份的从库实时和主库是同步状态。</p>
+</li>
+</ul>
+<p>小结：一般由人为（或程序）逻辑的方式在数据库执行的SQL语句误操作，需要增量恢复，因为此时所有的从库也执行了误操作的语句。</p>
+<h1 id="MySQL增量恢复必备条件"><a href="#MySQL增量恢复必备条件" class="headerlink" title="MySQL增量恢复必备条件"></a>MySQL增量恢复必备条件</h1><h2 id="开启MySQL-log-bin日志功能"><a href="#开启MySQL-log-bin日志功能" class="headerlink" title="开启MySQL log-bin日志功能"></a>开启MySQL log-bin日志功能</h2><p>mysql数据库开启log-bin参数记录binlog日志功能如下：</p>
+<pre><code>[root@master ~]# grep log-bin /etc/my.cnf
+log-bin=mysql-bin
+</code></pre><p>提示：主库和备份的从库都需要开启binlog记录功能。</p>
+<p>小结：增量恢复的条件：存在一份全备加上全备之后的时刻到处问题时刻的所有增量binlog文件备份</p>
+<h2 id="存在mysql数据库备份"><a href="#存在mysql数据库备份" class="headerlink" title="存在mysql数据库备份"></a>存在mysql数据库备份</h2><p>1）生产环境mysqldump备份命令</p>
+<p>备份命令如下：</p>
+<pre><code>mysqldump -uroot -pyjscloud --single-transaction -F -B yjs_stu |gzip &gt; /server/backup/mysql_$(date +%F).sql.gz
+</code></pre><p>innodb引擎备份：</p>
+<pre><code>mysqldump -u$MYUSER -p$MYPASS -F --single-transaction -A -B | gzip &gt; $DATA_FILE
+mysqldump -u$MYUSER -p$MYPASS -F -A -B --lock-all-tables | gzip &gt; $DATA_FILE
+</code></pre><p>MySQL增量恢复案例图解</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-129.png" alt="m-129"></p>
+<h1 id="场景模拟"><a href="#场景模拟" class="headerlink" title="场景模拟"></a>场景模拟</h1><h2 id="建库建表"><a href="#建库建表" class="headerlink" title="建库建表"></a>建库建表</h2><p>1）创建学生表</p>
+<pre><code>create database yjs_stu;
+use yjs_stu;
+create table student(
+Sno int(10) NOT NULL COMMENT &apos;学号&apos;,
+Sname varchar(16) NOT NULL COMMENT &apos;姓名&apos;,
+Ssex char(2) NOT NULL COMMENT &apos;性别&apos;,
+Sage tinyint(2)  NOT NULL default &apos;0&apos; COMMENT &apos;学生年龄&apos;,
+Sdept varchar(16)  default NULL  COMMENT &apos;学生所在系别&apos;,
+PRIMARY KEY  (Sno) ,
+key index_Sname (Sname)
+);
+</code></pre><p>2）学生表插入数据：</p>
+<pre><code>INSERT INTO student values(0001,&apos;路飞&apos;,&apos;男&apos;,17,&apos;计算机网络&apos;);
+INSERT INTO student values(0002,&apos;索隆&apos;,&apos;男&apos;,19,&apos;网络安全&apos;);
+INSERT INTO student values(0003,&apos;乌索普&apos;,&apos;男&apos;,18,&apos;网络媒体&apos;);
+INSERT INTO student values(0004,&apos;娜美&apos;,&apos;女&apos;,17,&apos;旅游管理&apos;);
+INSERT INTO student values(0005,&apos;香吉士&apos;,&apos;男&apos;,22,&apos;新东方厨校&apos;);
+INSERT INTO student values(0006,&apos;妮可罗宾&apos;,&apos;女&apos;,28,&apos;古代历史&apos;);
+</code></pre><p>3）检查数据库及数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-130.png" alt="m-130"></p>
+<p>4）定时任务备份数据</p>
+<p>这里我们使用脚本备份数据</p>
+<pre><code>#!/bin/sh
+
+#parameter defined
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+#MYSOCK=/application/mysql/tmp/mysql.sock
+DBNAME=&quot;yjs_stu&quot;
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysql_logs_$(date +%F).log
+DATA_FILE=${DATA_PATH}/mysql_backup_$(date +%F).sql.gz
+
+#command defined
+MYSQL_PATH=/application/mysql/bin
+MYSQL_DUMP=&quot;$MYSQL_PATH/mysqldump -u$MYUSER -p$MYPASS -F -B --master-data=2 --single-transaction -e  $DBNAME&quot;
+
+#backup command
+${MYSQL_DUMP} | gzip &gt; $DATA_FILE
+
+#check backup result
+du -sh $DATA_FILE&gt;$LOG_FILE
+</code></pre><p>5）备份完成后插入新数据</p>
+<pre><code>INSERT INTO student values(0007,&apos;弗兰奇&apos;,&apos;男&apos;,38,&apos;机械工程&apos;);
+INSERT INTO student values(0008,&apos;布鲁克&apos;,&apos;男&apos;,58,&apos;音乐学院&apos;);
+</code></pre><p>6）模拟用户误删数据</p>
+<pre><code>mysql&gt; drop database yjs_stu;
+</code></pre><p>7）检查破坏结果</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-131.png" alt="m-131"></p>
+<h1 id="增量恢复全过程"><a href="#增量恢复全过程" class="headerlink" title="增量恢复全过程"></a>增量恢复全过程</h1><h2 id="允许锁库的的情景"><a href="#允许锁库的的情景" class="headerlink" title="允许锁库的的情景"></a>允许锁库的的情景</h2><p>通过防火墙禁止web等应用向主库写数据或或者锁表。让主库暂时停止更新。然后再进行恢复。</p>
+<p>1）检查全备</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-132.png" alt="m-132"></p>
+<p>2）检查全备后的所有binlog</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-133.png" alt="m-133"></p>
+<p>3）立即刷新并备份出binlog</p>
+<pre><code>mysqladmin -uroot -pyjscloud flush-logs
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-134.png" alt="m-134"></p>
+<p>备份刷新出来的binlog</p>
+<pre><code>cp mysql-bin.000009 /server/backup/
+</code></pre><p>将新的mysql-bin文件转换为sql文件</p>
+<pre><code>mysqlbinlog -d yjs_stu mysql-bin.000009 &gt; bin.sql
+</code></pre><p>4）编辑bin.sql</p>
+<pre><code>vim bin.sql 
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-135.png" alt="m-135"></p>
+<p>5）往数据导入数据</p>
+<pre><code>mysql -uroot -pyjscloud &lt; mysql_backup_2018-05-20.sql
+mysql -uroot -pyjscloud &lt; bin.sql 
+</code></pre><p>6）查看数据库</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-136.png" alt="m-136"></p>
+<p>数据恢复完成</p>
+<h2 id="不锁库情景下恢复思想"><a href="#不锁库情景下恢复思想" class="headerlink" title="不锁库情景下恢复思想"></a>不锁库情景下恢复思想</h2><p>1）停止一个从库，然后在主库刷新binlog，把mysql-bin.000009恢复成bin.sql（去掉drop语句）</p>
+<p>2）把全备mysql_backup_2018-05-20.sql及新插入数据前的增量bin.sql恢复到从库</p>
+<p>3）切换到从库提供服务，会有数据丢失插入数据后刷新binlog以后的数据mysql-bin.000010</p>
+<p>4）把mysql-bin.000010解析为sql，恢复到从库</p>
+<p>以上解决办法会有主键冲突问题</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL系列/" rel="tag"><i class="fa fa-tag"></i> MySQL系列</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/" rel="prev" title="MySQL系列（六）：MySQL主从复制高级应用">
+                MySQL系列（六）：MySQL主从复制高级应用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">61</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://amon1997.com/" title="Amon的博客" target="_blank">Amon的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#全量备份与增量备份"><span class="nav-number">1.</span> <span class="nav-text">全量备份与增量备份</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#全量备份"><span class="nav-number">1.1.</span> <span class="nav-text">全量备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#增量备份"><span class="nav-number">1.2.</span> <span class="nav-text">增量备份</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#企业场景全量和增量的频率"><span class="nav-number">1.3.</span> <span class="nav-text">企业场景全量和增量的频率</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#几个问题"><span class="nav-number">1.4.</span> <span class="nav-text">几个问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL增量恢复必备条件"><span class="nav-number">2.</span> <span class="nav-text">MySQL增量恢复必备条件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#开启MySQL-log-bin日志功能"><span class="nav-number">2.1.</span> <span class="nav-text">开启MySQL log-bin日志功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存在mysql数据库备份"><span class="nav-number">2.2.</span> <span class="nav-text">存在mysql数据库备份</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#场景模拟"><span class="nav-number">3.</span> <span class="nav-text">场景模拟</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#建库建表"><span class="nav-number">3.1.</span> <span class="nav-text">建库建表</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#增量恢复全过程"><span class="nav-number">4.</span> <span class="nav-text">增量恢复全过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#允许锁库的的情景"><span class="nav-number">4.1.</span> <span class="nav-text">允许锁库的的情景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不锁库情景下恢复思想"><span class="nav-number">4.2.</span> <span class="nav-text">不锁库情景下恢复思想</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>

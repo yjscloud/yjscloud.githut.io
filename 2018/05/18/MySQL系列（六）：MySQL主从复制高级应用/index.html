@@ -1,0 +1,1291 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MySQL系列," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="回顾mysql主从同步配置步骤1）准备两台数据库环境，或者单台多实例环境，能否正常启动和登陆 2）配置my.cnf文件，主库配置log-bin和server-id参数，从库配置server-id，不能和主库以及其他从库一样，一般不开启从库log-bin功能，注意：配置参数后要重启生效。 3）登陆主库增加用于从库连接主库同步的账户如：rep，并授权replication slave同步的权限。 4）">
+<meta name="keywords" content="MySQL系列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL系列（六）：MySQL主从复制高级应用">
+<meta property="og:url" content="http://yjscloud.com/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="回顾mysql主从同步配置步骤1）准备两台数据库环境，或者单台多实例环境，能否正常启动和登陆 2）配置my.cnf文件，主库配置log-bin和server-id参数，从库配置server-id，不能和主库以及其他从库一样，一般不开启从库log-bin功能，注意：配置参数后要重启生效。 3）登陆主库增加用于从库连接主库同步的账户如：rep，并授权replication slave同步的权限。 4）">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-116.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-117.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-118.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-119.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-120.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-121.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-122.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-123.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-124.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-125.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-126.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-127.png">
+<meta property="og:updated_time" content="2018-05-21T13:16:23.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL系列（六）：MySQL主从复制高级应用">
+<meta name="twitter:description" content="回顾mysql主从同步配置步骤1）准备两台数据库环境，或者单台多实例环境，能否正常启动和登陆 2）配置my.cnf文件，主库配置log-bin和server-id参数，从库配置server-id，不能和主库以及其他从库一样，一般不开启从库log-bin功能，注意：配置参数后要重启生效。 3）登陆主库增加用于从库连接主库同步的账户如：rep，并授权replication slave同步的权限。 4）">
+<meta name="twitter:image" content="http://p924w4b7r.bkt.clouddn.com/m-116.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/"/>
+
+
+
+
+
+  <title>MySQL系列（六）：MySQL主从复制高级应用 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MySQL系列（六）：MySQL主从复制高级应用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-18T19:24:35+08:00">
+                2018-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  4,945
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  20
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h1><h2 id="mysql主从同步配置步骤"><a href="#mysql主从同步配置步骤" class="headerlink" title="mysql主从同步配置步骤"></a>mysql主从同步配置步骤</h2><p>1）准备两台数据库环境，或者单台多实例环境，能否正常启动和登陆</p>
+<p>2）配置my.cnf文件，主库配置log-bin和server-id参数，从库配置server-id，不能和主库以及其他从库一样，一般不开启从库log-bin功能，注意：配置参数后要重启生效。</p>
+<p>3）登陆主库增加用于从库连接主库同步的账户如：rep，并授权replication slave同步的权限。</p>
+<p>4）登陆主库，整个锁表flush table with read lock （窗口关闭后即失效，超时参数到了也失效）；然后show master status查看binlog的位置状态。</p>
+<p>5）新窗口，linux命令行备份或导出原有的数据库数据，并拷贝到从库所在的服务器目录。如果数据量很大，并允许停机，可以停机打包，而不用mysqldump</p>
+<p>6）解锁主库，unlock tables;</p>
+<p>7）把主库导出的原有数据恢复到从库</p>
+<p>8）根据主库的show master status查看binlog的位置状态，在从库执行change master to…语句</p>
+<p>9）从库开启同步开关，start slave</p>
+<p>10）从库show slave status\G ,检查同步状态，并在主库进行更新测试。</p>
+<h2 id="mysql主从复制原理要点"><a href="#mysql主从复制原理要点" class="headerlink" title="mysql主从复制原理要点"></a>mysql主从复制原理要点</h2><p>1）异步方式同步。</p>
+<p>2）逻辑同步模式，多种模式，默认是通过SQL语句执行</p>
+<p>3）主库通过记录binlog实现对从库的同步。binlog记录数据库的更新语句。</p>
+<p>4）主库1个IO线程，从库由1个IO线程和一个SQL线程来完成的</p>
+<p>5）从库关键文件master.info,relay-log,relay-info功能</p>
+<p>6）如果从库还想级联从库，需要打开log-bin和log-slave-updates参数。</p>
+<h2 id="生产场景快速配置mysql主从复制方案"><a href="#生产场景快速配置mysql主从复制方案" class="headerlink" title="生产场景快速配置mysql主从复制方案"></a>生产场景快速配置mysql主从复制方案</h2><p>1）安装好要配置从库的数据库，配置好log-bin和server-id参数</p>
+<p>2）无需配置主库my.cnf文件，主库的log-bin和server-id参数默认就是配置好的</p>
+<p>3）登陆主库增加用于从库连接主库同步的账号例如：rep，并授权replication slave同步的权限</p>
+<p>4）使用半夜mysqldump带–master-data=1备份的全备数据恢复到从库。</p>
+<p>5）在从库执行change master to…语句，无需binlog文件及对应位置点。</p>
+<p>6）从库开启同步开关，start slave。</p>
+<p>7）从库show slave status\G ,检查同步状态，并在主库进行更新测试。</p>
+<h1 id="生产环境主从库同步配置注意事项"><a href="#生产环境主从库同步配置注意事项" class="headerlink" title="生产环境主从库同步配置注意事项"></a>生产环境主从库同步配置注意事项</h1><h2 id="第一次做从库如何做？"><a href="#第一次做从库如何做？" class="headerlink" title="第一次做从库如何做？"></a>第一次做从库如何做？</h2><p>1）申请设备资源，用来做从库服务器</p>
+<p>2）撰写方案文档和实施步骤。</p>
+<p>假如你的服务器只有主库，而且已经跑了生产线上应用了，现在由于业务需要第一次做从库，<br>此时可能需要和公司申请停机维护时间（要确认这个时间段内可以做一次全备），集在用户访问量最小，且不影响内部其他业务运转的时间点来停机（包括锁表）配置主从复制，一般都是凌晨进行。<br>注意：停机（锁表，停库）的最小时间段，为锁表备份的时间，也就是说无需等待主从配置好。<br>当然也可以不申请停机时间，在定时任务备份时，每天的夜里的定时备份时做一些措施即可实现。</p>
+<h2 id="无须熬夜在工作时间轻松配置从库"><a href="#无须熬夜在工作时间轻松配置从库" class="headerlink" title="无须熬夜在工作时间轻松配置从库"></a>无须熬夜在工作时间轻松配置从库</h2><p>全备及全备过程中binlog位置的信息或者直接用–master-data参数解决。</p>
+<p>1）一键做主从复制脚本</p>
+<p>1、锁表备份全备一份</p>
+<p>2、锁表前后取得showmaster status值记录日志里这样就可以在白天从容的实现主从同步了。这个脚本还是很容易实现的，如：</p>
+<p>脚本方法1：</p>
+<pre><code>#!/bin/sh
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+MYSOCK=/application/mysql/tmp/mysql.sock
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysqllogs_&apos;date +%F&apos;.log
+DATA_FILE=${DATA_PATH}/mysql_backup_&apos;date +%F&apos;.sql.gz
+MYSQL_PATH=/application/mysql/bin
+MYSQL_CMD=&quot;$MYSQL_PATH/mysql -u$MYUSER -p$MYPASS -S $MYSOCK&quot;
+MYSQL_DUMP=&quot;$MYSQL_PATH/mysqldump -u$MYUSER -p$MYPASS -S $MYSOCK -A -B --single-transaction -e&quot;
+cat |$MYSQL_CMD&lt;&lt;EOF
+flush tables with read lock;
+system echo &quot;-----show master status result------&quot;&gt;&gt;$LOG_FILE;
+system $MYSQL_CMD -e &quot;show master status&quot;|tail -1 &gt;&gt;$LOG_FILE;
+system ${MYSQL_DUMP} | gzip &gt; $DATA_FILE;
+EOF
+$MYSQL_CMD -e &quot;unlock tables;&quot;
+</code></pre><p>脚本方法2：</p>
+<pre><code>#!/bin/sh
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+MYSOCK=/application/mysql/tmp/mysql.sock
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysqllogs_&apos;date +%F&apos;.log
+DATA_FILE=${DATA_PATH}/mysql_backup_&apos;date +%F&apos;.sql.gz
+MYSQL_PATH=/application/mysql/bin
+MYSQL_CMD=&quot;$MYSQL_PATH/mysql -u$MYUSER -p$MYPASS -S $MYSOCK&quot;
+MYSQL_DUMP=&quot;$MYSQL_PATH/mysqldump -u$MYUSER -p$MYPASS -S $MYSOCK -A -B --master-data=1 --single-transaction -e&quot;
+${MYSQL_DUMP} | gzip &gt; $DATA_FILE;
+</code></pre><p>有了mysql_backup_xxxx-xx-xx.sql.gz和mysqllogs_xxxx-xx-xx.log内容做从库就不远了</p>
+<h2 id="不停主库一键批量创建从库"><a href="#不停主库一键批量创建从库" class="headerlink" title="不停主库一键批量创建从库"></a>不停主库一键批量创建从库</h2><h3 id="一键创建从库方法1"><a href="#一键创建从库方法1" class="headerlink" title="一键创建从库方法1"></a>一键创建从库方法1</h3><p>把上面备份的mysql_backup_xxxx-xx-xx.sql.gz发布到想做从库同步的机器上，可以做多台。<br>然后再制造如下批量做从库脚本，一键完成多台机器从库的制作</p>
+<pre><code>#!/bin/sh
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+MYSOCK=/application/mysql/tmp/mysql.sock
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysqllogs_&apos;date +%F&apos;.log
+DATA_FILE=${DATA_PATH}/mysql_backup_&apos;date +%F&apos;.sql.gz
+MYSQL_PATH=/application/mysql/bin
+MYSQL_CMD=&quot;$MYSQL_PATH/mysql -u$MYUSER -p$MYPASS -S $MYSOCK&quot;
+
+#recover
+cd ${DATA_PATH}
+gzip -d mysql_backup_&apos;date +%F&apos;.sql.gz
+$MYSQL_CMD &lt;  mysql_backup_&apos;date +%F&apos;.sql
+
+#config slave
+cat |$MYSQL_CMD&lt;&lt;EOF
+CHANGE MASTER TO
+MASTER_HOST=&apos;192.168.0.30&apos;,
+MASTER_PORT=3306,
+MASTER_USER=&apos;rep&apos;,
+MASTER_PASSWORD=&apos;yjscloud123&apos;,
+MASTER_LOG_FILE=&apos;mysql-bin.000005&apos;,
+MASTER_LOG_POS=338;
+EOF
+
+$MYSQL_CMD -e &quot;start slave;&quot;
+$MYSQL_CMD -e &quot;show salve status\G&quot; |egrep &quot;IO_Running|SQL_Running&quot;&gt;$LOG_FILE
+mail -s &quot;mysql slave result&quot; yjscloud@gmail.com &lt; $LOG_FILE
+</code></pre><p>特别提醒：</p>
+<p>此脚本中change master参数要根据mysqllog_xxxx-xx-xx.log修改</p>
+<h3 id="一键创建从库方法2"><a href="#一键创建从库方法2" class="headerlink" title="一键创建从库方法2"></a>一键创建从库方法2</h3><pre><code>#!/bin/sh
+MYUSER=root
+MYPASS=&quot;yjscloud&quot;
+MYSOCK=/application/mysql/tmp/mysql.sock
+MAIN_PATH=/server/backup
+DATA_PATH=/server/backup
+LOG_FILE=${DATA_PATH}/mysqllogs_&apos;date +%F&apos;.log
+DATA_FILE=${DATA_PATH}/mysql_backup_&apos;date +%F&apos;.sql.gz
+MYSQL_PATH=/application/mysql/bin
+MYSQL_CMD=&quot;$MYSQL_PATH/mysql -u$MYUSER -p$MYPASS -S $MYSOCK&quot;
+
+#recover
+cd ${DATA_PATH}
+gzip -d mysql_backup_&apos;date +%F&apos;.sql.gz
+$MYSQL_CMD &lt;  mysql_backup_&apos;date +%F&apos;.sql
+
+#config slave
+cat |$MYSQL_CMD&lt;&lt;EOF
+CHANGE MASTER TO
+MASTER_HOST=&apos;192.168.0.30&apos;,
+MASTER_PORT=3306,
+MASTER_USER=&apos;rep&apos;,
+MASTER_PASSWORD=&apos;yjscloud123&apos;,
+EOF
+
+$MYSQL_CMD -e &quot;start slave;&quot;
+$MYSQL_CMD -e &quot;show salve status\G&quot; |egrep &quot;IO_Running|SQL_Running&quot;&gt;$LOG_FILE
+mail -s &quot;mysql slave result&quot; yjscloud@gmail.com &lt; $LOG_FILE
+</code></pre><h2 id="相关mysql主从复制技术技巧概览"><a href="#相关mysql主从复制技术技巧概览" class="headerlink" title="相关mysql主从复制技术技巧概览"></a>相关mysql主从复制技术技巧概览</h2><h3 id="登陆数据库查看mysql线程同步状态"><a href="#登陆数据库查看mysql线程同步状态" class="headerlink" title="登陆数据库查看mysql线程同步状态"></a>登陆数据库查看mysql线程同步状态</h3><p>主库：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-116.png" alt="m-116"></p>
+<p>从库：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-117.png" alt="m-117"></p>
+<h3 id="复制主线程状态"><a href="#复制主线程状态" class="headerlink" title="复制主线程状态"></a>复制主线程状态</h3><p>下面列出了主服务器的Binlog Dump线程的state列最常见的状态。如果你没有在主服务器上看见任何binlog dump线程，这说明复制没有在运行，即目前没有连接任何从服务器。</p>
+<p>Sending binlog events to slave<br>(二进制日志由各种事件组成，一个事件通常为一个跟新加一些其它信息，线程已经从二进制日志读取了一个事件并且正将它发送到从服务器)</p>
+<p>Finished reading one binlog;switchingto next binlog<br>(线程已经读完二进制日志文件并且正打开下一个发送到服务器的日志文件)</p>
+<p>Has sent all binlog to slave;waitingfor binlog to be updated<br>(线程已经从二进制日志读取所有主要的跟新并已经发送到从服务器线程正空闲，等待由主服务器上新的跟新导致的出现在二进制日志中新事件)</p>
+<p>Waiting to finalize termination<br>(线程停止时发生一个很简单的状态。)</p>
+<h3 id="复制从I-O线程状态"><a href="#复制从I-O线程状态" class="headerlink" title="复制从I/O线程状态"></a>复制从I/O线程状态</h3><p>下面列出了从服务器的I/O线程的state列的最常见的状态。该状态也出现在Slave_IO_State列，由SHOW SLAVE STATUS显示，这说明你可以通过该语句仔细浏览所发生的事情</p>
+<p>Connecting to master(线程正试图连接主服务器)</p>
+<p>Checking master version(建立同主服务器之间的连接后立即临时出现的状态)</p>
+<p>Registering slave on master(建立同主服务器之间的连接后立即临时出现的状态)</p>
+<p>Requesting binlog dump(建立同主服务器之间的连接后立即临时出现的状态。线程向主服务器发送索取从请求的二进制日志文件名和位置开始的二进制日志的内容)</p>
+<p>Waiting to reconnect after a failed binlog dump request(如果二进制日志转储请求失败[由于没有连接]，线程进入睡眠状态，然新连接，可以使用–master-connect-retry 选项指定重试之间的间隔)</p>
+<p>Reconnecting after a failed binlog dump request<br>(线程正尝试重新连接主服务器)</p>
+<p>Waiting for master to send event<br>(线程已经连接上主服务器，正等待二进制日志事件到达，如果主服务器正空闲，会持续较长的时间。如果等待继续slave_read_timeout秒，则发生超时，此时线程认为连接被中断并企图重新连接。)</p>
+<p>Queueing master event to the relay log<br>(线程已经读取一个事件，正将它复制到中继日志供SQL线程来处理)</p>
+<p>Waiting to reconnect after a failed master event read<br>(读取时（由于没有连接）出现错误。线程企图重新连接前将睡眠master-connect-retry秒。)</p>
+<p>Reconnecting after a failed master event read<br>(线程正尝试重新连接主服务器。当连接重新建立后，状态变为Waiting for master to send event)</p>
+<p>Waiting for the slave SQL thread to free enough relay log space<br>正使用一个非零relay_log_space_limit值，中继日志已经增长到其组合大小超过该值。I/O线程正(等待直到SQL线程处理中继日志内容并删除部分中继日志文件来释放足够的空间。)</p>
+<p>Waiting for slave mutex on exit<br>(线程停止时发生的一个很简单的状态。)</p>
+<h3 id="复制从SQL线程状态"><a href="#复制从SQL线程状态" class="headerlink" title="复制从SQL线程状态"></a>复制从SQL线程状态</h3><p>下面列出了从服务器的SQL线程的State列的最常见的状态。</p>
+<p>Reading event from the relay log<br>(线程已经从中继日志读取一个事件，可以对事件进行处理了)</p>
+<p>Has read all relay log; waiting for the slave I/0 thread to update it<br>(线程已经处理了中继日志文件中的所有事件，现在正等待I/O线程将新事件写入中继日志；)</p>
+<p>Waiting for slave mutex on exit<br>(线程停止发生的一个简单的状态I/O线程的state列也可以显示语句的文本。这说明线程已经从中继日志读取了一个事件。从中提取了语句，并且正在执行语句。)</p>
+<h3 id="查看mysql线程同步状态的用途"><a href="#查看mysql线程同步状态的用途" class="headerlink" title="查看mysql线程同步状态的用途"></a>查看mysql线程同步状态的用途</h3><p>通过mysql线程同步状态查看数据库同步时是否完成，用于主库宕机或者人工数据库主从切换迁移等。<br>主库宕机选择最快的从库提升为主，就需要查看，当然也可以利用mysql的半同步功能，选择固定库的提升为主。</p>
+<h1 id="生产场景mysql主从复制读写分离授权方案实战"><a href="#生产场景mysql主从复制读写分离授权方案实战" class="headerlink" title="生产场景mysql主从复制读写分离授权方案实战"></a>生产场景mysql主从复制读写分离授权方案实战</h1><p>当配置好mysql主从复制后，所有对数据库内容的更新就必须在主服务器上进行。因为数据复制时单向的，只有在主库上更新，才能避免用户对主服务器上数据库内容的更新与从库上数据库内容的更新一致，而不发生冲突。</p>
+<h2 id="生产mysql复制环境用户授权方案"><a href="#生产mysql复制环境用户授权方案" class="headerlink" title="生产mysql复制环境用户授权方案"></a>生产mysql复制环境用户授权方案</h2><p>假设为博客数据库授权，大家可以做下面的授权</p>
+<p>1、生产环境主库用户授权：</p>
+<pre><code>grant select,insert,update,delete on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>提示：特殊业务可能权限会略多，如果业务安全性要求不高，也可以all privileges权限</p>
+<p>2、生产环境从库用户的授权：</p>
+<pre><code>grant select,insert,update,delete on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+revoke insert ,update,delete on blog.* from &apos;blog&apos;@&apos;192.168.0.%&apos;;
+</code></pre><p>提示：可以结合read-only参数共同做。</p>
+<p>3、生产授权案例说明：这里表示给192.168.0.0/24的用户blog管理数据库的所有表（*表示所有表）只读权限（select）密码为yjscloud。</p>
+<pre><code>grant select,insert,update,delete on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>生产环境主从库用户授权：</p>
+<p>主库：</p>
+<pre><code>grant select,insert,update,delete on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>从库：</p>
+<pre><code>grant select on &apos;blog&apos; .* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>实现上述授权方案最简单的办法是在主库配置binlog-ignore-db=mysql</p>
+<h2 id="通过忽略授权表的方式防止数据写从库方法及实践"><a href="#通过忽略授权表的方式防止数据写从库方法及实践" class="headerlink" title="通过忽略授权表的方式防止数据写从库方法及实践"></a>通过忽略授权表的方式防止数据写从库方法及实践</h2><h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><p>生产环境中一般会采取忽略授权表方式的同步，然后对从服务器（slave）上的用户仅授权select读权限。不同步mysql库，这样我们就保证主库和从库相同的用户可以授权不同的权限。忽略mysql库和information_schema库的主从同步</p>
+<pre><code>replicate-ignore-db = mysql
+binlog-ignore-db = mysql
+binlog-ignore-db = performance_schema
+binlog-ignore-db = information_schema
+</code></pre><p>提示：忽略记录binlog日志的参数binlog-ignore-db一般用于系统的库和表</p>
+<p>结论：如果想要在从库上忽略mysql库的同步，方法：</p>
+<p>1、只有在[主从]库上分别设置replicate-ignore-db = mysql才可以做到从库不同步mysql库。</p>
+<p>2、在主库上设置binlog-ignore-db=mysql不记录有关mysql库更新binlog，来达到从库不同步mysql库</p>
+<h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p>修改配置文件my.cnf将如下代码复制到[mysqld]标签下</p>
+<pre><code>replicate-ignore-db = mysql
+binlog-ignore-db = mysql
+binlog-ignore-db = performance_schema
+binlog-ignore-db = information_schema
+</code></pre><p>修改配置文件后需要重启数据库</p>
+<pre><code>/etc/init.d/mysqld restart
+</code></pre><p>重启的时候我遇到了一个报错ERROR! MySQL server PID file could not be found<br>可能进程里已经存在mysql进程</p>
+<p>解决方法：用命令“ps -ef|grep mysqld”查看是否有mysqld进程，如果有使用“kill -9  进程号”杀死，然后重新启动mysqld！</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-118.png" alt="m-118"></p>
+<p><a href="http://blog.51cto.com/dahui09/1841627" target="_blank" rel="external">更多解决办法请参考博客</a></p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>在主库</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-119.png" alt="m-119"></p>
+<p>在从库</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-120.png" alt="m-120"></p>
+<p>在主库创建数据库查看主从同步是否正常</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-121.png" alt="m-121"></p>
+<p>在从库查看</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-122.png" alt="m-122"></p>
+<h2 id="mysql主从复制指定不同库表同步参数说明"><a href="#mysql主从复制指定不同库表同步参数说明" class="headerlink" title="mysql主从复制指定不同库表同步参数说明"></a>mysql主从复制指定不同库表同步参数说明</h2><p>master端：</p>
+<pre><code>--binlog-do-db 二进制日志记录的数据库（多数据库用逗号，隔开）
+--binlog-ignore-db 二进制日志中忽略数据库 （多数据库用逗号，隔开）
+</code></pre><p>以下是mysql主从忽略授权表的方法案例：</p>
+<p>master端：</p>
+<pre><code>binlog-do-db=YYY 需要同步的数据库。不添加这行表示同步所有
+binlog-ignore-db = mysql   这是不记录binlog，来达到从库不同步mysql库，以确保各自权限
+binlog-ignore-db = performance_schema
+binlog-ignore-db = information_schema
+</code></pre><p>slave端：</p>
+<pre><code>--replication-do-db    设定需要复制的数据库（多数据库使用逗号，隔开）
+--replication-ignore-db 设定需要忽略的复制数据库 （多数据库使用逗号，隔开）
+--replication-do-table   设定需要复制的表
+--replication-ignore-table 设定需要忽略的复制表
+--replication-wild-do-table 同replication-do-table功能一样，但是可以通配符
+--replication-wild-ignore-table 同replication-ignore-table功能一样，但是可以加通配符
+</code></pre><p>互为同步配置实例：</p>
+<p>1）A、B互为主从同步test，不同步mysql:</p>
+<p>两个数据库配置中均配置：</p>
+<pre><code>binlog-do-db=test
+binlog-ignore-db=mysql
+replication-do-db=test
+replication-ignore-db=mysql
+</code></pre><p>2）A、B互为为主从同步test，不同步其他数据库，新库创建的也不会同步</p>
+<p>两个数据库配置中均配置：</p>
+<pre><code>binlog-do-db=test
+replication-do-db=test
+</code></pre><p>3）A、B互为为主从不同步mysql，同步其他数据库，譬如新创建的数据库也会同步</p>
+<pre><code>binlog-ignore-db=mysql
+replication-ignore-db=mysql
+</code></pre><p>4）A、B互为主从同步所有数据库，包括新建的数据库:</p>
+<p>两个数据库配置中均不设置上述四项</p>
+<h2 id="通过read-only参数防止数据写入从库方法"><a href="#通过read-only参数防止数据写入从库方法" class="headerlink" title="通过read-only参数防止数据写入从库方法"></a>通过read-only参数防止数据写入从库方法</h2><p>除了上面在从库仅做select的授权外，还可以在slave服务器启动选项增加参数或者在my.cnf配置文件中加read-only参数来确保从库只读，当然授权用户和read-only参数二者同时操作效果更佳，这也是生产环境中使用的方案。read-only参数可以让slave服务器只允许来自slave服务器线程或具有super权限的用户更新。可以确保slave服务器不接受来自普通用户的更新，slave服务器启动项增加–read-only也是同样功能</p>
+<p>注意：</p>
+<p>1、my.cnf里加入read-only后，重启服务使参数生效</p>
+<p>2、root用户及all权限的用户可以插入，删除数据</p>
+<p>3、具备insert,update,delete等权限的用户无法通过read-only的限制</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-123.png" alt="m-123"></p>
+<p>重新启动mysql</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-124.png" alt="m-124"></p>
+<p>进入从库创建一个用户</p>
+<pre><code>mysql&gt; grant select,insert,update,delete on *.* to &apos;t_user&apos;@&apos;localhost&apos; identified by &apos;123&apos;;
+mysql&gt; flush privileges;
+</code></pre><p>然后用这个用户登录数据库，尝试插入数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-125.png" alt="m-125"></p>
+<p>提示为只读，无权插入数据</p>
+<h1 id="模拟故障"><a href="#模拟故障" class="headerlink" title="模拟故障"></a>模拟故障</h1><h2 id="模拟故障-1"><a href="#模拟故障-1" class="headerlink" title="模拟故障"></a>模拟故障</h2><p>MySQL从库数据冲突导致同步停止在slave创建一个库，然后master创建一个同名的库就会出现这种错误</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-126.png" alt="m-126"></p>
+<p>解决办法一：</p>
+<pre><code>stop slave;
+set global sql_slave_skip_counter =1;
+start slave;
+</code></pre><p>1）对于普通的互联网业务，忽略问题不是很大，当然，要确定不影响公司业务的前题下</p>
+<p>2）企业场景解决主从同步，主从不一致对当前业务更重要，然后如果主从数据一致也很重要，在找个时间恢复一下这个从库。</p>
+<p>这样slave就会和master去同步，主要关键点：</p>
+<pre><code>Slave_IO_Running: Yes
+Slave_SQL_Running: Yes
+Seconds_Behind_Master: 0   #0表示已经同步状态
+</code></pre><p>提示：set global sql_slave_skip_counter =n;  #取值&gt;0忽略执行N个更新。</p>
+<p>方法二：根据错误号跳过指定的错误</p>
+<pre><code>slave-skip-errors = 1032,1062,1007   #一般由于入库重复导致的失败就可以忽略
+</code></pre><p>对于错误代码，应使用slave服务器错误日志中错误消息提供的编码和show slave status的输出。也可以使用不推荐的all值忽略所有错误消息，不考虑所发生的错误。无需而言，如果使用该值，我们不能保证数据的完整性。在这种情况下，如果slave服务器的数据与master服务器上的不相近请不要<br>抱怨，已经警告过你了</p>
+<p>附：<a href="https://blog.csdn.net/aidenliu/article/details/5925604" target="_blank" rel="external">mysql错误代码大全</a></p>
+<h2 id="让MySQL从库记录binlog方法"><a href="#让MySQL从库记录binlog方法" class="headerlink" title="让MySQL从库记录binlog方法"></a>让MySQL从库记录binlog方法</h2><p>需要记录binlog的情况</p>
+<p>1、当前从库还要作为其他从库的主库</p>
+<p>2、把从库作为备份服务器时需要开启binlog</p>
+<p>在从库的my.cnf中加入如下参数</p>
+<pre><code>log-slave-updates
+log-bin=mysql-bin
+expire_logs_days = 7
+</code></pre><p>应用场景：级联复制或从库做数据备份。A–&gt;B–&gt;C，B服务器要开启记录binlog日志功能</p>
+<h2 id="主多从宕机从库切换主继续和从同步过程详解"><a href="#主多从宕机从库切换主继续和从同步过程详解" class="headerlink" title="主多从宕机从库切换主继续和从同步过程详解"></a>主多从宕机从库切换主继续和从同步过程详解</h2><h3 id="看两个线程的更新状态"><a href="#看两个线程的更新状态" class="headerlink" title="看两个线程的更新状态"></a>看两个线程的更新状态</h3><p>登陆从库show processlist\G</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-127.png" alt="m-127"></p>
+<p>登陆从库31,32分别查看：</p>
+<pre><code>cat /application/mysql/data/master.info
+</code></pre><p>确保更新完毕，看看那个从库那个最快，经过测试没有延迟的情况POS差距很小，甚至是一致的</p>
+<h3 id="授权同步用户和主库一样"><a href="#授权同步用户和主库一样" class="headerlink" title="授权同步用户和主库一样"></a>授权同步用户和主库一样</h3><p>1）确保所有relay log全部更新完毕</p>
+<p>在每个从库执行stop slave io_thread; show processlist;<br>直到看到Has read all relay log;表示从库更新都执行完毕；</p>
+<p>2）登陆要提升权限的从库</p>
+<pre><code>stop slave;
+retset master;
+quit;
+</code></pre><p>3）进到数据库数据目录</p>
+<p>删除master.info relay-log.info</p>
+<pre><code>cd /application/mysql/data
+rm -f master.info relay-log.info
+</code></pre><p>检查授权表，read-only等参数</p>
+<p>4）提升从库为主库</p>
+<pre><code>vi /etc/my.cnf
+</code></pre><p>开启：</p>
+<pre><code>log-bin = mysql-bin
+</code></pre><p>如果存在log-slave-updates，read-only等一并注释</p>
+<p>重启数据库<br>    /etc/init.d/mysqld restart</p>
+<p>到此为止，提升主库完毕</p>
+<p>5）如果主库服务器没有宕，需要去主库拉取binlog补全提升主库的从库</p>
+<p>6）其他从库操作</p>
+<p>已检查（同步user rep均存在）</p>
+<p>登陆从库</p>
+<pre><code>stop slave;
+change master to master_host = &apos;192.168.0.31&apos;;   #如果不同步，就指定位置点
+start slave；
+show slave status\G
+</code></pre><p>主库宕机切换到此完成</p>
+<p>7）修理损坏的主库，完成后作从库使用或者切换</p>
+<p>现在是主库意外宕机，假如我们又计划切换。怎么做？</p>
+<p>a、主库锁表。</p>
+<p>b、登陆所有的库查看同步状态，是否完成。</p>
+<p>其他与前面的一样。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL系列/" rel="tag"><i class="fa fa-tag"></i> MySQL系列</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/" rel="next" title="MySQL系列（七）：MySQL备份与恢复实战">
+                <i class="fa fa-chevron-left"></i> MySQL系列（七）：MySQL备份与恢复实战
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/27/MySQL系列（五）：MySQL主从复制/" rel="prev" title="MySQL系列（五）：MySQL主从复制">
+                MySQL系列（五）：MySQL主从复制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">61</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://amon1997.com/" title="Amon的博客" target="_blank">Amon的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#回顾"><span class="nav-number">1.</span> <span class="nav-text">回顾</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql主从同步配置步骤"><span class="nav-number">1.1.</span> <span class="nav-text">mysql主从同步配置步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql主从复制原理要点"><span class="nav-number">1.2.</span> <span class="nav-text">mysql主从复制原理要点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生产场景快速配置mysql主从复制方案"><span class="nav-number">1.3.</span> <span class="nav-text">生产场景快速配置mysql主从复制方案</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生产环境主从库同步配置注意事项"><span class="nav-number">2.</span> <span class="nav-text">生产环境主从库同步配置注意事项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一次做从库如何做？"><span class="nav-number">2.1.</span> <span class="nav-text">第一次做从库如何做？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无须熬夜在工作时间轻松配置从库"><span class="nav-number">2.2.</span> <span class="nav-text">无须熬夜在工作时间轻松配置从库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不停主库一键批量创建从库"><span class="nav-number">2.3.</span> <span class="nav-text">不停主库一键批量创建从库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一键创建从库方法1"><span class="nav-number">2.3.1.</span> <span class="nav-text">一键创建从库方法1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一键创建从库方法2"><span class="nav-number">2.3.2.</span> <span class="nav-text">一键创建从库方法2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关mysql主从复制技术技巧概览"><span class="nav-number">2.4.</span> <span class="nav-text">相关mysql主从复制技术技巧概览</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#登陆数据库查看mysql线程同步状态"><span class="nav-number">2.4.1.</span> <span class="nav-text">登陆数据库查看mysql线程同步状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制主线程状态"><span class="nav-number">2.4.2.</span> <span class="nav-text">复制主线程状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制从I-O线程状态"><span class="nav-number">2.4.3.</span> <span class="nav-text">复制从I/O线程状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制从SQL线程状态"><span class="nav-number">2.4.4.</span> <span class="nav-text">复制从SQL线程状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看mysql线程同步状态的用途"><span class="nav-number">2.4.5.</span> <span class="nav-text">查看mysql线程同步状态的用途</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生产场景mysql主从复制读写分离授权方案实战"><span class="nav-number">3.</span> <span class="nav-text">生产场景mysql主从复制读写分离授权方案实战</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#生产mysql复制环境用户授权方案"><span class="nav-number">3.1.</span> <span class="nav-text">生产mysql复制环境用户授权方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过忽略授权表的方式防止数据写从库方法及实践"><span class="nav-number">3.2.</span> <span class="nav-text">通过忽略授权表的方式防止数据写从库方法及实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">3.2.1.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实践"><span class="nav-number">3.2.2.</span> <span class="nav-text">实践</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">3.2.3.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql主从复制指定不同库表同步参数说明"><span class="nav-number">3.3.</span> <span class="nav-text">mysql主从复制指定不同库表同步参数说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过read-only参数防止数据写入从库方法"><span class="nav-number">3.4.</span> <span class="nav-text">通过read-only参数防止数据写入从库方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#模拟故障"><span class="nav-number">4.</span> <span class="nav-text">模拟故障</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#模拟故障-1"><span class="nav-number">4.1.</span> <span class="nav-text">模拟故障</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#让MySQL从库记录binlog方法"><span class="nav-number">4.2.</span> <span class="nav-text">让MySQL从库记录binlog方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主多从宕机从库切换主继续和从同步过程详解"><span class="nav-number">4.3.</span> <span class="nav-text">主多从宕机从库切换主继续和从同步过程详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#看两个线程的更新状态"><span class="nav-number">4.3.1.</span> <span class="nav-text">看两个线程的更新状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#授权同步用户和主库一样"><span class="nav-number">4.3.2.</span> <span class="nav-text">授权同步用户和主库一样</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>

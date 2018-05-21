@@ -1,3 +1,5 @@
+http://yjscloud.com/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/
+http://yjscloud.com/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/
 http://yjscloud.com/2018/04/27/MySQL系列（五）：MySQL主从复制/
 http://yjscloud.com/2018/04/26/MySQL系列（四）：MySQL增量备份及数据恢复/
 http://yjscloud.com/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/
