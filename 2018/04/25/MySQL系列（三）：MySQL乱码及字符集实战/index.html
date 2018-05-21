@@ -74,7 +74,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="OpenStack技能," />
+  <meta name="keywords" content="MySQL系列," />
 
 
 
@@ -92,24 +92,32 @@
 
 
 
-<meta name="description" content="处理报错的大致思路(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted； (2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程； (3)应用命令lvremove来删除相应">
-<meta name="keywords" content="OpenStack技能">
+<meta name="description" content="MySQL插入中文数据乱码问题MySQL数据库插入中文数据乱码1）MySQL中添加中文数据乱码演示 1、创建一个test2测试数据库并查看建表语句  我在编译安装mysql的时候已经指定了utf8为默认字符集，这里创建数据库字符集就是utf8，为了下面演示乱码问题，建表时我指定latin1为字符集 2、在test2库下创建一个student表，并查看表结构和建表语句。 create table s">
+<meta name="keywords" content="MySQL系列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="OpenStack排错（一）：Cinder僵尸卷删除">
-<meta property="og:url" content="http://yjscloud.com/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/index.html">
+<meta property="og:title" content="MySQL系列（三）：MySQL乱码及字符集实战">
+<meta property="og:url" content="http://yjscloud.com/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/index.html">
 <meta property="og:site_name" content="戏子登台">
-<meta property="og:description" content="处理报错的大致思路(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted； (2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程； (3)应用命令lvremove来删除相应">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/err-1.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/err-2.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/err-3.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/err-4.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/err-5.png">
-<meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/err-6.png">
-<meta property="og:updated_time" content="2018-05-17T15:45:30.000Z">
+<meta property="og:description" content="MySQL插入中文数据乱码问题MySQL数据库插入中文数据乱码1）MySQL中添加中文数据乱码演示 1、创建一个test2测试数据库并查看建表语句  我在编译安装mysql的时候已经指定了utf8为默认字符集，这里创建数据库字符集就是utf8，为了下面演示乱码问题，建表时我指定latin1为字符集 2、在test2库下创建一个student表，并查看表结构和建表语句。 create table s">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-63.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-64.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-65.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-66.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-67.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-68.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-69.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-70.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-71.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-72.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-73.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-74.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-75.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-76.png">
+<meta property="og:updated_time" content="2018-05-21T06:54:58.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="OpenStack排错（一）：Cinder僵尸卷删除">
-<meta name="twitter:description" content="处理报错的大致思路(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted； (2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程； (3)应用命令lvremove来删除相应">
-<meta name="twitter:image" content="http://oxysobnip.bkt.clouddn.com/err-1.png">
+<meta name="twitter:title" content="MySQL系列（三）：MySQL乱码及字符集实战">
+<meta name="twitter:description" content="MySQL插入中文数据乱码问题MySQL数据库插入中文数据乱码1）MySQL中添加中文数据乱码演示 1、创建一个test2测试数据库并查看建表语句  我在编译安装mysql的时候已经指定了utf8为默认字符集，这里创建数据库字符集就是utf8，为了下面演示乱码问题，建表时我指定latin1为字符集 2、在test2库下创建一个student表，并查看表结构和建表语句。 create table s">
+<meta name="twitter:image" content="http://p924w4b7r.bkt.clouddn.com/m-63.png">
 
 
 
@@ -137,13 +145,13 @@
 
 
 
-  <link rel="canonical" href="http://yjscloud.com/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/"/>
+  <link rel="canonical" href="http://yjscloud.com/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/"/>
 
 
 
 
 
-  <title>OpenStack排错（一）：Cinder僵尸卷删除 | 戏子登台</title>
+  <title>MySQL系列（三）：MySQL乱码及字符集实战 | 戏子登台</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -317,7 +325,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Pan">
@@ -338,7 +346,7 @@
             
             
               
-                OpenStack排错（一）：Cinder僵尸卷删除
+                MySQL系列（三）：MySQL乱码及字符集实战
               
             
           </h1>
@@ -353,8 +361,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-12T20:14:21+08:00">
-                2018-04-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-25T14:21:03+08:00">
+                2018-04-25
               </time>
             
 
@@ -379,8 +387,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/OpenStack学习笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">OpenStack学习笔记</span>
+                  <a href="/categories/数据库学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库学习笔记</span>
                   </a>
                 </span>
 
@@ -397,7 +405,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a class="cloud-tie-join-count" href="/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/#comments" itemprop="discussionUrl">
+                <a class="cloud-tie-join-count" href="/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count join-count" itemprop="commentCount"></span>
                 </a>
               </span>
@@ -420,7 +428,7 @@
                   <span class="post-meta-item-text">字数统计</span>
                 
                 <span title="字数统计">
-                  1,216
+                  2,088
                 </span>
               
 
@@ -436,7 +444,7 @@
                   <span class="post-meta-item-text">阅读时长</span>
                 
                 <span title="阅读时长">
-                  5
+                  8
                 </span>
               
             </div>
@@ -454,71 +462,143 @@
       
 
       
-        <h1 id="处理报错的大致思路"><a href="#处理报错的大致思路" class="headerlink" title="处理报错的大致思路"></a>处理报错的大致思路</h1><p>(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted；</p>
-<p>(2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程；</p>
-<p>(3)应用命令lvremove来删除相应的卷；</p>
-<p>(4)此时问题貌似已经解决，因为已经可以正确地执行cinder中命令，要删除的卷的记录也已经删除。但是这里还有个问题，默认的建立卷的最大数目为10，如果之前删除的僵尸卷的数目为1，但是此时当你建立卷的数目为9个时，再尝试建立新卷时，就会提示已经达到卷的数目的最大值。解决方法就是到cinder数据表中找到quota_usages，将其中in_use中的数据减少相应的删除的僵尸卷的数目即可。</p>
-<p>备注：fuser命令在psmisc包中</p>
-<h1 id="第一种情况的僵尸卷"><a href="#第一种情况的僵尸卷" class="headerlink" title="第一种情况的僵尸卷"></a>第一种情况的僵尸卷</h1><p><img src="http://oxysobnip.bkt.clouddn.com/err-1.png" alt="err-1"></p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/err-2.png" alt="err-2"></p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/err-3.png" alt="err-3"></p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/err-4.png" alt="err-4"></p>
-<p>执行完上面的操作后进入云平台系统，更改需要删除云硬盘状态为“可用配额”，然后“删除云硬盘”，如果再界面上删除依旧没有执行成功或者依旧一直再删除中，就采用比较暴力的方式，修改云硬盘再数据库中的状态，因为此时云硬盘再存储设备（物理机）上已经删除了，仅仅还有数据库中还有该记录信息，但不能直接删除这条记录，数据库有外键依赖，而是要把cinder盘的deleted改成“1”,“1”即为删除，0为不删除。</p>
-<p>进入数据库：</p>
-<pre><code>mysql -uxxxx -pxxxx
-</code></pre><p>选择数据库表：</p>
-<pre><code>use cinder;
-</code></pre><p>关闭数据库的键外查询：</p>
-<pre><code>set foreign_key_checks=0;
-</code></pre><p>select找到出错的数据：</p>
-<pre><code>select id, status, display_name from volumes where id=&quot;af3e36ce-10ab-4daa-80e3-b71f16836a3b&quot;
-</code></pre><p>修改数据库记录状体：</p>
-<pre><code>update volumes set deleted=1 where id=&quot;af3e36ce-10ab-4daa-80e3-b71f16836a3b&quot;
-</code></pre><p>操作完成后开启数据库的键外查询：</p>
-<pre><code>set foreign_key_checks=0;
-</code></pre><p>此时如果dashboard界面卷存储还没有恢复正常就需要进行如下操作！！！</p>
-<p>（1）use cinder;</p>
-<p>（2）select  *  from volumes;</p>
-<p><img src="http://oxysobnip.bkt.clouddn.com/err-5.png" alt="err-5"></p>
-<p>在删除数据条目之前要临时关闭键值检查，否则删除操作无法进行：set foreign_key_checks=0;</p>
-<p>删除操作完成后再运行此命令开启键值检查，确保数据库安全</p>
-<p>找到之前出问题的卷并删除条目信息：</p>
-<pre><code>delete from volumes where id=&apos;f0a030a6-7ff0-4765-ac47-1f1eed3c7582&apos;;
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/err-6.png" alt="err-6"></p>
-<p>然后把in_use的数值修改为0即可</p>
-<p>这里我就很暴力了直接删除了了条目：</p>
-<pre><code>delete from quota_usages where project_id=&apos;232b14de024647159470ed97873ce774&apos;;
-</code></pre><p>等下新建卷的时候就会恢复的，不建议这么做哦。</p>
-<h1 id="第二种情况的僵尸卷"><a href="#第二种情况的僵尸卷" class="headerlink" title="第二种情况的僵尸卷"></a>第二种情况的僵尸卷</h1><p>思路和第一中情况差不多；</p>
-<p>（1）通过lvdisplay |grep查询cinder对应的卷地址。</p>
-<pre><code>root@compute:~# lvdisplay | grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
-LV Path                /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3
-LV Name                volume-8580f464-02e1-411c-bd94-a4af35e499a3
-</code></pre><p>（2）通过lsof | grep查询占用cinder卷的端口</p>
-<pre><code>lsof| grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
-kill -9 76568
-</code></pre><p>（3）通过lvremove删除相应的卷</p>
-<pre><code>lvremove /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3
-</code></pre><p>（4）报错处理<br>报错：device-mapper: remove ioctl on failed: Deviceor resource busy。设备繁忙</p>
-<p>查看是否被打开：</p>
-<pre><code>dmsetup info -c /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3 #查看是否被打开,如果看到open为4或者数字说明它被打开了，所以remove不掉。
-</code></pre><p>查看被谁打开：</p>
-<pre><code>fuser -m /dev/cinder-volumes/volume-8580f464-02e1-411c-bd94-a4af35e499a3 #查看是谁打开的，显示产用进程号
-</code></pre><p>把占用设备的进程杀掉：</p>
-<pre><code>kill -9 xxxx xxxx xxxx xxxx
-</code></pre><p>重新执行上面验证的几个步骤，验证是否还有进程占用，如果看到open为0，表示现在没有进程占用，再执行lvremove删除相应的卷</p>
-<p>（5）验证是否已经删除</p>
-<pre><code>root@compute:~# lvdisplay | grep &quot;8580f464-02e1-411c-bd94-a4af35e499a3&quot;
-</code></pre><p>（6）进入云平台系统，更改需要删除云硬盘状态为“可用配额”，然后“删除云硬盘”，如果再界面上删除依旧没有执行成功或者依旧一直再删除中，就采用比较暴力的方式，修改云硬盘再数据库中的状态，因为此时云硬盘再存储设备（物理机）上已经删除了，仅仅还有数据库中还有该记录信息，但不能直接删除这条记录，数据库有外键依赖，而是要把cinder盘的deleted改成“1”,“1”即为删除，0为不删除。</p>
-<p>进入数据库：</p>
-<pre><code>mysql -uxxxx -pxxxx
-</code></pre><p>选择数据库表</p>
-<pre><code>use cinder;
-</code></pre><p>select找到出错的数据:</p>
-<pre><code>select id, status, display_name from volumes where id=&apos;2d5d206d-0720-42aa-b178-3f3238177583&apos;;
-</code></pre><p>修改数据库记录状体：</p>
-<pre><code>update volumes set deleted=1 where id=&apos;2d5d206d-0720-42aa-b178-3f3238177583&apos;;
-</code></pre>
+        <h1 id="MySQL插入中文数据乱码问题"><a href="#MySQL插入中文数据乱码问题" class="headerlink" title="MySQL插入中文数据乱码问题"></a>MySQL插入中文数据乱码问题</h1><h2 id="MySQL数据库插入中文数据乱码"><a href="#MySQL数据库插入中文数据乱码" class="headerlink" title="MySQL数据库插入中文数据乱码"></a>MySQL数据库插入中文数据乱码</h2><p>1）MySQL中添加中文数据乱码演示</p>
+<p>1、创建一个test2测试数据库并查看建表语句</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-63.png" alt="m-63"></p>
+<p>我在编译安装mysql的时候已经指定了utf8为默认字符集，这里创建数据库字符集就是utf8，为了下面演示乱码问题，建表时我指定latin1为字符集</p>
+<p>2、在test2库下创建一个student表，并查看表结构和建表语句。</p>
+<pre><code>create table student(     
+id int(4) not null auto_increment,           
+name char(20) not null, 
+primary key(id) 
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-64.png" alt="m-64"></p>
+<p>查看表：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-65.png" alt="m-65"></p>
+<p>插入数据：</p>
+<pre><code>insert into student values (1,&apos;lufei&apos;),(2,&apos;suolong&apos;),(3,&apos;namei&apos;),(4,&apos;wusuopu&apos;),(5,&apos;xiangjishu&apos;);
+</code></pre><p>提示：数字和英文的数据都是正常的，不会有乱码问题。</p>
+<p>3、在插入一条中文数据看看</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-66.png" alt="m-66"></p>
+<h2 id="MySQL命令行插入中文数据不乱码实战"><a href="#MySQL命令行插入中文数据不乱码实战" class="headerlink" title="MySQL命令行插入中文数据不乱码实战"></a>MySQL命令行插入中文数据不乱码实战</h2><p>1）查看建表语句，要特别注意表语句结尾的latin1</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-67.png" alt="m-67"></p>
+<p>2）设置mysql客户端的字符集和建表字符集latin1一致</p>
+<pre><code>mysql&gt; set names latin1;    #设置字符集插入数据的表的字符集，然后再插入中文语句测试。
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><p>3）继续插入一条中数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-68.png" alt="m-68"></p>
+<p>这个就是mysql命令行插入数据确保不乱码的方法，如果是要更新的数据很多，就需要通过执行sql文件的方式更新数据了，那么，如果保证执行sql文件也不乱码呢？</p>
+<h2 id="执行sql文件插入中文数据不乱码实战"><a href="#执行sql文件插入中文数据不乱码实战" class="headerlink" title="执行sql文件插入中文数据不乱码实战"></a>执行sql文件插入中文数据不乱码实战</h2><p>1）将要更新的多个sql语句放到文本文件里如test2.sql所示</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-69.png" alt="m-69"></p>
+<p>这个步骤也是先执行set字符集操作，然后再执行更新语句，值不过是通过source加载文件执行的。</p>
+<p>小结：DQL,DML语句之前set name系统及库表的字符集！</p>
+<h2 id="通过MySQL命令加字符集参数导入数据解决乱码"><a href="#通过MySQL命令加字符集参数导入数据解决乱码" class="headerlink" title="通过MySQL命令加字符集参数导入数据解决乱码"></a>通过MySQL命令加字符集参数导入数据解决乱码</h2><p>1）把要更新的多个sql语句放入文本文件中，注意，此处语句里面不带set names latin1;</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-70.png" alt="m-70"></p>
+<p>2）通过MySQL命令加上字符集参数指定latin1字符集导入test2.sql</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-71.png" alt="m-71"></p>
+<h2 id="MySQL插入中文不乱码5种方法小结"><a href="#MySQL插入中文不乱码5种方法小结" class="headerlink" title="MySQL插入中文不乱码5种方法小结"></a>MySQL插入中文不乱码5种方法小结</h2><p>方法（1）：登陆mysql，先做“set names latin1;”，然后再执行更新语句或执行语句文件。</p>
+<pre><code>mysql&gt; set names latin1;   
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; source test2.sql; 
+Query OK, 1 rows affected (0.00 sec)
+</code></pre><p>方法（2）：在sql文件中指定set names latin1;然后登陆mysql，通过如下命令执行。</p>
+<pre><code>mysql&gt; source test2.sql; 
+Query OK, 1 rows affected (0.00 sec)
+</code></pre><p>方法（3）：在sql文件中指定set names latin1;然后通过mysql命令导入数据</p>
+<pre><code>[root@mysql-1]# mysql -uroot -pyjscloud test2 &lt; test2.sql
+[root@mysql-1]# mysql -uroot -pyjscloud test2 -e &apos;set names latin1;select * from test2.student&apos;
+</code></pre><p>方法（4）：通过指定mysql命令的字符集参数实现–default-character-set=latin1 test2 &lt;test2.sql</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-72.png" alt="m-72"></p>
+<p>方法（5）：在配置文件里设置客服端及服务端相关参数</p>
+<p>更改my.cnf客服端模块的参数，可以实现set names latin1的效果，并且永久生效。</p>
+<pre><code>[client]
+default=character-set=latin1
+</code></pre><p>提示：无需重启服务，退出重新登录就生效，相当与set names latin1;</p>
+<p>更改服务端字符集简单的办法</p>
+<p>更改my.cnf参数</p>
+<pre><code>[mysqld]
+default-character-set=latin1 #适合5.1以以及前版本
+default-set-server=latin1  #适合5.5
+</code></pre><h2 id="不乱码的思想"><a href="#不乱码的思想" class="headerlink" title="不乱码的思想"></a>不乱码的思想</h2><p>处理好：linux，客服端，服务端，库，表，程序！</p>
+<p>1）linux系统</p>
+<pre><code>cat /etc/locale.conf
+LANG=&quot;zh_CN.utf8&quot;
+</code></pre><p>2）MySQL客服端</p>
+<p>临时：</p>
+<pre><code>set names utf8
+</code></pre><p>永久：</p>
+<p>更改my.cnf客服端模块的参数，可以实现set names utf8的效果，并且永久生效。</p>
+<pre><code>[client]
+default-character-set=latin1
+</code></pre><p>3）MySQL服务端</p>
+<p>更改my.cnf参数</p>
+<pre><code>[mysqld]
+default-character-set=latin1 #适合5.1以以及前版本
+default-set-server=latin1  #适合5.5
+</code></pre><p>4）MySQL库表</p>
+<pre><code>create database test3 default character set utf8 collate utf8_general_ci;
+
+create table student(     
+id int(4) not null auto_increment,           
+name char(20) not null, 
+primary key(id) 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</code></pre><p>需要了解的内容:<br><a href="http://hejiajunsh.iteye.com/blog/1955696" target="_blank" rel="external">show variables与show global status;参考博客</a></p>
+<h1 id="mysql数据库字符集知识"><a href="#mysql数据库字符集知识" class="headerlink" title="mysql数据库字符集知识"></a>mysql数据库字符集知识</h1><h2 id="mysql数据库字符集介绍"><a href="#mysql数据库字符集介绍" class="headerlink" title="mysql数据库字符集介绍"></a>mysql数据库字符集介绍</h2><p>简单地说，字符集就是一套文字符号及其编码、比较规则的集合，第一个计算机字符集ASC2!<br>mysql数据库字符集包括字符集（CHARCTER）和校对规则（COLLATION）两个概念，其中，字符集是用来定义mysql数据字符串的存储方式。而校对规则则是定义比较字符串的方式。在上面命令查看已建立的test2库的语句中，CHARATER SET latin1即为数据库字符集，而COLLATE latin1_swedish_ci为校对规则。</p>
+<h2 id="mysql数据库常见字符集介绍"><a href="#mysql数据库常见字符集介绍" class="headerlink" title="mysql数据库常见字符集介绍"></a>mysql数据库常见字符集介绍</h2><p>在互联网环境中，使用mysql时常用的字符集有：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-73.png" alt="m-73"></p>
+<h2 id="mysql如何选择合适的字符集"><a href="#mysql如何选择合适的字符集" class="headerlink" title="mysql如何选择合适的字符集"></a>mysql如何选择合适的字符集</h2><p>1）如果处理各种各样的文字，发布到不同语言国家地区，应选Unicode字符集，对<br>mysql来说就是UTF-8（每个汉字三个字节），如果应用处理英文，仅有少量汉字UTF-8更好。</p>
+<p>2）如只需支持中文，并且数据量很大，性能要求也很高，可选GBK（定长每个汉字占双字节，英文也占双字节），如果需要大量运算，比较排序等，定长排序等，定长字符集，更快，性能高。</p>
+<p>3）处理移动互联网业务，可能需要使用utf8mb4字符集</p>
+<h2 id="查看当前mysql系统支持的字符集"><a href="#查看当前mysql系统支持的字符集" class="headerlink" title="查看当前mysql系统支持的字符集"></a>查看当前mysql系统支持的字符集</h2><p>mysql可支持多种字符集，同一台机器，库或表的不同字段都可以指定不同的字符集。<br>查看mysql支持的字符集</p>
+<pre><code>mysql -uroot -pyjscloud -e &apos;show character set;&apos;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-74.png" alt="m-74"></p>
+<p>其中，最常见的字符集为如下4种：</p>
+<pre><code>mysql -uroot -pyjscloud -e &apos;show character set;&apos;|egrep &apos;gbk|utf8|latin1&apos;|awk &apos;{print $0}&apos;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-75.png" alt="m-75"></p>
+<p>查看mysql当前的字符集设置情况</p>
+<pre><code>show variables like &apos;character_set%&apos;;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-76.png" alt="m-76"></p>
+<p>提示：默认情况下</p>
+<pre><code>character_set_client,character_set_connection,character_set_results三者的字符集和系统的字符集一致即可
+</code></pre><p>不同字符集参数的含义：</p>
+<pre><code>| character_set_client     | utf8           #客服端字符集
+| character_set_connection | utf8      #连接字符集
+| character_set_database   | utf8       #数据库字符集，配置文件指定或建库表指定
+| character_set_results    | utf8         #返回结果字符集    
+| character_set_server     | utf8          #服务器字符集，配置文件指定或建库建表指定
+</code></pre><h2 id="如何更改生产MYSQL数据库库表的字符集"><a href="#如何更改生产MYSQL数据库库表的字符集" class="headerlink" title="如何更改生产MYSQL数据库库表的字符集"></a>如何更改生产MYSQL数据库库表的字符集</h2><p>数据字符集修改步骤</p>
+<p>对于已有的数据库想修改字符集不能直接通过“alter database character set *” 或 “alter table tablename set *” ,这两个命令都没有更新已有记录的字符集，而只是对新创建的表或者记录生效。已经有记录的字符的调整，必须先将数据导出，经过修改字符集后重新导入后才可以完成。修改数据库默认编码：</p>
+<pre><code>alter database [your db name] charset [your character setting]
+</code></pre><p>模拟latin1字符集的数据库修改成GBK字符集的实际过程。</p>
+<p>1）导出表结构</p>
+<pre><code>mysqldump -uroot -pyjscloud --default-character-set=latin1 -d test2 &gt; alltable.sql --default-character-set=gbk
+</code></pre><p>表示已GBK字符集进行连接 -d 只导表结构</p>
+<p>2）编辑alltable.sql将latin1改成GBK</p>
+<p>3）确保数据库不再更新，导出所有数据</p>
+<pre><code>mysqldump -uroot -pyjscloud --quick --no-create-info --extended-insert --default-character-set=latin1 test2 &gt; alldata.sql
+</code></pre><p>参数说明：</p>
+<p>–quick：用于转储大的表，强制mysqldump从服务器一次一行的检索数据而不是检索所有行，并输出前CACHE到内存中。</p>
+<p>–no-create-info：不创建CRATE TABLE语句。</p>
+<p>–extended–insert：使用包括几个VALUES列表的多行INSERT语法，这样文件更小，IO也小，导入数据时会非常快</p>
+<p>–default-character-set=latin1按照原有字符集导出数据，这样导出的文件中，所有中文都是可见，不会保存成乱码。</p>
+<p>4）打开allsdata.sql将set names latin1修改成set names gbk;（或者修改系统的服务端和客户端）</p>
+<p>5）建库</p>
+<pre><code>create database test3 default charset gbk;
+</code></pre><p>6）创建表，执行alltable.sql</p>
+<pre><code>mysql -uroot -pyjscloud test3&lt;alltable.sql
+</code></pre><p>7）导入数据</p>
+<pre><code>mysql -uroot -pyjscloud test3&lt;alldata.sql
+</code></pre><p>注意：选择目标字符集时，要注意最好大于源字符集（字库更大），否则可能会丢失不被支持的数据</p>
+<p>总结：latin1-&gt;utf8</p>
+<p>1、建库及建表的语句导出，sed批量修改为utf8</p>
+<p>2、导出所有mysql数据</p>
+<p>3、修改mysql服务端和客户端编码为utf8</p>
+<p>4、删除原有的库表及数据</p>
+<p>5、导入新的建库及建表的语句</p>
+<p>6、导入mysql的所有数据</p>
+
       
     </div>
 
@@ -569,7 +649,7 @@ kill -9 76568
       
         <div class="post-tags">
           
-            <a href="/tags/OpenStack技能/" rel="tag"><i class="fa fa-tag"></i> OpenStack技能</a>
+            <a href="/tags/MySQL系列/" rel="tag"><i class="fa fa-tag"></i> MySQL系列</a>
           
         </div>
       
@@ -582,18 +662,14 @@ kill -9 76568
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/04/20/Kolla容器化部署OpenStack：单点部署/" rel="next" title="Kolla容器化部署OpenStack：单点部署">
-                <i class="fa fa-chevron-left"></i> Kolla容器化部署OpenStack：单点部署
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/04/04/制作openstack镜像模板/" rel="prev" title="制作OpenStack镜像模板">
-                制作OpenStack镜像模板 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/04/23/MySQL系列（二）：MySQL常用基础命令/" rel="prev" title="MySQL系列（二）：MySQL常用基础命令">
+                MySQL系列（二）：MySQL常用基础命令 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -819,7 +895,7 @@ kill -9 76568
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#处理报错的大致思路"><span class="nav-number">1.</span> <span class="nav-text">处理报错的大致思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一种情况的僵尸卷"><span class="nav-number">2.</span> <span class="nav-text">第一种情况的僵尸卷</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二种情况的僵尸卷"><span class="nav-number">3.</span> <span class="nav-text">第二种情况的僵尸卷</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL插入中文数据乱码问题"><span class="nav-number">1.</span> <span class="nav-text">MySQL插入中文数据乱码问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL数据库插入中文数据乱码"><span class="nav-number">1.1.</span> <span class="nav-text">MySQL数据库插入中文数据乱码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL命令行插入中文数据不乱码实战"><span class="nav-number">1.2.</span> <span class="nav-text">MySQL命令行插入中文数据不乱码实战</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#执行sql文件插入中文数据不乱码实战"><span class="nav-number">1.3.</span> <span class="nav-text">执行sql文件插入中文数据不乱码实战</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过MySQL命令加字符集参数导入数据解决乱码"><span class="nav-number">1.4.</span> <span class="nav-text">通过MySQL命令加字符集参数导入数据解决乱码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL插入中文不乱码5种方法小结"><span class="nav-number">1.5.</span> <span class="nav-text">MySQL插入中文不乱码5种方法小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不乱码的思想"><span class="nav-number">1.6.</span> <span class="nav-text">不乱码的思想</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql数据库字符集知识"><span class="nav-number">2.</span> <span class="nav-text">mysql数据库字符集知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql数据库字符集介绍"><span class="nav-number">2.1.</span> <span class="nav-text">mysql数据库字符集介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql数据库常见字符集介绍"><span class="nav-number">2.2.</span> <span class="nav-text">mysql数据库常见字符集介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysql如何选择合适的字符集"><span class="nav-number">2.3.</span> <span class="nav-text">mysql如何选择合适的字符集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看当前mysql系统支持的字符集"><span class="nav-number">2.4.</span> <span class="nav-text">查看当前mysql系统支持的字符集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何更改生产MYSQL数据库库表的字符集"><span class="nav-number">2.5.</span> <span class="nav-text">如何更改生产MYSQL数据库库表的字符集</span></a></li></ol></li></ol></div>
             
 
           </div>

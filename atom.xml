@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-05-21T06:02:24.000Z</updated>
+  <updated>2018-05-21T06:54:58.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,164 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL系列（三）：MySQL乱码及字符集实战</title>
+    <link href="http://yjscloud.com/2018/04/25/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9AMySQL%E4%B9%B1%E7%A0%81%E5%8F%8A%E5%AD%97%E7%AC%A6%E9%9B%86%E5%AE%9E%E6%88%98/"/>
+    <id>http://yjscloud.com/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/</id>
+    <published>2018-04-25T06:21:03.000Z</published>
+    <updated>2018-05-21T06:54:58.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="MySQL插入中文数据乱码问题"><a href="#MySQL插入中文数据乱码问题" class="headerlink" title="MySQL插入中文数据乱码问题"></a>MySQL插入中文数据乱码问题</h1><h2 id="MySQL数据库插入中文数据乱码"><a href="#MySQL数据库插入中文数据乱码" class="headerlink" title="MySQL数据库插入中文数据乱码"></a>MySQL数据库插入中文数据乱码</h2><p>1）MySQL中添加中文数据乱码演示</p>
+<p>1、创建一个test2测试数据库并查看建表语句</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-63.png" alt="m-63"></p>
+<p>我在编译安装mysql的时候已经指定了utf8为默认字符集，这里创建数据库字符集就是utf8，为了下面演示乱码问题，建表时我指定latin1为字符集</p>
+<p>2、在test2库下创建一个student表，并查看表结构和建表语句。</p>
+<pre><code>create table student(     
+id int(4) not null auto_increment,           
+name char(20) not null, 
+primary key(id) 
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-64.png" alt="m-64"></p>
+<p>查看表：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-65.png" alt="m-65"></p>
+<p>插入数据：</p>
+<pre><code>insert into student values (1,&apos;lufei&apos;),(2,&apos;suolong&apos;),(3,&apos;namei&apos;),(4,&apos;wusuopu&apos;),(5,&apos;xiangjishu&apos;);
+</code></pre><p>提示：数字和英文的数据都是正常的，不会有乱码问题。</p>
+<p>3、在插入一条中文数据看看</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-66.png" alt="m-66"></p>
+<h2 id="MySQL命令行插入中文数据不乱码实战"><a href="#MySQL命令行插入中文数据不乱码实战" class="headerlink" title="MySQL命令行插入中文数据不乱码实战"></a>MySQL命令行插入中文数据不乱码实战</h2><p>1）查看建表语句，要特别注意表语句结尾的latin1</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-67.png" alt="m-67"></p>
+<p>2）设置mysql客户端的字符集和建表字符集latin1一致</p>
+<pre><code>mysql&gt; set names latin1;    #设置字符集插入数据的表的字符集，然后再插入中文语句测试。
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><p>3）继续插入一条中数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-68.png" alt="m-68"></p>
+<p>这个就是mysql命令行插入数据确保不乱码的方法，如果是要更新的数据很多，就需要通过执行sql文件的方式更新数据了，那么，如果保证执行sql文件也不乱码呢？</p>
+<h2 id="执行sql文件插入中文数据不乱码实战"><a href="#执行sql文件插入中文数据不乱码实战" class="headerlink" title="执行sql文件插入中文数据不乱码实战"></a>执行sql文件插入中文数据不乱码实战</h2><p>1）将要更新的多个sql语句放到文本文件里如test2.sql所示</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-69.png" alt="m-69"></p>
+<p>这个步骤也是先执行set字符集操作，然后再执行更新语句，值不过是通过source加载文件执行的。</p>
+<p>小结：DQL,DML语句之前set name系统及库表的字符集！</p>
+<h2 id="通过MySQL命令加字符集参数导入数据解决乱码"><a href="#通过MySQL命令加字符集参数导入数据解决乱码" class="headerlink" title="通过MySQL命令加字符集参数导入数据解决乱码"></a>通过MySQL命令加字符集参数导入数据解决乱码</h2><p>1）把要更新的多个sql语句放入文本文件中，注意，此处语句里面不带set names latin1;</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-70.png" alt="m-70"></p>
+<p>2）通过MySQL命令加上字符集参数指定latin1字符集导入test2.sql</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-71.png" alt="m-71"></p>
+<h2 id="MySQL插入中文不乱码5种方法小结"><a href="#MySQL插入中文不乱码5种方法小结" class="headerlink" title="MySQL插入中文不乱码5种方法小结"></a>MySQL插入中文不乱码5种方法小结</h2><p>方法（1）：登陆mysql，先做“set names latin1;”，然后再执行更新语句或执行语句文件。</p>
+<pre><code>mysql&gt; set names latin1;   
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; source test2.sql; 
+Query OK, 1 rows affected (0.00 sec)
+</code></pre><p>方法（2）：在sql文件中指定set names latin1;然后登陆mysql，通过如下命令执行。</p>
+<pre><code>mysql&gt; source test2.sql; 
+Query OK, 1 rows affected (0.00 sec)
+</code></pre><p>方法（3）：在sql文件中指定set names latin1;然后通过mysql命令导入数据</p>
+<pre><code>[root@mysql-1]# mysql -uroot -pyjscloud test2 &lt; test2.sql
+[root@mysql-1]# mysql -uroot -pyjscloud test2 -e &apos;set names latin1;select * from test2.student&apos;
+</code></pre><p>方法（4）：通过指定mysql命令的字符集参数实现–default-character-set=latin1 test2 &lt;test2.sql</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-72.png" alt="m-72"></p>
+<p>方法（5）：在配置文件里设置客服端及服务端相关参数</p>
+<p>更改my.cnf客服端模块的参数，可以实现set names latin1的效果，并且永久生效。</p>
+<pre><code>[client]
+default=character-set=latin1
+</code></pre><p>提示：无需重启服务，退出重新登录就生效，相当与set names latin1;</p>
+<p>更改服务端字符集简单的办法</p>
+<p>更改my.cnf参数</p>
+<pre><code>[mysqld]
+default-character-set=latin1 #适合5.1以以及前版本
+default-set-server=latin1  #适合5.5
+</code></pre><h2 id="不乱码的思想"><a href="#不乱码的思想" class="headerlink" title="不乱码的思想"></a>不乱码的思想</h2><p>处理好：linux，客服端，服务端，库，表，程序！</p>
+<p>1）linux系统</p>
+<pre><code>cat /etc/locale.conf
+LANG=&quot;zh_CN.utf8&quot;
+</code></pre><p>2）MySQL客服端</p>
+<p>临时：</p>
+<pre><code>set names utf8
+</code></pre><p>永久：</p>
+<p>更改my.cnf客服端模块的参数，可以实现set names utf8的效果，并且永久生效。</p>
+<pre><code>[client]
+default-character-set=latin1
+</code></pre><p>3）MySQL服务端</p>
+<p>更改my.cnf参数</p>
+<pre><code>[mysqld]
+default-character-set=latin1 #适合5.1以以及前版本
+default-set-server=latin1  #适合5.5
+</code></pre><p>4）MySQL库表</p>
+<pre><code>create database test3 default character set utf8 collate utf8_general_ci;
+
+create table student(     
+id int(4) not null auto_increment,           
+name char(20) not null, 
+primary key(id) 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</code></pre><p>需要了解的内容:<br><a href="http://hejiajunsh.iteye.com/blog/1955696" target="_blank" rel="external">show variables与show global status;参考博客</a></p>
+<h1 id="mysql数据库字符集知识"><a href="#mysql数据库字符集知识" class="headerlink" title="mysql数据库字符集知识"></a>mysql数据库字符集知识</h1><h2 id="mysql数据库字符集介绍"><a href="#mysql数据库字符集介绍" class="headerlink" title="mysql数据库字符集介绍"></a>mysql数据库字符集介绍</h2><p>简单地说，字符集就是一套文字符号及其编码、比较规则的集合，第一个计算机字符集ASC2!<br>mysql数据库字符集包括字符集（CHARCTER）和校对规则（COLLATION）两个概念，其中，字符集是用来定义mysql数据字符串的存储方式。而校对规则则是定义比较字符串的方式。在上面命令查看已建立的test2库的语句中，CHARATER SET latin1即为数据库字符集，而COLLATE latin1_swedish_ci为校对规则。</p>
+<h2 id="mysql数据库常见字符集介绍"><a href="#mysql数据库常见字符集介绍" class="headerlink" title="mysql数据库常见字符集介绍"></a>mysql数据库常见字符集介绍</h2><p>在互联网环境中，使用mysql时常用的字符集有：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-73.png" alt="m-73"></p>
+<h2 id="mysql如何选择合适的字符集"><a href="#mysql如何选择合适的字符集" class="headerlink" title="mysql如何选择合适的字符集"></a>mysql如何选择合适的字符集</h2><p>1）如果处理各种各样的文字，发布到不同语言国家地区，应选Unicode字符集，对<br>mysql来说就是UTF-8（每个汉字三个字节），如果应用处理英文，仅有少量汉字UTF-8更好。</p>
+<p>2）如只需支持中文，并且数据量很大，性能要求也很高，可选GBK（定长每个汉字占双字节，英文也占双字节），如果需要大量运算，比较排序等，定长排序等，定长字符集，更快，性能高。</p>
+<p>3）处理移动互联网业务，可能需要使用utf8mb4字符集</p>
+<h2 id="查看当前mysql系统支持的字符集"><a href="#查看当前mysql系统支持的字符集" class="headerlink" title="查看当前mysql系统支持的字符集"></a>查看当前mysql系统支持的字符集</h2><p>mysql可支持多种字符集，同一台机器，库或表的不同字段都可以指定不同的字符集。<br>查看mysql支持的字符集</p>
+<pre><code>mysql -uroot -pyjscloud -e &apos;show character set;&apos;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-74.png" alt="m-74"></p>
+<p>其中，最常见的字符集为如下4种：</p>
+<pre><code>mysql -uroot -pyjscloud -e &apos;show character set;&apos;|egrep &apos;gbk|utf8|latin1&apos;|awk &apos;{print $0}&apos;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-75.png" alt="m-75"></p>
+<p>查看mysql当前的字符集设置情况</p>
+<pre><code>show variables like &apos;character_set%&apos;;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-76.png" alt="m-76"></p>
+<p>提示：默认情况下</p>
+<pre><code>character_set_client,character_set_connection,character_set_results三者的字符集和系统的字符集一致即可
+</code></pre><p>不同字符集参数的含义：</p>
+<pre><code>| character_set_client     | utf8           #客服端字符集
+| character_set_connection | utf8      #连接字符集
+| character_set_database   | utf8       #数据库字符集，配置文件指定或建库表指定
+| character_set_results    | utf8         #返回结果字符集    
+| character_set_server     | utf8          #服务器字符集，配置文件指定或建库建表指定
+</code></pre><h2 id="如何更改生产MYSQL数据库库表的字符集"><a href="#如何更改生产MYSQL数据库库表的字符集" class="headerlink" title="如何更改生产MYSQL数据库库表的字符集"></a>如何更改生产MYSQL数据库库表的字符集</h2><p>数据字符集修改步骤</p>
+<p>对于已有的数据库想修改字符集不能直接通过“alter database character set *” 或 “alter table tablename set *” ,这两个命令都没有更新已有记录的字符集，而只是对新创建的表或者记录生效。已经有记录的字符的调整，必须先将数据导出，经过修改字符集后重新导入后才可以完成。修改数据库默认编码：</p>
+<pre><code>alter database [your db name] charset [your character setting]
+</code></pre><p>模拟latin1字符集的数据库修改成GBK字符集的实际过程。</p>
+<p>1）导出表结构</p>
+<pre><code>mysqldump -uroot -pyjscloud --default-character-set=latin1 -d test2 &gt; alltable.sql --default-character-set=gbk
+</code></pre><p>表示已GBK字符集进行连接 -d 只导表结构</p>
+<p>2）编辑alltable.sql将latin1改成GBK</p>
+<p>3）确保数据库不再更新，导出所有数据</p>
+<pre><code>mysqldump -uroot -pyjscloud --quick --no-create-info --extended-insert --default-character-set=latin1 test2 &gt; alldata.sql
+</code></pre><p>参数说明：</p>
+<p>–quick：用于转储大的表，强制mysqldump从服务器一次一行的检索数据而不是检索所有行，并输出前CACHE到内存中。</p>
+<p>–no-create-info：不创建CRATE TABLE语句。</p>
+<p>–extended–insert：使用包括几个VALUES列表的多行INSERT语法，这样文件更小，IO也小，导入数据时会非常快</p>
+<p>–default-character-set=latin1按照原有字符集导出数据，这样导出的文件中，所有中文都是可见，不会保存成乱码。</p>
+<p>4）打开allsdata.sql将set names latin1修改成set names gbk;（或者修改系统的服务端和客户端）</p>
+<p>5）建库</p>
+<pre><code>create database test3 default charset gbk;
+</code></pre><p>6）创建表，执行alltable.sql</p>
+<pre><code>mysql -uroot -pyjscloud test3&lt;alltable.sql
+</code></pre><p>7）导入数据</p>
+<pre><code>mysql -uroot -pyjscloud test3&lt;alldata.sql
+</code></pre><p>注意：选择目标字符集时，要注意最好大于源字符集（字库更大），否则可能会丢失不被支持的数据</p>
+<p>总结：latin1-&gt;utf8</p>
+<p>1、建库及建表的语句导出，sed批量修改为utf8</p>
+<p>2、导出所有mysql数据</p>
+<p>3、修改mysql服务端和客户端编码为utf8</p>
+<p>4、删除原有的库表及数据</p>
+<p>5、导入新的建库及建表的语句</p>
+<p>6、导入mysql的所有数据</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;MySQL插入中文数据乱码问题&quot;&gt;&lt;a href=&quot;#MySQL插入中文数据乱码问题&quot; class=&quot;headerlink&quot; title=&quot;MySQL插入中文数据乱码问题&quot;&gt;&lt;/a&gt;MySQL插入中文数据乱码问题&lt;/h1&gt;&lt;h2 id=&quot;MySQL数据库插入中文数
+    
+    </summary>
+    
+      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL系列（二）：MySQL常用基础命令</title>
@@ -5525,49 +5683,6 @@ test()
     <summary type="html">
     
       &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（七）：闭包</title>
-    <link href="http://yjscloud.com/2018/01/20/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9A%E9%97%AD%E5%8C%85/"/>
-    <id>http://yjscloud.com/2018/01/20/Python当歌（七）：闭包/</id>
-    <published>2018-01-20T07:54:22.000Z</published>
-    <updated>2018-02-07T11:14:14.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>闭包和函数紧密联系在一起，介绍闭包前有必要先介绍一些背景知识，诸如嵌套函数、变量的作用域等概念。</p>
-<h1 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h1><p>作用域是程序运行时变量可被访问的范围，定义在函数内的变量是局部变量，局部变量的作用范围只能是函数内部范围内，它不能在函数外引用。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-1.png" alt="7-1"></p>
-<p>定义在模块最外层的变量是全局变量，它是全局范围内可见的，当然在函数里面也可以读取到全局变量的。例如：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-2.png" alt="7-2"></p>
-<h1 id="嵌套函数"><a href="#嵌套函数" class="headerlink" title="嵌套函数"></a>嵌套函数</h1><p>函数不仅可以定义在模块的最外层，还可以定义在另外一个函数的内部，像这种定义在函数里面的函数称之为嵌套函数（nested function）例如：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-3.png" alt="7-3"></p>
-<p>对于嵌套函数，它可以访问到其外层作用域中声明的非局部（non-local）变量，比如代码示例中的变量 msg 可以被嵌套函数 printer 正常访问。</p>
-<p>那么有没有一种可能即使脱离了函数本身的作用范围，局部变量还可以被访问得到呢？答案是闭包。</p>
-<h1 id="什么是闭包"><a href="#什么是闭包" class="headerlink" title="什么是闭包"></a>什么是闭包</h1><p>函数身为第一类对象，它可以作为函数的返回值返回，现在我们来考虑如下的例子：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-4.png" alt="7-4"></p>
-<p>这段代码和前面例子的效果完全一样，同样输出 “python”。不同的地方在于内部函数 printer 直接作为返回值返回了。</p>
-<p>一般情况下，函数中的局部变量仅在函数的执行期间可用，一旦 print_msg() 执行过后，我们会认为 msg变量将不再可用。然而，在这里我们发现 print_msg 执行完之后，在调用 another 的时候 msg 变量的值正常输出了，这就是闭包的作用，闭包使得局部变量在函数外被访问成为可能。<br>这里的 another 就是一个闭包，闭包本质上是一个函数，它有两部分组成，printer 函数和变量 msg。闭包使得这些变量的值始终保存在内存中。</p>
-<p>闭包，顾名思义，就是一个封闭的包裹，里面包裹着自由变量，就像在类里面定义的属性值一样，自由变量的可见范围随同包裹，哪里可以访问到这个包裹，哪里就可以访问到这个自由变量。</p>
-<h1 id="为什么要使用闭包"><a href="#为什么要使用闭包" class="headerlink" title="为什么要使用闭包"></a>为什么要使用闭包</h1><p>闭包避免了使用全局变量，此外，闭包允许将函数与其所操作的某些数据（环境）关连起来。这一点与面向对象编程是非常类似的，在面对象编程中，对象允许我们将某些数据（对象的属性）与一个或者多个方法相关联。一般来说，当对象中只有一个方法时，这时使用闭包是更好的选择。来看一个例子：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-5.png" alt="7-5"></p>
-<p>这比用类来实现更优雅，此外装饰器也是基于闭包的一中应用场景。<br>所有函数都有一个 <strong>closure</strong>属性，如果这个函数是一个闭包的话，那么它返回的是一个由 cell 对象 组成的元组对象。cell 对象的cell_contents 属性就是闭包中的自由变量。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/7-6.png" alt="7-6"></p>
-<p>这解释了为什么局部变量脱离函数之后，还可以在函数之外被访问的原因的，因为它存储在了闭包的 cell_contents中了。</p>
-<p>原文地址：<a href="https://foofish.net/python-closure.html" target="_blank" rel="external">一步一步教你认识Python闭包</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;闭包和函数紧密联系在一起，介绍闭包前有必要先介绍一些背景知识，诸如嵌套函数、变量的作用域等概念。&lt;/p&gt;
-&lt;h1 id=&quot;作用域&quot;&gt;&lt;a href=&quot;#作用域&quot; class=&quot;headerlink&quot; title=&quot;作用域&quot;&gt;&lt;/a&gt;作用域&lt;/h1&gt;&lt;p&gt;作用域是程序运行时变
     
     </summary>
     
