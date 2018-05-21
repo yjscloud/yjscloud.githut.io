@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-05-21T02:53:52.000Z</updated>
+  <updated>2018-05-21T06:02:24.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -16,11 +16,830 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>MySQL系列（二）：MySQL常用基础命令</title>
+    <link href="http://yjscloud.com/2018/04/23/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AMySQL%E5%B8%B8%E7%94%A8%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/"/>
+    <id>http://yjscloud.com/2018/04/23/MySQL系列（二）：MySQL常用基础命令/</id>
+    <published>2018-04-23T04:02:52.000Z</published>
+    <updated>2018-05-21T06:02:24.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="启动与关闭MySQL"><a href="#启动与关闭MySQL" class="headerlink" title="启动与关闭MySQL"></a>启动与关闭MySQL</h1><h2 id="单实例MySQL启动与关闭方法"><a href="#单实例MySQL启动与关闭方法" class="headerlink" title="单实例MySQL启动与关闭方法"></a>单实例MySQL启动与关闭方法</h2><p>常规启动关闭数据库方式（推荐）</p>
+<p>1）启动MySQL命令：</p>
+<pre><code>[root@mysql-1 ~]# /etc/init.d/mysqld start
+Starting MySQL SUCCESS!
+</code></pre><p>2）查看MySQL端口：</p>
+<pre><code>[root@mysql-1 ~]# ss -lnt|grep 3306
+LISTEN     0      50           *:3306                     *:*
+</code></pre><p>3）查看MySQL进程：</p>
+<p> <img src="http://p924w4b7r.bkt.clouddn.com/m-10.png" alt="m-10"></p>
+<p>4）MySQL启动基本原理说明：<br>/etc/init.d/mysqld是一个shell启动脚本，启动后终会调用mysqld_safe脚本，最后调用mysqld服务启动mysql，如下，/etc/init.d/mysqld脚本中调用mysql_safe的程序</p>
+<pre><code>$bindir/mysql_safr --datadir=&quot;$datadir&quot;  --pid-file=&quot;$mysql_pid_file_path&quot; $ other_args &gt;/dev/null 2&gt;&amp;1 &amp;
+</code></pre><h2 id="初始化MySQL时输出提示的启动方法"><a href="#初始化MySQL时输出提示的启动方法" class="headerlink" title="初始化MySQL时输出提示的启动方法"></a>初始化MySQL时输出提示的启动方法</h2><pre><code>mysql_safe --user=mysql &amp;
+</code></pre><p>提示：</p>
+<p>（1）当忘记mysql的root密码是，会经常使用mysqld_safe –user=mysql &amp; 带参数启动。</p>
+<p>（2）我们自己开发脚本启动数据库是可能会用到这个启动方法。</p>
+<p>（3）/etc/init.d/mysqld和mysqld_safe –user=mysql &amp;的启动实质是一样的。</p>
+<h2 id="常规方法关闭数据库"><a href="#常规方法关闭数据库" class="headerlink" title="常规方法关闭数据库"></a>常规方法关闭数据库</h2><p>（1）关闭MySQL命令</p>
+<pre><code>[root@mysql-1 ~]# /etc/init.d/mysqld stop
+Shutting down MySQL. SUCCESS!
+[root@mysql-1 ~]# ss -lnt|grep 3306
+</code></pre><p>提示：使用编译及二进制安装的mysql，mysql的启动脚本由mysql-xx/support-files/mysql.server 复制而来。</p>
+<p>（2）强制关闭数据库方法：</p>
+<pre><code>killall mysqld
+pkill mysqld
+killall -9 mysqld
+mysql: no process killed
+kill pid
+</code></pre><p>提示：</p>
+<p>用killall关闭，要直到出现mysqld: no process killed表示完成关闭操作。强制关闭命令不建议在生产环境使用，尽量不要野蛮粗鲁杀死数据库，生产高并发环境可能会引起数据丢失。</p>
+<p>（3）优雅关闭数据库方法</p>
+<p>第一种mysqladmin方法：</p>
+<pre><code>mysqladmin -uroot -pyjscloud shutdown
+</code></pre><p>第二种自带的脚本</p>
+<pre><code>/etc/init.d/mysqld stop
+</code></pre><p>第三种kill信号的方法</p>
+<pre><code>kill -USE2 &apos;cat path/pid&apos;
+</code></pre><p>提示：推荐前两种方法，自己写脚本启动停止就用第一个</p>
+<h1 id="登陆MySQL方法"><a href="#登陆MySQL方法" class="headerlink" title="登陆MySQL方法"></a>登陆MySQL方法</h1><h2 id="单实例MySQL登陆的方法"><a href="#单实例MySQL登陆的方法" class="headerlink" title="单实例MySQL登陆的方法"></a>单实例MySQL登陆的方法</h2><pre><code>mysql     #刚刚安装mysql无密码情况的登陆方式
+mysql -uroot    #刚刚安装mysql无密码情况的登陆方式
+mysql -uroot -p    #这是标准的dba命令行登陆命令
+mysql -uroot -pyjscloud    #非脚本里一般不这样用。密码明文会泄露密码，可以掩饰history功能解决
+</code></pre><p>强制linux不记录敏感历史命令</p>
+<pre><code>HISTCONTROL=ignorespace
+history -c
+history -d 5
+</code></pre><p>登陆后默认提示符是：mysql&gt;，这个提示符也是可以改的，就像linux命令行提示符也可以改一样。<br>更改MySQL数据库登陆提示（了解即可）方法如下：</p>
+<pre><code>mysql&gt; prompt \u%yjscloud \r:\m:\s-&gt;
+PROMPT set to &apos;\u%yjscloud \r:\m:\s-&gt;&apos;
+root%yjscloud 08:04:07-&gt;
+</code></pre><p>配置文件修改登陆提示提示符：</p>
+<p>在my.cnf配置文件中[mysql]模块下添加如下内容（注意，不是[mysqld]），保存后，无需重启mysql，退出当前session，重新登录即可如果my.cnf配置文件中加，可用\，避免转义带来的问题。</p>
+<pre><code>[mysql]
+prompt=\\u%yjscloud \\r:\\m:\\s-&gt;
+</code></pre><h2 id="善用MySQL的帮助命令help"><a href="#善用MySQL的帮助命令help" class="headerlink" title="善用MySQL的帮助命令help"></a>善用MySQL的帮助命令help</h2><p>linux的帮助man，help</p>
+<p>mysql中的help命令和linux命令行的man是类似的，和linux下查看内置命令的help是同名的。要想查看mysql中的命令使用语法，就需要用help，help后面接相关命令及命令组合即可，例如：help create ，默认情况mysql中的命令执行不区分大小写，这点和linux命令行严格区分大小写是有区别的。</p>
+<p>排错的几点建议：</p>
+<p>1、一般解决故障问题，一定要先看故障日志，根据报错输出或者日志文件自行排查下，别忘了这是上帝给你的难得的提示的机会，一旦错过提示机会就让给了别人！</p>
+<p>2、实在解决不了，然后再搜索（g&gt;b）好些，搜索关键字要精练，且尽量唯一。</p>
+<p>3、对于知识点的学习、用法，查看软件的帮助或官方手册最好，直接的一手资料。</p>
+<p>4、实在看不懂英文的，可以先搜索中文资料，然后边对照边学习英文软件的帮助或官方手册，习惯了就会看英文了。网上大部分中文资料都是不全甚至是有问题的，没有变通能力的菜鸟很难搞定的。培养自身的学习习惯很重要，掌握了学习方法，思维方式，锻炼了学习能力，才会举一反三，真正的成长起来。</p>
+<h1 id="退出MySQL数据库方法"><a href="#退出MySQL数据库方法" class="headerlink" title="退出MySQL数据库方法"></a>退出MySQL数据库方法</h1><pre><code>mysql&gt;quit
+</code></pre><p>或</p>
+<pre><code>eixt 
+</code></pre><h1 id="设置及修改mysql-root用户密码"><a href="#设置及修改mysql-root用户密码" class="headerlink" title="设置及修改mysql root用户密码"></a>设置及修改mysql root用户密码</h1><h2 id="MySQL数据库用户安全策略介绍"><a href="#MySQL数据库用户安全策略介绍" class="headerlink" title="MySQL数据库用户安全策略介绍"></a>MySQL数据库用户安全策略介绍</h2><p>安装mysql数据库后，默认的管理员root密码为空，这很不安全。因此需要设置一个密码。其实在安装MySQL单实例后，我们已经做了一些安全措施；例如：</p>
+<p>a、为root设置密码</p>
+<p>b、删除无用的mysql库内的用户账户</p>
+<p>c、删除默认存在的test数据库</p>
+<p>除了上面的方法，针对MySQL数据库的用户处理，我们还是有严格的做法如下。</p>
+<p>更安全的措施例如删除root,添加新的管理员用户</p>
+<p>1）删除所有mysql中的用户，包括root超级用户。</p>
+<pre><code>mysql&gt; delete from mysql.user;
+Query OK, 7 rows affected (0.01 sec)
+</code></pre><p>提示：root可以保留，然后修改为其他用户也可以</p>
+<p>2）增加system并提升为超级管理员，即和root等价的用户，只是名字不同。</p>
+<pre><code>mysql&gt; grant all privileges on *.* to system@&apos;localhost&apos; identified by&apos;yjscloud&apos; with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><h2 id="为管理员root用户设置密码方法"><a href="#为管理员root用户设置密码方法" class="headerlink" title="为管理员root用户设置密码方法"></a>为管理员root用户设置密码方法</h2><pre><code>mysqladmin -uroot password &apos;yjscloud123&apos;   #没有密码的用户设置密码命令，这个是linux命令行不是mysql命令行
+</code></pre><h2 id="修改管理员root密码"><a href="#修改管理员root密码" class="headerlink" title="修改管理员root密码"></a>修改管理员root密码</h2><p>1）方法一：命令行外修改</p>
+<pre><code>mysqladmin -uroot -p&apos;yjscloud123&apos; password &apos;yjscloud456&apos;
+</code></pre><p>2)方法二：sql语句修改</p>
+<pre><code>mysql&gt; update mysql.user set password=password(&quot;yjscloud789&quot;) where user=&apos;system&apos;;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql&gt; flush privileges;
+Query OK, 0 rows affected (0.01 sec)
+</code></pre><p>提示：此方法合适密码丢失后通过–skip-grant-tables参数启动数据库后修改密码。</p>
+<pre><code>mysql&gt; select user,host from mysql.user;
++----------+----------------+
+| user     | host           |
++----------+----------------+
+| yjscloud | 192.168.0.0/24 |
+| root     | localhost      |
+| system   | localhost      |
++----------+----------------+
+3 rows in set (0.00 sec)
+
+mysql&gt; update mysql.user set password=password(&quot;yjscloud123&quot;) where user=&apos;root&apos; and host=&quot;localhost&quot;;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql&gt; flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><p>提示：</p>
+<p>1、必须指定where条件</p>
+<p>2、必须使用password（）函数来加密更改密码</p>
+<h1 id="找回丢失的mysql-root用户密码"><a href="#找回丢失的mysql-root用户密码" class="headerlink" title="找回丢失的mysql root用户密码"></a>找回丢失的mysql root用户密码</h1><h2 id="启动修改丢失的MySQL实例root密码方法"><a href="#启动修改丢失的MySQL实例root密码方法" class="headerlink" title="启动修改丢失的MySQL实例root密码方法"></a>启动修改丢失的MySQL实例root密码方法</h2><p>1）首先停止mysql</p>
+<pre><code>[root@mysql-1 ~]# /etc/init.d/mysqld stop
+Shutting down MySQL. SUCCESS!
+</code></pre><p>2）使用–skip-grant-tables启动mysql，忽略授权登陆验证</p>
+<pre><code>mysqld_safe --skip-grant-tables --user=mysql &amp;
+mysql -uroot -p  #登陆时密码为空
+</code></pre><p>3）无需密码即可登陆MySQL</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-11.png" alt="m-11"></p>
+<p> 4）修改root密码为新密码</p>
+<pre><code>mysql&gt; update mysql.user set password=password(&apos;yjscloud000&apos;) where user=&apos;root&apos; and host=&apos;localhost&apos;;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+#需要指定修改的用户，不知道用户是无法修改的，因为数据库中可能存在多个用户
+mysql&gt; flush privileges;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql&gt; quit
+Bye
+</code></pre><p>5）重启服务再登陆</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-12.png" alt="m-12"></p>
+<h1 id="SQL结构化查询语言"><a href="#SQL结构化查询语言" class="headerlink" title="SQL结构化查询语言"></a>SQL结构化查询语言</h1><h2 id="什么是SQL"><a href="#什么是SQL" class="headerlink" title="什么是SQL"></a>什么是SQL</h2><p>SQL，英文全称Structured Query Langyuage，中文意思是结构化查询语言，它是一种对关系数据库中的数据进行定义和操作的语言方法，是大多数关系数据库管理系统所支持的工业标准。结构化查询语言SQL是一种数据库查询和程序设计语言，用于存取数据以及查询、更新和管理关系数据库系统；同时也是数据库脚本文件的扩展名。结构化查询语言是高级的非过程化编程语言，允许用户在高层数据存放方式，所以，具有完全不同于底层结构的，不同数据库系统可以使用相同的结构化查询语言作为数据输入与管理的接口。结构化查询语言语句可以嵌套，这使得它具有极大的灵活性和强大的功能。不同的数据库系统的SQL语言会有一些差别。</p>
+<h2 id="SQL结构化查询语言包含6个部分"><a href="#SQL结构化查询语言包含6个部分" class="headerlink" title="SQL结构化查询语言包含6个部分"></a>SQL结构化查询语言包含6个部分</h2><p>1）数据查询语言(DQL):</p>
+<p>DQL全称Data Query Language,其语句，也称为“数据检索语句”，用以从表中获得数据，确定数据怎么在应用程序给出。保留字SELECT是DQL（也是所有SQL）用得多的动词，其他DQL常用的保留字有WHERE,ORDER BY,GROUP BY和HAVING。这些DQL保留字常与其他类型的SQL语句一起用。具体语句例如：</p>
+<pre><code>mysql&gt; select user,host from mysql.user order by user;
++----------+----------------+
+| user     | host           |
++----------+----------------+
+| root     | localhost      |
+| system   | localhost      |
+| yjscloud | 192.168.0.0/24 |
++----------+----------------+
+3 rows in set (0.00 sec)
+</code></pre><p>2）数据操作语言（DML）</p>
+<p>DML全称Data Manipulation Language,其语句包括动词INSERT,UPDATE和DELETE。它们分别用于添加，修改和删除表中的行（数据）。也称为查询语言。具体语句例如：</p>
+<pre><code>mysql&gt; delete from mysql.user where user=&apos;yjscloud&apos;;
+Query OK, 1 row affected (0.00 sec)
+</code></pre><p>3）事务处理语言（TPL）</p>
+<p>它的语句能确保被DML语句影响的表所有行及时得以更新。TPL语句BEGIN,TRANSACTION,COMMIT和ROLLBACK。</p>
+<p>4）数据控制语言（DCL）</p>
+<p>DCL全称（Data Control Language），它的语句通过GRANT或REVOKE获得许可，确定单个用户和用户组对数据库对象的访问。某些RDBMS可用GRANT或REVOKE控制对表单个列表的访问。</p>
+<p>5）数据定义语言（DDL）<br>全称，（Data Definition Language），其语句包括动词CREATE和DROP。在数据库中创建新表或删除表（CREATE TABLE或DROP TABLE）;为表加入索引等。DDL包括许多与数据库目录中获得数据有关的保留字。它也是动作查询的一部分。</p>
+<p>6）指针控制语言（CCL）<br>全称CURSOR Control Language，它的语句，像DECLARE CURSOR，FETCH INTO和UPDATE WHERE CURRENT用于对一个或多个表单独的操作。</p>
+<p>小结：SQL语句最常见的分类一般就是3类：</p>
+<p>DDL——数据定义语言（CREATE,ALTER,DROP） &lt;—-运维</p>
+<p>DML——数据操作语言（SELECT,INSERT,DELETE,UPDATE）&lt;—-开发</p>
+<p>DCL——数据控制语言（GRANT,REVOKE,COMMIT,ROLLBACK）&lt;—-运维</p>
+<h1 id="MySQL数据常见管理应用"><a href="#MySQL数据常见管理应用" class="headerlink" title="MySQL数据常见管理应用"></a>MySQL数据常见管理应用</h1><h2 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h2><p>命令语法：create database &lt;数据库名&gt;     #注意库名不能数字开头</p>
+<p>在MySQL默认字符集情况下建立数据库测试如下：</p>
+<p>a、建立名为yjscloud和yjscloud1的数据库（我在安装数据库时指定了utf-8为默认的字符集）</p>
+<pre><code>mysql&gt; create database yjscloud;
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; create database yjscloud1;
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; show databases like &apos;yjscloud%&apos;;
++----------------------+
+| Database (yjscloud%) |
++----------------------+
+| yjscloud             |
+| yjscloud1            |
++----------------------+
+2 rows in set (0.00 sec)
+
+mysql&gt; show create database yjscloud;
++----------    +-------------------------------------------------------------------+
+| Database | Create Database                                                   |
++----------+-------------------------------------------------------------------+
+| yjscloud | CREATE DATABASE `yjscloud` /*!40100 DEFAULT CHARACTER SET utf8 */ |
++----------+-------------------------------------------------------------------+
+1 row in set (0.00 sec)
+</code></pre><p>b、建立一个名为yjscloud_gbk的GBK字符集数据库</p>
+<pre><code>mysql&gt; create database yjscloud_gbk default character set gbk collate gbk_chinese_ci;
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; show create database yjscloud_gbk;
++--------------+----------------------------------------------------------------------+
+| Database     | Create Database                                                      |
++--------------+----------------------------------------------------------------------+
+| yjscloud_gbk | CREATE DATABASE `yjscloud_gbk` /*!40100 DEFAULT CHARACTER SET gbk */ |
++--------------+----------------------------------------------------------------------+
+1 row in set (0.00 sec)
+</code></pre><p>提示：字符集的不一致时数据库中文内容乱码的罪魁祸首，在编译安装的时候指定了字符集则以后创建对应的数据库就不需要指定字符集了。</p>
+<pre><code>cmake . -DCMAKE_INSTALL_PREFIX=/application/mysql-5.5.32 \
+-DMYSQL_DATADIR=/application/mysql-5.5.32/data \
+-DMYSQL_UNIX_ADDR=/application/mysql-5.5.32/tmp/mysql.sock \
+-DDEFAULT_CHARSET=utf8 \
+-DDEFAULT_COLLATION=utf8_general_ci \
+</code></pre><p>如果在编译的时候没有指定字符集或者指定了不同的字符集，如何解决？我们只需要指定字符集创建数据库即可</p>
+<pre><code>create database yjscloud_gbk default character set gbk collate gbk_chinese_ci;    #创建gbk字符集数据库
+create database yjscloud_utf8 default character set utf8 collate utf8_chinese_ci;   #创建utf8字符集数据库
+</code></pre><h2 id="显示数据库"><a href="#显示数据库" class="headerlink" title="显示数据库"></a>显示数据库</h2><p>命令：show databases;</p>
+<pre><code>mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| yjscloud           |
+| yjscloud1          |
+| yjscloud_gbk       |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql&gt; show databases like &apos;%yjscloud%&apos;;   #   %为通配符，匹配所有内容。
++----------------------+
+| Database (yjscloud%) |
++----------------------+
+| yjscloud             |
+| yjscloud1            |
+| yjscloud_gbk         |
++----------------------+
+3 rows in set (0.00 sec)
+</code></pre><p> <img src="http://p924w4b7r.bkt.clouddn.com/m-13.png" alt="m-13"></p>
+<h2 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h2><p>命令：drop database &lt;数据库名&gt;</p>
+<p>例如删除yjscloud的数据库</p>
+<pre><code>mysql&gt; drop database yjscloud;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| yjscloud1          |
+| yjscloud_gbk       |
++--------------------+
+5 rows in set (0.00 sec)
+</code></pre><h2 id="连接数据库"><a href="#连接数据库" class="headerlink" title="连接数据库"></a>连接数据库</h2><p>命令：use &lt;数据库名&gt;   #use相当与linux命令行下的cd命令，use用于切换数据库</p>
+<pre><code>mysql&gt; use yjscloud1
+Database changed
+</code></pre><h2 id="查看当前数据库包含的表信息"><a href="#查看当前数据库包含的表信息" class="headerlink" title="查看当前数据库包含的表信息"></a>查看当前数据库包含的表信息</h2><p>切到数据库里面去查看：</p>
+<pre><code>mysql&gt; show tables;
+Empty set (0.00 sec)    #空表，因为是新库，还没有建表
+
+mysql&gt; show tables like &apos;user&apos;;
+Empty set (0.00 sec)
+
+mysql&gt; show tables from yjscloud_gbk;   #查看指定库中的表。
+Empty set (0.00 sec)
+
+mysql&gt; show tables in yjscloud_gbk;
+Empty set (0.01 sec)
+</code></pre><h1 id="删除MySQL系统多余账号"><a href="#删除MySQL系统多余账号" class="headerlink" title="删除MySQL系统多余账号"></a>删除MySQL系统多余账号</h1><p>语法：drop user “user”@”主机域”   #注意引号，可以是单或双引号，但是不能不加。</p>
+<pre><code>mysql&gt; select user,host from mysql.user;
++----------+-----------+
+| user     | host      |
++----------+-----------+
+| cloud    | localhost |
+| root     | localhost |
+| system   | localhost |
+| yjscloud | localhost |
++----------+-----------+
+4 rows in set (0.00 sec)
+
+mysql&gt; drop user &apos;cloud&apos;@&apos;localhost&apos;;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; select user,host from mysql.user;
++----------+-----------+
+| user     | host      |
++----------+-----------+
+| root     | localhost |
+| system   | localhost |
+| yjscloud | localhost |
++----------+-----------+
+3 rows in set (0.00 sec)
+</code></pre><p>注意：删除后的结果如上面返回的结果如果drop删除不了（一般是特殊字符或大写），可以用下面方式删除（以root用户，yjscloud主机为例）</p>
+<pre><code>delete from mysql.user where user=&apos;root&apos; and host=&apos;yjscloud&apos;;
+flush privileges;
+</code></pre><h1 id="创建MySQL用户及赋予用户权限"><a href="#创建MySQL用户及赋予用户权限" class="headerlink" title="创建MySQL用户及赋予用户权限"></a>创建MySQL用户及赋予用户权限</h1><h2 id="通过help查看grant命令帮助"><a href="#通过help查看grant命令帮助" class="headerlink" title="通过help查看grant命令帮助"></a>通过help查看grant命令帮助</h2><pre><code>...省略部分...
+CREATE USER &apos;jeffrey&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;mypass&apos;;
+GRANT ALL ON db1.* TO &apos;jeffrey&apos;@&apos;localhost&apos;;
+GRANT SELECT ON db2.invoice TO &apos;jeffrey&apos;@&apos;localhost&apos;;
+GRANT USAGE ON *.* TO &apos;jeffrey&apos;@&apos;localhost&apos; WITH MAX_QUERIES_PER_HOUR 90;
+...省略部分...
+</code></pre><p>通过查看grant的命令帮助，可以很容易的找到创建用户并授权的例子！</p>
+<p>1、使用grant命令在创建用户的同时进行权限授权：</p>
+<pre><code>GRANT ALL ON db1.* TO &apos;jeffrey&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;mypass&apos;;
+</code></pre><p>2、上述grant命令帮助里还提供了一个先用create命令创建用户，然后再用grant授权的方法，即创建用户和授权权限分开进行，</p>
+<p>例：</p>
+<pre><code>CREATE USER &apos;jeffrey&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;mypass&apos;;
+GRANT ALL ON db1.* TO &apos;jeffrey&apos;@&apos;localhost&apos;;
+</code></pre><p>以上两条命令相当于：</p>
+<pre><code>GRANT ALL ON db1.* TO &apos;jeffrey&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;mypass&apos;;
+</code></pre><h2 id="通过grant命令创建用户并授权"><a href="#通过grant命令创建用户并授权" class="headerlink" title="通过grant命令创建用户并授权"></a>通过grant命令创建用户并授权</h2><p>grant命令简单语法如下：</p>
+<pre><code>grant all privileges on dbname.* to username@localhost identified by &apos;passwd&apos;;
+</code></pre><p>列表说明： </p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-15.png" alt="m-15"> </p>
+<p>说明：上述命令是授权localhost主机上通过用户username管理dbname数据库的所有权限，密码为passwd。其中username，dbname，passwd可根据业务的情况修改。</p>
+<h2 id="create和grant配合法"><a href="#create和grant配合法" class="headerlink" title="create和grant配合法"></a>create和grant配合法</h2><p>1）首先创建用户username及密码passwd，授权主机localhost</p>
+<pre><code>create user &apos;username&apos;@&apos;localhost&apos; identified by &apos;passwd&apos;;
+</code></pre><p>2）然后授权localhost主机上通过username管理dbname数据库的所有权限，无需密码。</p>
+<pre><code>grant all on dbname.* to &apos;username&apos;@&apos;localhost&apos;;
+</code></pre><p>3）实战操作：创建mycloud用户。对yjscloud库具备所有权限，允许从localhost主机登陆管理数据库，密码是mycloud123</p>
+<p>1、查看当前数据库用户情况，然后执行对应命令创建用户：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-16.png" alt="m-16">  </p>
+<p>查看用户mycloud的具体权限</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-17.png" alt="m-17">  </p>
+<p>开始对mycloud用户授权，并查看授权的权限细明</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-18.png" alt="m-18">  </p>
+<p>提示：可以看到默认权限是useage，即连接权限，后面又增加了all权限。 </p>
+<h2 id="授权局域网内主机远程连接数据库"><a href="#授权局域网内主机远程连接数据库" class="headerlink" title="授权局域网内主机远程连接数据库"></a>授权局域网内主机远程连接数据库</h2><p>根据grant命令语法，我们知道yjscloud@’localhost’位置为授权访问数据库的主机，localhost可以用域名，ip地址或ip段来替代，因此，要授权局域网内主机可以通过如下方法实现：</p>
+<p>1）百分号匹配法</p>
+<pre><code>mysql&gt; grant all on *.* to yjscloud@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><p>2）子网掩码配置法</p>
+<pre><code>mysql&gt; grant all on *.* to yjscloud@&apos;192.168.0.0/255.255.255.0&apos; identified by &apos;yjscloud&apos;;
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><p>最后要刷新权限</p>
+<pre><code>mysql&gt; flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><p>3）通过mysql客服端连接异地数据库服务：</p>
+<p>1、本地mysql -uroot -pyjscloud 连接数据库相当与mysql -uroot -pyjscloud -h localhost</p>
+<p>2、要远程连接192.168.0.30的数据库，命令为mysql -uyjscloud -pyjscloud -h 192.168.0.30，如果要能连接成功，还需要在192.168.0.30的数据库服务器上通过如下命令授权：</p>
+<pre><code>grant all on *.* to yjscloud@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>提示：上述命令意思是授权192.168.0.%，匹配这个字符串ip地址的的所有主机连接数据库，百分号%匹配所有192.168.0.0/24内的主机</p>
+<h2 id="MySQL用户可以授权的权限有哪些"><a href="#MySQL用户可以授权的权限有哪些" class="headerlink" title="MySQL用户可以授权的权限有哪些"></a>MySQL用户可以授权的权限有哪些</h2><p>1）先看看前面授权通过的mycloud的权限</p>
+<pre><code>mysql&gt; show grants for &apos;mycloud&apos;@&apos;localhost&apos;;
++----------------------------------------------------------------------------------------------------------------+
+| Grants for mycloud@localhost                                                                                   |
++----------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO &apos;mycloud&apos;@&apos;localhost&apos; IDENTIFIED BY PASSWORD &apos;*5135EBEA729E32C95756AE6F914F901D66D2641D&apos; |
+| GRANT ALL PRIVILEGES ON `yjscloud`.* TO &apos;mycloud&apos;@&apos;localhost&apos;                                                  |
++----------------------------------------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+
+#取消mycloud的选择权限
+mysql&gt; REVOKE SELECT ON yjscloud.* from &apos;mycloud&apos;@&apos;localhost&apos;;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; show grants for &apos;mycloud&apos;@&apos;localhost&apos;;
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Grants for mycloud@localhost                                                                                                                                                                                                        |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO &apos;mycloud&apos;@&apos;localhost&apos; IDENTIFIED BY PASSWORD &apos;*5135EBEA729E32C95756AE6F914F901D66D2641D&apos;                                                                                                                      |
+| GRANT INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON `yjscloud`.* TO &apos;mycloud&apos;@&apos;localhost&apos; |
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+</code></pre><p>提示：此时我们再查看oldboy用户权限，ALL PRIVILEGES权限已经被细分了，但是没有select权限了。在授权时，可以授权用户最小的满足业务需求的业务，而不是一味的授权ALL PRIVILEGES </p>
+<h2 id="企业生产环境如何授权用户权限"><a href="#企业生产环境如何授权用户权限" class="headerlink" title="企业生产环境如何授权用户权限"></a>企业生产环境如何授权用户权限</h2><p>1）博客、CMS等产品的数据库授权</p>
+<p>对于web连接用户授权尽量采用最小化原则，很多开源软件都是web界面安装，因此，在安装期间除了select，insert，update，delete4个权限外，还需要create，drop等比较危险的权限。</p>
+<pre><code>mysql&gt; grant select,insert,update,delete,create,drop on blog.* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+Query OK, 0 rows affected (0.00 sec)
+</code></pre><p>常规情况下授权select，insert，update，delete4个权限即可，有的开源软件，例如discuz bbs，还需要create，drop等比较危险的权限。</p>
+<p>2）生成数据库表后，要收回create，drop授权</p>
+<pre><code>mysql&gt; show grants for &apos;blog&apos;@&apos;192.168.0.%&apos;;
++---------------------------------------------------------------------------------------------------------------+
+| Grants for blog@192.168.0.%                                                                                   |
++---------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO &apos;blog&apos;@&apos;192.168.0.%&apos; IDENTIFIED BY PASSWORD &apos;*7C9FFD5B56F6DEE1126BC972C97B1DFEC8E4E089&apos; |
+| GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP ON `blog`.* TO &apos;blog&apos;@&apos;192.168.0.%&apos;                        |
++---------------------------------------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+#收回create，drop授权
+mysql&gt; revoke create,drop on blog.* from &apos;blog&apos;@&apos;192.168.0.%&apos;;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; show grants for &apos;blog&apos;@&apos;192.168.0.%&apos;;
++---------------------------------------------------------------------------------------------------------------+
+| Grants for blog@192.168.0.%                                                                                   |
++---------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO &apos;blog&apos;@&apos;192.168.0.%&apos; IDENTIFIED BY PASSWORD &apos;*7C9FFD5B56F6DEE1126BC972C97B1DFEC8E4E089&apos; |
+| GRANT SELECT, INSERT, UPDATE, DELETE ON `blog`.* TO &apos;blog&apos;@&apos;192.168.0.%&apos;                                      |
++---------------------------------------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+</code></pre><p>3）生产环境针对主库（写为主读为辅）用户的授权：</p>
+<p>普通的环境：</p>
+<p>本机：lnmp，lamp环境数据库授权</p>
+<pre><code>grant all privileges on blog.* to &apos;blog&apos;@&apos;localhost&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>应用服务器和数据库服务器不在一个主机上的授权：</p>
+<pre><code>grant all privileges on blog.* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>严格的授权：重视安全，忽略方便</p>
+<pre><code>grant select,insert,update,delete on blog.* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>4）生产环境从库（只读）用户的授权：</p>
+<pre><code>grant select on blog.* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>说明：这里表示给192.168.0.0/24的用户blog管理blog数据的所有表（*表示所有表）只读权限（select），密码为yjscloud</p>
+<p>5）生产场景授权的具体命令为：</p>
+<pre><code>grant select,insert,update,delete on blog.* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>从库授权用户的命令：</p>
+<pre><code>grant select on blog.* to &apos;blog&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud&apos;;
+</code></pre><p>当然从库除了做select的授权外，还可以加入read-only等只读从参数，严格控制web用户写从库。</p>
+<p>6）这里还有一个比较重要的问题：</p>
+<p>就是主从库的mysql库和表示同步的，无法针对同一个用户授权不同的权限，因为主库授权后会自动同步到从库上，导致从库的授权只读失败。</p>
+<p>解决方法：</p>
+<p>a、取消mysql库的同步</p>
+<p>b、授权主库权限后，从库执行收回增删改权限。</p>
+<p>c、不在授权上控制增删改，而是用read-only参数，控制普通用户更新从库，注意，read-only参数对超级用户无效。</p>
+<h1 id="查看mysql数据库的用户及授权"><a href="#查看mysql数据库的用户及授权" class="headerlink" title="查看mysql数据库的用户及授权"></a>查看mysql数据库的用户及授权</h1><p>1）查看mysql数据库的用户及授权</p>
+<pre><code>mysql&gt; select user,host from mysql.user;
++----------+---------------------------+
+| user     | host                      |
++----------+---------------------------+
+| blog     | 192.168.0.%               |
+| yjscloud | 192.168.0.%               |
+| yjscloud | 192.168.0.0/255.255.255.0 |
+| mycloud  | localhost                 |
+| root     | localhost                 |
+| system   | localhost                 |
+| yjscloud | localhost                 |
++----------+---------------------------+
+7 rows in set (0.00 sec)
+</code></pre><p>注意：</p>
+<p>1、由于安全原因，上面的用户是经过处理过的</p>
+<p>2、mysql的用户由“用户名@主机名”构成，所以在用户列表有相同的用户，不要奇怪</p>
+<p>2）查看授权用户yjscloud的具体授权权限</p>
+<pre><code>mysql&gt; show grants for &apos;yjscloud&apos;@&apos;localhost&apos;;
++--------------------------------------------------------------------------------------------------------------------------------------------+
+| Grants for yjscloud@localhost                                                                                                              |
++--------------------------------------------------------------------------------------------------------------------------------------------+
+| GRANT ALL PRIVILEGES ON *.* TO &apos;yjscloud&apos;@&apos;localhost&apos; IDENTIFIED BY PASSWORD &apos;*7C9FFD5B56F6DEE1126BC972C97B1DFEC8E4E089&apos; WITH GRANT OPTION |
++--------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec) 
+</code></pre><h1 id="mysql数据库操作"><a href="#mysql数据库操作" class="headerlink" title="mysql数据库操作"></a>mysql数据库操作</h1><h2 id="指定字符集建库"><a href="#指定字符集建库" class="headerlink" title="指定字符集建库"></a>指定字符集建库</h2><p>指定字符集建库</p>
+<pre><code>mysql&gt; create database yjscloud;
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; show create database yjscloud\G
+*************************** 1. row ***************************
+   Database: yjscloud
+Create Database: CREATE DATABASE `yjscloud` /*!40100 DEFAULT CHARACTER SET utf8 */
+1 row in set (0.00 sec)
+</code></pre><h2 id="建表"><a href="#建表" class="headerlink" title="建表"></a>建表</h2><p>基本语法：</p>
+<pre><code>create table &lt;表名&gt;（
+&lt;字段名1&gt;&lt;类型1&gt;，
+...
+&lt;字段名n&gt;&lt;类型n&gt;，
+</code></pre><p>提示：其中create table 是关键字，不能更改，但是大小写可以变化。</p>
+<p>建表语句：下面是人工写法设计的建表语句例子，表名student，</p>
+<pre><code>create table student(     
+id int(4) not null,           
+name char(20) not null,     
+age tinyint(2) not null default &apos;0&apos;,     
+dept varchar(16) default null           
+);
+</code></pre><p>第二种mysql生成的建表语句student表例子</p>
+<pre><code>CREATE TABLE `student` (       #create table表示创建表的固定关键字，student为表名
+`id` int(4) NOT NULL,              #学号列，数字类型，长度为4，不为空值
+`name` char(20) NOT NULL,      #名字列，定长字符类型，长度20，不为空值
+`age` tinyint(2) NOT NULL DEFAULT &apos;0&apos;,    #年龄列，很小的数字类型，长度为2，不为空，默认为0值，
+`dept` varchar(16) DEFAULT NULL      #系别列，变长字符类型，长度16，默认为空
+) ENGINE=InnoDB DEFAULT CHARSET=utf8     #引擎和字符集，引擎默认为InnoDB,字符集继承库的utf8
+</code></pre><h2 id="实战操作"><a href="#实战操作" class="headerlink" title="实战操作"></a>实战操作</h2><p>下面是实战操作</p>
+<pre><code>mysql&gt; create database test_stu;
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; show create database test_stu\G
+*************************** 1. row ***************************
+   Database: test_stu
+Create Database: CREATE DATABASE `test_stu` /*!40100 DEFAULT CHARACTER SET utf8 */
+1 row in set (0.00 sec)
+
+mysql&gt; use test_stu;
+Database changed
+mysql&gt; create table student(    
+    -&gt; id int(4) not null,          
+    -&gt; name char(20) not null,    
+    -&gt; age tinyint(2) not null default &apos;0&apos;,    
+    -&gt; dept varchar(16) default null          
+    -&gt; );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql&gt; show create table student\G
+*************************** 1. row ***************************
+       Table: student
+Create Table: CREATE TABLE `student` (
+    `id` int(4) NOT NULL,
+    `name` char(20) NOT NULL,
+    `age` tinyint(2) NOT NULL DEFAULT &apos;0&apos;,
+    `dept` varchar(16) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+1 row in set (0.00 sec)
+
+mysql&gt;
+</code></pre><p>查看表结构：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-19.png" alt="m-19">  </p>
+<h2 id="mysql表的字段类型"><a href="#mysql表的字段类型" class="headerlink" title="mysql表的字段类型"></a>mysql表的字段类型</h2><p>1）数字类型 </p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-20.png" alt="m-20">   </p>
+<p>2）日期和时间类型（DATE日期类型：支持的范围是1000-01-01到9999-12-31。mysql以YYYY-MM-DD格式来显示DATE值，但是允许你使用字符串或数字把值赋给DATE列）</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-21.png" alt="m-21">    </p>
+<p>3）串类型</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-22.png" alt="m-22">  </p>
+<p>char和varchar之间的差别<br>m</p>
+<h2 id="生产环境标准的UTF8G格式表结构语句"><a href="#生产环境标准的UTF8G格式表结构语句" class="headerlink" title="生产环境标准的UTF8G格式表结构语句"></a>生产环境标准的UTF8G格式表结构语句</h2><p>某sns生产正式建表语句</p>
+<pre><code>use sns;
+set names gbk;
+CREATE TABLE `subject_comment_manager` (
+`subject_comment_manager_id` bigint(12) NOT NULL auto_increment COMMENT &apos;主键&apos;,
+`subject_type` tinyint(2) NOT NULL COMMENT &apos;素材类型&apos;,
+`subject_primary_key` varchar(255) NOT NULL COMMENT &apos;素材的主键&apos;,
+`subject_title` varchar(255) NOT NULL COMMENT &apos;素材的名称&apos;,
+`edit_user_nick` varchar(64) default NULL COMMENT &apos;修改人&apos;,
+`edit_user_time` timestamp NULL default NULL COMMENT &apos;修改时间&apos;,
+`edit_comment` varchar(255) default NULL COMMENT &apos;修改的理由&apos;,
+`state` tinyint(1) NOT NULL default &apos;1&apos; COMMENT &apos;0代表关闭，1代表正常&apos;,
+PRIMARY KEY  (`subject_comment_manager_id`),
+KEY `IDX_PRIMARYKEY` (`subject_primary_key`(32)), #&lt;==括号内的32表示对前32个字符做前缀索引。
+KEY `IDX_SUBJECT_TITLE` (`subject_title`(32))
+KEY `index_nick_type` (`edit_user_nick`(32),`subject_type`)#&lt;==联合索引，此行为新加的，用于给大家讲解的。实际表语句内没有此行。
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8; 
+</code></pre><h2 id="查看建立的表结构"><a href="#查看建立的表结构" class="headerlink" title="查看建立的表结构"></a>查看建立的表结构</h2><p>查看表结构命令：</p>
+<pre><code>desc表名或者show columns from 表名
+</code></pre><p>例：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-23.png" alt="m-23"> </p>
+<h2 id="查看已建立表的语句"><a href="#查看已建立表的语句" class="headerlink" title="查看已建立表的语句"></a>查看已建立表的语句</h2><p>查看建表的语句（可以看见索引及创建表的相关信息）：</p>
+<pre><code>mysql&gt; show create table student\G
+*************************** 1. row ***************************
+       Table: student
+Create Table: CREATE TABLE `student` (
+    `id` int(4) NOT NULL,
+    `name` char(20) NOT NULL,
+    `age` tinyint(2) NOT NULL DEFAULT &apos;0&apos;,
+    `dept` varchar(16) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+1 row in set (0.00 sec) 
+</code></pre><h2 id="为表的字段创建索引"><a href="#为表的字段创建索引" class="headerlink" title="为表的字段创建索引"></a>为表的字段创建索引</h2><p>索引就象书的目录一样，如果在字段上建立了索引，那么以索引为查询条件时可以加快查询数据的速度.创建主键索引查询数据库，按主键查询是最快的，每个表只有一个主键列，但是可以用多个普通索引列。主键列要求列的所有内容必须唯一，而普通索引不要求内容必须唯一。主键就类似我们在学校学习时的学号一样，班级内是唯一的，整个表的每一条记录的主键值在表内都是唯一的，用来唯一标识一条记录。</p>
+<h3 id="建立主键索引的方法"><a href="#建立主键索引的方法" class="headerlink" title="建立主键索引的方法"></a>建立主键索引的方法</h3><p>1）在建表时，可以增加建立主键索引的语句如下</p>
+<pre><code>create table student(
+id int(4) not null AUTO_INCREMENT,
+name char(20) not null,
+age tinyint(2)  NOT NULL default &apos;0&apos;,
+dept varchar(16)  default NULL,
+primary key(id),
+KEY index_name(name)
+); 
+</code></pre><p>提示：</p>
+<p>primary key(id)   #主键</p>
+<p>KEY index_name(name)   #name字段普通索引</p>
+<p>建表时附带建立主键语句操作演示：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-24.png" alt="m-24"> </p>
+<p>提示：PRI为主键的标示，MUL为普通索引的标示</p>
+<h3 id="建立后通过alter命令增加主键索引（不这么干）"><a href="#建立后通过alter命令增加主键索引（不这么干）" class="headerlink" title="建立后通过alter命令增加主键索引（不这么干）"></a>建立后通过alter命令增加主键索引（不这么干）</h3><p>1）主键列不能重复创建，必须先删除上面配置</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-25.png" alt="m-25">  </p>
+<p>利用alter命令修改id列为自增主键列</p>
+<pre><code>alter table student change id id int primary key auto_increment;
+</code></pre><p>提示：只有int类型且为primary key才可以使用auto_increment </p>
+<h3 id="对字段的前N个字符创建普通索引"><a href="#对字段的前N个字符创建普通索引" class="headerlink" title="对字段的前N个字符创建普通索引"></a>对字段的前N个字符创建普通索引</h3><p>当遇到表中比较大的列时，列内容的前N个字符在所有内容中已经接近唯一时，这时可以对列的前N个字符建立索引，而无需对整个列建立索引，这样可以节省创建索引占用的系统空间，以及降低读取和更新维护索引消耗的系统资源。对字段的前N个字符创建普通索引的语法：</p>
+<pre><code>create index index_name on test(name(8));   #条件列前N个字符创建所索引
+</code></pre><p>操作实践：</p>
+<p>在dept系列上，前8个字符创建索引，此列总长度为16个 </p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-26.png" alt="m-26"> </p>
+<p>为指定字段的前N个字符建立索引语句</p>
+<pre><code>mysql&gt; create index index_dept on student(dept(8));
+Query OK, 0 rows affected (0.21 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</code></pre><p>这个语句等同于alter table student add index index_dept(dept(8));</p>
+<pre><code>mysql&gt; alter table student drop index index_dept;
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql&gt; alter table student add index index_dept(dept(8));
+Query OK, 0 rows affected (0.03 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</code></pre><p>查看执行结果： </p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-27.png" alt="m-27">  </p>
+<h3 id="为表的多个字段创建联合索引"><a href="#为表的多个字段创建联合索引" class="headerlink" title="为表的多个字段创建联合索引"></a>为表的多个字段创建联合索引</h3><p>如果查询数据的条件是多列时，我们可以为多个查询的列创建联合索引，甚至可以为多列的前N个字符创建联合索引。</p>
+<p>实践演示：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-28.png" alt="m-28">   </p>
+<p>可以为多列的前N个字符列创建联合索引，实践演示：</p>
+<pre><code>mysql&gt; create index ind_name_dept1 on student(name(8),dept(10));
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+</code></pre><h3 id="创建唯一索引（非主键）"><a href="#创建唯一索引（非主键）" class="headerlink" title="创建唯一索引（非主键）"></a>创建唯一索引（非主键）</h3><pre><code>create unique index index_age on student(age);
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-29.png" alt="m-29">  </p>
+<h3 id="索引列的创建及生效条件"><a href="#索引列的创建及生效条件" class="headerlink" title="索引列的创建及生效条件"></a>索引列的创建及生效条件</h3><p>问题1、既然索引可以加快查询速度，那么就给所有的列建索引吧？</p>
+<p>答：因为索引不但占用系统空间，更新数据库是还需要维护索引数据的，因此索引是一把双刃剑，并不是越多越好，</p>
+<p>例如：数十到几百行的小表上无需建立索引，更新频繁，读取比较少的表 要少建立索引。</p>
+<p>问题2、需要在哪些列上创建索引呢？</p>
+<p>select user,host from mysql where host=…，索引一定要创建在where后的条件列上，<br>而不是select后的选择数据的列。另外，我们要尽量选择在唯一值多的大表上的列建立索引。</p>
+<h3 id="创建索引命令集合小结"><a href="#创建索引命令集合小结" class="headerlink" title="创建索引命令集合小结"></a>创建索引命令集合小结</h3><p>1）创建索引相关命令集合</p>
+<p>创建主键索引：</p>
+<pre><code>alter table student chage id id int primary key auto_increment;
+</code></pre><p>删除主键索引（主键列不能自增）：</p>
+<pre><code>alter table student drop primary key;
+</code></pre><p>添加普通索引：</p>
+<pre><code>alter table student add index index_dept(dept);
+</code></pre><p>根据的前n个字符创建索引：</p>
+<pre><code>create index index_dept on student(dept(8));
+</code></pre><p>根据多个列创建联合索引：</p>
+<pre><code>create index index_name_dept on student(name,dept);
+</code></pre><p>创建唯一索引：</p>
+<pre><code>create unique index uni_ind_name on student(name);
+</code></pre><p>删除普通索引与唯一索引：</p>
+<pre><code>alter table student drop index index_dept;
+drop index index_dept on student;
+</code></pre><p>基本索引：</p>
+<p>1、要在表的列上创建索引</p>
+<p>2、索引会加快查询速度，但是会影响更新的速度，因此要维护索引。</p>
+<p>3、索引不是越多越好，要在频繁查询的where后的条件列上创建索引。</p>
+<p>4、小表或唯一值极少的列上不建索引，要在大表以及不同内容多的列上创建索引。</p>
+<h3 id="往表中插入数据"><a href="#往表中插入数据" class="headerlink" title="往表中插入数据"></a>往表中插入数据</h3><p>1）命令语法：</p>
+<pre><code>insert into &lt;表名&gt;[(&lt;字段名&gt;[,..&lt;字段名n&gt;])] values (值 1 )[,(值n)]
+</code></pre><p>2）新建一个简单的测试表test</p>
+<p>3）往表中插入数据的不同的语法例子：</p>
+<p>1、按规矩指定所有列名，并且每列都插入值</p>
+<pre><code>insert into test1(id,name) values(1,&apos;xwq&apos;);
+</code></pre><p>2、由于id列为自增的，所以，可以只在name列插入值</p>
+<pre><code>insert int test1(name) values(&apos;xdf&apos;)
+</code></pre><p>3、如果不指定列，就要按规矩为每列都插入恰当的值。</p>
+<pre><code>insert into test1 values(3,&apos;inca&apos;,21);
+</code></pre><p>4、批量插入数据方法，提升效率</p>
+<pre><code>insert into test1 values(3,&apos;lufei&apos;,20),(4,&apos;suolong&apos;,23);
+</code></pre><p>4）插入数据实践演示：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-30.png" alt="m-30">  </p>
+<p>插入数据：</p>
+<pre><code>mysql&gt; insert into test1(id,name) values(1,&apos;xwq&apos;);
+Query OK, 1 row affected (0.01 sec)
+
+mysql&gt; insert into test1 values(2,&quot;lufei&quot;,12);
+Query OK, 1 row affected (0.00 sec)
+
+mysql&gt; insert into test1 values(3,&apos;inca&apos;,21);
+Query OK, 1 row affected (0.01 sec)
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-31.png" alt="m-31">  </p>
+<p>5）测试完毕，退出数据库然后备份上述数据库，留着备用：</p>
+<pre><code>mysql&gt; exit
+Bye
+[root@mysql-1 ~]# mysqldump -uroot -pyjscloud000 -B test_yjs &gt;/opt/test_yjs_bak.sql
+[root@mysql-1 ~]# ls -l /opt/test_yjs_bak.sql
+-rw-r--r-- 1 root root 2014 May 11 21:39 /opt/test_yjs_bak.sql
+</code></pre><p>6）备份后检查备份的sql数据内容：过滤无用信息</p>
+<pre><code>grep -E -v &quot;#|\/|^$|--&quot; /opt/test_yjs_bak.sql
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-32.png" alt="m-32"> </p>
+<h1 id="查询数据"><a href="#查询数据" class="headerlink" title="查询数据"></a>查询数据</h1><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><pre><code>select &lt;字段1,字段2，…&gt; from &lt;表名&gt; where &lt;表达式&gt;
+</code></pre><p>其中，select,from,where是不能随便改的，是关键字，支持大小写</p>
+<h2 id="查看表test1中所有数据"><a href="#查看表test1中所有数据" class="headerlink" title="查看表test1中所有数据"></a>查看表test1中所有数据</h2><p>1）进入指定库后查询</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-33.png" alt="m-33"> </p>
+<p>查看mysql库的用户</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-34.png" alt="m-34"> </p>
+<h2 id="根据指定条件查询表的部分数据"><a href="#根据指定条件查询表的部分数据" class="headerlink" title="根据指定条件查询表的部分数据"></a>根据指定条件查询表的部分数据</h2><p>1）例：查看表test1中第一行数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-35.png" alt="m-35"> </p>
+<p>2）指定固定条件查询数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-36.png" alt="m-36"><br><img src="http://p924w4b7r.bkt.clouddn.com/m-37.png" alt="m-37">  </p>
+<p>注意：字符类型的查询条件的值要带引号 </p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-38-1.png" alt="m-38"></p>
+<p>3）指定固定条件范围查询数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-38.png" alt="m-39"></p>
+<p>4）其他查询功能</p>
+<p>排序功能：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-39.png" alt="m-40"> </p>
+<h2 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h2><h3 id="建立几个关联表"><a href="#建立几个关联表" class="headerlink" title="建立几个关联表"></a>建立几个关联表</h3><p>要实现多表连表查询，就需要关联表及数据，表名及字段内容如下：</p>
+<pre><code>学生表：Student(Sno,Sname,Ssex,Sage,Sdept)
+-------(学号-主键，姓名，性别，年龄，所在系）
+
+课程表：Course(Cno,Cname,Cpno,Ccredit)
+-------(课程号-主键，课程名，选课，学分)
+
+
+选课表：SC(Sno,Cno,Grade)
+-------(学号-主键，课程号-主键，成绩)
+</code></pre><h3 id="创建关联表语句"><a href="#创建关联表语句" class="headerlink" title="创建关联表语句"></a>创建关联表语句</h3><p>1）创建学生表</p>
+<pre><code>drop table student;
+create table student(
+Sno int(10) NOT NULL COMMENT &apos;学号&apos;,
+Sname varchar(16) NOT NULL COMMENT &apos;姓名&apos;,
+Ssex char(2) NOT NULL COMMENT &apos;性别&apos;,
+Sage tinyint(2)  NOT NULL default &apos;0&apos; COMMENT &apos;学生年龄&apos;,
+Sdept varchar(16)  default NULL  COMMENT &apos;学生所在系别&apos;,
+PRIMARY KEY  (Sno) ,
+key index_Sname (Sname)
+);
+</code></pre><p>2）创建课程表</p>
+<pre><code>create table course(
+Cno int(10) NOT NULL COMMENT &apos;课程号&apos;,
+Cname varchar(64) NOT NULL COMMENT &apos;课程名&apos;,
+Ccredit tinyint(2) NOT NULL COMMENT &apos;学分&apos;,
+PRIMARY KEY  (Cno)
+);
+</code></pre><p>3）创建选课表</p>
+<pre><code>CREATE TABLE `SC` (
+    SCid int(12) NOT NULL auto_increment COMMENT &apos;主键&apos;,
+    `Cno` int(10) NOT NULL COMMENT &apos;课程号&apos;,
+    `Sno` int(10) NOT NULL COMMENT &apos;学号&apos;,
+    `Grade` tinyint(2) NOT NULL COMMENT &apos;学生成绩&apos;,
+    PRIMARY KEY  (`SCid`)
+);
+</code></pre><h3 id="往关联表中填充数据"><a href="#往关联表中填充数据" class="headerlink" title="往关联表中填充数据"></a>往关联表中填充数据</h3><p>1）学生表插入数据：</p>
+<pre><code>INSERT INTO student values(0001,&apos;路飞&apos;,&apos;男&apos;,17,&apos;计算机网络&apos;);
+INSERT INTO student values(0002,&apos;索隆&apos;,&apos;男&apos;,19,&apos;网络安全&apos;);
+INSERT INTO student values(0003,&apos;乌索普&apos;,&apos;男&apos;,18,&apos;网络媒体&apos;);
+INSERT INTO student values(0004,&apos;娜美&apos;,&apos;女&apos;,17,&apos;旅游管理&apos;);
+INSERT INTO student values(0005,&apos;香吉士&apos;,&apos;男&apos;,22,&apos;新东方厨校&apos;);
+INSERT INTO student values(0006,&apos;妮可罗宾&apos;,&apos;女&apos;,28,&apos;古代历史&apos;);
+</code></pre><p>2）课程表插入数据</p>
+<pre><code>INSERT INTO course values(1001,&apos;Linux中高级运维&apos;,3);
+INSERT INTO course values(1002,&apos;Linux高级架构师&apos;,5);
+INSERT INTO course values(1003,&apos;MySQL高级Dba&apos;,4);
+INSERT INTO course values(1004,&apos;Python运维开发&apos;,4);
+INSERT INTO course values(1005,&apos;Java web开发&apos;,3);
+</code></pre><p>3）选课表插入数据</p>
+<pre><code>INSERT INTO SC(Sno,Cno,Grade)  values(0001,1001,4);
+INSERT INTO SC(Sno,Cno,Grade) values(0001,1002,3);
+INSERT INTO SC(Sno,Cno,Grade)  values(0001,1003,1);
+INSERT INTO SC(Sno,Cno,Grade)  values(0001,1004,6);
+INSERT INTO SC(Sno,Cno,Grade)  values(0002,1001,3);
+INSERT INTO SC(Sno,Cno,Grade)  values(0002,1002,2);
+INSERT INTO SC(Sno,Cno,Grade)  values(0002,1003,2);
+INSERT INTO SC(Sno,Cno,Grade)  values(0002,1004,8);
+INSERT INTO SC(Sno,Cno,Grade)  values(0003,1001,4);
+INSERT INTO SC(Sno,Cno,Grade)  values(0003,1002,4);
+INSERT INTO SC(Sno,Cno,Grade)  values(0003,1003,2);
+INSERT INTO SC(Sno,Cno,Grade)  values(0003,1004,8);
+INSERT INTO SC(Sno,Cno,Grade)  values(0004,1001,1);
+INSERT INTO SC(Sno,Cno,Grade)  values(0004,1002,1);
+INSERT INTO SC(Sno,Cno,Grade)  values(0004,1003,2);
+INSERT INTO SC(Sno,Cno,Grade)  values(0004,1004,3);
+INSERT INTO SC(Sno,Cno,Grade)  values(0005,1001,5);
+INSERT INTO SC(Sno,Cno,Grade)  values(0005,1002,3);
+INSERT INTO SC(Sno,Cno,Grade)  values(0005,1003,2);
+INSERT INTO SC(Sno,Cno,Grade)  values(0005,1004,9);
+</code></pre><p>查询SC表结果：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-40.png" alt="m-40"> </p>
+<p>连表查询：</p>
+<pre><code>select student.Sno,student.Sname,course.Cname,SC.Grade from student,course,SC where student.Sno=SC.Sno and course.Cno=SC.Cno;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-41.png" alt="m-41">  </p>
+<h3 id="查询语句执行计划"><a href="#查询语句执行计划" class="headerlink" title="查询语句执行计划"></a>查询语句执行计划</h3><p>使用explain查询select查询语句执行计划，即使用索引情况</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-42.png" alt="m-42"><br><img src="http://p924w4b7r.bkt.clouddn.com/m-43.png" alt="m-43"><br><img src="http://p924w4b7r.bkt.clouddn.com/m-44.png" alt="m-44">  </p>
+<h1 id="修改表中数据"><a href="#修改表中数据" class="headerlink" title="修改表中数据"></a>修改表中数据</h1><h2 id="修改表中指定条件固定列的数据"><a href="#修改表中指定条件固定列的数据" class="headerlink" title="修改表中指定条件固定列的数据"></a>修改表中指定条件固定列的数据</h2><p>1）命令语法：</p>
+<pre><code>update 表名 set 字段=新值，... where 条件
+</code></pre><p>2）修改指定的行字段内容</p>
+<p> 1、查看要修改的表</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-45.png" alt="m-45">  </p>
+<p>2、修改id为3的行的名字为xiangjishi</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-46.png" alt="m-46"> </p>
+<h2 id="修改表中所有行的数据"><a href="#修改表中所有行的数据" class="headerlink" title="修改表中所有行的数据"></a>修改表中所有行的数据</h2><p>为了演示效果我们往多插入几行数据</p>
+<pre><code>INSERT INTO test1 values(1,&apos;wusuopu&apos;,19);
+INSERT INTO test1 values(2,&apos;namei&apos;,18);
+INSERT INTO test1 values(5,&apos;lubing&apos;,28); 
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-47.png" alt="m-47">  </p>
+<p>1、不带条件更改所有表的记录</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-48.png" alt="m-48"><br>update一个记录，结果忘了加where，于是悲剧发生了！ </p>
+<h2 id="防止误操作mysql数据库的例子"><a href="#防止误操作mysql数据库的例子" class="headerlink" title="防止误操作mysql数据库的例子"></a>防止误操作mysql数据库的例子</h2><p>1、mysql帮助说明</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-49.png" alt="m-49"> </p>
+<p>2、指定-U登录测试</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-50.png" alt="m-50"> </p>
+<p>提示：不加条件无法删除，目的达到。</p>
+<p>3、做成别名防止DBA误操作</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-51.png" alt="m-51"> </p>
+<p>结论：在mysql命令加上选项-U后，当发出没有WHERE或LIMIT关键字的UPDATE或DELETE时，mysql程序拒绝执行</p>
+<h1 id="删除表中数据"><a href="#删除表中数据" class="headerlink" title="删除表中数据"></a>删除表中数据</h1><h2 id="实践删除表中的数据"><a href="#实践删除表中的数据" class="headerlink" title="实践删除表中的数据"></a>实践删除表中的数据</h2><p>1）语法命令：</p>
+<pre><code>delete from 表名 where 表达式
+</code></pre><p>1、实践，例如：删除表test1 中name等于lufei的记录</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-52.png" alt="m-52"><br><img src="http://p924w4b7r.bkt.clouddn.com/m-53.png" alt="m-53"> </p>
+<p>命令：</p>
+<pre><code>truncate table 表名
+truncate table test1;    #清空表中所有内容
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-54.png" alt="m-54"> </p>
+<p>truncate table test1;和delete from test1;区别</p>
+<p>1、truncate table test1;更快。清空物理文件</p>
+<p>2、delete from test1;逻辑清除，按行删。</p>
+<h1 id="增删改表的字段"><a href="#增删改表的字段" class="headerlink" title="增删改表的字段"></a>增删改表的字段</h1><h2 id="命令语法及默认添加演示"><a href="#命令语法及默认添加演示" class="headerlink" title="命令语法及默认添加演示"></a>命令语法及默认添加演示</h2><p>1）命令语法：</p>
+<pre><code>alter table 表名 add 字段 类型 其他；
+</code></pre><p>2）测试表数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-55.png" alt="m-55"> </p>
+<p>3）实践案例<br>例：在表test1中添加字段sex，age，qq，类型分别为char(4),int(4),varchar(15)</p>
+<p>4）执行的命令演示<br>1、添加性别列，默认语句</p>
+<pre><code>alter table test1 add sex char(4); 
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-56.png" alt="m-56">  </p>
+<p>提示：默认增加列增加到所有字段的结尾</p>
+<h2 id="指定添加列在表里的位置"><a href="#指定添加列在表里的位置" class="headerlink" title="指定添加列在表里的位置"></a>指定添加列在表里的位置</h2><p>1、定添加年龄列到name列后面的位置</p>
+<pre><code>alter table test1 add age int(4) after name;     #在name列后增加age列
+</code></pre><p>2、在第一列添加qq字段</p>
+<pre><code>alter table test1 add qq varchar(15) first; 
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-57.png" alt="m-57">  </p>
+<h3 id="生产案例"><a href="#生产案例" class="headerlink" title="生产案例"></a>生产案例</h3><p>生产环境多个复杂添加修改多字段信息的案例</p>
+<p>1）增加1个字段：</p>
+<pre><code>alter table &apos;etiantian&apos; add &apos;firstphoto_url&apos; varchar(255) default null comment &apos;第一张图片url&apos;;
+</code></pre><p>2）增2个字段：</p>
+<pre><code>alter table &apos;basic&apos; add &apos;adtml_top&apos; varchar(1024) default null comment &apos;顶部广告html&apos;, and  &apos;adtml_right&apos; varchar(1024) default null comment &apos;右侧广告html&apos;;
+</code></pre><p>3）修改字段类型：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-58.png" alt="m-58"> </p>
+<p>4）修改字段名称 </p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-59.png" alt="m-59"> </p>
+<h1 id="mysql的重命名"><a href="#mysql的重命名" class="headerlink" title="mysql的重命名"></a>mysql的重命名</h1><h2 id="命令语法："><a href="#命令语法：" class="headerlink" title="命令语法："></a>命令语法：</h2><pre><code>rename table 原表名 to 新表名；
+</code></pre><p>例如： 在表test1名字更改为 test1_change</p>
+<p>执行结果：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-60.png" alt="m-60"> </p>
+<h2 id="alter法"><a href="#alter法" class="headerlink" title="alter法"></a>alter法</h2><p><img src="http://p924w4b7r.bkt.clouddn.com/m-61.png" alt="m-61">  </p>
+<h1 id="删除表"><a href="#删除表" class="headerlink" title="删除表"></a>删除表</h1><p>命令语法： </p>
+<pre><code>drop table &lt;表名&gt;
+</code></pre><p>例如：删除表名为test的表</p>
+<p>执行结果： </p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-62.png" alt="m-62">   </p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;启动与关闭MySQL&quot;&gt;&lt;a href=&quot;#启动与关闭MySQL&quot; class=&quot;headerlink&quot; title=&quot;启动与关闭MySQL&quot;&gt;&lt;/a&gt;启动与关闭MySQL&lt;/h1&gt;&lt;h2 id=&quot;单实例MySQL启动与关闭方法&quot;&gt;&lt;a href=&quot;#单实例MyS
+    
+    </summary>
+    
+      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+    
+  </entry>
+  
+  <entry>
     <title>MySQL系列（一）：MySQL源码安装</title>
     <link href="http://yjscloud.com/2018/04/22/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9AMySQL%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
     <id>http://yjscloud.com/2018/04/22/MySQL系列（一）：MySQL源码安装/</id>
     <published>2018-04-22T02:35:14.000Z</published>
-    <updated>2018-05-21T02:53:52.000Z</updated>
+    <updated>2018-05-21T03:01:57.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="查看系统信息"><a href="#查看系统信息" class="headerlink" title="查看系统信息"></a>查看系统信息</h1><pre><code>[root@mysql-1 ~]# uname -r
 3.10.0-693.el7.x86_64
@@ -110,7 +929,7 @@ chmod 700 /etc/init.d/mysqld   #授权700权限，即脚本可执行
     
     </summary>
     
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
       <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
@@ -4749,100 +5568,6 @@ test()
     
       &lt;p&gt;闭包和函数紧密联系在一起，介绍闭包前有必要先介绍一些背景知识，诸如嵌套函数、变量的作用域等概念。&lt;/p&gt;
 &lt;h1 id=&quot;作用域&quot;&gt;&lt;a href=&quot;#作用域&quot; class=&quot;headerlink&quot; title=&quot;作用域&quot;&gt;&lt;/a&gt;作用域&lt;/h1&gt;&lt;p&gt;作用域是程序运行时变
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（六）：迭代器、生成器</title>
-    <link href="http://yjscloud.com/2018/01/19/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9A%E8%BF%AD%E4%BB%A3%E5%99%A8%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8/"/>
-    <id>http://yjscloud.com/2018/01/19/Python当歌（六）：迭代器、生成器/</id>
-    <published>2018-01-19T03:15:23.000Z</published>
-    <updated>2018-02-07T11:13:40.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="迭代器"><a href="#迭代器" class="headerlink" title="迭代器"></a>迭代器</h1><h2 id="迭代的概念"><a href="#迭代的概念" class="headerlink" title="迭代的概念"></a>迭代的概念</h2><p>迭代器即迭代的工具，那什么是迭代呢？</p>
-<p>迭代是一个重复的过程，每次重复即一次迭代，并且每次迭代的结果都是下一次迭代的初始值</p>
-<pre><code>while True: #只是单纯地重复，因而不是迭代
-    print(&apos;===&gt;&apos;) 
-
-l=[1,2,3]
-count=0
-while count &lt; len(l): #迭代
-    print(l[count])
-count+=1
-</code></pre><h2 id="理解迭代器"><a href="#理解迭代器" class="headerlink" title="理解迭代器"></a>理解迭代器</h2><p>(1)为何要有迭代器？</p>
-<p>对于序列类型：字符串、列表、元组，我们可以使用索引的方式迭代取出其包含的元素。但对于字典、集合、文件等类型是没有索引的，若还想取出其内部包含的元素，则必须找出一种不依赖于索引的迭代方式，这就是迭代器</p>
-<p>(2)什么是可迭代对象？</p>
-<p>可迭代对象指的是内置有<strong>iter</strong>方法的对象，即obj.<strong>iter</strong>，如下</p>
-<pre><code>&apos;hello&apos;.__iter__
-(1,2,3).__iter__
-[1,2,3].__iter__
-{&apos;a&apos;:1}.__iter__
-{&apos;a&apos;,&apos;b&apos;}.__iter__
-open(&apos;a.txt&apos;).__iter__
-</code></pre><p>（3）什么是迭代器对象？</p>
-<p>可迭代对象执行obj.<strong>iter</strong>()得到的结果就是迭代器对象</p>
-<p>而迭代器对象指的是即内置有<strong>iter</strong>又内置有<strong>next</strong>方法的对象</p>
-<p>文件类型是迭代器对象</p>
-<pre><code>open(&apos;a.txt&apos;).__iter__()
-open(&apos;a.txt&apos;).__next__()
-</code></pre><p>（4）注意：</p>
-<p>迭代器对象一定是可迭代对象，而可迭代对象不一定是迭代器对象</p>
-<h2 id="迭代器对象的使用"><a href="#迭代器对象的使用" class="headerlink" title="迭代器对象的使用"></a>迭代器对象的使用</h2><pre><code>dic={&apos;a&apos;:1,&apos;b&apos;:2,&apos;c&apos;:3}
-iter_dic=dic.__iter__() #得到迭代器对象，迭代器对象即有__iter__又有__next__，
-</code></pre><p>但是：迭代器.<strong>iter</strong>()得到的仍然是迭代器本身</p>
-<pre><code>iter_dic.__iter__() is iter_dic #True
-print(iter_dic.__next__()) #等同于next(iter_dic)
-print(iter_dic.__next__()) #等同于next(iter_dic)
-print(iter_dic.__next__()) #等同于next(iter_dic)
-print(iter_dic.__next__()) #抛出异常StopIteration，或者说结束标志
-</code></pre><p>有了迭代器，我们就可以不依赖索引迭代取值了</p>
-<pre><code>iter_dic=dic.__iter__()
-while 1:
-    try:
-        k=next(iter_dic)
-        print(dic[k])
-    except StopIteration:
-        break
-</code></pre><p>这么写太丑陋了，需要我们自己捕捉异常，控制next，python这么牛逼，能不能帮我解决呢？能，请看for循环</p>
-<h2 id="for循环"><a href="#for循环" class="headerlink" title="for循环"></a>for循环</h2><p>基于for循环，我们可以完全不再依赖索引去取值了</p>
-<pre><code>dic={&apos;a&apos;:1,&apos;b&apos;:2,&apos;c&apos;:3}
-for k in dic:
-    print(dic[k])
-</code></pre><p>for循环的工作原理</p>
-<p>1：执行in后对象的dic.<strong>iter</strong>()方法，得到一个迭代器对象iter_dic</p>
-<p>2: 执行next(iter_dic),将得到的值赋值给k,然后执行循环体代码</p>
-<p>3: 重复过程2，直到捕捉到异常StopIteration,结束循环</p>
-<h2 id="迭代器的优缺点"><a href="#迭代器的优缺点" class="headerlink" title="迭代器的优缺点"></a>迭代器的优缺点</h2><p>优点：</p>
-<ul>
-<li>提供一种统一的、不依赖于索引的迭代方式</li>
-<li>惰性计算，节省内存</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>无法获取长度（只有在next完毕才知道到底有几个值）</li>
-<li>一次性的，只能往后走，不能往前退</li>
-</ul>
-<h1 id="生成器"><a href="#生成器" class="headerlink" title="生成器"></a>生成器</h1><h2 id="什么是生成器"><a href="#什么是生成器" class="headerlink" title="什么是生成器"></a>什么是生成器</h2><p>通函数用 return 返回一个值，和 Java 等其他语言是一样的，然而在 Python 中还有一种函数，用关键字 yield 来返回值，这种函数叫生成器函数，函数被调用时会返回一个生成器对象，生成器本质上还是一个迭代器，也是用在迭代操作中，因此它有和迭代器一样的特性，唯一的区别在于实现方式上不一样，后者更加简洁。</p>
-<p>最简单的生成器函数：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/6-1.png" alt="6-1"></p>
-<p>func 就是一个生成器函数，调用该函数时返回对象就是生成器 g ，这个生成器对象的行为和迭代器是非常相似的，可以用在 for 循环等场景中。注意 yield 对应的值在函数被调用时不会立刻返回，而是调用next方法时（本质上 for 循环也是调用 next 方法）才返回</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/6-2.png" alt="6-2"></p>
-<p>那为什么要用生成器呢？显然，用生成器在逼格上要比迭代器高几个等级，它没有那么多冗长代码了，而且性能上一样的高效，为什么不用呢？来看看用生成器实现斐波那契数列有多简单。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/6-3.png" alt="6-3"></p>
-<h2 id="生成器表达式"><a href="#生成器表达式" class="headerlink" title="生成器表达式"></a>生成器表达式</h2><p>生成器表达式是列表推倒式的生成器版本，看起来像列表推导式，但是它返回的是一个生成器对象而不是列表对象。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/6-4.png" alt="6-4"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;迭代器&quot;&gt;&lt;a href=&quot;#迭代器&quot; class=&quot;headerlink&quot; title=&quot;迭代器&quot;&gt;&lt;/a&gt;迭代器&lt;/h1&gt;&lt;h2 id=&quot;迭代的概念&quot;&gt;&lt;a href=&quot;#迭代的概念&quot; class=&quot;headerlink&quot; title=&quot;迭代的概念&quot;&gt;&lt;/a&gt;
     
     </summary>
     
