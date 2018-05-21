@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-05-21T09:28:45.000Z</updated>
+  <updated>2018-05-21T11:21:22.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,147 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL系列（五）：MySQL主从复制</title>
+    <link href="http://yjscloud.com/2018/04/27/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
+    <id>http://yjscloud.com/2018/04/27/MySQL系列（五）：MySQL主从复制/</id>
+    <published>2018-04-27T10:51:07.000Z</published>
+    <updated>2018-05-21T11:21:22.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="mysql主从复制介绍"><a href="#mysql主从复制介绍" class="headerlink" title="mysql主从复制介绍"></a>mysql主从复制介绍</h1><p>mysql支持单向、双向、链式级联、实时、异步复制。复制过程中，一台服务器充当主服务器（master），而一个或多个其他的服务器充当从服务器（slave）。复制可以是单向：M==&gt;S，也可以是双向M&lt;==&gt;M，当然也可以多M环状同步等。如果设置了链式级联复制，那么，从（slave）服务器本身除了充当从服务器外，也会同时充当其下面从服务器的主服务器。链式级联复制类似A–&gt;B–&gt;C–&gt;D的复制形式。</p>
+<p>1）单向主从同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-101.png" alt="m-101"></p>
+<p>2）双向主主同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-102.png" alt="m-102"></p>
+<p>3）线性级联单向双主同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-103.png" alt="m-103"></p>
+<p>4）环状级联单向多主同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-104.png" alt="m-104"></p>
+<p>5）环状级联单向多主多从同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-105.png" alt="m-105"></p>
+<p>在当前的生产工作中，大多数应用的MySQL主从同步都是异步的复制方式，即不是严格实时的数据同步。</p>
+<p>实时和异步：</p>
+<p>当配置好主从复制后，所有对数据库内容的更新就必须在主服务器上进行，以避免用户对主服务器上数据库内容的更新与对从服务器上数据库内容的更新不一致而导致发生冲突。<br>那么，为什么所有的更新都要在主服务器上进行呢？我们又如何确保用户在主服务器上更新呢？</p>
+<p>第一种防止数据写入库的方法：</p>
+<p>生产环境中一般会采用忽略授权表方式的同步，然后对从服务器（slave）上的用户仅授权select读权限。不同步mysql库，这样我们就保证主库和从库相同的用户可以授权不同的权限。</p>
+<p>第二种防止数据写入从库的方法：</p>
+<p>除了上面再从库仅做select的授权外，还可以在slave服务器启动选项增加参数或在my.cnf配置文件中间read-only参数来确保从库只读，当然授权用户read-only从参数二者同时操作效果更佳，这也是我们生产环境中使用的方案。read-only参数可以让slave服务器只允许来自slave服务器线程或具体super权限用户的更新。可以确保slave服务器不接受来自普通用户的更新，slave服务器启动选项增加–read-only也是同样功能</p>
+<h1 id="mysql主从复制的应用场景"><a href="#mysql主从复制的应用场景" class="headerlink" title="mysql主从复制的应用场景"></a>mysql主从复制的应用场景</h1><p>mysql主从复制有利于数据库架构的健壮性、提升访问速度和易于维护管理</p>
+<p>1）主从服务器互为备份</p>
+<p>主服务器架构的设置，可以大大的加强数据库架构健壮性，例如：当主服务器出现问题时，我们可以人工或自动切换到从服务器继续提供服务。这类似我们的nfs服务器存储数据通过inotify+rsync同步到备份的nfs非常类似，只不过mysql的同步方案，是其自带的工具。非人为的硬件，服务故障，对于人为的执行drop,delete无能为力。</p>
+<p>2）主从服务器读写分离分担网站压力</p>
+<p>主从服务器架构可以通过程序（php,java）或者代理软件（mysql-proxy,amoeba）对用户（客户端）的请求实现读写分离，即通过在从服务器上仅仅处理用户的select查询请求，降低用户查询响应时间及读写同时在主服务器带来的压力，对于更新的数据（update,insert,delete）乃然交给主服务器处理，确保主服务器和从服务器保持实时同步。如果网站是以非更新（以浏览为主）为业务为主的业务，如blog,www首页展示等业务，查询请求比较多，这是从服务器的读写分离负载均衡策略就很有效了，这就是传说中的读写分离数据库结构。</p>
+<h1 id="mysql主从复制原理过程"><a href="#mysql主从复制原理过程" class="headerlink" title="mysql主从复制原理过程"></a>mysql主从复制原理过程</h1><p>简单描述下mysql replication的复制过程</p>
+<p>1）slave服务器上执行start slave，开启主从复制开关。</p>
+<p>2）此时，slave服务器的IO线程会通过在master上授权的复制用户权限请求连接master服务器，并请求从指定binlog日志文件的指定位置（日志文件名和位置就是在配置主从复制服务时执行change master命令时指定的）之后binlog日志内容；</p>
+<p>3）master服务器接收到来自slave服务器的IO线程的请求后，master服务器上负责复制的IO线程根据slave服务器的IO线程请求的信息读取指定binlog日志文件指定位置之后的binlog日志信息，然后返回给slave端的IO线程。返回的信息中除了binlog日志内容外，还有本次返回日志内容后在master服务器端的新的binlog文件名称以及在binlog中的下一个指定更新位置；</p>
+<p>4）当slave服务器的IO线程获取到来自master服务器上IO线程发送日志内容及日志文件及位置点后，将binlog日志内容依次写入slave端自身的relay log（即中继日志）文件（mysql-relay-bin.xxxxxx）的最末端，并将新的binlog文件名和位置记录到master-info文件中，以便下一次读取master端新binlog日志是能够告诉master服务器需要从新binglog日志的那个文件那个位置开始请求新的binlog日志内容。</p>
+<p>5）slave服务器端的SQL线程会实时的检测本地relay log中新增加的日志内容，然后及时把log文件中的内容解析成在master端曾经执行的sql语句的内容，并在自身slave服务器上按语句的顺序执行应用这些sql语句，应用完毕后清理应用过的日志。</p>
+<p>6）经过了上面的过程，就可以确保在master端和slave端执行了同样的sql语句，当复制状态正常的情况下，master端和slave端的数据完全一样的，mysql的同步机制是有一些特殊的情况的，具体请参考官方的说明。</p>
+<p>注意：</p>
+<p>1、同步的时候从库有两个线程来完成（IO、SQL），主库有一个线程来完成（IO）</p>
+<p>2、要在从库上配置连接主库的ip，用户名，账号，密码，连接的位置已经host点</p>
+<p>3、在开启开关之前确保主从数据是一致的</p>
+<p>4、在开关之前在主库上建立专门给从库同步的账号</p>
+<p>5、主库要打开binlog开关，否则无法实现同步</p>
+<p>6、从库打开开关的过程实际上就是让两个线程工作的过程</p>
+<h1 id="复制准备"><a href="#复制准备" class="headerlink" title="复制准备"></a>复制准备</h1><p>1）定义服务器角色</p>
+<p>主库（mysql master）：[ip为192.168.0.30，端口为：3306]</p>
+<p>从库（mysql slave）：[ip为192.168.0.31，端口为：3307]</p>
+<p>提示：1、一般常规做主从复制，主从服务器多数在不同的机器上，并且监听的端口均为默认的3306。我的实验环境是克隆的虚拟机，相同端口会报错，所以我用了不同的端口。</p>
+<p>2）数据库读法的约定</p>
+<p>主库，也可称为master</p>
+<p>从库，也可为slave</p>
+<h1 id="配置主库"><a href="#配置主库" class="headerlink" title="配置主库"></a>配置主库</h1><p>首先打开binlog日志的功能，执行vi /etc/my.cnf配置文件，按如下两个参数内容修改：</p>
+<pre><code>[mysqld]
+server-id = 1
+log-bin = mysql-bin
+</code></pre><p>提示：</p>
+<p>1、上面两个参数要放在my.cnf中的[mysqld]模块下，否则会出错。</p>
+<p>2、server-id的值使用服务器ip地址的最后8位如19，目的是避免不同机器或实例ID重复（不适合多实例）。</p>
+<p>3、要先在my.cnf配置文件中查找相关参数，并按要求修改。不存在时添加参数，切记参数不能重复。</p>
+<p>4、修改my.cnf配置后需要重启数据库</p>
+<p>检查配置后的结果：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-106.png" alt="m-106"></p>
+<p>检查binlog记录</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-107.png" alt="m-107"></p>
+<h2 id="建立用于同步的账号rep"><a href="#建立用于同步的账号rep" class="headerlink" title="建立用于同步的账号rep"></a>建立用于同步的账号rep</h2><p>登陆master主数据库，建立用于主从复制的账号rep:</p>
+<pre><code>mysql&gt; grant replication slave on *.* to &apos;rep&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud123&apos;;
+mysql&gt; flush privileges;
+
+# replication slave 为mysql同步的必须权限，此处不要授权all.
+# *.*表现所有库所有表，可以指定具体的库和表进行复制。
+# &apos;rep&apos;@&apos;192.168.0.%&apos; rep为同步账号。192.168.0.%为授权主机网段，使用了%表示允许整个192.168.0.0网段一rep用户访问。
+# identified by &apos;yjscloud123&apos;; yjscloud为密码，实际环境时复杂一点为好
+</code></pre><h2 id="对数据库锁表只读（当前窗口不要关掉）"><a href="#对数据库锁表只读（当前窗口不要关掉）" class="headerlink" title="对数据库锁表只读（当前窗口不要关掉）"></a>对数据库锁表只读（当前窗口不要关掉）</h2><p>备份前锁表防止有新的数据写入</p>
+<pre><code>mysql&gt; flush table with read lock;
+</code></pre><p>提示：这个锁表命令的时间，在不同的引擎的情况，会受下面参数的控制，锁表时，如果超过设置时间不操作会自动解锁。</p>
+<p>默认情况下的时长为：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-108.png" alt="m-108"></p>
+<h2 id="查看主库状态"><a href="#查看主库状态" class="headerlink" title="查看主库状态"></a>查看主库状态</h2><p>查看备份点：查看主库状态，即当前binlog日志文件名和二进制binlog日志偏移量</p>
+<pre><code>show master status; #命令显示的信息要记录在案，后面的从库复制时是从这个位置开始的
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-109.png" alt="m-109"></p>
+<h2 id="导出数据库数据"><a href="#导出数据库数据" class="headerlink" title="导出数据库数据"></a>导出数据库数据</h2><p>打开新窗口，导出数据库数据，如果数据量很大（100G+），并且允许停机，可以停库直接打包数据文件迁移</p>
+<pre><code>mysqldump -uroot -pyjscloud -A -B --events|gzip &gt;/opt/rep_bak.$(date +%F).sql.gz
+</code></pre><p>注意-A 表示备份所有库。-B表示增加use DB和drop等（导库时会直接覆盖原有的）</p>
+<p>导库后，解锁主库，恢复可写；</p>
+<pre><code>mysql&gt;unlock tables;
+</code></pre><h2 id="把主库导出的mysql数据迁移到从库"><a href="#把主库导出的mysql数据迁移到从库" class="headerlink" title="把主库导出的mysql数据迁移到从库"></a>把主库导出的mysql数据迁移到从库</h2><p>这步常用命令有scp,rsync等。操作这里不再略去</p>
+<h1 id="从库上执行操作"><a href="#从库上执行操作" class="headerlink" title="从库上执行操作"></a>从库上执行操作</h1><h2 id="设置server-id值并关闭参数"><a href="#设置server-id值并关闭参数" class="headerlink" title="设置server-id值并关闭参数"></a>设置server-id值并关闭参数</h2><p>数据库的sever-id一般在LAN内是唯一的，这里的server-id要和主库及其他从库不同，注释掉从库的binlog参数配置。</p>
+<p>执行vi /etc/my.cnf编辑my.cnf配置文件，按如下两个参数内容修改：</p>
+<pre><code>[mysqld]
+server-id = 3
+#log-bin= mysql-bin
+</code></pre><p>1、上面两个参数要放在my.cnf中的[mysqld]模块下，否则会出错。</p>
+<p>2、server-id的值使用服务器ip地址的最后8位如19，目的是避免不同机器或实例ID重复（不适合多<br>实例）。</p>
+<p>3、要先在my.cnf配置文件中查找相关参数，并按要求修改。不存在时添加参数，切记参数不能重复。</p>
+<p>4、修改my.cnf配置后需要重启数据库</p>
+<p>有两种情况需要打开log-bin，记录数据库更新的sql语句：</p>
+<p>a、级联同步A–&gt;B–&gt;C那中间的B就要开启log-bin</p>
+<p>b、在从库做数据库备份，数据库备份必须要有备份和binlog日志，才是完整的备份</p>
+<p>检查配置后的结果</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-110.png" alt="m-110"></p>
+<p>重启从数据库<br>/etc/init.d/mysqld restart</p>
+<h2 id="还原主库导出的数据到从库"><a href="#还原主库导出的数据到从库" class="headerlink" title="还原主库导出的数据到从库"></a>还原主库导出的数据到从库</h2><pre><code>[root@slave-1 opt]# gzip -d rep_bak.2018-4-23.sql.gz   #解压目标数据库备份
+[root@slave-1 opt]# mysql -uroot -pyjscloud &lt;rep_bak.2018-4-23.sql
+</code></pre><h2 id="登陆从库配置同步参数"><a href="#登陆从库配置同步参数" class="headerlink" title="登陆从库配置同步参数"></a>登陆从库配置同步参数</h2><pre><code>mysql -uroot -pyjscloud
+
+CHANGE MASTER TO
+MASTER_HOST=&apos;192.168.0.30&apos;,     # 这是主库的ip
+MASTER_PORT=3306,                  #这里是主库的端口，从库端口可以和主库不同
+MASTER_USER=&apos;rep&apos;,                    # 这里是主库上建立的用于复制的用户rep
+MASTER_PASSWORD=&apos;yjscloud123&apos;,     #这里是rep的密码
+MASTER_LOG_FILE=&apos;mysql-bin.000005&apos;,     #这里是show master stauts时看到的二进制日志文件名称，注意不能多空格
+MASTER_LOG_POS=338;         # 这里是show master status时看到的查看到的二进制日志偏移量，注意不能多空格
+</code></pre><p>上述操作原理实际是把用户密码等信息写入从库的master.info</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-111.png" alt="m-111"></p>
+<h2 id="启动从库同步开关"><a href="#启动从库同步开关" class="headerlink" title="启动从库同步开关"></a>启动从库同步开关</h2><p>启动从库同步开关，并查看同步状态</p>
+<pre><code>mysql&gt; start slave;
+</code></pre><p>查看从库状态</p>
+<pre><code>mysql&gt; show slave status\G
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-112.png" alt="m-112"><br><img src="http://p924w4b7r.bkt.clouddn.com/m-113.png" alt="m-113"></p>
+<p>注释：</p>
+<pre><code>Slave_IO_Running: Yes   #负责从库去主库读取BINLOG日志，并写入从库的中继日志中
+Slave_SQL_Running：Yes   #负责读取并执行中继日志中的BINLOG，转换SQL语句应用到数据库
+</code></pre><h1 id="测试复制结果"><a href="#测试复制结果" class="headerlink" title="测试复制结果"></a>测试复制结果</h1><p>在master上操作：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-114.png" alt="m-114"></p>
+<p>在slave上查看同步结果</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-115.png" alt="m-115"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;mysql主从复制介绍&quot;&gt;&lt;a href=&quot;#mysql主从复制介绍&quot; class=&quot;headerlink&quot; title=&quot;mysql主从复制介绍&quot;&gt;&lt;/a&gt;mysql主从复制介绍&lt;/h1&gt;&lt;p&gt;mysql支持单向、双向、链式级联、实时、异步复制。复制过程中，一台
+    
+    </summary>
+    
+      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL系列（四）：MySQL增量备份及数据恢复</title>
@@ -5381,557 +5522,6 @@ func(cat1) #甚至连调用方式也无需改变，就能调用猫的talk功能
     
       &lt;h1 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h1&gt;&lt;p&gt;（1）面向过程：根据业务逻辑从上到下写垒代码&lt;/p&gt;
 &lt;p&gt;（2）函数式：将某功能代码封装到函数中，日后便无需重复编写，仅调用函数即可&lt;/p
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（九）：模块</title>
-    <link href="http://yjscloud.com/2018/01/22/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E4%B9%9D%EF%BC%89%EF%BC%9A%E6%A8%A1%E5%9D%97/"/>
-    <id>http://yjscloud.com/2018/01/22/Python当歌（九）：模块/</id>
-    <published>2018-01-22T09:37:20.000Z</published>
-    <updated>2018-02-07T11:14:52.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="模块-amp-包"><a href="#模块-amp-包" class="headerlink" title="模块&amp;包"></a>模块&amp;包</h1><h2 id="模块-modue-的概念："><a href="#模块-modue-的概念：" class="headerlink" title="模块(modue)的概念："></a>模块(modue)的概念：</h2><p>在计算机程序的开发过程中，随着程序代码越写越多，在一个文件里代码就会越来越长，越来越不容易维护。</p>
-<p>为了编写可维护的代码，我们把很多函数分组，分别放到不同的文件里，这样，每个文件包含的代码就相对较少，很多编程语言都采用这种组织代码的方式。在Python中，一个.py文件就称之为一个模块（Module）。</p>
-<p>使用模块有什么好处？<br>最大的好处是大大提高了代码的可维护性。</p>
-<p>其次，编写代码不必从零开始。当一个模块编写完毕，就可以被其他地方引用。我们在编写程序的时候，也经常引用其他模块，包括Python内置的模块和来自第三方的模块。<br>所以，模块一共三种：</p>
-<ul>
-<li>python标准库</li>
-<li>第三方模块</li>
-<li>应用程序自定义模块</li>
-</ul>
-<p>另外，使用模块还可以避免函数名和变量名冲突。相同名字的函数和变量完全可以分别存在不同的模块中，因此，我们自己在编写模块时，不必考虑名字会与其他模块冲突。但是也要注意，尽量不要与内置函数名字冲突。</p>
-<h2 id="模块导入方法"><a href="#模块导入方法" class="headerlink" title="模块导入方法"></a>模块导入方法</h2><p>（1）import语法</p>
-<pre><code>import module1[, module2[,... moduleN]
-</code></pre><p>（2）from…import语句</p>
-<pre><code>from modname import name1[, name2[, ... nameN]]
-</code></pre><p>（3）From…import* 语句</p>
-<pre><code>from modname import *
-</code></pre><p>这提供了一个简单的方法来导入一个模块中的所有项目。然而这种声明不该被过多地使用。大多数情况， Python程序员不使用这种方法，因为引入的其它来源的命名，很可能覆盖了已有的定义</p>
-<p>（4）运行本质</p>
-<pre><code>import test
-from test import add
-</code></pre><p>无论1还是2，首先通过sys.path找到test.py,然后执行test脚本（全部执行），区别是1会将test这个变量名加载到名字空间，而2只会将add这个变量名加载进来。　</p>
-<h2 id="包-package"><a href="#包-package" class="headerlink" title="包(package)"></a>包(package)</h2><p>如果不同的人编写的模块名相同怎么办？为了避免模块名冲突，Python又引入了按目录来组织模块的方法，称为包（Package）。</p>
-<p>举个例子，一个abc.py的文件就是一个名字叫abc的模块，一个xyz.py的文件就是一个名字叫xyz的模块。</p>
-<p>现在，假设我们的abc和xyz这两个模块名字与其他模块冲突了，于是我们可以通过包来组织模块，避免冲突。方法是选择一个顶层包名：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-1.png" alt="9-1"></p>
-<p>引入了包以后，只要顶层的包名不与别人冲突，那所有模块都不会与别人冲突。现在，view.py模块的名字就变成了hello_django.app01.views，类似的，manage.py的模块名则是hello_django.manage。</p>
-<p>请注意，每一个包目录下面都会有一个__init__.py的文件，这个文件是必须存在的，否则，Python就把这个目录当成普通目录(文件夹)，而不是一个包。__init__.py可以是空文件，也可以有Python代码，因为__init__.py本身就是一个模块，而它的模块名就是对应包的名字。</p>
-<p>调用包就是执行包下的__init__.py文件</p>
-<h2 id="注意点（important）"><a href="#注意点（important）" class="headerlink" title="注意点（important）"></a>注意点（important）</h2><p>1、——————-</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-2.png" alt="9-2"></p>
-<p>在nod1里import  hello是找不到的，有同学说可以找到呀，那是因为你的pycharm为你把myapp这一层路径加入到了sys.path里面，所以可以找到，然而程序一旦在命令行运行，则报错。有同学问那怎么办？简单啊，自己把这个路径加进去不就OK啦：</p>
-<pre><code>import sys,os
-BASE_DIR=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
-import hello
-hello.hello1()
-</code></pre><p>2、————————–</p>
-<pre><code>if __name__==&apos;__main__&apos;:
-    print(&apos;ok&apos;)
-
-“Make a .py both importable and executable”
-</code></pre><p>如果我们是直接执行某个.py文件的时候，该文件中那么”__name__ == ‘__main__’“是True,但是我们如果从另外一个.py文件通过import导入该文件的时候，这时__name__的值就是我们这个py文件的名字而不是__main__。</p>
-<p>这个功能还有一个用处：调试代码的时候，在”if __name__ == ‘__main__’“中加入一些我们的调试代码，我们可以让外部模块调用的时候不执行我们的调试代码，但是如果我们想排查问题的时候，直接执行该模块文件，调试代码能够正常运行！</p>
-<h1 id="time模块"><a href="#time模块" class="headerlink" title="time模块"></a>time模块</h1><p>三种时间表示</p>
-<p>在Python中，通常有这几种方式来表示时间：</p>
-<p>（1）时间戳(timestamp)：通常来说，时间戳表示的是从1970年1月1日00:00:00开始按秒计算的偏移量。我们运行“type(time.time())”，返回的是float类型。</p>
-<p>（2）格式化的时间字符串</p>
-<p>（3）元组(struct_time)：struct_time元组共有9个元素共九个元素:(年，月，日，时，分，秒，一年中第几周，一年中第几天，夏令时)<br>import time</p>
-<p>#    1 time() :返回当前时间的时间戳</p>
-<p>time.time()  #1473525444.037215</p>
-<p>#———————————————————-</p>
-<p># 2 localtime([secs])</p>
-<p># 将一个时间戳转换为当前时区的struct_time。secs参数未提供，则以当前时间为准。</p>
-<p>time.localtime() #time.struct_time(tm_year=2016, tm_mon=9, tm_mday=11, tm_hour=0,</p>
-<p># tm_min=38, tm_sec=39, tm_wday=6, tm_yday=255, tm_isdst=0)</p>
-<p>time.localtime(1473525444.037215)</p>
-<p>#———————————————————-</p>
-<p># 3 gmtime([secs]) 和localtime()方法类似，gmtime()方法是将一个时间戳转换为UTC时区（0时区）的struct_time。</p>
-<p>#———————————————————-</p>
-<p># 4 mktime(t) : 将一个struct_time转化为时间戳。</p>
-<p>print(time.mktime(time.localtime()))#1473525749.0</p>
-<p>#———————————————————-</p>
-<p># 5 asctime([t]) : 把一个表示时间的元组或者struct_time表示为这种形式：’Sun Jun 20 23:21:05 1993’。</p>
-<p># 如果没有参数，将会将time.localtime()作为参数传入。</p>
-<p>print(time.asctime())#Sun Sep 11 00:43:43 2016</p>
-<p>#———————————————————-</p>
-<p># 6 ctime([secs]) : 把一个时间戳（按秒计算的浮点数）转化为time.asctime()的形式。如果参数未给或者为None的时候，将会默认time.time()为参数。它的作用相当于time.asctime(time.localtime(secs))。</p>
-<p>print(time.ctime())  # Sun Sep 11 00:46:38 2016</p>
-<p>print(time.ctime(time.time()))  # Sun Sep 11 00:46:38 2016</p>
-<p>#———————————————————-</p>
-<p># 7 strftime(format[, t]) : 把一个代表时间的元组或者struct_time（如由time.localtime()和time.gmtime()返回）转化为格式化的时间字符串。如果t未指定，将传入<br>time.localtime()。如果元组中任何一个元素越界，ValueError的错误将会被抛出。</p>
-<p>print(time.strftime(“%Y-%m-%d %X”, time.localtime()))#2016-09-11 00:49:56</p>
-<p>#———————————————————-</p>
-<p># 8 time.strptime(string[, format])</p>
-<p># 把一个格式化时间字符串转化为struct_time。实际上它和strftime()是逆操作。</p>
-<p>print(time.strptime(‘2011-05-05 16:37:06’, ‘%Y-%m-%d %X’))</p>
-<p># time.struct_time(tm_year=2011, tm_mon=5, tm_mday=5, tm_hour=16, tm_min=37, tm_sec=6,</p>
-<p>#  tm_wday=3, tm_yday=125, tm_isdst=-1)</p>
-<p># 在这个函数中，format默认为：”%a %b %d %H:%M:%S %Y”。</p>
-<p>#———————————————————-</p>
-<p># 9 sleep(secs)<br># 线程推迟指定的时间运行，单位为秒。</p>
-<p>#———————————————————-</p>
-<p># 10 clock()<br># 这个需要注意，在不同的系统上含义不同。在UNIX系统上，它返回的是“进程时间”，它是用秒表示的浮点数（时间戳）。而在WINDOWS中，第一次调用，返回的是进程运行的实际时间。而第二次之后的调用是自第一次调用以后到现在的运行时间，即两次时间差。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-3.png" alt="9-3"><br><img src="http://p3q1rwnbl.bkt.clouddn.com/9-4.png" alt="9-4"></p>
-<h1 id="random模块"><a href="#random模块" class="headerlink" title="random模块"></a>random模块</h1><pre><code>import random
-
-print(random.random())    #(0,1)----float
-
-print(random.randint(1,3))  #[1,3]
-
-print(random.randrange(1,3)) #[1,3)
-
-print(random.choice([1,&apos;23&apos;,[4,5]]))     #23
-
-print(random.sample([1,&apos;23&apos;,[4,5]],2))  #[[4, 5], &apos;23&apos;]
-
-print(random.uniform(1,3))  #1.927109612082716
-
-
-item=[1,3,5,7,9]
-random.shuffle(item)
-print(item)
-</code></pre><p>随机验证码代码:</p>
-<pre><code>import random
-
-def v_code():
-
-    code = &apos;&apos;
-    for i in range(5):
-
-        num=random.randint(0,9)
-        alf=chr(random.randint(65,90))
-        add=random.choice([num,alf])
-        code += str(add)
-    return code
-
-print(v_code())
-</code></pre><h1 id="os模块"><a href="#os模块" class="headerlink" title="os模块"></a>os模块</h1><p>os模块是与操作系统交互的一个接口</p>
-<p>os.getcwd() 获取当前工作目录，即当前python脚本工作的目录路径</p>
-<p>os.chdir(“dirname”)  改变当前脚本工作目录；相当于shell下cd</p>
-<p>os.curdir  返回当前目录: (‘.’)</p>
-<p>os.pardir  获取当前目录的父目录字符串名：(‘..’)</p>
-<p>os.makedirs(‘dirname1/dirname2’)    可生成多层递归目录</p>
-<p>os.removedirs(‘dirname1’)    若目录为空，则删除，并递归到上一级目录，如若也为空，则删除，依此类推</p>
-<p>os.mkdir(‘dirname’)    生成单级目录；相当于shell中mkdir dirname</p>
-<p>os.rmdir(‘dirname’)    删除单级空目录，若目录不为空则无法删除，报错；相当于shell中rmdir dirname</p>
-<p>os.listdir(‘dirname’)    列出指定目录下的所有文件和子目录，包括隐藏文件，并以列表方式打印</p>
-<p>os.remove()  删除一个文件</p>
-<p>os.rename(“oldname”,”newname”)  重命名文件/目录</p>
-<p>os.stat(‘path/filename’)  获取文件/目录信息</p>
-<p>os.sep    输出操作系统特定的路径分隔符，win下为”\“,Linux下为”/“</p>
-<p>os.linesep    输出当前平台使用的行终止符，win下为”\t\n”,Linux下为”\n”</p>
-<p>os.pathsep    输出用于分割文件路径的字符串 win下为;,Linux下为:</p>
-<p>os.name    输出字符串指示当前使用平台。win-&gt;’nt’; Linux-&gt;’posix’</p>
-<p>os.system(“bash command”)  运行shell命令，直接显示</p>
-<p>os.environ  获取系统环境变量</p>
-<p>os.path.abspath(path)  返回path规范化的绝对路径</p>
-<p>os.path.split(path)  将path分割成目录和文件名二元组返回</p>
-<p>os.path.dirname(path)  返回path的目录。其实就是os.path.split(path)的第一个元素</p>
-<p>os.path.basename(path)  返回path最后的文件名。如何path以／或\结尾，那么就会返回空值。即os.path.split(path)的第二个元素</p>
-<p>os.path.exists(path)  如果path存在，返回True；如果path不存在，返回False</p>
-<p>os.path.isabs(path)  如果path是绝对路径，返回True</p>
-<p>os.path.isfile(path)  如果path是一个存在的文件，返回True。否则返回False</p>
-<p>os.path.isdir(path)  如果path是一个存在的目录，则返回True。否则返回False</p>
-<p>os.path.join(path1[, path2[, …]])  将多个路径组合后返回，第一个绝对路径之前的参数将被忽略</p>
-<p>os.path.getatime(path)  返回path所指向的文件或者目录的最后存取时间</p>
-<p>os.path.getmtime(path)  返回path所指向的文件或者目录的最后修改时间</p>
-<h1 id="sys模块"><a href="#sys模块" class="headerlink" title="sys模块"></a>sys模块</h1><p>sys.argv           命令行参数List，第一个元素是程序本身路径</p>
-<p>sys.exit(n)        退出程序，正常退出时exit(0)</p>
-<p>sys.version        获取Python解释程序的版本信息</p>
-<p>sys.maxint         最大的Int值</p>
-<p>sys.path           返回模块的搜索路径，初始化时使用PYTHONPATH环境变量的值</p>
-<p>sys.platform       返回操作系统平台名称</p>
-<p>进度条代码：</p>
-<pre><code>import sys,time
-for i in range(10):
-    sys.stdout.write(&apos;#&apos;)
-    time.sleep(1)
-    sys.stdout.flush()
-</code></pre><h1 id="json-amp-pickle"><a href="#json-amp-pickle" class="headerlink" title="json&amp;pickle"></a>json&amp;pickle</h1><p>用eval内置方法可以将一个字符串转成python对象，不过，eval方法是有局限性的，对于普通的数据类型，json.loads和eval都能用，但遇到特殊类型的时候，eval就不管用了,所以eval的重点还是通常用来执行一个字符串表达式，并返回表达式的值。</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-5.png" alt="9-5"></p>
-<h2 id="什么是序列化？"><a href="#什么是序列化？" class="headerlink" title="什么是序列化？"></a>什么是序列化？</h2><p>我们把对象(变量)从内存中变成可存储或传输的过程称之为序列化，在Python中叫pickling，在其他语言中也被称之为serialization，marshalling，flattening等等，都是一个意思。<br>序列化之后，就可以把序列化后的内容写入磁盘，或者通过网络传输到别的机器上。<br>反过来，把变量内容从序列化的对象重新读到内存里称之为反序列化，即unpickling。</p>
-<h2 id="json"><a href="#json" class="headerlink" title="json"></a>json</h2><p>如果我们要在不同的编程语言之间传递对象，就必须把对象序列化为标准格式，比如XML，但更好的方法是序列化为JSON，因为JSON表示出来就是一个字符串，可以被所有语言读取，也可以方便地存储到磁盘或者通过网络传输。JSON不仅是标准格式，并且比XML更快，而且可以直接在Web页面中读取，非常方便。</p>
-<p>JSON表示的对象就是标准的JavaScript语言的对象，JSON和Python内置的数据类型对应如下：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-6.png" alt="9-6"></p>
-<p>#—————————-序列化</p>
-<pre><code>import json
-
-dic={&apos;name&apos;:&apos;alvin&apos;,&apos;age&apos;:23,&apos;sex&apos;:&apos;male&apos;}
-print(type(dic))#&lt;class &apos;dict&apos;&gt;
-
-j=json.dumps(dic)
-print(type(j))#&lt;class &apos;str&apos;&gt;
-
-f=open(&apos;序列化对象&apos;,&apos;w&apos;)
-f.write(j)  #-------------------等价于json.dump(dic,f)
-f.close()
-</code></pre><p>#—————————–反序列化<br></p>
-<pre><code>import json
-f=open(&apos;序列化对象&apos;)
-data=json.loads(f.read())#  等价于data=json.load(f)
-</code></pre><p>注意：</p>
-<pre><code>import json
-#dct=&quot;{&apos;1&apos;:111}&quot;#json 不认单引号
-#dct=str({&quot;1&quot;:111})#报错,因为生成的数据还是单引号:{&apos;one&apos;: 1}
-
-dct=&apos;{&quot;1&quot;:&quot;111&quot;}&apos;
-print(json.loads(dct))
-
-#conclusion:
-#无论数据是怎样创建的，只要满足json格式，就可以json.loads出来,不一定非要dumps的数据才能loads
-</code></pre><h2 id="pickle"><a href="#pickle" class="headerlink" title="pickle"></a>pickle</h2><p>#—————————-序列化</p>
-<pre><code>import pickle
-
-dic={&apos;name&apos;:&apos;alvin&apos;,&apos;age&apos;:23,&apos;sex&apos;:&apos;male&apos;}
-
-print(type(dic))#&lt;class &apos;dict&apos;&gt;
-
-j=pickle.dumps(dic)
-print(type(j))#&lt;class &apos;bytes&apos;&gt;
-
-f=open(&apos;序列化对象_pickle&apos;,&apos;wb&apos;)#注意是w是写入str,wb是写入bytes,j是&apos;bytes&apos;
-f.write(j)  #-------------------等价于pickle.dump(dic,f)
-
-f.close()
-</code></pre><p>#————————-反序列化</p>
-<pre><code>import pickle
-f=open(&apos;序列化对象_pickle&apos;,&apos;rb&apos;)
-
-data=pickle.loads(f.read())#  等价于data=pickle.load(f)
-
-print(data[&apos;age&apos;])  
-</code></pre><p>Pickle的问题和所有其他编程语言特有的序列化问题一样，就是它只能用于Python，并且可能不同版本的Python彼此都不兼容，因此，只能用Pickle保存那些不重要的数据，不能成功地反序列化也没关系。</p>
-<h1 id="xml模块"><a href="#xml模块" class="headerlink" title="xml模块"></a>xml模块</h1><p>xml是实现不同语言或程序之间进行数据交换的协议，跟json差不多，但json使用起来更简单，不过，在json还没诞生的黑暗年代，大家只能选择用xml，至今很多传统公司如金融行业的很多系统的接口还主要是xml。</p>
-<p>xml的格式如下，就是通过&lt;&gt;节点来区别数据结构的:</p>
-<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;data&gt;
-    &lt;country name=&quot;Liechtenstein&quot;&gt;
-        &lt;rank updated=&quot;yes&quot;&gt;2&lt;/rank&gt;
-        &lt;year&gt;2008&lt;/year&gt;
-        &lt;gdppc&gt;141100&lt;/gdppc&gt;
-        &lt;neighbor name=&quot;Austria&quot; direction=&quot;E&quot;/&gt;
-        &lt;neighbor name=&quot;Switzerland&quot; direction=&quot;W&quot;/&gt;
-    &lt;/country&gt;
-    &lt;country name=&quot;Singapore&quot;&gt;
-        &lt;rank updated=&quot;yes&quot;&gt;5&lt;/rank&gt;
-        &lt;year&gt;2011&lt;/year&gt;
-        &lt;gdppc&gt;59900&lt;/gdppc&gt;
-        &lt;neighbor name=&quot;Malaysia&quot; direction=&quot;N&quot;/&gt;
-    &lt;/country&gt;
-    &lt;country name=&quot;Panama&quot;&gt;
-        &lt;rank updated=&quot;yes&quot;&gt;69&lt;/rank&gt;
-        &lt;year&gt;2011&lt;/year&gt;
-        &lt;gdppc&gt;13600&lt;/gdppc&gt;
-        &lt;neighbor name=&quot;Costa Rica&quot; direction=&quot;W&quot;/&gt;
-        &lt;neighbor name=&quot;Colombia&quot; direction=&quot;E&quot;/&gt;
-    &lt;/country&gt;
-&lt;/data&gt;
-</code></pre><p>xml协议在各个语言里的都 是支持的，在python中可以用以下模块操作xml：</p>
-<pre><code>import xml.etree.ElementTree as ET 
-tree = ET.parse(&quot;xmltest.xml&quot;)
-root = tree.getroot()
-print(root.tag)
-</code></pre><p>#遍历xml文档</p>
-<pre><code>for child in root:
-    print(child.tag, child.attrib)
-    for i in child:
-        print(i.tag,i.text)
-</code></pre><p>#只遍历year 节点</p>
-<pre><code>for node in root.iter(&apos;year&apos;):
-    print(node.tag,node.text)
-</code></pre><p>#—————————————</p>
-<pre><code>import xml.etree.ElementTree as ET
-
-tree = ET.parse(&quot;xmltest.xml&quot;)
-root = tree.getroot()
-</code></pre><p>#修改</p>
-<pre><code>for node in root.iter(&apos;year&apos;):
-    new_year = int(node.text) + 1
-    node.text = str(new_year)
-    node.set(&quot;updated&quot;,&quot;yes&quot;)
-
-tree.write(&quot;xmltest.xml&quot;)
-</code></pre><p>#删除node</p>
-<pre><code>for country in root.findall(&apos;country&apos;):
-    rank = int(country.find(&apos;rank&apos;).text)
-    if rank &gt; 50:
-     root.remove(country)
-
-tree.write(&apos;output.xml&apos;)
-</code></pre><p>自己创建xml文档：</p>
-<pre><code>import xml.etree.ElementTree as ET
-
-new_xml = ET.Element(&quot;namelist&quot;)
-name = ET.SubElement(new_xml,&quot;name&quot;,attrib={&quot;enrolled&quot;:&quot;yes&quot;})
-age = ET.SubElement(name,&quot;age&quot;,attrib={&quot;checked&quot;:&quot;no&quot;})
-sex = ET.SubElement(name,&quot;sex&quot;)
-sex.text = &apos;33&apos;
-name2 = ET.SubElement(new_xml,&quot;name&quot;,attrib={&quot;enrolled&quot;:&quot;no&quot;})
-age = ET.SubElement(name2,&quot;age&quot;)
-age.text = &apos;19&apos;
-
-et = ET.ElementTree(new_xml) #生成文档对象
-et.write(&quot;test.xml&quot;, encoding=&quot;utf-8&quot;,xml_declaration=True)
-
-ET.dump(new_xml) #打印生成的格式
-</code></pre><h1 id="logging模块"><a href="#logging模块" class="headerlink" title="logging模块"></a>logging模块</h1><p>(1)简单应用</p>
-<pre><code>import logging  
-logging.debug(&apos;debug message&apos;)  
-logging.info(&apos;info message&apos;)  
-logging.warning(&apos;warning message&apos;)  
-logging.error(&apos;error message&apos;)  
-logging.critical(&apos;critical message&apos;)
-</code></pre><p>输出：</p>
-<pre><code>WARNING:root:warning message
-ERROR:root:error message
-CRITICAL:root:critical message
-</code></pre><p>可见，默认情况下Python的logging模块将日志打印到了标准输出中，且只显示了大于等于WARNING级别的日志，这说明默认的日志级别设置为WARNING（日志级别等级CRITICAL &gt; ERROR &gt; WARNING &gt; INFO &gt; DEBUG &gt; NOTSET），默认的日志格式为日志级别：Logger名称：用户输出消息。</p>
-<p>（2)灵活配置日志级别，日志格式，输出位置</p>
-<pre><code>import logging
-
-logging.basicConfig(level=logging.DEBUG,
-format=&apos;%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s&apos;,
-datefmt=&apos;%a, %d %b %Y %H:%M:%S&apos;,
-filename=&apos;test.log&apos;,
-filemode=&apos;w&apos;)
-
-logging.debug(&apos;debug message&apos;)
-logging.info(&apos;info message&apos;)
-logging.warning(&apos;warning message&apos;)
-logging.error(&apos;error message&apos;)
-logging.critical(&apos;critical message&apos;)
-</code></pre><p>查看输出：</p>
-<pre><code>Wed, 24 Jan 2018 16:48:57 logging_test.py[line:11] DEBUG debug message
-Wed, 24 Jan 2018 16:48:57 logging_test.py[line:12] INFO info message
-Wed, 24 Jan 2018 16:48:57 logging_test.py[line:13] WARNING warning message
-Wed, 24 Jan 2018 16:48:57 logging_test.py[line:14] ERROR error message
-Wed, 24 Jan 2018 16:48:57 logging_test.py[line:15] CRITICAL critical message
-</code></pre><p>可见在logging.basicConfig()函数中可通过具体参数来更改logging模块默认行为，可用参数有:</p>
-<p>filename：用指定的文件名创建FiledHandler（后边会具体讲解handler的概念），这样日志会被存储在指定的文件中。</p>
-<p>filemode：文件打开方式，在指定了filename时使用这个参数，默认值为“a”还可指定为“w”。</p>
-<p>format：指定handler使用的日志显示格式。 </p>
-<p>datefmt：指定日期时间格式。 </p>
-<p>level：设置rootlogger（后边会讲解具体概念）的日志级别 </p>
-<p>stream：用指定的stream创建StreamHandler。可以指定输出到sys.stderr,sys.stdout或者文件(f=open(‘test.log’,’w’))，默认为sys.stderr。若同时列出了filename和stream两个参数，则stream参数会被忽略。</p>
-<p>format参数中可能用到的格式化串：</p>
-<p>%(name)s Logger的名字</p>
-<p>%(levelno)s 数字形式的日志级别</p>
-<p>%(levelname)s 文本形式的日志级别</p>
-<p>%(pathname)s 调用日志输出函数的模块的完整路径名，可能没有</p>
-<p>%(filename)s 调用日志输出函数的模块的文件名</p>
-<p>%(module)s 调用日志输出函数的模块名</p>
-<p>%(funcName)s 调用日志输出函数的函数名</p>
-<p>%(lineno)d 调用日志输出函数的语句所在的代码行</p>
-<p>%(created)f 当前时间，用UNIX标准的表示时间的浮 点数表示</p>
-<p>%(relativeCreated)d 输出日志信息时的，自Logger创建以 来的毫秒数</p>
-<p>%(asctime)s 字符串形式的当前时间。默认格式是 “2003-07-08 16:49:45,896”。逗号后面的是毫秒</p>
-<p>%(thread)d 线程ID。可能没有</p>
-<p>%(threadName)s 线程名。可能没有</p>
-<p>%(process)d 进程ID。可能没有</p>
-<p>%(message)s用户输出的消息</p>
-<p>（3)logger对象</p>
-<p>上述几个例子中我们了解到了logging.debug()、logging.info()、logging.warning()、logging.error()、logging.critical()（分别用以记录不同级别的日志信息），logging.basicConfig()（用默认日志格式（Formatter）为日志系统建立一个默认的流处理器（StreamHandler），设置基础配置（如日志级别等）并加到root logger（根Logger）中）这几个logging模块级别的函数，另外还有一个模块级别的函数是logging.getLogger([name])（返回一个logger对象，如果没有指定名字将返回root logger）</p>
-<p>先看一个最简单的过程：</p>
-<pre><code>import logging
-
-logger = logging.getLogger()
-# 创建一个handler，用于写入日志文件
-fh = logging.FileHandler(&apos;test.log&apos;)
-
-# 再创建一个handler，用于输出到控制台
-ch = logging.StreamHandler()
-
-formatter = logging.Formatter(&apos;%(asctime)s - %(name)s - %(levelname)s - %(message)s&apos;)
-
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-
-logger.addHandler(fh) #logger对象可以添加多个fh和ch对象
-logger.addHandler(ch)
-
-logger.debug(&apos;logger debug message&apos;)
-logger.info(&apos;logger info message&apos;)
-logger.warning(&apos;logger warning message&apos;)
-logger.error(&apos;logger error message&apos;)
-logger.critical(&apos;logger critical message&apos;)
-</code></pre><p>先简单介绍一下，logging库提供了多个组件：Logger、Handler、Filter、Formatter。Logger对象提供应用程序可直接使用的接口，Handler发送日志到适当的目的地，Filter提供了过滤日志信息的方法，Formatter指定日志显示格式。</p>
-<p>Logger是一个树形层级结构，输出信息之前都要获得一个Logger（如果没有显示的获取则自动创建并使用root Logger，如第一个例子所示）。</p>
-<p>logger = logging.getLogger()返回一个默认的Logger也即root Logger，并应用默认的日志级别、Handler和Formatter设置。</p>
-<p>当然也可以通过Logger.setLevel(lel)指定最低的日志级别，可用的日志级别有logging.DEBUG、logging.INFO、logging.WARNING、logging.ERROR、logging.CRITICAL。</p>
-<p>Logger.debug()、Logger.info()、Logger.warning()、Logger.error()、Logger.critical()输出不同级别的日志，只有日志等级大于或等于设置的日志级别的日志才会被输出。</p>
-<pre><code>logger.debug(&apos;logger debug message&apos;)  
-logger.info(&apos;logger info message&apos;)  
-logger.warning(&apos;logger warning message&apos;)  
-logger.error(&apos;logger error message&apos;)  
-logger.critical(&apos;logger critical message&apos;)  
-</code></pre><p>只输出了</p>
-<pre><code>2018-01-24 12:54:43,222 - root - WARNING - logger warning message
-2018-01-24 12:54:43,223 - root - ERROR - logger error message
-2018-01-24 12:54:43,224 - root - CRITICAL - logger critical message
-</code></pre><p>从这个输出可以看出logger = logging.getLogger()返回的Logger名为root。这里没有用logger.setLevel(logging.Debug)显示的为logger设置日志级别，所以使用默认的日志级别WARNIING，故结果只输出了大于等于WARNIING级别的信息。</p>
-<p>如果我们再创建两个logger对象：</p>
-<pre><code>logger1 = logging.getLogger(&apos;mylogger&apos;)
-logger1.setLevel(logging.DEBUG)
-
-logger2 = logging.getLogger(&apos;mylogger&apos;)
-logger2.setLevel(logging.INFO)
-
-logger1.addHandler(fh)
-logger1.addHandler(ch)
-
-logger2.addHandler(fh)
-logger2.addHandler(ch)
-
-logger1.debug(&apos;logger1 debug message&apos;)
-logger1.info(&apos;logger1 info message&apos;)
-logger1.warning(&apos;logger1 warning message&apos;)
-logger1.error(&apos;logger1 error message&apos;)
-logger1.critical(&apos;logger1 critical message&apos;)
-
-logger2.debug(&apos;logger2 debug message&apos;)
-logger2.info(&apos;logger2 info message&apos;)
-logger2.warning(&apos;logger2 warning message&apos;)
-logger2.error(&apos;logger2 error message&apos;)
-logger2.critical(&apos;logger2 critical message&apos;)
-</code></pre><p>结果：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-7.png" alt="9-7"></p>
-<p>这里有两个个问题：</p>
-<p><1>我们明明通过logger1.setLevel(logging.DEBUG)将logger1的日志级别设置为了DEBUG，为何显示的时候没有显示出DEBUG级别的日志信息，而是从INFO级别的日志开始显示呢？</1></p>
-<p>原来logger1和logger2对应的是同一个Logger实例，只要logging.getLogger（name）中名称参数name相同则返回的Logger实例就是同一个，且仅有一个，也即name与Logger实例一一对应。在logger2实例中通过logger2.setLevel(logging.INFO)设置mylogger的日志级别为logging.INFO，所以最后logger1的输出遵从了后来设置的日志级别。</p>
-<p><2>为什么logger1、logger2对应的每个输出分别显示两次?</2></p>
-<p>这是因为我们通过logger = logging.getLogger()显示的创建了root Logger，而logger1 = logging.getLogger(‘mylogger’)创建了root Logger的孩子(root.)mylogger,logger2同样。而孩子,孙子，重孙……既会将消息分发给他的handler进行处理也会传递给所有的祖先Logger处理。</p>
-<p>ok,那么现在我们把</p>
-<p># logger.addHandler(fh)<br># logger.addHandler(ch)  注释掉，我们再来看效果：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-8.png" alt="9-8"></p>
-<p>因为我们注释了logger对象显示的位置，所以才用了默认方式，即标准输出方式。因为它的父级没有设置文件显示方式，所以在这里只打印了一次。孩子,孙子，重孙……可逐层继承来自祖先的日志级别、Handler、Filter设置，也可以通过Logger.setLevel(lel)、Logger.addHandler(hdlr)、Logger.removeHandler(hdlr)、Logger.addFilter(filt)、Logger.removeFilter(filt)。设置自己特别的日志级别、Handler、Filter。若不设置则使用继承来的值。</p>
-<p><3>Filter</3></p>
-<p>限制只有满足过滤规则的日志才会输出。</p>
-<p>比如我们定义了filter = logging.Filter(‘a.b.c’),并将这个Filter添加到了一个Handler上，则使用该Handler的Logger中只有名字带 a.b.c前缀的Logger才能输出其日志。</p>
-<pre><code>filter = logging.Filter(&apos;mylogger&apos;) 
-
-logger.addFilter(filter)
-</code></pre><p>这是只对logger这个对象进行筛选,如果想对所有的对象进行筛选，则：</p>
-<pre><code>filter = logging.Filter(&apos;mylogger&apos;) 
-
-fh.addFilter(filter)
-
-ch.addFilter(filter)
-</code></pre><p> 这样，所有添加fh或者ch的logger对象都会进行筛选。</p>
-<h1 id="re模块"><a href="#re模块" class="headerlink" title="re模块"></a>re模块</h1><p>就其本质而言，正则表达式（或 RE）是一种小型的、高度专业化的编程语言，（在Python中）它内嵌在Python中，并通过 re 模块实现。正则表达式模式被编译成一系列的字节码，然后由用 C 编写的匹配引擎执行。</p>
-<p>字符匹配（普通字符，元字符）：</p>
-<p>（1）普通字符：大多数字符和字母都会和自身匹配</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-9.png" alt="9-9"></p>
-<p>(2)元字符：<code>. ^ $ * + ? { } [ ] | ( ) \</code></p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-10.png" alt="9-10"></p>
-<p>注意：前面的*,+,?等都是贪婪匹配，也就是尽可能匹配，后面加?号使其变成惰性匹配</p>
-<p>（3）元字符之字符集［］：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-11.png" alt="9-11"></p>
-<p>在字符集里有功能的符号: - ^ \</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-12.png" alt="9-12"></p>
-<p>（4)元字符之转义符\</p>
-<p>反斜杠后边跟元字符去除特殊功能,比如.</p>
-<p>反斜杠后边跟普通字符实现特殊功能,比如\d</p>
-<p>\d  匹配任何十进制数；它相当于类 [0-9]。</p>
-<p>\D 匹配任何非数字字符；它相当于类 [^0-9]。</p>
-<p>\s  匹配任何空白字符；它相当于类 [ \t\n\r\f\v]。</p>
-<p>\S 匹配任何非空白字符；它相当于类 [^ \t\n\r\f\v]。</p>
-<p>\w 匹配任何字母数字字符；它相当于类 [a-zA-Z0-9_]。</p>
-<p>\W 匹配任何非字母数字字符；它相当于类 [^a-zA-Z0-9_]</p>
-<p>\b  匹配一个特殊字符边界，比如空格 ，&amp;，＃等</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-13.png" alt="9-13"></p>
-<p>一个小坑：</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-14.png" alt="9-14"></p>
-<p>选择\b是因为\b在ASCII表中是有意义的</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-15.png" alt="9-15"></p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-16.png" alt="9-16"></p>
-<p>（5)元字符之分组()</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-17.png" alt="9-17"></p>
-<p>(6)元字符之｜</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-18.png" alt="9-18"></p>
-<p>(7)re模块下的常用方法</p>
-<pre><code>import  re
-
-#1
-re.findall(&apos;a&apos;,&apos;alvin yuan&apos;)    #返回所有满足匹配条件的结果,放在列表里
-
-#2
-re.search(&apos;a&apos;,&apos;alvin yuan&apos;).group()  #函数会在字符串内查找模式匹配,只到找到第一个匹配然后返回一个包含匹配信息的对象,该对象可以
-# 通过调用group()方法得到匹配的字符串,如果字符串没有匹配，则返回None。
-
-#3
-re.match(&apos;a&apos;,&apos;abc&apos;).group()     #同search,不过尽在字符串开始处进行匹配
-
-#4
-ret=re.split(&apos;[ab]&apos;,&apos;abcd&apos;)     #先按&apos;a&apos;分割得到&apos;&apos;和&apos;bcd&apos;,在对&apos;&apos;和&apos;bcd&apos;分别按&apos;b&apos;分割
-print(ret)#[&apos;&apos;, &apos;&apos;, &apos;cd&apos;]
-
-#5
-ret=re.sub(&apos;\d&apos;,&apos;abc&apos;,&apos;alvin5yuan6&apos;,1)
-print(ret)#alvinabcyuan6
-ret=re.subn(&apos;\d&apos;,&apos;abc&apos;,&apos;alvin5yuan6&apos;)
-print(ret)#(&apos;alvinabcyuanabc&apos;, 2)
-
-#6
-obj=re.compile(&apos;\d{3}&apos;)
-ret=obj.search(&apos;abc123eeee&apos;)
-print(ret.group())#123
-
-#7
-ret=re.finditer(&apos;\d&apos;,&apos;ds3sy4784a&apos;)
-print(ret)        #&lt;callable_iterator object at 0x10195f940&gt;
-print(next(ret).group())
-print(next(ret).group())
-
-注意：
-import re
-
-ret=re.findall(&apos;www.(baidu|163).com&apos;,&apos;www.baidu.com&apos;)
-print(ret)#[&apos;baidu&apos;]     这是因为findall会优先把匹配结果组里内容返回,如果想要匹配结果,取消权限即可
-
-ret=re.findall(&apos;www.(?:baidu|163.com&apos;,&apos;www.163.com&apos;)
-print(ret)#[&apos;www.163.com&apos;]
-</code></pre><p>PS: Python支持的正则表达式元字符和语法汇总表</p>
-<p><img src="http://p3q1rwnbl.bkt.clouddn.com/9-19.png" alt="9-19"></p>
-<p>(8)正则表达式使用总结：</p>
-<p>1、用法</p>
-<p>^ 匹配字符串的开始。</p>
-<p>$ 匹配字符串的结尾。</p>
-<p>\b 匹配一个单词的边界。</p>
-<p>\d 匹配任意数字。</p>
-<p>\D 匹配任意非数字字符。</p>
-<p>x? 匹配一个可选的 x 字符 (换言之，它匹配 1 次或者 0 次 x 字符)。</p>
-<p>x* 匹配0次或者多次 x 字符。</p>
-<p>x+ 匹配1次或者多次 x 字符。</p>
-<p>x{n,m} 匹配 x 字符，至少 n 次，至多 m 次。</p>
-<p>(a|b|c) 要么匹配 a，要么匹配 b，要么匹配 c。</p>
-<p>(x) 一般情况下表示一个记忆组 (remembered group)。你可以利用 re.search 函数返回对象的 groups() 函数获取它的值。</p>
-<p>正则表达式中的点号通常意味着 “匹配任意单字符”</p>
-<p>2、解题思路：</p>
-<p>匹配出所有的整数：1-2*(60+(-40.35/5)-(-4*3))</p>
-<p>A、既然是提取数字，那么数字的形式一般是：整数，小数，整数加小数；</p>
-<p>B、所以一般是形如：—-.—–或者就是—-</p>
-<p>C、根据上述正则表达式的含义，可写出如下的表达式：“-?\d+.\d*|(-?\d+) “；</p>
-<p>D、-？\d+匹配1次或者0次负号；.这个是匹配小数点的；\d*这个是匹配小数点之后的数字的，所以是0个或者多个；|表示左右表达式任意匹配一个 ；</p>
-<p>3.代码</p>
-<pre><code>import  re
-ret=re.findall(r&quot;-?\d+\.\d*|(-?\d+)&quot;,&quot;1-2*(60+(-40.35/5)-(-4*3))&quot;)
-ret.remove(&quot;&quot;)
-print(ret)
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;模块-amp-包&quot;&gt;&lt;a href=&quot;#模块-amp-包&quot; class=&quot;headerlink&quot; title=&quot;模块&amp;amp;包&quot;&gt;&lt;/a&gt;模块&amp;amp;包&lt;/h1&gt;&lt;h2 id=&quot;模块-modue-的概念：&quot;&gt;&lt;a href=&quot;#模块-modue-的概念：&quot; c
     
     </summary>
     

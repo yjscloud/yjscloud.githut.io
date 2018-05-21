@@ -1,0 +1,1105 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MySQL系列," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="mysql主从复制介绍mysql支持单向、双向、链式级联、实时、异步复制。复制过程中，一台服务器充当主服务器（master），而一个或多个其他的服务器充当从服务器（slave）。复制可以是单向：M==&amp;gt;S，也可以是双向M&amp;lt;==&amp;gt;M，当然也可以多M环状同步等。如果设置了链式级联复制，那么，从（slave）服务器本身除了充当从服务器外，也会同时充当其下面从服务器的主服务器。链式级联复">
+<meta name="keywords" content="MySQL系列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL系列（五）：MySQL主从复制">
+<meta property="og:url" content="http://yjscloud.com/2018/04/27/MySQL系列（五）：MySQL主从复制/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="mysql主从复制介绍mysql支持单向、双向、链式级联、实时、异步复制。复制过程中，一台服务器充当主服务器（master），而一个或多个其他的服务器充当从服务器（slave）。复制可以是单向：M==&amp;gt;S，也可以是双向M&amp;lt;==&amp;gt;M，当然也可以多M环状同步等。如果设置了链式级联复制，那么，从（slave）服务器本身除了充当从服务器外，也会同时充当其下面从服务器的主服务器。链式级联复">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-101.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-102.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-103.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-104.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-105.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-106.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-107.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-108.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-109.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-110.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-111.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-112.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-113.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-114.png">
+<meta property="og:image" content="http://p924w4b7r.bkt.clouddn.com/m-115.png">
+<meta property="og:updated_time" content="2018-05-21T11:21:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL系列（五）：MySQL主从复制">
+<meta name="twitter:description" content="mysql主从复制介绍mysql支持单向、双向、链式级联、实时、异步复制。复制过程中，一台服务器充当主服务器（master），而一个或多个其他的服务器充当从服务器（slave）。复制可以是单向：M==&amp;gt;S，也可以是双向M&amp;lt;==&amp;gt;M，当然也可以多M环状同步等。如果设置了链式级联复制，那么，从（slave）服务器本身除了充当从服务器外，也会同时充当其下面从服务器的主服务器。链式级联复">
+<meta name="twitter:image" content="http://p924w4b7r.bkt.clouddn.com/m-101.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2018/04/27/MySQL系列（五）：MySQL主从复制/"/>
+
+
+
+
+
+  <title>MySQL系列（五）：MySQL主从复制 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/04/27/MySQL系列（五）：MySQL主从复制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                MySQL系列（五）：MySQL主从复制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-27T18:51:07+08:00">
+                2018-04-27
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/数据库学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">数据库学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/04/27/MySQL系列（五）：MySQL主从复制/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3,054
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="mysql主从复制介绍"><a href="#mysql主从复制介绍" class="headerlink" title="mysql主从复制介绍"></a>mysql主从复制介绍</h1><p>mysql支持单向、双向、链式级联、实时、异步复制。复制过程中，一台服务器充当主服务器（master），而一个或多个其他的服务器充当从服务器（slave）。复制可以是单向：M==&gt;S，也可以是双向M&lt;==&gt;M，当然也可以多M环状同步等。如果设置了链式级联复制，那么，从（slave）服务器本身除了充当从服务器外，也会同时充当其下面从服务器的主服务器。链式级联复制类似A–&gt;B–&gt;C–&gt;D的复制形式。</p>
+<p>1）单向主从同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-101.png" alt="m-101"></p>
+<p>2）双向主主同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-102.png" alt="m-102"></p>
+<p>3）线性级联单向双主同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-103.png" alt="m-103"></p>
+<p>4）环状级联单向多主同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-104.png" alt="m-104"></p>
+<p>5）环状级联单向多主多从同步逻辑图：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-105.png" alt="m-105"></p>
+<p>在当前的生产工作中，大多数应用的MySQL主从同步都是异步的复制方式，即不是严格实时的数据同步。</p>
+<p>实时和异步：</p>
+<p>当配置好主从复制后，所有对数据库内容的更新就必须在主服务器上进行，以避免用户对主服务器上数据库内容的更新与对从服务器上数据库内容的更新不一致而导致发生冲突。<br>那么，为什么所有的更新都要在主服务器上进行呢？我们又如何确保用户在主服务器上更新呢？</p>
+<p>第一种防止数据写入库的方法：</p>
+<p>生产环境中一般会采用忽略授权表方式的同步，然后对从服务器（slave）上的用户仅授权select读权限。不同步mysql库，这样我们就保证主库和从库相同的用户可以授权不同的权限。</p>
+<p>第二种防止数据写入从库的方法：</p>
+<p>除了上面再从库仅做select的授权外，还可以在slave服务器启动选项增加参数或在my.cnf配置文件中间read-only参数来确保从库只读，当然授权用户read-only从参数二者同时操作效果更佳，这也是我们生产环境中使用的方案。read-only参数可以让slave服务器只允许来自slave服务器线程或具体super权限用户的更新。可以确保slave服务器不接受来自普通用户的更新，slave服务器启动选项增加–read-only也是同样功能</p>
+<h1 id="mysql主从复制的应用场景"><a href="#mysql主从复制的应用场景" class="headerlink" title="mysql主从复制的应用场景"></a>mysql主从复制的应用场景</h1><p>mysql主从复制有利于数据库架构的健壮性、提升访问速度和易于维护管理</p>
+<p>1）主从服务器互为备份</p>
+<p>主服务器架构的设置，可以大大的加强数据库架构健壮性，例如：当主服务器出现问题时，我们可以人工或自动切换到从服务器继续提供服务。这类似我们的nfs服务器存储数据通过inotify+rsync同步到备份的nfs非常类似，只不过mysql的同步方案，是其自带的工具。非人为的硬件，服务故障，对于人为的执行drop,delete无能为力。</p>
+<p>2）主从服务器读写分离分担网站压力</p>
+<p>主从服务器架构可以通过程序（php,java）或者代理软件（mysql-proxy,amoeba）对用户（客户端）的请求实现读写分离，即通过在从服务器上仅仅处理用户的select查询请求，降低用户查询响应时间及读写同时在主服务器带来的压力，对于更新的数据（update,insert,delete）乃然交给主服务器处理，确保主服务器和从服务器保持实时同步。如果网站是以非更新（以浏览为主）为业务为主的业务，如blog,www首页展示等业务，查询请求比较多，这是从服务器的读写分离负载均衡策略就很有效了，这就是传说中的读写分离数据库结构。</p>
+<h1 id="mysql主从复制原理过程"><a href="#mysql主从复制原理过程" class="headerlink" title="mysql主从复制原理过程"></a>mysql主从复制原理过程</h1><p>简单描述下mysql replication的复制过程</p>
+<p>1）slave服务器上执行start slave，开启主从复制开关。</p>
+<p>2）此时，slave服务器的IO线程会通过在master上授权的复制用户权限请求连接master服务器，并请求从指定binlog日志文件的指定位置（日志文件名和位置就是在配置主从复制服务时执行change master命令时指定的）之后binlog日志内容；</p>
+<p>3）master服务器接收到来自slave服务器的IO线程的请求后，master服务器上负责复制的IO线程根据slave服务器的IO线程请求的信息读取指定binlog日志文件指定位置之后的binlog日志信息，然后返回给slave端的IO线程。返回的信息中除了binlog日志内容外，还有本次返回日志内容后在master服务器端的新的binlog文件名称以及在binlog中的下一个指定更新位置；</p>
+<p>4）当slave服务器的IO线程获取到来自master服务器上IO线程发送日志内容及日志文件及位置点后，将binlog日志内容依次写入slave端自身的relay log（即中继日志）文件（mysql-relay-bin.xxxxxx）的最末端，并将新的binlog文件名和位置记录到master-info文件中，以便下一次读取master端新binlog日志是能够告诉master服务器需要从新binglog日志的那个文件那个位置开始请求新的binlog日志内容。</p>
+<p>5）slave服务器端的SQL线程会实时的检测本地relay log中新增加的日志内容，然后及时把log文件中的内容解析成在master端曾经执行的sql语句的内容，并在自身slave服务器上按语句的顺序执行应用这些sql语句，应用完毕后清理应用过的日志。</p>
+<p>6）经过了上面的过程，就可以确保在master端和slave端执行了同样的sql语句，当复制状态正常的情况下，master端和slave端的数据完全一样的，mysql的同步机制是有一些特殊的情况的，具体请参考官方的说明。</p>
+<p>注意：</p>
+<p>1、同步的时候从库有两个线程来完成（IO、SQL），主库有一个线程来完成（IO）</p>
+<p>2、要在从库上配置连接主库的ip，用户名，账号，密码，连接的位置已经host点</p>
+<p>3、在开启开关之前确保主从数据是一致的</p>
+<p>4、在开关之前在主库上建立专门给从库同步的账号</p>
+<p>5、主库要打开binlog开关，否则无法实现同步</p>
+<p>6、从库打开开关的过程实际上就是让两个线程工作的过程</p>
+<h1 id="复制准备"><a href="#复制准备" class="headerlink" title="复制准备"></a>复制准备</h1><p>1）定义服务器角色</p>
+<p>主库（mysql master）：[ip为192.168.0.30，端口为：3306]</p>
+<p>从库（mysql slave）：[ip为192.168.0.31，端口为：3307]</p>
+<p>提示：1、一般常规做主从复制，主从服务器多数在不同的机器上，并且监听的端口均为默认的3306。我的实验环境是克隆的虚拟机，相同端口会报错，所以我用了不同的端口。</p>
+<p>2）数据库读法的约定</p>
+<p>主库，也可称为master</p>
+<p>从库，也可为slave</p>
+<h1 id="配置主库"><a href="#配置主库" class="headerlink" title="配置主库"></a>配置主库</h1><p>首先打开binlog日志的功能，执行vi /etc/my.cnf配置文件，按如下两个参数内容修改：</p>
+<pre><code>[mysqld]
+server-id = 1
+log-bin = mysql-bin
+</code></pre><p>提示：</p>
+<p>1、上面两个参数要放在my.cnf中的[mysqld]模块下，否则会出错。</p>
+<p>2、server-id的值使用服务器ip地址的最后8位如19，目的是避免不同机器或实例ID重复（不适合多实例）。</p>
+<p>3、要先在my.cnf配置文件中查找相关参数，并按要求修改。不存在时添加参数，切记参数不能重复。</p>
+<p>4、修改my.cnf配置后需要重启数据库</p>
+<p>检查配置后的结果：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-106.png" alt="m-106"></p>
+<p>检查binlog记录</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-107.png" alt="m-107"></p>
+<h2 id="建立用于同步的账号rep"><a href="#建立用于同步的账号rep" class="headerlink" title="建立用于同步的账号rep"></a>建立用于同步的账号rep</h2><p>登陆master主数据库，建立用于主从复制的账号rep:</p>
+<pre><code>mysql&gt; grant replication slave on *.* to &apos;rep&apos;@&apos;192.168.0.%&apos; identified by &apos;yjscloud123&apos;;
+mysql&gt; flush privileges;
+
+# replication slave 为mysql同步的必须权限，此处不要授权all.
+# *.*表现所有库所有表，可以指定具体的库和表进行复制。
+# &apos;rep&apos;@&apos;192.168.0.%&apos; rep为同步账号。192.168.0.%为授权主机网段，使用了%表示允许整个192.168.0.0网段一rep用户访问。
+# identified by &apos;yjscloud123&apos;; yjscloud为密码，实际环境时复杂一点为好
+</code></pre><h2 id="对数据库锁表只读（当前窗口不要关掉）"><a href="#对数据库锁表只读（当前窗口不要关掉）" class="headerlink" title="对数据库锁表只读（当前窗口不要关掉）"></a>对数据库锁表只读（当前窗口不要关掉）</h2><p>备份前锁表防止有新的数据写入</p>
+<pre><code>mysql&gt; flush table with read lock;
+</code></pre><p>提示：这个锁表命令的时间，在不同的引擎的情况，会受下面参数的控制，锁表时，如果超过设置时间不操作会自动解锁。</p>
+<p>默认情况下的时长为：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-108.png" alt="m-108"></p>
+<h2 id="查看主库状态"><a href="#查看主库状态" class="headerlink" title="查看主库状态"></a>查看主库状态</h2><p>查看备份点：查看主库状态，即当前binlog日志文件名和二进制binlog日志偏移量</p>
+<pre><code>show master status; #命令显示的信息要记录在案，后面的从库复制时是从这个位置开始的
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-109.png" alt="m-109"></p>
+<h2 id="导出数据库数据"><a href="#导出数据库数据" class="headerlink" title="导出数据库数据"></a>导出数据库数据</h2><p>打开新窗口，导出数据库数据，如果数据量很大（100G+），并且允许停机，可以停库直接打包数据文件迁移</p>
+<pre><code>mysqldump -uroot -pyjscloud -A -B --events|gzip &gt;/opt/rep_bak.$(date +%F).sql.gz
+</code></pre><p>注意-A 表示备份所有库。-B表示增加use DB和drop等（导库时会直接覆盖原有的）</p>
+<p>导库后，解锁主库，恢复可写；</p>
+<pre><code>mysql&gt;unlock tables;
+</code></pre><h2 id="把主库导出的mysql数据迁移到从库"><a href="#把主库导出的mysql数据迁移到从库" class="headerlink" title="把主库导出的mysql数据迁移到从库"></a>把主库导出的mysql数据迁移到从库</h2><p>这步常用命令有scp,rsync等。操作这里不再略去</p>
+<h1 id="从库上执行操作"><a href="#从库上执行操作" class="headerlink" title="从库上执行操作"></a>从库上执行操作</h1><h2 id="设置server-id值并关闭参数"><a href="#设置server-id值并关闭参数" class="headerlink" title="设置server-id值并关闭参数"></a>设置server-id值并关闭参数</h2><p>数据库的sever-id一般在LAN内是唯一的，这里的server-id要和主库及其他从库不同，注释掉从库的binlog参数配置。</p>
+<p>执行vi /etc/my.cnf编辑my.cnf配置文件，按如下两个参数内容修改：</p>
+<pre><code>[mysqld]
+server-id = 3
+#log-bin= mysql-bin
+</code></pre><p>1、上面两个参数要放在my.cnf中的[mysqld]模块下，否则会出错。</p>
+<p>2、server-id的值使用服务器ip地址的最后8位如19，目的是避免不同机器或实例ID重复（不适合多<br>实例）。</p>
+<p>3、要先在my.cnf配置文件中查找相关参数，并按要求修改。不存在时添加参数，切记参数不能重复。</p>
+<p>4、修改my.cnf配置后需要重启数据库</p>
+<p>有两种情况需要打开log-bin，记录数据库更新的sql语句：</p>
+<p>a、级联同步A–&gt;B–&gt;C那中间的B就要开启log-bin</p>
+<p>b、在从库做数据库备份，数据库备份必须要有备份和binlog日志，才是完整的备份</p>
+<p>检查配置后的结果</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-110.png" alt="m-110"></p>
+<p>重启从数据库<br>/etc/init.d/mysqld restart</p>
+<h2 id="还原主库导出的数据到从库"><a href="#还原主库导出的数据到从库" class="headerlink" title="还原主库导出的数据到从库"></a>还原主库导出的数据到从库</h2><pre><code>[root@slave-1 opt]# gzip -d rep_bak.2018-4-23.sql.gz   #解压目标数据库备份
+[root@slave-1 opt]# mysql -uroot -pyjscloud &lt;rep_bak.2018-4-23.sql
+</code></pre><h2 id="登陆从库配置同步参数"><a href="#登陆从库配置同步参数" class="headerlink" title="登陆从库配置同步参数"></a>登陆从库配置同步参数</h2><pre><code>mysql -uroot -pyjscloud
+
+CHANGE MASTER TO
+MASTER_HOST=&apos;192.168.0.30&apos;,     # 这是主库的ip
+MASTER_PORT=3306,                  #这里是主库的端口，从库端口可以和主库不同
+MASTER_USER=&apos;rep&apos;,                    # 这里是主库上建立的用于复制的用户rep
+MASTER_PASSWORD=&apos;yjscloud123&apos;,     #这里是rep的密码
+MASTER_LOG_FILE=&apos;mysql-bin.000005&apos;,     #这里是show master stauts时看到的二进制日志文件名称，注意不能多空格
+MASTER_LOG_POS=338;         # 这里是show master status时看到的查看到的二进制日志偏移量，注意不能多空格
+</code></pre><p>上述操作原理实际是把用户密码等信息写入从库的master.info</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-111.png" alt="m-111"></p>
+<h2 id="启动从库同步开关"><a href="#启动从库同步开关" class="headerlink" title="启动从库同步开关"></a>启动从库同步开关</h2><p>启动从库同步开关，并查看同步状态</p>
+<pre><code>mysql&gt; start slave;
+</code></pre><p>查看从库状态</p>
+<pre><code>mysql&gt; show slave status\G
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-112.png" alt="m-112"><br><img src="http://p924w4b7r.bkt.clouddn.com/m-113.png" alt="m-113"></p>
+<p>注释：</p>
+<pre><code>Slave_IO_Running: Yes   #负责从库去主库读取BINLOG日志，并写入从库的中继日志中
+Slave_SQL_Running：Yes   #负责读取并执行中继日志中的BINLOG，转换SQL语句应用到数据库
+</code></pre><h1 id="测试复制结果"><a href="#测试复制结果" class="headerlink" title="测试复制结果"></a>测试复制结果</h1><p>在master上操作：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-114.png" alt="m-114"></p>
+<p>在slave上查看同步结果</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-115.png" alt="m-115"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL系列/" rel="tag"><i class="fa fa-tag"></i> MySQL系列</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/04/26/MySQL系列（四）：MySQL增量备份及数据恢复/" rel="prev" title="MySQL系列（四）：MySQL增量备份及数据恢复">
+                MySQL系列（四）：MySQL增量备份及数据恢复 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">59</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://amon1997.com/" title="Amon的博客" target="_blank">Amon的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql主从复制介绍"><span class="nav-number">1.</span> <span class="nav-text">mysql主从复制介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql主从复制的应用场景"><span class="nav-number">2.</span> <span class="nav-text">mysql主从复制的应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#mysql主从复制原理过程"><span class="nav-number">3.</span> <span class="nav-text">mysql主从复制原理过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复制准备"><span class="nav-number">4.</span> <span class="nav-text">复制准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置主库"><span class="nav-number">5.</span> <span class="nav-text">配置主库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#建立用于同步的账号rep"><span class="nav-number">5.1.</span> <span class="nav-text">建立用于同步的账号rep</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对数据库锁表只读（当前窗口不要关掉）"><span class="nav-number">5.2.</span> <span class="nav-text">对数据库锁表只读（当前窗口不要关掉）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查看主库状态"><span class="nav-number">5.3.</span> <span class="nav-text">查看主库状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#导出数据库数据"><span class="nav-number">5.4.</span> <span class="nav-text">导出数据库数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#把主库导出的mysql数据迁移到从库"><span class="nav-number">5.5.</span> <span class="nav-text">把主库导出的mysql数据迁移到从库</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#从库上执行操作"><span class="nav-number">6.</span> <span class="nav-text">从库上执行操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设置server-id值并关闭参数"><span class="nav-number">6.1.</span> <span class="nav-text">设置server-id值并关闭参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#还原主库导出的数据到从库"><span class="nav-number">6.2.</span> <span class="nav-text">还原主库导出的数据到从库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#登陆从库配置同步参数"><span class="nav-number">6.3.</span> <span class="nav-text">登陆从库配置同步参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动从库同步开关"><span class="nav-number">6.4.</span> <span class="nav-text">启动从库同步开关</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试复制结果"><span class="nav-number">7.</span> <span class="nav-text">测试复制结果</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>
