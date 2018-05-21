@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-05-21T06:54:58.000Z</updated>
+  <updated>2018-05-21T09:20:02.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,404 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL系列（四）：MySQL增量备份及数据恢复</title>
+    <link href="http://yjscloud.com/2018/05/21/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AMySQL%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    <id>http://yjscloud.com/2018/05/21/MySQL系列（四）：MySQL增量备份及数据恢复/</id>
+    <published>2018-05-21T07:31:33.000Z</published>
+    <updated>2018-05-21T09:20:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="MySQL数据库的备份"><a href="#MySQL数据库的备份" class="headerlink" title="MySQL数据库的备份"></a>MySQL数据库的备份</h1><h2 id="备份单个数据库练习多种参数使用"><a href="#备份单个数据库练习多种参数使用" class="headerlink" title="备份单个数据库练习多种参数使用"></a>备份单个数据库练习多种参数使用</h2><p>mysql数据库自带了一个很好用的备份命令，就是mysqldump，它的基本使用如下：</p>
+<p>语法：</p>
+<pre><code>mysqldump -u 用户名 -p 数据库名&gt; 备份的文件名
+</code></pre><p>例1：备份名字为test2的库</p>
+<p>1）查看备份前的数据</p>
+<pre><code>mysql -uroot -pyjscloud -e &apos;use test;show tables;select * from student;&apos;
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-77.png" alt="m-77"></p>
+<p>2）执行备份命令 </p>
+<pre><code>[root@mysql-1 ~]# mysqldump -uroot -pyjscloud test &gt;/opt/mysql_bak.sql
+</code></pre><p>3）检查备份的结果</p>
+<pre><code>egrep -v &quot;#|\*|--|^$&quot; /opt/mysql_bak.sql
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-78.png" alt="m-78"></p>
+<p>例2：备份时加-B参数</p>
+<pre><code>[root@mysql-1 ~]# mysqldump -uroot -pyjscloud -B test &gt;/opt/mysql_bak_B.sql
+</code></pre><p>和前面备份的文件对比，看看-B参数的作用</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-79.png" alt="m-79"><br>提示：直观看，加-B参数的作用是增加创建数据库和连接数据库命令了，即如下两条语句：</p>
+<pre><code>CREATE DATABASE /*!32312 IF NOT EXISTS*/ `test` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `test`;
+</code></pre><p>利用上述加-B的备份进行恢复测试：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-80.png" alt="m-80"></p>
+<p>例3：优化备份文件大小减少输出注释（debug调试）</p>
+<p>利用mysqldump的–compact参数优化下备份结果</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-81.png" alt="m-81"><br>略去输出</p>
+<p>带–compact参数备份    </p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-82.png" alt="m-82"></p>
+<p>–compact参数说明（测试是使用的比较多，也可以优化输出内容的大小，让容量更少，适合调试）：<br>参数说明：该选项使得输出内容更简洁，不包括默认选项中各种注释，有如下几个参数的功能：<br>–skip-add-drop-table –no-set-name –skip-disable-keys –skip-add-locks</p>
+<p>例4：指定压缩命令压缩备份的mysql数据</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-83.png" alt="m-83"></p>
+<p>压缩效率将近3倍。通过以上例子可以得出结论</p>
+<p>1）导出数据用-B参数</p>
+<p>2）用gzip对备份的数据压缩</p>
+<h2 id="mysqldump的工作原理"><a href="#mysqldump的工作原理" class="headerlink" title="mysqldump的工作原理"></a>mysqldump的工作原理</h2><p>利用mysqldump命令备份数据库的过程，实际上就是把数据从mysql库里以逻辑的sql语句的形式直接输出或者生产备份的文件的过程。备份的数据过滤注释，都是sql语句，结果如下：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-84.png" alt="m-84"></p>
+<h2 id="备份多个库及多个参数"><a href="#备份多个库及多个参数" class="headerlink" title="备份多个库及多个参数"></a>备份多个库及多个参数</h2><p>1）操作结果</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-85.png" alt="m-85"></p>
+<p>2）-B参数说明</p>
+<p>提示：-B参数是关键，表示接多个库，并且增加use db,和create database db的信息（生产环境常用）</p>
+<p>参数说明：改参数用于导出若干个数据库，在备份结果中加入USE db_name 和CRETAE DATABASE ‘db_name’ -B后的参数都将被作为数据库名。该参数比较常用。当-B后的数据库列全时同-A参数</p>
+<h2 id="如何做分库备份？"><a href="#如何做分库备份？" class="headerlink" title="如何做分库备份？"></a>如何做分库备份？</h2><p>分库备份实际上就是执行一个备份语句备份一个库，如果数据库里有多个库，就执行多条相同的备份单个库的备份语句就可以备份多个库了，注意每个库都可以用对应备份的库作为库名，结尾加.sql。备份多个库的命令如下：<br>分库备份：</p>
+<pre><code>mysql -uroot -pyjscloud -e &apos;show databases;&apos;|grep -Evi &apos;database|infor|perfor&apos;|sed -r &apos;s#^([a-z].*$)#mysqldump -uroot -pyjscloud --events -B \1|gzip &gt;/opt/bak/\1.sql.gz#g&apos;|bash
+</code></pre><h2 id="备份单个表"><a href="#备份单个表" class="headerlink" title="备份单个表"></a>备份单个表</h2><p>语法：</p>
+<pre><code>mysqldump -u 用户名 -p 数据库名 表名&gt;备份的文件名
+mysqldump -u root -p test student&gt;/opt/table1.sql
+</code></pre><p>执行结果：</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-86.png" alt="m-86"><br><img src="http://p924w4b7r.bkt.clouddn.com/m-87.png" alt="m-87"></p>
+<h2 id="备份多个表"><a href="#备份多个表" class="headerlink" title="备份多个表"></a>备份多个表</h2><p>语法：</p>
+<pre><code>mysqldump -u 用户名 -p 数据库名 表名1 表名2&gt;备份的文件名
+</code></pre><p>操作结果：</p>
+<pre><code>[root@mysql-1 opt]# mysqldump -uroot -pyjscloud test course &gt;/opt/two_tables.sql
+</code></pre><p>一个库里有大有小的表，有时可能需要恢复某一个小表，上述的多表备份文件很难拆开，就会像没有分库那样导致恢复某一个小表很麻烦。那又如何进行分表备份呢？如下和分库是的思想一样，每执行一条语句备份一个表，生产不同的数据文件即可，</p>
+<pre><code>mysqldump -uroot -pyjscloud test student &gt; test_student.sql
+mysqldump -uroot -pyjscloud test course &gt; test_course.sql
+</code></pre><p>当然这种做法是很土的</p>
+<h2 id="备份数据库表结构（不包含数据）"><a href="#备份数据库表结构（不包含数据）" class="headerlink" title="备份数据库表结构（不包含数据）"></a>备份数据库表结构（不包含数据）</h2><p>利用mysqldump -d参数只备份表的结构，例：备份test库的所有表的结构</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-88.png" alt="m-88"></p>
+<p>如果只希望导出数据则用-t参数</p>
+<h2 id="mysqldump的关键参数说明"><a href="#mysqldump的关键参数说明" class="headerlink" title="mysqldump的关键参数说明"></a>mysqldump的关键参数说明</h2><h3 id="关键参数：mysqldump-–help"><a href="#关键参数：mysqldump-–help" class="headerlink" title="关键参数：mysqldump –help"></a>关键参数：mysqldump –help</h3><p>-A：导出全部数据库</p>
+<pre><code>--all-databases Dump all the databases. This will be same as --databases with all databases selected.
+</code></pre><p>-Y： 导出全部表空间</p>
+<pre><code>--all-tablespaces Dump all the tablespaces.
+</code></pre><p>-y：不导出任何表空间信息</p>
+<pre><code>--no-tablespaces Do not dump any tablespace information.
+</code></pre><p>–add-drop-database：每个数据库创建之前添加drop数据库语句</p>
+<pre><code>Add a &apos;DROP DATABASE&apos; before each create.
+</code></pre><p>–add-drop-table：每个数据表创建之前添加drop数据表语句。(默认为打开状态，使用–skip-add-drop-table取消选项)</p>
+<pre><code>Add a &apos;drop table&apos; before each create. 
+</code></pre><p>–add-locks：在每个表导出之前增加LOCK TABLES并且之后UNLOCK  TABLE。(默认为打开状态，使用–skip-add-locks取消选项)</p>
+<pre><code>Add locks around insert statements.   
+</code></pre><p>–allow-keywords：允许创建是关键词的列名字。</p>
+<pre><code>Allow creation of column names that are keywords.
+</code></pre><p>–character-sets-dir=name：字符集文件的目录</p>
+<pre><code>Directory where character sets are.
+</code></pre><p>-i：附加注释信息。默认为打开，可以用–skip-comments取消 </p>
+<pre><code>--comments Write additional information.
+</code></pre><p>–compatible=name：导出的数据将和其它数据库或旧版本的MySQL 相兼容。值可以为ansi、mysql323、mysql40、postgresql、oracle、mssql、db2、maxdb、no_key_options、no_tables_options、no_field_options等。要使用几个值，用逗号将它们隔开。它并不保证能完全兼容，而是尽量兼容。</p>
+<pre><code>Change the dump to be compatible with a given mode. By default tables are dumped in a format optimized for MySQL. Legal modes are: ansi, mysql323, mysql40, postgresql, oracle, mssql, db2, maxdb, no_key_options, no_table_options, no_field_options. One can use several modes separated by commas. Note: Requires MySQL server version 4.1.0 or higher. This option is ignored with earlier server versions.
+</code></pre><p>–compact：导出更少的输出信息(用于调试)。去掉注释和头尾等结构。可以使用选项：–skip-add-drop-table  –skip-add-locks –skip-comments –skip-disable-keys</p>
+<pre><code>Give less verbose output (useful for debugging). Disables structure comments and header/footer constructs.  Enables options --skip-add-drop-table --no-set-names --skip-disable-keys --skip-add-locks
+</code></pre><p>-c：使用完整的insert语句(包含列名称)。这么做能提高插入效率，但是可能会受到max_allowed_packet参数的影响而导致插入失败。</p>
+<pre><code>--complete-insert Use complete insert statements.
+</code></pre><p>-C：在客户端和服务器之间启用压缩传递所有信息 </p>
+<pre><code>--compress Use compression in server/client protocol.
+</code></pre><p>–create-options：在CREATE TABLE语句中包括所有MySQL特性选项。(默认为打开状态)</p>
+<pre><code>Include all MySQL specific create options.
+</code></pre><p>-B：导出数据库。参数后面所有名字参量都被看作数据库名。</p>
+<pre><code>--databases To dump several databases. Note the difference in usage; In this case no tables are given. All name arguments are regarded as databasenames. &apos;USE db_name;&apos; will be included in the output.
+</code></pre><p>-#：输出debug信息，用于调试</p>
+<pre><code>--debug[=#] This is a non-debug version. Catch this and exit
+</code></pre><p>–debug-check：检查内存和打开文件使用说明并退出。</p>
+<pre><code>Check memory and open file usage at exit.
+</code></pre><p>–debug-info：输出调试信息并退出</p>
+<pre><code>Print some debug info at exit.
+</code></pre><p>–default-character-set=name：设置默认字符集</p>
+<pre><code>Set the default character set.
+</code></pre><p>–delayed-insert：采用延时插入方式（INSERT DELAYED）导出数据</p>
+<pre><code>Insert rows with INSERT DELAYED;
+</code></pre><p>–delete-master-logs：master备份后删除日志. 这个参数将自动激活–master-data。</p>
+<pre><code>Delete logs on master after backup. This automatically enables --master-data.
+</code></pre><p>-K：对于每个表，用/*!40000 ALTER TABLE tbl_name DISABLE KEYS */;和/*!40000 ALTER TABLE tbl_name ENABLE KEYS */;语句引用INSERT语句。这样可以更快地导入dump出来的文件，因为它是在插入所有行后创建索引的。该选项只适合MyISAM表，默认为打开状态。</p>
+<pre><code>--disable-keys  &apos;/*!40000 ALTER TABLE tb_name DISABLE KEYS */; and &apos;/*!40000 ALTER TABLE tb_name ENABLE KEYS */; will be put in the output.
+</code></pre><p>-E：导出事件。</p>
+<pre><code>--events Dump events.
+</code></pre><p>-e：使用具有多个VALUES列的INSERT语法。这样使导出文件更小，并加速导入时的速度。默认为打开状态，使用–skip-extended-insert取消选项。</p>
+<pre><code>--extended-insert Allows utilization of the new, much faster INSERT syntax.
+</code></pre><p>–fields-terminated-by=name：导出文件中忽略给定字段。与–tab选项一起使用，不能用于–databases和–all-databases选项</p>
+<pre><code>Fields in the textfile are terminated by ...
+</code></pre><p>–fields-enclosed-by=name：输出文件中的各个字段用给定字符包裹。与–tab选项一起使用，不能用于–databases和–all-databases选项</p>
+<pre><code>Fields in the importfile are enclosed by ...
+</code></pre><p>–fields-optionally-enclosed-by=name：输出文件中的各个字段用给定字符选择性包裹。与–tab选项一起使用，不能用于–databases和–all-databases选项</p>
+<pre><code>Fields in the i.file are opt. enclosed by ...
+</code></pre><p>–fields-escaped-by=name：输出文件中的各个字段忽略给定字符。与–tab选项一起使用，不能用于–databases和–all-databases选项</p>
+<pre><code>Fields in the i.file are escaped by ...
+</code></pre><p>-F：开始导出之前刷新日志。</p>
+<pre><code>--flush-logs  Flush logs file in server before starting dump. Note that if you dump many databases at once (using the option --databases= or --all-databases), the logs will be flushed for each database dumped. The exception is when using --lock-all-tables or --master-data: in this case the logs will be flushed only once, corresponding to the moment all tables are locked. So if you want your dump and the log flush to happen at the same exact moment you should use --lock-all-tables or --master-data with --flush-logs
+</code></pre><p>–flush-privileges：在导出mysql数据库之后，发出一条FLUSH  PRIVILEGES 语句。为了正确恢复，该选项应该用于导出mysql数据库和依赖mysql数据库数据的任何时候。</p>
+<pre><code>Emit a FLUSH PRIVILEGES statement after dumping the mysql database.  This option should be used any time the dump contains the mysql database and any other database that depends on the data in the mysql database for proper restore.
+</code></pre><p>-f：在导出过程中忽略出现的SQL错误。</p>
+<pre><code>--force Continue even if we get an sql-error.
+</code></pre><p>-?：显示帮助信息并退出。</p>
+<pre><code>--help Display this help message and exit.
+</code></pre><p>–hex-blob：使用十六进制格式导出二进制字符串字段。如果有二进制数据就必须使用该选项。影响到的字段类型有BINARY、VARBINARY、BLOB。</p>
+<pre><code>Dump binary strings (BINARY, VARBINARY, BLOB) in hexadecimal format.
+</code></pre><p>-h：需要导出的主机信息</p>
+<pre><code>--host=name  Connect to host.
+</code></pre><p>–ignore-table=name：不导出指定表。指定忽略多个表时，需要重复多次，每次一个表。每个表必须同时指定数据库和表名。例如：–ignore-table=database.table1 –ignore-table=database.table2 ……</p>
+<pre><code>Do not dump the specified table. To specify more than one table to ignore, use the directive multiple times, once for each table.  Each table must be specified with both database and table names, e.g. --ignore-table=database.table
+</code></pre><p>–insert-ignore：在插入行时使用INSERT IGNORE语句.</p>
+<pre><code>Insert rows with INSERT IGNORE.
+</code></pre><p>–lines-terminated-by=name：输出文件的每行用给定字符串划分。与–tab选项一起使用，不能用于–databases和–all-databases选项。</p>
+<pre><code>Lines in the i.file are terminated by ...
+</code></pre><p>-x：提交请求锁定所有数据库中的所有表，以保证数据的一致性。这是一个全局读锁，并且自动关闭–single-transaction 和–lock-tables 选项。</p>
+<pre><code>--lock-all-tables Locks all tables across all databases. This is achieved by taking a global read lock for the duration of the whole dump. Automatically turns --single-transaction and --lock-tables off.
+</code></pre><p>-l：开始导出前，锁定所有表。用READ  LOCAL锁定表以允许MyISAM表并行插入。对于支持事务的表例如InnoDB和BDB，–single-transaction是一个更好的选择，因为它根本不需要锁定表。请注意当导出多个数据库时，–lock-tables分别为每个数据库锁定表。因此，该选项不能保证导出文件中的表在数据库之间的逻辑一致性。不同数据库表的导出状态可以完全不同。</p>
+<pre><code>--lock-tables Lock all tables for read.
+</code></pre><p>–log-error=name：附加警告和错误信息到给定文件</p>
+<pre><code>Append warnings and errors to given file.
+</code></pre><p>–no-autocommit：使用autocommit/commit 语句包裹表</p>
+<pre><code>Wrap tables with autocommit/commit statements.
+</code></pre><p>-n：只导出数据，而不添加CREATE DATABASE 语句</p>
+<pre><code>--no-create-db  &apos;CREATE DATABASE /*!32312 IF NOT EXISTS*/ db_name;&apos; will not be put in the output. The above line will be added otherwise, if --databases or --all-databases option was given.}.
+</code></pre><p> -t：只导出数据，而不添加CREATE TABLE 语句</p>
+<pre><code>--no-create-info Don&apos;t write table creation info.
+</code></pre><p>-d：不导出任何数据，只导出数据库表结构</p>
+<pre><code>--no-data No row information.
+</code></pre><p>–opt：等同于–add-drop-table,  –add-locks, –create-options, –quick, –extended-insert, –lock-tables,  –set-charset, –disable-keys 该选项默认开启,  可以用–skip-opt禁用.</p>
+<pre><code>Same as --add-drop-table, --add-locks, --create-options, --quick, --extended-insert, --lock-tables, --set-charset, and --disable-keys. Enabled by default, disable with --skip-opt.
+</code></pre><p>–order-by-primary：如果存在主键，或者第一个唯一键，对每个表的记录进行排序。在导出MyISAM表到InnoDB表时有效，但会使得导出工作花费很长时间。</p>
+<pre><code>Sorts each table&apos;s rows by primary key, or first unique key, if such a key exists.  Useful when dumping a MyISAM table to be loaded into an InnoDB table, but will make the dump itself take considerably longer.
+</code></pre><p>-p：连接数据库密码</p>
+<pre><code>--password[=name] Password to use when connecting to server. If password is not given it&apos;s solicited on the tty.
+</code></pre><p>-W：使用命名管道连接mysql(windows系统可用)</p>
+<pre><code>--pipe Use named pipes to connect to server.
+</code></pre><p>-P：连接数据库端口号</p>
+<pre><code>--port=# Port number to use for connection.
+</code></pre><p>–protocol=name：使用的连接协议，包括：tcp, socket, pipe, memory.</p>
+<pre><code>The protocol of connection (tcp,socket,pipe,memory).
+</code></pre><p>-q：不缓冲查询，直接导出到标准输出。默认为打开状态，使用–skip-quick取消该选项</p>
+<pre><code>--quick Don&apos;t buffer query, dump directly to stdout.
+</code></pre><p>-Q：使用（`）引起表和列名。默认为打开状态，使用–skip-quote-names取消该选项。</p>
+<pre><code>--quote-names Quote table and column names with backticks (`).
+</code></pre><p>–replace：使用REPLACE INTO 取代INSERT INTO.</p>
+<pre><code>Use REPLACE INTO instead of INSERT INTO.
+</code></pre><p>-r：直接输出到指定文件中。该选项应该用在使用回车换行对（\r\n）换行的系统上（例如：DOS，Windows）。该选项确保只有一行被使用。</p>
+<pre><code>--result-file=name Direct output to a given file. This option should be used in MSDOS, because it prevents new line &apos;\n&apos; from being converted to &apos;\r\n&apos; (carriage return + line feed).
+</code></pre><p>-R：导出存储过程以及自定义函数。</p>
+<pre><code>--routines Dump stored routines (functions and procedures).
+</code></pre><p>–set-charset：添加’SET NAMES  default_character_set’到输出文件。默认为打开状态，使用–skip-set-charset关闭选项。</p>
+<pre><code>Add &apos;SET NAMES default_character_set&apos; to the output. Enabled by default; suppress with --skip-set-charset.
+</code></pre><p>-O：设置变量的值</p>
+<pre><code>--set-variable=name Change the value of a variable. Please note that this option is deprecated; you can set variables directly with --variable-name=value.
+</code></pre><p>–dump-date：添加DUMP时间到输出末尾</p>
+<pre><code>Put a dump date to the end of the output.
+</code></pre><p>–skip-opt：禁用–opt选项.</p>
+<pre><code>Disable --opt. Disables --add-drop-table, --add-locks, --create-options, --quick, --extended-insert, --lock-tables, --set-charset, and --disable-keys.
+</code></pre><p>-S：指定连接mysql的socket文件位置，默认路径/tmp/mysql.sock</p>
+<pre><code>--socket=name Socket file to use for connection.
+</code></pre><p>-T：为每个表在给定路径创建tab分割的文本文件。注意：仅仅用于mysqldump和mysqld服务器运行在相同机器上。</p>
+<pre><code>--tab=name Creates tab separated textfile for each table to given path. (creates .sql and .txt files). NOTE: This only works if mysqldump is run on the same machine as the mysqld daemon.
+</code></pre><p>–tables：覆盖–databases (-B)参数，指定需要导出的表名。</p>
+<pre><code>Overrides option --databases (-B).
+</code></pre><p>–triggers：导出触发器。该选项默认启用，用–skip-triggers禁用它。</p>
+<pre><code>Dump triggers for each dumped table
+</code></pre><p>–tz-utc： 在导出顶部设置时区TIME_ZONE=’+00:00’ ，以保证在不同时区导出的TIMESTAMP 数据或者数据被移动其他时区时的正确性。</p>
+<pre><code>SET TIME_ZONE=&apos;+00:00&apos; at top of dump to allow dumping of TIMESTAMP data when a server has data in different time zones or data is being moved between servers with different time zones.
+</code></pre><p>-u：指定连接的用户名。</p>
+<pre><code>--user=name User for login if not current user.
+</code></pre><p>-v：输出多种平台信息。</p>
+<pre><code>--verbose Print info about the various stages.
+</code></pre><p>-V：输出mysqldump版本信息并退出</p>
+<pre><code>--version Output version information and exit.
+</code></pre><p>-w：只转储给定的WHERE条件选择的记录。请注意如果条件包含命令解释符专用空格或字符，一定要将条件引用起来。</p>
+<pre><code>--where=name Dump only selected records; QUOTES mandatory!
+</code></pre><p>-X：导出XML格式.</p>
+<pre><code>--xml   Dump a database as well formed XML.
+</code></pre><p>–master-data：</p>
+<p>  –master-data选项有3个可用值，0、1、2这三个值分别表示不同的含义</p>
+<p>  此值为0：表示在使用mysqldump进行备份时，不记录对应二进制日志文件位置，将此值显示的设置为0与不使用此选项效果相同</p>
+<p>  此值为1：表示在使用mysqldump进行备份时，记录二进制日志文件位置，此值为默认值，也就是说，使用–master-data与使用–master-data=1效果相同，如果将此选项的值设置为1，则会在备份文件生成对应的”CHANGE MASTER TO”，此语句中标明了备份开始时二进制日志的前缀名及其所处的位置</p>
+<p>  此值为2：如果此值为2时，则会在备份文件中生成对应的”CHANGE MASTER TO”语句中添加注释（就是不生效呗），所以如果只是单纯的为备份记录二进制日志文件位置，那么将此选项设置为2即可。<br>这个参数会–lock-all-tables锁表，除非你指定了–single-transaction 这种情况下，锁表只会在dump开始的时候持续一小段时间,照理说在dump的时候，任何动作都会影响到binlog文件dump结束之后，选项会自动关闭锁表功能。简单的说，就是主从复制在做全量备份的时候，这个选项可以自动帮我们锁表和识别binlog临界文件，就不需要我们锁表，再看临界文件编号，再执行CHANGE MASTER填写binglong位置信息到从库master.info文件中了，提高了从库部署效率吧！    </p>
+<h3 id="常用参数"><a href="#常用参数" class="headerlink" title="常用参数"></a>常用参数</h3><p>1）-B 指定多个库，增加建库语句和use语句</p>
+<p>2）–compact 去掉注释，适合调色输出，生产不用</p>
+<p>3）-A 备份所有库</p>
+<p>4）-F 刷新binlog日志</p>
+<p>5）–master-data 增加binlog日志文件名及对应的位置点</p>
+<p>6）-x –lock-all-tables</p>
+<p>7）-l –lock-tables</p>
+<p>8）-d 只备份表结构</p>
+<p>9）-t 只备份数据</p>
+<p>10）–single-transaction 适合innodb事务数据库备份</p>
+<p>innodb表在备份时，通常启用选项–single-transaction来保证备份的一致性，实际上它的工作原理是设定本次会话的隔离级别为：<br>REPEATABLE READ，以确保本次会话（dump）时，不会看到其他会话已经提交了的数据</p>
+<p>myisam备份命令</p>
+<pre><code>mysqldump -uroot -pyjscloud -A -B --master-data=2 -x --events|gzip &gt;/opt/all.sql.gz
+</code></pre><p>innodb备份命令（推荐使用）</p>
+<pre><code>mysqldump -uroot -pyjscloud -A -B --master-data=2 -x --events --single-transaction|gzip &gt;/opt/all.sql.gz
+</code></pre><h1 id="MySQL数据库的恢复"><a href="#MySQL数据库的恢复" class="headerlink" title="MySQL数据库的恢复"></a>MySQL数据库的恢复</h1><h2 id="利用source命令恢复数据"><a href="#利用source命令恢复数据" class="headerlink" title="利用source命令恢复数据"></a>利用source命令恢复数据</h2><p>进入mysql数据库控制台，mysql -uroot -p 登陆后</p>
+<pre><code>mysql&gt;use 数据库
+</code></pre><p>然后使用source命令，后面参数为脚本文件（如这里用到的.sql）</p>
+<pre><code>mysql&gt;source test_db.sql   #这个文件是系统路径，默认是登陆mysql前的系统路径
+source /opt/test.sql
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-89.png" alt="m-89"><br>对于那些用gzip命令压缩的数据库文件要先解压再恢复到数据库，解压命令如下</p>
+<pre><code>gzip -d [压缩的文件名]
+</code></pre><h2 id="利用mysql命令恢复（标准）"><a href="#利用mysql命令恢复（标准）" class="headerlink" title="利用mysql命令恢复（标准）"></a>利用mysql命令恢复（标准）</h2><pre><code>[root@mysql-1 opt]# mysql -uroot -pyjscloud test &lt; /opt/test.sql
+</code></pre><p>sql文件里面有use db这样的字样时，在导入时就有指定数据库名，否则会报错<br>如果在导出时指定了-B参数，恢复时无需指定库恢复，因为-B参数带了use test还会有create database test；而恢复时指定库就类似于use test；所以备份数据库时指定-B效果更好。</p>
+<h2 id="mysql带-e参数实现非交互式对话"><a href="#mysql带-e参数实现非交互式对话" class="headerlink" title="mysql带-e参数实现非交互式对话"></a>mysql带-e参数实现非交互式对话</h2><p>1）恢复数据库</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-90.png" alt="m-90"><br>2）查看mysql状态</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-91.png" alt="m-91"><br>类似的常用命令</p>
+<pre><code>show status  #查看当前会话的数据库状态信息
+show global stauts;  #查看整个数据库运行状态信息，很重要，要分析并要做好监控。
+showprocesslist;   #擦好看正在执行的SQL语句，看不全
+show full processlist；   #查看正在执行的完整SQL语句，完整显示
+set global key_buffer_size = 32777218   #不重启数据库调整数据库参数，直接生效，重启后失效。
+show variables;  #查看数据库的参数信息，例如：my.cnf里参数的生效情况。
+</code></pre><p>例：不重启数据库修改数据库的key_buffer参数    </p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-92.png" alt="m-92"><br>这种状态下不重启就生效</p>
+<p>要想重启生效要先在全局里面改，然后再修改配置文件</p>
+<pre><code>vi /etc/my.cnf
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-93.png" alt="m-93">    </p>
+<h1 id="mysqlbinlog的使用"><a href="#mysqlbinlog的使用" class="headerlink" title="mysqlbinlog的使用"></a>mysqlbinlog的使用</h1><p>mysqlbinlog是用来解析mysql的binlog日志</p>
+<p>mysql的binlog日志是什么？</p>
+<p>答：数据目录下的如下文件就是mysql的binlog日志</p>
+<p>mysql-bin.000001</p>
+<p>mysql-bin.000002</p>
+<p>mysql-bin.000003</p>
+<p>mysql-bin.000004</p>
+<p>mysql的binlog日志作用是什么？</p>
+<p>答：用来记录mysql内部增删改查等对mysql数据库有更新的内容记录。</p>
+<h2 id="提取mysqlbinlog的几种方式"><a href="#提取mysqlbinlog的几种方式" class="headerlink" title="提取mysqlbinlog的几种方式"></a>提取mysqlbinlog的几种方式</h2><p>1）使用show binlog events方式可以获取当前以及指定binlog的日志，不适宜提取大量日志。<br>2）使用mysqlbinlog命令行提取(适宜批量提取日志)。</p>
+<h2 id="演示show-binlog-events方式"><a href="#演示show-binlog-events方式" class="headerlink" title="演示show binlog events方式"></a>演示show binlog events方式</h2><p><img src="http://p924w4b7r.bkt.clouddn.com/m-94.png" alt="m-94"></p>
+<p>1）只查看第一个binlog文件的内容(show binlog events)<br><img src="http://p924w4b7r.bkt.clouddn.com/m-95.png" alt="m-95"><br><img src="http://p924w4b7r.bkt.clouddn.com/m-96.png" alt="m-96"><br>2）查看指定binlog文件的内容(show binlog events in ‘mysql-bin.000001’)</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-97.png" alt="m-97"></p>
+<p>3）查看当前正在写入的binlog文件(show master status\G)<br><img src="http://p924w4b7r.bkt.clouddn.com/m-98.png" alt="m-98"><br>4）获取指定位置binlog的内容(show binlog events from)</p>
+<p><img src="http://p924w4b7r.bkt.clouddn.com/m-99.png" alt="m-99"></p>
+<h2 id="演示mysqlbinlog方式提取binlog"><a href="#演示mysqlbinlog方式提取binlog" class="headerlink" title="演示mysqlbinlog方式提取binlog"></a>演示mysqlbinlog方式提取binlog</h2><p>1）提取指定的binlog日志</p>
+<pre><code>mysqlbinlog /application/mysql/data/mysql-bin.000001
+mysqlbinlog /application/mysql/data/mysql-bin.000001|grep insert
+</code></pre><p><img src="http://p924w4b7r.bkt.clouddn.com/m-100.png" alt="m-100"></p>
+<p>2）提取指定position位置的binlog日志</p>
+<pre><code>mysqlbinlog --start-position=&quot;6626&quot; --stop-position=&quot;6731&quot;  /application/mysql/data/mysql-bin.000001
+</code></pre><p>3）提取指定position位置的binlog日志并输出到压缩文件 </p>
+<pre><code># mysqlbinlog --start-position=&quot;6626&quot; --stop-position=&quot;6731&quot; /application/mysql/data/mysql-bin.000001 |gzip &gt;extra_01.sql.gz 
+</code></pre><p>4）提取指定position位置的binlog日志导入数据库 </p>
+<pre><code># mysqlbinlog --start-position=&quot;6626&quot; --stop-position=&quot;6731&quot; /application/mysql/data/mysql-bin.000001 | mysql -uroot -p 
+</code></pre><p>5）提取指定开始时间的binlog并输出到日志文件 </p>
+<pre><code># mysqlbinlog --start-datetime=&quot;2018-05-15 20:15:23&quot; /application/mysql/data/mysql-bin.000001 --result-file=extra02.sql 
+</code></pre><p>6）提取指定位置的多个binlog日志文件 </p>
+<pre><code># mysqlbinlog --start-position=&quot;6626&quot; --stop-position=&quot;6731&quot; /o/application/mysql/data/mysql-bin.000001/application/mysql/data/mysql-bin.000002|more 
+</code></pre><p>7）提取指定数据库binlog并转换字符集到UTF8 </p>
+<pre><code># mysqlbinlog --database=test --set-charset=utf8 /application/mysql/data/mysql-bin.000001 /application/mysql/data/mysql-bin.000002 &gt;test.sql 
+</code></pre><p>8）远程提取日志，指定结束时间  </p>
+<pre><code># mysqlbinlog -urobin -p -h192.168.0.40 -P3306 --stop-datetime=&quot;2018-05-15 20:30:23&quot; --read-from-remote-server mysql-bin.000001|more 
+</code></pre><p>9）远程提取使用row格式的binlog日志并输出到本地文件 </p>
+<pre><code># mysqlbinlog -urobin -p -P3606 -h192.168.0.41 --read-from-remote-server -vv inst3606bin.000005 &gt;row.sql
+</code></pre><h2 id="获取mysqlbinlog的帮助信息-仅列出常用选项"><a href="#获取mysqlbinlog的帮助信息-仅列出常用选项" class="headerlink" title="获取mysqlbinlog的帮助信息(仅列出常用选项)"></a>获取mysqlbinlog的帮助信息(仅列出常用选项)</h2><p>-?：–help</p>
+<p>   显示帮助消息并退出。</p>
+<p>-d：–database=name</p>
+<p>   截取指定库的binlog。</p>
+<p>-f： –force-read</p>
+<p>   使用该选项，如果mysqlbinlog读它不能识别的二进制日志事件，它会打印警告，忽略该事件并继续。没有该选项，如果mysqlbinlog读到此类事件则停止。</p>
+<p>-h： –host=name</p>
+<p>   获取给定主机上的MySQL服务器的二进制日志。</p>
+<p>-l：–local-load=name</p>
+<p>   为指定目录中的LOAD DATA INFILE预处理本地临时文件。</p>
+<p>-o：–offset=#</p>
+<p>   跳过前N个条目。</p>
+<p>-p：–password[=name]</p>
+<p>   当连接服务器时使用的密码。如果使用短选项形式(-p)，选项和密码之间不能有空格。<br>   如果在命令行中–password或-p选项后面没有密码值，则提示输入一个密码。</p>
+<p>-P：–port=#</p>
+<p>   用于连接远程服务器的TCP/IP端口号。</p>
+<p>–protocol=name</p>
+<p>   使用的连接协议。</p>
+<p>-R：–read-from-remote-server|–read-from-remote-master=name</p>
+<p>   从MySQL服务器读二进制日志。如果未给出该选项，任何连接参数选项将被忽略，即连接到本地。<br>   这些选项是–host、–password、–port、–protocol、–socket和–user。</p>
+<p>-r：–result-file=name</p>
+<p>   将输出指向给定的文件。</p>
+<p>-s： –short-form</p>
+<p>   只显示日志中包含的语句，不显示其它信息，该方式可以缩小生成sql文件的尺寸。</p>
+<p>-S： –socket=name</p>
+<p>   用于连接的套接字文件。</p>
+<p>–start-datetime=name</p>
+<p>   从二进制日志中读取等于或晚于datetime参量的事件，datetime值相对于运行mysqlbinlog的机器上的本地时区。该值格式应符合DATETIME或TIMESTAMP数据类型。例如：2004-12-25 11:25:56 ，建议使用引号标识。</p>
+<p>–stop-datetime=name</p>
+<p>   从二进制日志中读取小于或等于datetime的所有日志事件。关于datetime值的描述参见–start-datetime选项。</p>
+<p>-j： –start-position=#</p>
+<p>   从二进制日志中第1个位置等于N参量时的事件开始读。</p>
+<p>–stop-position=#</p>
+<p>   从二进制日志中第1个位置等于和大于N参量时的事件起停止读。</p>
+<p>–server-id=#  </p>
+<p>   仅仅提取指定server_id的binlog日志</p>
+<p>–set-charset=name</p>
+<p>   添加SET NAMES character_set到输出     </p>
+<p>-t： –to-last-log</p>
+<p>   在MySQL服务器中请求的二进制日志的结尾处不停止，而是继续打印直到最后一个二进制日志的结尾。如果将输出发送给同一台MySQL服务器，会导致无限循环。该选项要求–read-from-remote-server。</p>
+<p>-D： –disable-log-bin</p>
+<p>   禁用二进制日志。如果使用–to-last-logs选项将输出发送给同一台MySQL服务器，可以避免无限循环。该选项在崩溃恢复时也很有用，可以避免复制已经记录的语句。注释：该选项要求有SUPER权限。</p>
+<p>-u：–user=name</p>
+<p>   连接远程服务器时使用的MySQL用户名。</p>
+<p>-v： –verbose</p>
+<p>   用于输出基于row模式的binlog日志，-vv为列数据类型添加注释</p>
+<p>-V： –version</p>
+<p>   显示版本信息并退出     </p>
+<h1 id="常用mysqladmin命令"><a href="#常用mysqladmin命令" class="headerlink" title="常用mysqladmin命令"></a>常用mysqladmin命令</h1><p>与mysql不同的是，mysqladmin是MySQL官方提供的shell命令行工具(mysql是连接工具)，其参数都需要在shell命令行上执行。mysqladmin提供了两类参数：连接参数和命令参数，连接参数用来指定连接信息，命令参数则是服务命令。</p>
+<p>mysqladmin 工具的使用格式：</p>
+<pre><code>mysqladmin [option] command [command option] command ......
+</code></pre><p>参数选项：</p>
+<p>-c number 自动运行次数统计，必须和 -i 一起使用</p>
+<p>-i number 间隔多长时间重复执行</p>
+<p>0）每个两秒查看一次服务器的状态，总共重复5次。</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p -i 2 -c 5 status
+</code></pre><p>1）查看服务器的状况：status</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p status
+</code></pre><p>2）修改root 密码：</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -u root -p原密码 password &apos;newpassword&apos;
+</code></pre><p>3）检查mysqlserver是否可用：</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p ping
+</code></pre><p>4）查询服务器的版本</p>
+<pre><code>[rroot@mysql-1 ~]# mysqladmin -uroot -p version
+</code></pre><p>5）查看服务器状态的当前值：</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p extended-status
+</code></pre><p>6）查询服务器系统变量值：</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p variables
+</code></pre><p>7）显示服务器所有运行的进程：</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p processlist
+[root@mysql-1 ~]# mysqladmin -uroot -p-i 1 processlist        //每秒刷新一次
+</code></pre><p>8）创建数据库</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p create daba-test
+</code></pre><p>9）显示服务器上的所有数据库</p>
+<pre><code>[root@mysql-1 ~]# mysqlshow -uroot -p
+</code></pre><p>10）显示数据库daba-test下有些什么表：</p>
+<pre><code>[root@mysql-1 ~]# mysqlshow -uroot -p daba-test
+</code></pre><p>11）统计daba-test 下数据库表列的汇总</p>
+<pre><code>[root@mysql-1 ~]# mysqlshow -uroot -p daba-test -v
+</code></pre><p>12）统计daba-test 下数据库表的列数和行数</p>
+<pre><code>[root@mysql-1 ~]# mysqlshow -uroot -p daba-test -v -v
+</code></pre><p>13）删除数据库 daba-test</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p drop daba-test
+</code></pre><p>14）重载权限信息</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p reload
+</code></pre><p>15）刷新所有表缓存，并关闭和打开log</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p refresh
+</code></pre><p>16）使用安全模式关闭数据库</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p shutdown
+</code></pre><p>17）刷新命令mysqladmin flush commands</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -u root -ptmppassword flush-hosts
+[root@mysql-1 ~]# mysqladmin -u root -ptmppassword flush-logs
+[root@mysql-1 ~]# mysqladmin -u root -ptmppassword flush-privileges
+[root@mysql-1 ~]# mysqladmin -u root -ptmppassword flush-status
+[root@mysql-1 ~]# mysqladmin -u root -ptmppassword flush-tables
+[root@mysql-1 ~]# mysqladmin -u root -ptmppassword flush-threads
+</code></pre><p>18）mysqladmin 执行kill 进程：</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -uroot -p processlist
+[root@mysql-1 ~]# mysqladmin -uroot -p kill idnum
+</code></pre><p>19）停止和启动MySQL replication on a slave server</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -u root -p stop-slave
+[root@mysql-1 ~]# mysqladmin -u root -p start-slave
+</code></pre><p>20）同时执行多个命令</p>
+<pre><code>[root@mysql-1 ~]# mysqladmin -u root -p process status version
+</code></pre>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;MySQL数据库的备份&quot;&gt;&lt;a href=&quot;#MySQL数据库的备份&quot; class=&quot;headerlink&quot; title=&quot;MySQL数据库的备份&quot;&gt;&lt;/a&gt;MySQL数据库的备份&lt;/h1&gt;&lt;h2 id=&quot;备份单个数据库练习多种参数使用&quot;&gt;&lt;a href=&quot;#备份
+    
+    </summary>
+    
+      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL系列（三）：MySQL乱码及字符集实战</title>
@@ -5534,155 +5932,6 @@ print(ret)
     <summary type="html">
     
       &lt;h1 id=&quot;模块-amp-包&quot;&gt;&lt;a href=&quot;#模块-amp-包&quot; class=&quot;headerlink&quot; title=&quot;模块&amp;amp;包&quot;&gt;&lt;/a&gt;模块&amp;amp;包&lt;/h1&gt;&lt;h2 id=&quot;模块-modue-的概念：&quot;&gt;&lt;a href=&quot;#模块-modue-的概念：&quot; c
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（八）：装饰器</title>
-    <link href="http://yjscloud.com/2018/01/21/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%85%AB%EF%BC%89%EF%BC%9A%E8%A3%85%E9%A5%B0%E5%99%A8/"/>
-    <id>http://yjscloud.com/2018/01/21/Python当歌（八）：装饰器/</id>
-    <published>2018-01-21T08:04:24.000Z</published>
-    <updated>2018-02-07T11:14:36.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们防风御寒，咋办？我们想到的一个办法就是把内裤改造一下，让它变得更厚更长，这样一来，它不仅有遮羞功能，还能提供保暖，不过有个问题，这个内裤被我们改造成了长裤后，虽然还有遮羞功能，但本质上它不再是一条真正的内裤了。于是聪明的人们发明长裤，在不影响内裤的前提下，直接把长裤套在了内裤外面，这样内裤还是内裤，有了长裤后宝宝再也不冷了。装饰器就像我们这里说的长裤，在不影响内裤作用的前提下，给我们的身子提供了保暖的功效。</p>
-<p>谈装饰器前，还要先要明白一件事，Python 中的函数和 Java、C++不太一样，Python 中的函数可以像普通变量一样当做参数传递给另外一个函数，例如：</p>
-<pre><code>def foo():
-    print(&quot;foo&quot;)
-
-def bar(func):
-    func()
-
-bar(foo)
-</code></pre><p>正式回到我们的主题。装饰器本质上是一个 Python 函数或类，它可以让其他函数或类在不需要做任何代码修改的前提下增加额外功能，装饰器的返回值也是一个函数/类对象。它经常用于有切面需求的场景，比如：时间计算、性能测试、事务处理、缓存、权限校验等场景，装饰器是解决这类问题的绝佳设计。有了装饰器，我们就可以抽离出大量与函数功能本身无关的雷同代码到装饰器中并继续重用。概括的讲，装饰器的作用就是为已经存在的对象添加额外的功能。</p>
-<p>先来看一个简单例子：</p>
-<pre><code>import time
-
-def foo():
-    time.sleep(3)
-    print(&quot;运行时间是%s&quot; %(stop_time - start_time))
-</code></pre><p>现在有一个新的需求，希望可以记录下函数运行的时间，于是在代码中添加计算时间的代码：</p>
-<pre><code>import time
-
-def foo():
-    start_time = time.time()
-    time.sleep(3)
-    stop_time = time.time()
-    print(&quot;运行时间是%s&quot; %(stop_time - start_time))
-</code></pre><p>如果函数 bar()、bar2() 也有类似的需求，怎么做？再写一个 类似的代码在 bar 函数里？这样就造成大量雷同的代码，为了减少重复写代码，我们可以这样做，重新定义一个新的函数：专门计算函数运行时间 ，时间计算完成之后再执行真正的业务代码。</p>
-<pre><code>import time
-
-def timmer(func): #func=test
-    start_time=time.time()
-    func() #就是在运行test()
-    stop_time = time.time()
-    print(&apos;运行时间是%s&apos; %(stop_time-start_time))
-
-def test():
-     time.sleep(3)
-     print(&apos;test函数运行完毕&apos;)
-
-timmer(test)
-</code></pre><p>这样做逻辑上是没问题的，功能是实现了，但是我们调用的时候不再是调用真正的业务逻辑test函数，而是换成了timmer函数，这就破坏了原有的代码结构， 现在我们不得不每次都要把原来的那个test函数作为参数传递给test函数，那么有没有更好的方式的呢？当然有，答案就是装饰器。</p>
-<h1 id="简单装饰器"><a href="#简单装饰器" class="headerlink" title="简单装饰器"></a>简单装饰器</h1><pre><code>import time
-def timmer(func): #func=test
-    def wrapper():
-        start_time=time.time()
-        func() #就是在运行test()
-        stop_time = time.time()
-        print(&apos;运行时间是%s&apos; %(stop_time-start_time))
-    return wrapper
-
-def test():
-    time.sleep(3)
-print(&apos;test函数运行完毕&apos;)
-
-test = timmer(test)  #因为装饰器 timmer(test) 返回的时函数对象 wrapper，这条语句相当于test = wrapper
-test()    #执行test()就相当与执行wrapper()
-</code></pre><p>timmer就是一个装饰器，它一个普通的函数，它把执行真正业务逻辑的函数 func 包裹在其中，看起来像 test 被 timmer 装饰了一样，timmer返回的也是一个函数，这个函数的名字叫 wrapper。在这个例子中，函数进入和退出时 ，被称为一个横切面，这种编程方式被称为面向切面的编程。</p>
-<h1 id="语法糖"><a href="#语法糖" class="headerlink" title="@ 语法糖"></a>@ 语法糖</h1><p>如果你接触 Python 有一段时间了的话，想必你对 @ 符号一定不陌生了，没错 @ 符号就是装饰器的语法糖，它放在函数开始定义的地方，这样就可以省略最后一步再次赋值的操作。</p>
-<pre><code>import time
-def timmer(func): #func=test
-    def wrapper():
-        start_time=time.time()
-        func() #就是在运行test()
-        stop_time = time.time()
-        print(&apos;运行时间是%s&apos; %(stop_time-start_time))
-    return wrapper
-
-@timmer
-def test():
-    time.sleep(3)
-print(&apos;test函数运行完毕&apos;)
-
-test()
-</code></pre><p>如上所示，有了 @ ，我们就可以省去test = timmer(test)这一句了，直接调用 test() 即可得到想要的结果。你们看到了没有，test() 函数不需要做任何修改，只需在定义的地方加上装饰器，调用的时候还是和以前一样，如果我们有其他的类似函数，我们可以继续调用装饰器来修饰函数，而不用重复修改函数或者增加新的封装。这样，我们就提高了程序的可重复利用性，并增加了程序的可读性。</p>
-<p>装饰器在 Python 使用如此方便都要归因于 Python 的函数能像普通的对象一样能作为参数传递给其他函数，可以被赋值给其他变量，可以作为返回值，可以被定义在另外一个函数内。</p>
-<h1 id="args、-kwargs"><a href="#args、-kwargs" class="headerlink" title="*args、**kwargs"></a>*args、**kwargs</h1><p>如果我的业务逻辑函数 foo 需要参数怎么办？比如：</p>
-<pre><code>def test(name):
-    time.sleep(3)
-    print(“test函数运行完毕,名字是【%s】” %name)
-</code></pre><p>我们可以在定义 wrapper 函数的时候指定参数：</p>
-<pre><code>def wrapper(name):
-    start_time=time.time()
-    func(name)        
-     stop_time = time.time()
-     print(&apos;运行时间是%s&apos; %(stop_time-start_time))
-    return wrapper
-</code></pre><p>这样 test的参数就可以定义在 wrapper 函数中。如果 foo 函数接收两个参数呢？三个参数呢？更有甚者，就多个。当装饰器不知道 test个参数时，我们可以用 * args 来代替：</p>
-<pre><code>def wrapper(*args):
-    start_time=time.time()
-    func(*args)        
-    stop_time = time.time()
-    print(&apos;运行时间是%s&apos; %(stop_time-start_time))
-    return wrapper
-</code></pre><p>如此一来，甭管 test定义了多少个参数，我都可以完整地传递到 func 中去。这样就不影响 test的业务逻辑了。这时还有读者会问，如果 test函数还定义了一些关键字参数呢？比如：</p>
-<pre><code>def test(name,age,gender):
-    time.sleep(1)
-    print(&apos;test1函数运行完毕,名字是【%s】 年龄是【%s】 性别【%s】&apos; %(name,age,gender))
-    return &apos;这是test的返回值&apos;
-</code></pre><p>这时，你就可以把 wrapper 函数指定关键字函数：</p>
-<pre><code>def wrapper(*args,**kwargs):
-    start_time=time.time()
-    func(*args,**kwargs)
-    stop_time = time.time()
-    print(&apos;运行时间是%s&apos; %(stop_time-start_time))
-    return wrapper
-</code></pre><h1 id="带参数的装饰器"><a href="#带参数的装饰器" class="headerlink" title="带参数的装饰器"></a>带参数的装饰器</h1><p>装饰器还有更大的灵活性，例如带参数的装饰器，在上面的装饰器调用中，该装饰器接收唯一的参数就是执行业务的函数test 。装饰器的语法允许我们在调用时，提供其它参数，比如@timmer()。这样，就为装饰器的编写和使用提供了更大的灵活性。比如，我们可以在装饰器中指定如何计算时间，因为不同业务函数可能需要的计算时间方式是不一样的。</p>
-<pre><code>import time
-
-def cal_time(timing):
-    def timmer(func):
-        def wrapper(*args, **kwargs):
-                start_time = time.time()
-                func(*args, **kwargs)
-                stop_time = time.time()
-                if timing == &quot;True&quot;:
-                    print(&quot;运行时间是%s&quot; %(stop_time - start_time))
-                else:
-                    print(&quot;鬼知道他运行了多长时间&quot;)
-        return wrapper
-    return timmer
-
-@cal_time(timing=&quot;True&quot;)
-def test():
-    time.sleep(3)
-    print(&quot;test函数运行完毕&quot;)
-
-test()
-</code></pre><p>上面的cal_time是允许带参数的装饰器。它实际上是对原有装饰器的一个函数封装，并返回一个装饰器。我们可以将它理解为一个含有参数的闭包。当我 们使用@cal_time(timing=”True”)调用的时候，Python 能够发现这一层的封装，并把参数传递到装饰器的环境中。</p>
-<p> @cal_time(timing=”True”等价于@timmer</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;讲 Python 装饰器前，我想先举个例子，虽有点污，但跟装饰器这个话题很贴切。每个人都有的内裤主要功能是用来遮羞，但是到了冬天它没法为我们
     
     </summary>
     
