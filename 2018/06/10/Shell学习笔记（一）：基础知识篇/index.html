@@ -1,0 +1,1226 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Shell学习笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="初识脚本脚本的建立shell脚本通常是在编译器（如vi/vim）中编写，由unix/linux命令、bash shell命令、程序结构控制语句和注释等内容组成。 1）脚本开头（第一行） 一个规范的shell脚本的第一行会指出由那个程序（解释器）来执行脚本中的内容，在linux bash编程中一般为； #!/bin/bash 或 #!/bin/sh “#!“又称为幻数，在执行bash脚本的时候，内核">
+<meta name="keywords" content="Shell学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell学习笔记（一）：基础知识篇">
+<meta property="og:url" content="http://yjscloud.com/2018/06/10/Shell学习笔记（一）：基础知识篇/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="初识脚本脚本的建立shell脚本通常是在编译器（如vi/vim）中编写，由unix/linux命令、bash shell命令、程序结构控制语句和注释等内容组成。 1）脚本开头（第一行） 一个规范的shell脚本的第一行会指出由那个程序（解释器）来执行脚本中的内容，在linux bash编程中一般为； #!/bin/bash 或 #!/bin/sh “#!“又称为幻数，在执行bash脚本的时候，内核">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-1.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-2.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-3.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-4.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-5.png">
+<meta property="og:updated_time" content="2018-06-18T13:03:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shell学习笔记（一）：基础知识篇">
+<meta name="twitter:description" content="初识脚本脚本的建立shell脚本通常是在编译器（如vi/vim）中编写，由unix/linux命令、bash shell命令、程序结构控制语句和注释等内容组成。 1）脚本开头（第一行） 一个规范的shell脚本的第一行会指出由那个程序（解释器）来执行脚本中的内容，在linux bash编程中一般为； #!/bin/bash 或 #!/bin/sh “#!“又称为幻数，在执行bash脚本的时候，内核">
+<meta name="twitter:image" content="http://p10cma2nn.bkt.clouddn.com/s-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2018/06/10/Shell学习笔记（一）：基础知识篇/"/>
+
+
+
+
+
+  <title>Shell学习笔记（一）：基础知识篇 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/06/10/Shell学习笔记（一）：基础知识篇/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Shell学习笔记（一）：基础知识篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-10T20:08:59+08:00">
+                2018-06-10
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Shell编程/" itemprop="url" rel="index">
+                    <span itemprop="name">Shell编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/06/10/Shell学习笔记（一）：基础知识篇/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  3,495
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  14
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="初识脚本"><a href="#初识脚本" class="headerlink" title="初识脚本"></a>初识脚本</h1><h2 id="脚本的建立"><a href="#脚本的建立" class="headerlink" title="脚本的建立"></a>脚本的建立</h2><p>shell脚本通常是在编译器（如vi/vim）中编写，由unix/linux命令、bash shell命令、程序结构控制语句和注释等内容组成。</p>
+<p>1）脚本开头（第一行）</p>
+<p>一个规范的shell脚本的第一行会指出由那个程序（解释器）来执行脚本中的内容，在linux bash编程中一般为；</p>
+<pre><code>#!/bin/bash
+</code></pre><p>或</p>
+<pre><code>#!/bin/sh
+</code></pre><p>“<code>#!</code>“又称为幻数，在执行bash脚本的时候，内核会根据它来确定该用那个程序来解释脚本内容。这一行必须在脚本顶端的第一行，如果不是第一行则为注释。</p>
+<p>2）sh和bash的区别</p>
+<pre><code>[root@pan ~]# ll /bin/sh
+lrwxrwxrwx. 1 root root 4 Jun  5 03:39 /bin/sh -&gt; bash
+</code></pre><p>提示：sh为bash的软链接，这里推荐用标准写法<code>#!/bin/bash</code><br>下面是linux中常用脚本语言开头的编码写法，不同语言脚本的开头一般都要加上如下相应语言的开头标识内容。</p>
+<pre><code>1、#!/bin/sh
+2、#!/bin/bash
+3、#!/usr/bin/awk
+4、#!/bin/sed
+5、#!usr/bin/tcl
+6、#!/usr/bin/expect
+7、#!/usr/bin/perl
+8、#!/usr/bin/env python
+</code></pre><p>3）脚本注释</p>
+<p>在shell脚本中，跟在（#）井号后面的内容表示注释，用来对脚本进行注释说明，注释部分不会被执行，仅仅是给人看的注释可自成一行，也可以跟在脚本命令后面与命令在同一行。我们在写脚本的时候要养成写注释的好习惯！</p>
+<h2 id="shell脚本的执行"><a href="#shell脚本的执行" class="headerlink" title="shell脚本的执行"></a>shell脚本的执行</h2><p>当shell脚本以非交互方式运行时，它会查找环境变量ENV，该变量指定了一个环境文件（通常是.bashrc），然后从该环境变量文件开始执行，当读取了ENV文件后，shell才开始执行shell脚本的内容。shell脚本的执行通常可以采用以下三种方式：</p>
+<p>1）bash script-name或 sh script-name（推荐使用）</p>
+<p>2）path/script-name或 ./script-name（当前路径下执行脚本）</p>
+<p>3）source script-name或 . script-name #注意 “.” 点号</p>
+<p>执行说明：</p>
+<p>第一种方法是在当前脚本文件本身有没有可执行权限（即文件x位为 - 号）是常用使用的方法里推荐使用bash执行，或者文件开头没有指定解释器。</p>
+<p>第二种方法需要将脚本文件的权限改为可执行（即文件加x位），具体方法：<code>chmod script-name</code>或<code>chmod 755 script-name</code>。然后通过脚本路径就可以直接执行脚本了。</p>
+<p>第三种方法通常是使用<code>source</code> 或者 “<code>.</code>“点号读入或加载指定的shell脚本文件的命令语句，而不是产生一个子shell来执行文件中的命令。注意”.”和后面的脚本名直接要有空格。</p>
+<h1 id="shell的变量"><a href="#shell的变量" class="headerlink" title="shell的变量"></a>shell的变量</h1><h2 id="变量类型"><a href="#变量类型" class="headerlink" title="变量类型"></a>变量类型</h2><p>变量可分为两类：环境变量（全局变量）和局部变量</p>
+<p>环境变量也可称为全局变量，可以在创建他们的shell及其派生出来的任意子进程shell中使用。局部变量只能在创建他们的shell函数或脚本中使用。还有一些变量是用户创建的，其它的则是专用shell变量。</p>
+<h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>环境变量用于定义shell的运行环境，保证shell命令的正确执行，shell通过环境变量来确定登陆用户名、命令路径、终端类型、登陆目录等，所有的环境变量都是系统全局变量，可用于所有子进程中，这包括编辑器、shell脚本和各类应用。</p>
+<p>环境变量可以在命令行中设置，但用户退出时这些变量值也会丢失，因此最好在用户家目录下的<code>.bash_profile</code>文件中或全局配置<code>/etc/profile</code>文件或者<code>/etc/profile.d/</code>中定义。将环境变量放入profile文件中，每次用户登录时这些变量值都将被初始化。</p>
+<p>传统上，所有环境变量均为大写。环境变量应用与用户进程前，必须用export命令导出。</p>
+<p>有些环境变量，比如HOME、PATH、SHELL、UID、USER等，在用户登录之前就已经被<code>/bin/login</code>程序设置好了，通常环境变量定义并保存在用户家目录下的.bash_profile文件中。</p>
+<h2 id="自定义环境变量（全局变量）"><a href="#自定义环境变量（全局变量）" class="headerlink" title="自定义环境变量（全局变量）"></a>自定义环境变量（全局变量）</h2><p>如果想设置环境变量，就要在给变量赋值之后或设置变量时使用export命令。带-x选项的declare<br>内置命令也可完成同样的功能。（注意：输出变量时不要在变量名前加<code>$</code>）</p>
+<ul>
+<li>export 变量名=value</li>
+<li>变量名=value ；export 变量名</li>
+<li>declare -x 变量名=value</li>
+</ul>
+<p>提示：以上为三种设置环境变量的方法</p>
+<p>例：</p>
+<pre><code>export NAME=pan
+declare -x NAME=pan
+NAME=oldboy;export NAME
+</code></pre><p>举例：（自定义全局环境变量）</p>
+<pre><code>[root@pan ~]# grep XWQ /etc/profile
+export XWQ=&apos;pan&apos;   #编辑/etc/profile在末行输出内容并保存
+[root@pan ~]# source /etc/profile    #使定义的内容生效
+[root@pan ~]# echo $XWQ    #打印变量值
+pan
+[root@pan ~]# env|grep XWQ   #查看定义结果
+XWQ=pan
+</code></pre><p>1）常见的全局环境变量的配置：</p>
+<pre><code>/etc/profile
+/etc/bashrc   #推荐在此文件中优先设置
+/etc/profile.d/
+</code></pre><p>若在登录后初始化或者显示加载内容，则把脚本文件放在<code>/etc/profile.d/</code>下即可（无需加执行限）</p>
+<p>2）设置登录提示的两种方式<br>第一种是在<code>/etc/motd</code>里增加提示的字符串，如下：</p>
+<pre><code>[root@pan ]# cat /etc/motd
+welcome to pan linux shell training.
+</code></pre><p>登录后显示如下：</p>
+<pre><code>Last login: Tue Jun 12 14:46:50 2018 from 192.168.0.1
+welcome to pan linux shell training.
+</code></pre><p>第二种是在<code>/etc/profile.d/</code>下面增加如下脚本</p>
+<pre><code>[root@pan ~]# cat /etc/profile.d/pan.sh
+echo &quot;Here is pan blog&quot;  #脚本内容
+</code></pre><p>登录后显示如下：</p>
+<pre><code>Last login: Tue Jun 12 16:00:48 2018 from 192.168.0.1
+Here is pan blog
+</code></pre><h2 id="显示与取消环境变量"><a href="#显示与取消环境变量" class="headerlink" title="显示与取消环境变量"></a>显示与取消环境变量</h2><p>1）通过echo 命令打印环境变量</p>
+<p><code>$HOME</code> 用户登录时进入的目录</p>
+<p><code>$UID</code> 当前用户的UID（用户标识）相当与id-u</p>
+<p><code>$PWD</code> 当前工作目录的绝对路径名</p>
+<p><code>$SHELL</code> 当前SHELL</p>
+<p><code>$USER</code> 当前用户</p>
+<p>……..</p>
+<p>2）用env（printenv）或set显示默认的环境变量<br>3）用unset消除本地变量和环境变量</p>
+<p>例：</p>
+<pre><code>[pan@pan ~]$ echo $USER
+pan
+[pan@pan ~]$ unset USER
+[pan@pan ~]$ echo $USER
+#此处输出为空
+</code></pre><h2 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h2><p>1）定义本地变量</p>
+<p>本地变量在用户当前的shell生存期的脚本中使用。例如，本地变量 XWQ取值为pan，这个值只要在用户当前shell生存期中有意义。如果在shell中启动另一个进程或退出，本地变量XWQ值将无效。</p>
+<p>1.普通字符串变量定义</p>
+<p>变量名=value</p>
+<p>变量名=’value’</p>
+<p>变量名=”value”</p>
+<p>shell中变量名的要求：一般是字母，数字。下划线组成。</p>
+<p>2）自定义变量建议</p>
+<p>纯数字（不带空格），定义方式可以不加引号（单或双），例如：</p>
+<pre><code>PanAge=23
+NETWORKING=yes
+</code></pre><p>没有特殊情况，字符串一般用双引号定义，特别是多个字符串中有空格时，例如：</p>
+<pre><code>NFSD_MODULE=&quot;no load&quot;
+MyName=&quot;Pan is a handsome boy&quot;
+</code></pre><p>变量内容需要原样输出时，要用单引号（’’）</p>
+<pre><code>PAN_NAME=&apos;PAN&apos;
+</code></pre><p>3）变量命名规范</p>
+<p>变量命令要统一，使用全部大写字母，如<code>APACHE_ERR_NUM</code>；语义要清晰，能够正确表达变量内容的含义，过长的英文单词可采用前几个字符代替。多个单词连接使用“_”号连接，引用时，最好以<code>${APACHE_ERR_NUM}</code>加大括号或者”<code>${APACHE_ERR_NUM}</code>“外面加双引号方式引用变量；</p>
+<p>4）避免无含义字符或数字</p>
+<p>5）全局变量和局部变量命令</p>
+<p>a.脚本中的全局变量定义，如<code>PAN_HOME</code>或<code>PANHOME</code>，在变量使用时使用{}将变量括起或<code>&quot;${PAN_HOME}&quot;</code></p>
+<p>b.脚本中局部变量定义：存在于脚本函数（function）中的变量称为局部变量，要以local方式进行声明，使之只在本函数作用域内有效，防止变量在函数中命名与变量外部程序中变量重名造成程序异常。</p>
+<p>6）变量合并</p>
+<p>当某些变量或配置项要组合起来才有意义时，如文件的路径和文件名称，建议将要组合的变量合并到一起赋值给一个新的变量，这样既方便之后调用，也为以后进行修改提供了方便。</p>
+<h1 id="Shell特殊变量"><a href="#Shell特殊变量" class="headerlink" title="Shell特殊变量"></a>Shell特殊变量</h1><h2 id="位置变量"><a href="#位置变量" class="headerlink" title="位置变量"></a>位置变量</h2><p><img src="http://p10cma2nn.bkt.clouddn.com/s-1.png" alt="s-1"></p>
+<p>提示：如果希望单独获取名称或路径可以使用dirname及basename命令。</p>
+<pre><code>[root@pan scripts]# cat n.sh
+dirname $0
+basename $0
+[root@pan scripts]# sh /server/scripts/n.sh
+/server/scripts
+n.sh
+</code></pre><h2 id="进程状态变量"><a href="#进程状态变量" class="headerlink" title="进程状态变量"></a>进程状态变量</h2><p><img src="http://p10cma2nn.bkt.clouddn.com/s-2.png" alt="s-2"></p>
+<p><code>$?</code>返回值参考：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-3.png" alt="s-3"></p>
+<p>例：</p>
+<pre><code>[root@pan scripts]# cat all.sh
+echo &apos;$0 获取当前执行的shell脚本的文件名：&apos; $0
+echo &apos;$n 获取当前执行的shell脚本的第n个参数值，n=1...9:&apos; &apos;$1&apos;=$1 &apos;$2&apos;=$2 &quot;\    $3=$3&quot;
+echo &apos;$* 获取当前shell的所有参数“$1 $2 $3...注意与$#的区别”：&apos; $*
+echo &apos;$# 获取当前shell命令行中参数的总个数：&apos; $#
+echo &apos;$$ 获取当前shell的进程号(PID)：&apos; $$
+sleep 2 &amp;
+echo &apos;$! 执行上一个指令的PID：&apos; $!
+echo &apos;$? 获取执行的上一个指令的返回值：&apos; $?
+echo &apos;$@ 这个程序的所有参数&quot;$1&quot; &quot;$2&quot; &quot;$3&quot; &quot;...&quot; :&apos; $@
+echo &apos;$_ 在此之前执行的命令或脚本的最后一个参数：&apos; $_
+[root@pan scripts]# sh all.sh xwq pan xdf
+$0 获取当前执行的shell脚本的文件名： all.sh
+$n 获取当前执行的shell脚本的第n个参数值，n=1...9: $1=xwq $2=pan $3=xdf
+$* 获取当前shell的所有参数“$1 $2 $3...注意与$#的区别”： xwq pan xdf
+$# 获取当前shell命令行中参数的总个数： 3    
+$$ 获取当前shell的进程号(PID)： 3873
+$! 执行上一个指令的PID： 3874
+$? 获取执行的上一个指令的返回值： 0
+$@ 这个程序的所有参数&quot;$1&quot; &quot;$2&quot; &quot;$3&quot; &quot;...&quot; : xwq pan xdf
+$_ 在此之前执行的命令或脚本的最后一个参数： xdf
+</code></pre><h2 id="bash内部变量"><a href="#bash内部变量" class="headerlink" title="bash内部变量"></a>bash内部变量</h2><p>有些内部命令在目录表时是看不见的，它们由shell本身提供，常用的内部命令有：</p>
+<p>echo,eval,exec,export,readonly,read,shift,wait,exit和点(.)</p>
+<ul>
+<li>echo 变量表名</li>
+</ul>
+<p>将变量名表指定的变量显示到标准输出。</p>
+<ul>
+<li>eval args</li>
+</ul>
+<p>读入参数args，并它们组合成一个新的命令，然后执行。</p>
+<ul>
+<li>exec命令参数</li>
+</ul>
+<p>当shell执行到exec语句时，不会去创建新的子进程，而是转去执行指定的命令，当指令的命令执行完时，该进程（也就最初的shell）就终止了，所以shell程序中exec后面的语句将不再被执行。</p>
+<ul>
+<li>export 变量名=value</li>
+</ul>
+<p>shell可以用export把它的变量向下带入子shell，从而让子进程继承父进程中的环境变量。但是shell不能用export把它的变量向上带入父shell</p>
+<ul>
+<li>readonly 变量名</li>
+</ul>
+<p>只读变量 用readonly 显示所有只读变量</p>
+<ul>
+<li><p>read 变量名表<br>从标准输入读字符串，传给指定变量。可以在函数中用local变量名的方式申明局部变量</p>
+</li>
+<li><p>shift语句<br>shift语句按如下方式重新命名所有的位置参数变量，即<code>$2</code>成为<code>$1</code>,<code>$3</code>成为<code>$2...</code>在程序中每使用一次shift语句，都使所有的位置参数依次向左移动一个位置，并使位置参数<code>$#</code>减</p>
+</li>
+</ul>
+<h2 id="变量子串的常用操作"><a href="#变量子串的常用操作" class="headerlink" title="变量子串的常用操作"></a>变量子串的常用操作</h2><p>常见操作如下表：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-4.png" alt="s-4"></p>
+<p>依次举例说明：</p>
+<p>定义PAN 变量，内容为”I am pan”</p>
+<pre><code>[root@pan ~]# PAN=&quot;I am pan&quot;
+[root@pan ~]# echo ${PAN}
+I am pan
+</code></pre><p>1）返回字符串PAN 变量字符串的长度</p>
+<pre><code>[root@pan ~]# echo ${#PAN}
+8
+</code></pre><p>2）截取PAN变量字符串从第2个字符之后开始取，默认取后面字符的全部，第2个字符不包含在内。也可理解为删除前面的多少个字符。</p>
+<pre><code>[root@pan ~]# echo ${PAN:2}
+am pan
+</code></pre><p>3）截取PAN变量字符串从第2个字符之后开始取，取两个字符。</p>
+<pre><code>[root@pan ~]# echo ${PAN:2:2}
+am
+提示：类似cut -c参数
+[root@pan ~]# echo ${PAN}|cut -c 1-4
+I am
+[root@pan ~]# echo ${PAN}|cut -c 3-4
+am
+</code></pre><p>4）从变量<code>$PAN</code>开头开始删除最短匹配“I am”子串</p>
+<pre><code>[root@pan ~]# echo ${PAN#I am}
+pan
+</code></pre><p>5）从变量<code>$PAN</code>开头开始删除最长匹配“I am p”</p>
+<pre><code>[root@pan ~]# echo ${PAN##I am p}
+an
+</code></pre><p>6）从变量<code>$PAN</code>结尾开始删除最短匹配pan子串</p>
+<pre><code>[root@pan ~]# echo ${PAN%pan}
+I am
+</code></pre><p>7）使用etiantian字符串，来代替变量<code>$PAN</code>第一匹配的pan字符串</p>
+<pre><code>[root@pan ~]# echo ${PAN/pan/etiantian}
+I am etiantian
+</code></pre><p>8）使用etiantian字符串，来代替从变量<code>$PAN</code>结尾开始匹配pan字符串</p>
+<pre><code>[root@pan ~]# echo ${PAN/%pan/etiantian}
+I am etiantian
+</code></pre><p>9）使用He is 字符串，来代替从变量<code>$PAN</code>开头开始匹配的 I am 字符串</p>
+<pre><code>[root@pan ~]# echo ${PAN/#I am/He is}
+He is pan
+</code></pre><p>提示：统一规律<code>#</code>从开头开始，<code>%</code>从结尾开始</p>
+<h2 id="Shell特殊扩展变量"><a href="#Shell特殊扩展变量" class="headerlink" title="Shell特殊扩展变量"></a>Shell特殊扩展变量</h2><p><img src="http://p10cma2nn.bkt.clouddn.com/s-5.png" alt="s-5"></p>
+<p>依次举例说明：<br>1）<code>${value:-word}</code></p>
+<p>当变量未定义或者值为空时，返回值为word内容，否则返回变量的值。<br>举例：</p>
+<pre><code>[root@pan ~]# result=${test:-UNSET}
+[root@pan ~]# echo $result
+UNSET
+[root@pan ~]# echo $test
+#返回空值
+</code></pre><p>结论：当test变量没内容时，就返回了后面的UNSET</p>
+<pre><code>[root@pan ~]# test=&apos;pan&apos;
+[root@pan ~]# result=${test:-UNSET}
+[root@pan ~]# echo $result
+pan
+</code></pre><p>提示：这个变量功能可以用来判断变量是否没有定义。</p>
+<p>结论：当test变量有内容时，就返回了test的内容</p>
+<p>2）<code>${value:=word}</code></p>
+<pre><code>[root@pan ~]# unset result
+[root@pan ~]# echo $result
+
+[root@pan ~]# unset test
+[root@pan ~]# echo $test
+
+[root@pan ~]# result=${test:=UNSET}
+[root@pan ~]# echo $result
+UNSET
+[root@pan ~]# echo $test
+UNSET
+</code></pre><p>3）<code>${vlaue:?message}</code><br>若变量已赋值的话，正常替换。否则将消息message送到标准错误输出（若此替换出现在shell程序中，那么该程序将终止运行）</p>
+<p>4）<code>${value-word}</code>去掉冒号</p>
+<pre><code>[root@pan ~]# httpd=${HTTP-/usr/sbin/httpd}
+[root@pan ~]# pidfile=${PIDFILE-/var/run/httpd.pid}
+[root@pan ~]# echo $httpd $pidfile
+/usr/sbin/httpd /var/run/httpd.pid
+[root@pan ~]# echo $HTTPD $PIDFILE
+#此处输出为空
+</code></pre><p>结论：变量没有定义就用-号后面的替代</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Shell学习笔记/" rel="tag"><i class="fa fa-tag"></i> Shell学习笔记</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/06/15/Shell学习笔记（二）：入门知识和实战篇/" rel="next" title="Shell学习笔记（二）：入门知识和实战篇">
+                <i class="fa fa-chevron-left"></i> Shell学习笔记（二）：入门知识和实战篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/" rel="prev" title="MySQL系列（七）：MySQL备份与恢复实战">
+                MySQL系列（七）：MySQL备份与恢复实战 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">63</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://amon1997.com/" title="Amon的博客" target="_blank">Amon的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#初识脚本"><span class="nav-number">1.</span> <span class="nav-text">初识脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本的建立"><span class="nav-number">1.1.</span> <span class="nav-text">脚本的建立</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell脚本的执行"><span class="nav-number">1.2.</span> <span class="nav-text">shell脚本的执行</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#shell的变量"><span class="nav-number">2.</span> <span class="nav-text">shell的变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#变量类型"><span class="nav-number">2.1.</span> <span class="nav-text">变量类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#环境变量"><span class="nav-number">2.2.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义环境变量（全局变量）"><span class="nav-number">2.3.</span> <span class="nav-text">自定义环境变量（全局变量）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#显示与取消环境变量"><span class="nav-number">2.4.</span> <span class="nav-text">显示与取消环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#局部变量"><span class="nav-number">2.5.</span> <span class="nav-text">局部变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Shell特殊变量"><span class="nav-number">3.</span> <span class="nav-text">Shell特殊变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#位置变量"><span class="nav-number">3.1.</span> <span class="nav-text">位置变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#进程状态变量"><span class="nav-number">3.2.</span> <span class="nav-text">进程状态变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bash内部变量"><span class="nav-number">3.3.</span> <span class="nav-text">bash内部变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#变量子串的常用操作"><span class="nav-number">3.4.</span> <span class="nav-text">变量子串的常用操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shell特殊扩展变量"><span class="nav-number">3.5.</span> <span class="nav-text">Shell特殊扩展变量</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>

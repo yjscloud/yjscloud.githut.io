@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-06-18T12:54:31.000Z</updated>
+  <updated>2018-06-18T14:02:59.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -16,26 +16,421 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Shell学习笔记(一):基础知识篇</title>
-    <link href="http://yjscloud.com/2018/06/10/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
-    <id>http://yjscloud.com/2018/06/10/Shell学习笔记-一-基础知识篇/</id>
+    <title>Shell学习笔记（二）：入门知识和实战篇</title>
+    <link href="http://yjscloud.com/2018/06/15/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%85%A5%E9%97%A8%E7%9F%A5%E8%AF%86%E5%92%8C%E5%AE%9E%E6%88%98%E7%AF%87/"/>
+    <id>http://yjscloud.com/2018/06/15/Shell学习笔记（二）：入门知识和实战篇/</id>
+    <published>2018-06-15T13:06:37.000Z</published>
+    <updated>2018-06-18T14:02:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="变量的数值计算常见命令"><a href="#变量的数值计算常见命令" class="headerlink" title="变量的数值计算常见命令"></a>变量的数值计算常见命令</h1><p><code>(())</code>、<code>let</code>、<code>expr</code>、<code>bc</code>、<code>$[]</code>，这里只介绍<code>(())</code>和<code>expr</code></p>
+<h2 id="用法："><a href="#用法：" class="headerlink" title="(())用法："></a>(())用法：</h2><p>如果要执行简单的整数运算，只需将特定的算术表达式用”<code>$((&quot;和&quot;))</code>“括起来即可。shell的算术运算符合常置于”<code>$((&quot;......&quot;))</code>“的语法中。这一语法如同双引号功能，除了内嵌双引号无需转义。</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-6.png" alt="s-6"></p>
+<p>提示：</p>
+<p>1、上面涉及到的参数变量必须为整数，不能是小数（浮点数）或者字符串。后面的bc命令可以进行浮点数运算，但一般较少用到，</p>
+<p>2、<code>echo $((a++))</code>和<code>echo $((a--))</code>表示先输出a自身的值，然后在进行++  –的运算，<code>echo $((a++))</code>和<code>echo $((--a))</code>表示先进行++ –的运算，再输出a自身的值</p>
+<ul>
+<li>记忆方法：变量在前，先输出变量值，变量在后，就是先算后输出变量的值。</li>
+</ul>
+<p>一个小计算器：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-7.png" alt="s-7"></p>
+<h2 id="expr"><a href="#expr" class="headerlink" title="expr"></a>expr</h2><p>expr命令既可以用于整数运算，也可以用于相关字符串长度，匹配等的运算处理</p>
+<p>例1：（普通运算）</p>
+<pre><code>[root@pan shell]# expr 2 + 2
+4
+[root@pan shell]# expr 2 - 2    
+0
+[root@pan shell]# expr 2 * 2
+expr: syntax error
+[root@pan shell]# expr 2 \* 2
+4
+[root@pan shell]# expr 2 / 2
+1
+[root@pan shell]# i=5
+[root@pan shell]# i=`expr $i + 6`
+[root@pan shell]# echo $i
+11
+</code></pre><p>提示：</p>
+<p>1、运算符及用于计算的数字左右都至少有一个空格，否则会报错</p>
+<p>2、使用乘号时，必须用反斜线屏蔽其特定含义，因为shell可能会误解星号的含义。</p>
+<p>例2：（判断字符串是否为整数）</p>
+<pre><code>[root@pan shell]# i=5
+[root@pan shell]# expr $i + 6 &amp;&gt;/dev/null   #把i和整数相加，&amp;&gt;/dev/null表示不保留任何输出
+[root@pan shell]# echo $?      #输出返回值
+0    #返回为0，则证明i的值为整数
+[root@pan shell]# i=oldboy   #此时赋值一个字符串给i
+[root@pan shell]# expr $i + 6 &amp;&gt;/dev/null     #同样把i和整数相加，不保留任何输出
+[root@pan shell]# echo $?     #输出返回值
+2   #返回为非0，则证明i的值不是整数
+</code></pre><p>例3：（判断文件扩展名）</p>
+<pre><code>[root@pan shell]# expr &quot;web.sh&quot; : &quot;.*\.sh&quot; &amp;&amp; echo 1||echo 0
+6
+1
+[root@pan shell]# expr &quot;web.f&quot; : &quot;.*\.sh&quot; &amp;&amp; echo 1||echo 0
+0
+0
+</code></pre><p>例4：（判断变量是否为整数）</p>
+<p>代码：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-8.png" alt="s-8"></p>
+<p>运行过程：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-9.png" alt="s-9"></p>
+<p>例5：（判断字符串长度）</p>
+<pre><code>[root@pan shell]# chars=`seq -s &quot; &quot; 100`
+[root@pan shell]# echo ${#chars}
+291
+[root@pan shell]# echo $(expr length &quot;$chars&quot;)
+291
+</code></pre><h1 id="Shell变量输入"><a href="#Shell变量输入" class="headerlink" title="Shell变量输入"></a>Shell变量输入</h1><p>shell变量除了可以直接赋值或脚本传参外，还可以使用read命令从标准输入获得。</p>
+<p>【语法格式】</p>
+<p>   read [参数] [变量名]</p>
+<p>【常用参数】</p>
+<pre><code>- p prompt：设置提示信息
+- t  timeout 设置输入等待的时间，单位默认为秒
+</code></pre><p>例1：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-10.png" alt="s-10"></p>
+<p>例2：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-11.png" alt="s-11"></p>
+<h1 id="常用的文件测试操作符"><a href="#常用的文件测试操作符" class="headerlink" title="常用的文件测试操作符"></a>常用的文件测试操作符</h1><h2 id="文件测试表达式的用法"><a href="#文件测试表达式的用法" class="headerlink" title="文件测试表达式的用法"></a>文件测试表达式的用法</h2><p><img src="http://p10cma2nn.bkt.clouddn.com/s-12.png" alt="s-12"></p>
+<p>特别说明：这些操作符号对于[[ ]]、[ ]、test几乎是通用的，更多操作符请man test</p>
+<h2 id="文件测试表达式举例"><a href="#文件测试表达式举例" class="headerlink" title="文件测试表达式举例"></a>文件测试表达式举例</h2><p>1）测试文件类型</p>
+<p>范例：</p>
+<pre><code>[root@xwq ~]# mkdir test   #创建test文件夹
+[root@xwq ~]# touch test.txt   #创建test.txt文件
+[root@xwq ~]# [ -f test ] &amp;&amp; echo 1 || echo 0   #测试test是否为普通文件。
+0   #输出为0，证明test非普通文件，因为前面创建的是test目录，因此输出0，下面的结果也是如此。
+[root@xwq ~]# [ -f test.txt ] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [ -d test ] &amp;&amp; echo 1 || echo 0
+1
+</code></pre><p>2）测试文件属性</p>
+<p>范例：</p>
+<pre><code>[root@xwq ~]# ll test.txt
+-rw-r--r--  1 root root  0 Jun  9 20:15 test.txt  文件的默认权限是644
+[root@xwq ~]# [ -r test.txt ] &amp;&amp; echo 1 || echo 0    #测试是否可读
+1    #返回结果为1，文件可读
+[root@xwq ~]# [ -w test.txt ] &amp;&amp; echo 1 || echo 0  #测试文件是否可写
+1    #返回结果为1，文件可写
+[root@xwq ~]# [ -x test.txt ] &amp;&amp; echo 1 || echo 0  #测试文件是否可执行
+0   #返回结果为0，文件不可执行
+[root@xwq ~]# chmod 001 test.txt   修改test.txt权限位为001
+[root@xwq ~]# ll test.txt
+---------x 1 root root 0 Jun  9 20:15 test.txt
+[root@xwq ~]# [ -w test.txt ] &amp;&amp; echo 1 || echo 0
+1    #用户权限为没有w，返回结果还是为1？
+[root@xwq ~]# echo &quot;echo test&quot; &gt; test.txt   #测试是否可写
+[root@xwq ~]# [ -r test.txt ] &amp;&amp; echo 1 || echo 0
+1   用户权限为没有r，返回结果还是为1?
+[root@xwq ~]# cat test.txt
+echo test   #确实可读
+[root@xwq ~]# ./test.txt
+test
+</code></pre><p>提示：测试文件的读、写、执行等属性，不光是根据文件的=属性rwx的标识来判断，还要看当前执行测试的用户是否可以按照对应的权限操作该文件。</p>
+<p>3）测试shell变量实例</p>
+<p>首先我们先定义file1和file2两个变量，并赋予这两个变量对应的系统文件路径及文件名的值</p>
+<pre><code>[root@xwq ~]# file1=/etc/services;file2=/etc/rc.local   #分号隔开两个命令
+[root@xwq ~]# echo $file1 $file2
+/etc/services /etc/rc.local
+</code></pre><p>测试：</p>
+<pre><code>[root@xwq ~]# [ -f &quot;$file1&quot; ] &amp;&amp; echo 1 || echo 0   #文件存在且为普通文件，所以为真（1）
+1
+[root@xwq ~]# [ -d &quot;$file1&quot; ] &amp;&amp; echo 1 || echo 0  #是文件而不是目录，所以为假（0）
+0
+[root@xwq ~]# [ -s &quot;$file1&quot; ] &amp;&amp; echo 1 || echo 0  #文件存在且大小不为0，所以为真（1）
+1  
+[root@xwq ~]# [ -e &quot;$file1&quot; ] &amp;&amp; echo 1 || echo 0  #文件存在，所以为真（1）
+1
+</code></pre><p>测试时变量的特殊写法及问题</p>
+<p>用[ ]测试变量时，如果被测试的变量不加双引号，那么测试结果可能会是不正确的，</p>
+<p>例：</p>
+<pre><code>[root@xwq ~]# echo $test   #这是一个不存在的变量
+
+[root@xwq ~]# [ -f $test ] &amp;&amp; echo 1 || echo 0   #不加引号测试变量。
+1   #明明$test变量不存在内容还返回1，逻辑就不对了
+[root@xwq ~]# [ -f &quot;$test&quot; ] &amp;&amp; echo 1 || echo 0  #加双引号测试
+0   #加了双引号就返回0，逻辑就对了
+</code></pre><p>如果是文件实体路径，那么加引号和不加的结果是一样的：</p>
+<pre><code>[root@xwq ~]# [ -f &quot;/etc/services&quot; ] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [ -f /etc/services ] &amp;&amp; echo 1 || echo 0
+1
+</code></pre><p>4）写出高效的测试文件</p>
+<p>在做测试判断的时候，不一定要按照“前面的操作成功了如何，否则就如何“ 的方法来进行。直接做部分判断，有时看起来更简洁;</p>
+<p>例：</p>
+<pre><code>[root@xwq ~]# [ -x test.txt ] &amp;&amp; echo 1
+1  #如果test.txt可执行，则输出1，如果不可执行则不作任何输出
+[root@xwq ~]# [ -f /etc ] || echo 0
+0  #如果/etc是文件这一点不成立，则输出0；如果成立则不作任何输出
+</code></pre><h1 id="字符串测试操作符"><a href="#字符串测试操作符" class="headerlink" title="字符串测试操作符"></a>字符串测试操作符</h1><p>字符串测试操作符的作用包括：比较两个字符串是否相同、测试字符串的长度是否为零、字符串是否为null等。</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-13.png" alt="s-13"></p>
+<p>特别注意：</p>
+<p>1、以上表格中的字符串测试操作符号务必要用””引起来</p>
+<p>2、比较符号两端有空格。</p>
+<p>字符串测试操作符提示：</p>
+<p>1）-n比较字符串长度是否不为零，如果不为零则为真，如：<code>[ -n &quot;$myvar&quot; ]</code></p>
+<p>2）-z比较字符串长度是否等于零，如果等于零则为真，如：<code>[ -z &quot;$myvar&quot; ]</code></p>
+<p>例1：</p>
+<pre><code>[root@xwq ~]# [ -n &quot;abc&quot; ] &amp;&amp; echo 1 || echo 0   #如果字符串长度不为0，则输出1，否则输出0
+1
+[root@xwq ~]# test -n &quot;abc&quot; &amp;&amp; echo 1 || echo 0   #test的用法同上述[ ]的用法
+1
+[root@xwq ~]# test -n &quot;&quot; &amp;&amp; echo 1 || echo 0
+0
+[root@xwq ~]# var=&quot;yjscloud&quot;     #给变量var赋值yjscloud字符串
+[root@xwq ~]# [ -n &quot;$var&quot; ] &amp;&amp; echo 1 || echo 0    #如果字符串长度不为0，则输出1，否则输出0
+1
+[root@xwq ~]# [ -n $var ] &amp;&amp; echo 1 || echo 0   #去掉双引号在这里看起来也对，不过加上会更好
+1
+[root@xwq ~]# var=&quot;xwqcloud&quot;
+[root@xwq ~]# [ -z &quot;$var&quot; ] &amp;&amp; echo 1 || echo 0    #使用-z，变量长度为0则为真
+0
+[root@xwq ~]# [ &quot;abc&quot; = &quot;abc&quot; ] &amp;&amp; echo 1 || echo 0   #注意&quot;=&quot;两端要有空格
+1
+[root@xwq ~]# [ &quot;abc&quot; = &quot;abb&quot; ] &amp;&amp; echo 1 || echo 0
+0
+[root@xwq ~]# [ &quot;$var&quot; = &quot;xwqcloud&quot; ] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [ &quot;$var&quot; == &quot;xwqcloud&quot; ] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [ &quot;$var&quot; != &quot;xwqcloud&quot; ] &amp;&amp; echo 1 || echo 0
+0
+</code></pre><p>例2：</p>
+<p>等号两端没有空格带来的问题</p>
+<pre><code>[root@xwq ~]# [ &quot;abc&quot;=&quot;1&quot; ] &amp;&amp; echo 1 || echo 0  #若等号两端不带空格，则会出现明显的逻辑错误
+1
+[root@xwq ~]# [ &quot;abc&quot; = &quot;1&quot; ] &amp;&amp; echo 1 || echo 0   #带空格的就是准确的
+0 
+</code></pre><p>结论：字符串比较时若等号两端没有空格，则会导致判断出现逻辑错误，即使语法没有问题，但是结果依然可能不对。</p>
+<p>例3：</p>
+<p>字符串不加引号可能带来的问题</p>
+<pre><code>[root@xwq ~]# var=&quot;&quot;  #将变量内容为空
+[root@xwq ~]# [ -n &quot;$var&quot; ] &amp;&amp; echo 1 || echo 0   #有双引号
+0   #返回0，-n不为空为真，因为变量内容为空，因此输出0是对的
+[root@xwq ~]# [ -n $var ] &amp;&amp; echo 1 || echo 0   #去掉双引号
+1   #同样的表达式有没有双引号的结果截然相反，可见双引号的重要性
+[root@xwq ~]# [ -z &quot;$var&quot; ] &amp;&amp; echo 1 || echo 0  #如果字符串长度为0，则输出1，否则输出0
+1
+</code></pre><ul>
+<li>强调字符串比较一定要加双引号</li>
+</ul>
+<h1 id="整数二元比较操作符"><a href="#整数二元比较操作符" class="headerlink" title="整数二元比较操作符"></a>整数二元比较操作符</h1><p><img src="http://p10cma2nn.bkt.clouddn.com/s-14.png" alt="s-14"></p>
+<p>例1：</p>
+<p>二元数字在[]中使用”&lt;”、”&gt;”非标准符合的比较</p>
+<pre><code>[root@xwq ~]# [ 2 &gt; 1 ] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [ 2 &lt; 1 ] &amp;&amp; echo 1 || echo 0
+1  #这里逻辑不对，条件不成立，应该返回0，可见，&quot;&lt;&quot;操作符在[]中使用会出现问题
+[root@xwq ~]# [ 2 \&lt; 1 ] &amp;&amp; echo 1 || echo 0
+0   #转义后这里是正确的
+[root@xwq ~]# [ 2 = 1 ] &amp;&amp; echo 1 || echo 0  #返回结果正确
+0
+[root@xwq ~]# [ 2 = 2 ] &amp;&amp; echo 1 || echo 0   #返回结果正确
+1
+[root@xwq ~]# [ 2 != 2 ] &amp;&amp; echo 1 || echo 0  #返回结果正确
+0
+</code></pre><p>例2：</p>
+<p>二元数字在[]中使用-gt、-le类符合比较</p>
+<pre><code>[root@xwq ~]# [ 2 -gt 1 ] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [ 2 -ge 1 ] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [ 2 -lt 1 ] &amp;&amp; echo 1 || echo 0
+0
+[root@xwq ~]# [ 2 -le 1 ] &amp;&amp; echo 1 || echo 0
+0
+</code></pre><p>例3：</p>
+<p>二元数字配合不同种类的操作符在[[]]中的比较</p>
+<pre><code>[root@xwq ~]# [[ 5 &gt; 6 ]] &amp;&amp; echo 1 || echo 0
+0
+[root@xwq ~]# [[ 5 &lt; 6 ]] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [[ 5 != 6 ]] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [[ 5 = 6 ]] &amp;&amp; echo 1 || echo 0
+0
+[root@xwq ~]# [[ 5 -gt 6 ]] &amp;&amp; echo 1 || echo 0
+0
+[root@xwq ~]# [[ 5 -lt 6 ]] &amp;&amp; echo 1 || echo 0
+1
+</code></pre><p>例4：</p>
+<p>二元数字在(())中的比较</p>
+<pre><code>[root@xwq ~]# (( 3&gt;2 )) &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# (( 3&lt;2 )) &amp;&amp; echo 1 || echo 0
+0
+[root@xwq ~]# (( 3==2 )) &amp;&amp; echo 1 || echo 0
+0
+</code></pre><p>小结：</p>
+<p>1、整数加双引号的比较是对的</p>
+<p>2、[[]]中用类似-eq等的写法是对的，[[]]中类似&gt;、&lt;的写法也可能不对，有可能会只比较第一位，逻辑结果不对</p>
+<p>3、[]中类似&gt;、&lt;的写法在语法上虽然可能没错，但逻辑结果不对，可以使用=、!=正确比较</p>
+<p>4、(())中不能使用类似-eq等的写法，可以使用类似&gt;、&lt;的写法</p>
+<p>提示 ：系统脚本较为常用的组合是[]加-eq、-gt等组合，这也是推荐的用法</p>
+<h1 id="逻辑连接符"><a href="#逻辑连接符" class="headerlink" title="逻辑连接符"></a>逻辑连接符</h1><p><img src="http://p10cma2nn.bkt.clouddn.com/s-15.png" alt="s-15"></p>
+<p>提示：</p>
+<p>！中文意思是反：与一个逻辑值相反的逻辑值</p>
+<p>-a中文意思是与(and &amp;&amp;)：两个逻辑值都是为“真”，返回值才是“真”，反之为“假”</p>
+<p>-o中文意思是或(or ||)：两个逻辑值只要有一个为“真”，返回值就为“真”</p>
+<p>例1：</p>
+<pre><code>[root@xwq ~]# [ -f /etc/hosts -a -f /etc/services ] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [[ -f /etc/hosts &amp;&amp; -f /etc/services ]] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# [ 5 -eq 6 -o 5 -gt 3 ] &amp;&amp; echo 1 || echo 0
+1
+[root@xwq ~]# ((5==6||5&gt;3)) &amp;&amp; echo 1 || echo 0
+1
+</code></pre><p>小结：逻辑操作符使用总结</p>
+<p>[]中用-a,-o,!</p>
+<p>[[]]中用&amp;&amp;，||，！</p>
+<p>test用法和[]相同</p>
+<p>多个[]之间以及多个[[]]之间，或者任意混合中间逻辑操作符都是&amp;&amp;或||</p>
+<p>注意[]、[[]]的两端及比较符号两端必须有空格，但是对于(())就不需要</p>
+<h1 id="逻辑操作符实战案例"><a href="#逻辑操作符实战案例" class="headerlink" title="逻辑操作符实战案例"></a>逻辑操作符实战案例</h1><p>1、开发shell脚本分别实现以定义变量，脚本传参以及read读入的方式比较2个整数大小。用条件表达式(禁止if)进行判断并以屏幕输出的方式提醒用户比较结果。注意：一共开发2个脚本，在用脚本传参和read读入的方式实现时，需要对变量是否为数字及传参个数是否正确给予提示。</p>
+<p>方法一：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-16.png" alt="s-16"></p>
+<p>方法二：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-17.png" alt="s-17"></p>
+<p>2、要求：</p>
+<p>1）当用户输入1时，输出”start installing lamp.“然后执行/server/scripts/lamp.sh，脚本内容输出”lamp is installed“后退出脚本</p>
+<p>2）当用户输入2时，输出”start installing lnmp“然后执行/server/scripts/lnmp.sh，脚本输出内容”lamp is installed“后退出脚本</p>
+<p>3）当输入3时，退出当前菜单脚本；</p>
+<p>4）当输入任何其他字符，给出提示”input error“后退出脚本。</p>
+<p>5）要对执行的脚本进行相关条件判读，例如：脚本是否存在，是否可执行等。</p>
+<p>解答：</p>
+<pre><code>[root@xwq]# mkdir -p /server/scripts/
+[root@xwq]# cd /server/scripts/
+[root@xwq scripts]# echo &quot;echo lnmp is installed&quot; &gt; lnmp.sh
+[root@xwq scripts]# echo &quot;echo lamp is installed&quot; &gt; lamp.sh
+[root@xwq scripts]# chmod +x lnmp.sh lamp.sh
+</code></pre><p>脚本内容：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-18.png" alt="s-17"><br><img src="http://p10cma2nn.bkt.clouddn.com/s-19.png" alt="s-18"></p>
+<h1 id="if条件语句"><a href="#if条件语句" class="headerlink" title="if条件语句"></a>if条件语句</h1><h2 id="if条件语句语法说明"><a href="#if条件语句语法说明" class="headerlink" title="if条件语句语法说明"></a>if条件语句语法说明</h2><ul>
+<li>单分支结构</li>
+</ul>
+<p>语法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> [条件]</div><div class="line">  <span class="keyword">then</span></div><div class="line">      指令</div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> [条件];<span class="keyword">then</span></div><div class="line">    指令</div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+<p>提示：分号相当于命令换行，上面两种语法等同。</p>
+<p>特殊写法：<code>if [ -f &quot;$file1&quot; ];then echo 1;fi</code> 相当于:<code>[ -f &quot;$file1&quot; ]&amp;&amp;echo 1</code></p>
+<ul>
+<li>双分支结构</li>
+</ul>
+<p>语法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> [条件]</div><div class="line">   <span class="keyword">then</span></div><div class="line">      指令集</div><div class="line"><span class="keyword">else</span></div><div class="line">      指令集</div><div class="line"><span class="keyword">fi</span></div></pre></td></tr></table></figure>
+<p>特殊写法：<code>if [ -f &quot;$file1&quot; ];then echo 1;else echo 0;fi</code>相当于:<code>[ -f &quot;$file1&quot; ]&amp;&amp;echo 1||echo 0</code></p>
+<ul>
+<li>多分支结构</li>
+</ul>
+<p>语法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> 条件</div><div class="line">   <span class="keyword">then</span></div><div class="line">      指令</div><div class="line"><span class="keyword">elif</span></div><div class="line">   <span class="keyword">then</span></div><div class="line">      指令</div><div class="line"><span class="keyword">else</span></div></pre></td></tr></table></figure>
+<h2 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h2><p>1、开发shell脚本判断系统剩余内存的大小，如果低于100M就邮件报警给管理员，并且加入系统定时任务每分钟执行一次检查。（重视解决问题的过程）</p>
+<p>第一步：获取内存大小</p>
+<pre><code>free -m | grep Mem | awk &apos;{print $NF}&apos;
+</code></pre><p>第二步：配置邮件</p>
+<pre><code>echo set from=[your qq email] smtp=smtp.qq.com smtp-auth-user=[your qq number] smtp-auth-password=[your email password].smtp-auth=login &gt; /etc/mail.rc
+</code></pre><p>第三部：定时任务</p>
+<pre><code>###3 s
+*/3 * * * * /bin/sh /server/scripts/4.sh &amp;&gt;/dev/null
+</code></pre><p>完整脚本：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-20.png" alt="s-20"></p>
+<p>2、双多分支if条件句举例</p>
+<p>1）用if双分支实现对nginx或mysql服务是否正常判断，使用进程数、端口、url的方式判断，如果进程没起，把进程启动</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-21.png" alt="s-21"></p>
+<p>思考：</p>
+<p>a、监控web服务是否正常，不低于5种思路</p>
+<p>b、监控db服务是否正常，不低于5种思路</p>
+<p>方法：web和db共同方法</p>
+<p>（1）端口</p>
+<ul>
+<li>本地：netstat/ss/lsof</li>
+<li>远程：telnet/nmap/nc</li>
+</ul>
+<p>（2）进程（本地）</p>
+<p>（3）wget/curl(http方式，判断根据返回值或者返回内容)</p>
+<p>（4）header（http）,http方式，根据状态码判断</p>
+<p>（5）数据库特有，通过mysql客户端连接判断，根据返回值或者内容。</p>
+<p>以web为例：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-22.png" alt="s-22"></p>
+<p>以mysql为例:</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-23.png" alt="s-16"></p>
+<h2 id="扩展-1"><a href="#扩展-1" class="headerlink" title="扩展-1"></a>扩展-1</h2><p>此处扩展判断字符串是否为数字的多种方法</p>
+<p>法一：sed加正则表达式</p>
+<p>命令行传参：</p>
+<p>组合语法判断1：</p>
+<pre><code>[ -n &quot;`echo $num|sed &apos;s/[0-9]//g&apos;`&quot; -a -n &quot;`echo $2|sed &apos;s/[0-9]//g&apos;`&quot; ]&amp;&amp;echo &quot;两个参数都必须为数字&quot; &amp;&amp; exit 1
+</code></pre><p>组合语法判断2：</p>
+<pre><code>[ -n &quot;`echo $num|sed &apos;s/[0-9]//g&apos;`&quot; -a -n &quot;`echo $2|sed &apos;s/[0-9]//g&apos;`&quot; ]&amp;&amp;{
+echo &quot;两个参数都必须为数字&quot; 
+exit 1
+}
+</code></pre><p>单个判断语法：</p>
+<pre><code>[ -n &quot;`echo $1|sed &apos;s/[0-9]//g&apos;`&quot; ]&amp;&amp;echo &quot;第一个参数都必须为数字&quot; &amp;&amp; exit 1
+[ -n &quot;`echo $2|sed &apos;s/[0-9]//g&apos;`&quot; ]&amp;&amp;echo &quot;第二个参数都必须为数字&quot; &amp;&amp; exit 1
+</code></pre><p>法二：变量的子字符串替换加正则表达式</p>
+<pre><code>[root@pan ~]# num=yjscloud123
+[root@pan ~]# [ -z &quot;`echo &quot;${num//[0-9]/}&quot;`&quot; ]&amp;&amp; echo 1||echo 0
+0
+[root@pan ~]# num=123yjscloud123
+[root@pan ~]# [ -z &quot;`echo &quot;${num//[0-9]/}&quot;`&quot; ]&amp;&amp; echo 1||echo 0
+0    #这个结果说明前面的结果不为0，即有非数字字符
+[root@pan ~]# num=123
+[root@pan ~]# [ -z &quot;`echo &quot;${num//[0-9]/}&quot;`&quot; ]&amp;&amp; echo 1||echo 0
+1     #这个结果说明前面的结果去掉数字后为0，即没有非数字字符
+</code></pre><p>法三：变量的子串替换加正则表达式</p>
+<p>思路：如果num长度不为0，并把num中的非数字部分删除，然后看结果是不是等于num本身，如果两者都成立就是数字。</p>
+<pre><code>[root@pan ~]# [ -n &quot;$num&quot; -a &quot;$num&quot;=&quot;${num//[^0-9]/}&quot; ]&amp;&amp; echo &quot;it is num&quot;
+it is num
+</code></pre><p>法四：expr计算判断</p>
+<pre><code>expr $1 + 0 &gt;/dev/null 2&gt;&amp;1
+[ $? -eq 0 ] &amp;&amp; echo int
+</code></pre><h2 id="扩展-2（mysql补充）"><a href="#扩展-2（mysql补充）" class="headerlink" title="扩展-2（mysql补充）"></a>扩展-2（mysql补充）</h2><p>完整的检查数据库状态的脚本</p>
+<p>方法一：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-24.png" alt="s-24"></p>
+<p>方法二：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-25.png" alt="s-25"></p>
+<p>方法三：</p>
+<p>本方法的实现思路是：模拟web服务器，通过mysql账户连接mysql，然后根据返回命令状态或返回内容确认mysql是否正常（推荐）</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-26.png" alt="s-26"></p>
+<h2 id="扩展-3（web补充）"><a href="#扩展-3（web补充）" class="headerlink" title="扩展-3（web补充）"></a>扩展-3（web补充）</h2><p><img src="http://p10cma2nn.bkt.clouddn.com/s-27.png" alt="s-27"></p>
+<p>输入参数版：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-28.png" alt="s-28"></p>
+<p>nmap版：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-29.png" alt="s-29"></p>
+<p>如果写脚本通过nc检查端口并监控memcache服务可以用下面的方法：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-30.png" alt="s-30"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;变量的数值计算常见命令&quot;&gt;&lt;a href=&quot;#变量的数值计算常见命令&quot; class=&quot;headerlink&quot; title=&quot;变量的数值计算常见命令&quot;&gt;&lt;/a&gt;变量的数值计算常见命令&lt;/h1&gt;&lt;p&gt;&lt;code&gt;(())&lt;/code&gt;、&lt;code&gt;let&lt;/code&gt;
+    
+    </summary>
+    
+      <category term="Shell编程" scheme="http://yjscloud.com/categories/Shell%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Shell学习笔记" scheme="http://yjscloud.com/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Shell学习笔记（一）：基础知识篇</title>
+    <link href="http://yjscloud.com/2018/06/10/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
+    <id>http://yjscloud.com/2018/06/10/Shell学习笔记（一）：基础知识篇/</id>
     <published>2018-06-10T12:08:59.000Z</published>
-    <updated>2018-06-18T12:54:31.000Z</updated>
+    <updated>2018-06-18T13:03:32.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="初识脚本"><a href="#初识脚本" class="headerlink" title="初识脚本"></a>初识脚本</h1><h2 id="脚本的建立"><a href="#脚本的建立" class="headerlink" title="脚本的建立"></a>脚本的建立</h2><p>shell脚本通常是在编译器（如vi/vim）中编写，由unix/linux命令、bash shell命令、程序结构控制语句和注释等内容组成。</p>
-<ul>
-<li>脚本开头（第一行）</li>
-</ul>
+<p>1）脚本开头（第一行）</p>
 <p>一个规范的shell脚本的第一行会指出由那个程序（解释器）来执行脚本中的内容，在linux bash编程中一般为；</p>
 <pre><code>#!/bin/bash
 </code></pre><p>或</p>
 <pre><code>#!/bin/sh
-</code></pre><p>“#!”又称为幻数，在执行bash脚本的时候，内核会根据它来确定该用那个程序来解释脚本内容。这一行必须在脚本顶端的第一行，如果不是第一行则为注释。</p>
-<ul>
-<li>sh和bash的区别</li>
-</ul>
-<figure class="highlight tap"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]<span class="comment"># ll /bin/sh</span></div><div class="line">lrwxrwxrwx.<span class="number"> 1 </span>root root<span class="number"> 4 </span>Jun <span class="number"> 5 </span>03:39 /bin/sh -&gt; bash</div></pre></td></tr></table></figure>
-<p>提示：sh为bash的软链接，这里推荐用标准写法<code>#!/bin/bash</code><br>下面是linux中常用脚本语言开头的编码写法，不同语言脚本的开头一般都要加上如下相应语言的开头标识内容。</p>
+</code></pre><p>“<code>#!</code>“又称为幻数，在执行bash脚本的时候，内核会根据它来确定该用那个程序来解释脚本内容。这一行必须在脚本顶端的第一行，如果不是第一行则为注释。</p>
+<p>2）sh和bash的区别</p>
+<pre><code>[root@pan ~]# ll /bin/sh
+lrwxrwxrwx. 1 root root 4 Jun  5 03:39 /bin/sh -&gt; bash
+</code></pre><p>提示：sh为bash的软链接，这里推荐用标准写法<code>#!/bin/bash</code><br>下面是linux中常用脚本语言开头的编码写法，不同语言脚本的开头一般都要加上如下相应语言的开头标识内容。</p>
 <pre><code>1、#!/bin/sh
 2、#!/bin/bash
 3、#!/usr/bin/awk
@@ -44,9 +439,8 @@
 6、#!/usr/bin/expect
 7、#!/usr/bin/perl
 8、#!/usr/bin/env python
-</code></pre><ul>
-<li>脚本注释<br>在shell脚本中，跟在（#）井号后面的内容表示注释，用来对脚本进行注释说明，注释部分不会被执行，仅仅是给人看的注释可自成一行，也可以跟在脚本命令后面与命令在同一行。我们在写脚本的时候要养成写注释的好习惯！</li>
-</ul>
+</code></pre><p>3）脚本注释</p>
+<p>在shell脚本中，跟在（#）井号后面的内容表示注释，用来对脚本进行注释说明，注释部分不会被执行，仅仅是给人看的注释可自成一行，也可以跟在脚本命令后面与命令在同一行。我们在写脚本的时候要养成写注释的好习惯！</p>
 <h2 id="shell脚本的执行"><a href="#shell脚本的执行" class="headerlink" title="shell脚本的执行"></a>shell脚本的执行</h2><p>当shell脚本以非交互方式运行时，它会查找环境变量ENV，该变量指定了一个环境文件（通常是.bashrc），然后从该环境变量文件开始执行，当读取了ENV文件后，shell才开始执行shell脚本的内容。shell脚本的执行通常可以采用以下三种方式：</p>
 <p>1）bash script-name或 sh script-name（推荐使用）</p>
 <p>2）path/script-name或 ./script-name（当前路径下执行脚本）</p>
@@ -97,22 +491,21 @@ echo &quot;Here is pan blog&quot;  #脚本内容
 </code></pre><p>登录后显示如下：</p>
 <pre><code>Last login: Tue Jun 12 16:00:48 2018 from 192.168.0.1
 Here is pan blog
-</code></pre><h2 id="显示与取消环境变量"><a href="#显示与取消环境变量" class="headerlink" title="显示与取消环境变量"></a>显示与取消环境变量</h2><ul>
-<li>通过echo 命令打印环境变量</li>
-</ul>
+</code></pre><h2 id="显示与取消环境变量"><a href="#显示与取消环境变量" class="headerlink" title="显示与取消环境变量"></a>显示与取消环境变量</h2><p>1）通过echo 命令打印环境变量</p>
 <p><code>$HOME</code> 用户登录时进入的目录</p>
 <p><code>$UID</code> 当前用户的UID（用户标识）相当与id-u</p>
 <p><code>$PWD</code> 当前工作目录的绝对路径名</p>
 <p><code>$SHELL</code> 当前SHELL</p>
 <p><code>$USER</code> 当前用户</p>
 <p>……..</p>
-<ul>
-<li>用env（printenv）或set显示默认的环境变量</li>
-<li>用unset消除本地变量和环境变量</li>
-</ul>
+<p>2）用env（printenv）或set显示默认的环境变量<br>3）用unset消除本地变量和环境变量</p>
 <p>例：</p>
-<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[pan<span class="variable">@pan</span> ~]<span class="variable">$ </span>echo <span class="variable">$USER</span></div><div class="line">pan</div><div class="line">[pan<span class="variable">@pan</span> ~]<span class="variable">$ </span>unset USER</div><div class="line">[pan<span class="variable">@pan</span> ~]<span class="variable">$ </span>echo <span class="variable">$USER</span></div><div class="line">	<span class="comment">#此处输出为空</span></div></pre></td></tr></table></figure>
-<h2 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h2><p>1）定义本地变量</p>
+<pre><code>[pan@pan ~]$ echo $USER
+pan
+[pan@pan ~]$ unset USER
+[pan@pan ~]$ echo $USER
+#此处输出为空
+</code></pre><h2 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h2><p>1）定义本地变量</p>
 <p>本地变量在用户当前的shell生存期的脚本中使用。例如，本地变量 XWQ取值为pan，这个值只要在用户当前shell生存期中有意义。如果在shell中启动另一个进程或退出，本地变量XWQ值将无效。</p>
 <p>1.普通字符串变量定义</p>
 <p>变量名=value</p>
@@ -120,20 +513,15 @@ Here is pan blog
 <p>变量名=”value”</p>
 <p>shell中变量名的要求：一般是字母，数字。下划线组成。</p>
 <p>2）自定义变量建议</p>
-<ul>
-<li><p>纯数字（不带空格），定义方式可以不加引号（单或双），例如：</p>
+<p>纯数字（不带空格），定义方式可以不加引号（单或双），例如：</p>
 <pre><code>PanAge=23
 NETWORKING=yes
-</code></pre></li>
-<li><p>没有特殊情况，字符串一般用双引号定义，特别是多个字符串中有空格时，例如：</p>
-</li>
-</ul>
-<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attr">NFSD_MODULE</span>=<span class="string">"no load"</span></div><div class="line"><span class="attr">MyName</span>=<span class="string">"Pan is a handsome boy"</span></div></pre></td></tr></table></figure>
-<ul>
-<li>变量内容需要原样输出时，要用单引号（’’）</li>
-</ul>
-<p><code>PAN_NAME=&#39;PAN&#39;</code></p>
-<p>3）变量命名规范</p>
+</code></pre><p>没有特殊情况，字符串一般用双引号定义，特别是多个字符串中有空格时，例如：</p>
+<pre><code>NFSD_MODULE=&quot;no load&quot;
+MyName=&quot;Pan is a handsome boy&quot;
+</code></pre><p>变量内容需要原样输出时，要用单引号（’’）</p>
+<pre><code>PAN_NAME=&apos;PAN&apos;
+</code></pre><p>3）变量命名规范</p>
 <p>变量命令要统一，使用全部大写字母，如<code>APACHE_ERR_NUM</code>；语义要清晰，能够正确表达变量内容的含义，过长的英文单词可采用前几个字符代替。多个单词连接使用“_”号连接，引用时，最好以<code>${APACHE_ERR_NUM}</code>加大括号或者”<code>${APACHE_ERR_NUM}</code>“外面加双引号方式引用变量；</p>
 <p>4）避免无含义字符或数字</p>
 <p>5）全局变量和局部变量命令</p>
@@ -4766,474 +5154,6 @@ gitlab-ctl reconfigure
     
     
       <category term="Git学习" scheme="http://yjscloud.com/tags/Git%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>DNS实战</title>
-    <link href="http://yjscloud.com/2018/03/01/DNS%E5%AE%9E%E6%88%98/"/>
-    <id>http://yjscloud.com/2018/03/01/DNS实战/</id>
-    <published>2018-03-01T13:00:23.000Z</published>
-    <updated>2018-03-01T15:11:15.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="DNS简介"><a href="#DNS简介" class="headerlink" title="DNS简介"></a>DNS简介</h1><h2 id="DNS概况"><a href="#DNS概况" class="headerlink" title="DNS概况"></a>DNS概况</h2><p>DNS（Domain Name System，域名系统），因特网上作为域名和IP地址互相映射的一个分布式数据库，能够使用户更方便的访问互联网，而不用去记住能够被机器直接读取的IP数串。通过主机名，最终得到该主机对应的IP地址的过程叫做域名解析（或主机名解析）。DNS协议运行在UDP协议之上，使用端口号53。</p>
-<p>DNS的分布数据库是以域名为索引的，每个域名实际上就是一棵很大的逆向树中路径，这棵逆向树称为域名空间（domain name space），如下图所示树的最大深度不得超过127层，树中每个节点都有一个可以长达63个字符的文本标号。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-1.png" alt="3-1"></p>
-<h2 id="DNS域名解析过程"><a href="#DNS域名解析过程" class="headerlink" title="DNS域名解析过程"></a>DNS域名解析过程</h2><p>首先，客户端检测自身缓存，如果没有，检测hosts文件，如果没有，客户端发出DNS请求翻译IP地址或者主机名。DNS服务器在收到客户机的请求后：</p>
-<p>1）检查DNS服务器的缓存，若查到请求的地址或名字，即向客户机发出应答信息；</p>
-<p>2）若没有查到，则在数据库中查找，若查到请求的地址或名字，即向客户机发出应答信息；</p>
-<p>3）若没有查到，则将请求发给根域DNS服务器，并依序从根域查找顶级域，由顶级域查找二级域，二级域查找三级，直至找到要解析的地址或名字，即向客户机所在网络的DNS服务器发出应答信息，DNS服务器收到应答后先在缓存中存储，然后将解析结果发给客户机。</p>
-<p>4）若没有找到，则返回错误信息。</p>
-<h2 id="DNS分类"><a href="#DNS分类" class="headerlink" title="DNS分类"></a>DNS分类</h2><p>主DNS服务器：就是一台存储着原始资料的DNS服务。</p>
-<p>从DNS服务器：使用自动更新方式从主DNS服务器同步数据的DNS服务器。也称辅助DNS服务器。</p>
-<p>备注：一般生产环境，主DNS服务器做管理使用，从DNS服务器提供服务。</p>
-<p>缓存服务器：不负责本地解析，采用递归方式转发客户机查询请求，并返回结果给客户机的DNS服务器。同时缓存查询回来的记过，也叫递归服务器。</p>
-<p>转发器：这台DNS发现非本机负责的查询请求时，不再向根域发起请求，而是直接转发给指定的一台或者多台服务器。自身并不缓存查询结果。</p>
-<h2 id="DNS中记录类型"><a href="#DNS中记录类型" class="headerlink" title="DNS中记录类型"></a>DNS中记录类型</h2><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-2.png" alt="3-2"></p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-3.png" alt="3-3"></p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-4.png" alt="3-4"></p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-5.png" alt="3-5"></p>
-<h2 id="DNS命名规范"><a href="#DNS命名规范" class="headerlink" title="DNS命名规范"></a>DNS命名规范</h2><p>1)26个英文字母</p>
-<p>2)“0,1,2,3,4,5,6,7,8,9,”十个数字</p>
-<p>3)“-”（英文中的连词号）</p>
-<p>4)最多63字节长度</p>
-<p>备注：要不按照这个规范命名，bing支不支持？ 支持，不合适，不建议。 非要不按照这个，怎么办？ master-view文件上配置check-name ignore;</p>
-<h2 id="DNS三个命令介绍（dig、host、nslookup）"><a href="#DNS三个命令介绍（dig、host、nslookup）" class="headerlink" title="DNS三个命令介绍（dig、host、nslookup）"></a>DNS三个命令介绍（dig、host、nslookup）</h2><p>安装必要软件包：yum  install  bind-utils -y</p>
-<h3 id="dig"><a href="#dig" class="headerlink" title="dig"></a>dig</h3><p>工具软件dig可以显示整个查询过程</p>
-<pre><code>dig yjscloud.com
-</code></pre><p>上面的命令会输出四段信息；</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-6.png" alt="3-6"></p>
-<p>第一段是查询参数和统计</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-7.png" alt="3-7"></p>
-<p>第二段是查询内容</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-8.png" alt="3-8"></p>
-<p>第三段是DNS服务器的答复。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-9.png" alt="3-9"></p>
-<p>上面结果表示，yjscloud.com的CNAME记录指向yjscloud.github.io.；而yjscloud.github.io.的CNAME记录指向sni.github.map.fastly.net.；也就是说，用户查询yjscloud.com的时候，实际上返回的是sni.github.map.fastly.net.的IP地址。这样的好处是，变更服务器IP地址的时候，只要修改sni.github.map.fastly.net.这个域名就可以了，用户yjscloud.com域名不用修改。sni.github.map.fastly.net.有一个A记录，即一个IP地址。532、3532、4都是TTL值（time to live的缩写），表示缓存时间，即表示在这些时间内不用重新查询。</p>
-<p>第四段是DNS服务器的一些传输信息。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-10.png" alt="3-10"></p>
-<p>上面结果显示，本机的DNS服务器是192.168.16.1，查询端口是53（DNS服务器的默认端口），以及回应长度是117字节。</p>
-<p>如果不想看到这么多内容，可以使用+short参数</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-11.png" alt="3-11"></p>
-<p>使用+trace参数可以显示DNS的整个分级查询过程。</p>
-<pre><code>dig yjscloud.com +trace
-</code></pre><p>上面命令的第一段列出根域名.的所有NS记录，即所有根域名服务器。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-12.png" alt="3-12"></p>
-<p>根据内置的根域名服务器IP地址，DNS服务器向所有这些IP地址发出查询请求，询问yjscloud.com的顶级域名服务器com.的NS记录。</p>
-<p>最先回复的根域名服务器将被缓存，以后只向这台服务器发请求。</p>
-<p>接着是第二段。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-13.png" alt="3-13"></p>
-<p>上面结果显示.com域名的13条NS记录，同时返回的还有每一条记录对应的IP地址。</p>
-<p>然后，DNS服务器向这些顶级域名服务器发出查询请求，询问yjscloud.com的NS记录。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-14.png" alt="3-14"></p>
-<p>上面结果显示yjscloud.com有两条NS记录，同时返回的还有每一条NS记录对应的IP地址。然后，DNS服务器向上面这两台NS服务器查询yjscloud.com的主机名。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-15.png" alt="3-15"></p>
-<p>上面结果显示，yjscloud.com有一条CNAME记录，两条NS记录，最先返回结果的NS服务器是f1g1ns1.dnspod.net.，IP地址为58.247.212.36。</p>
-<h3 id="host"><a href="#host" class="headerlink" title="host"></a>host</h3><p>host命令可以看作dig命令的简化版本，返回当前请求域名的各种记录。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-16.png" alt="3-16"></p>
-<p>host命令也可以用于逆向查询，即从IP地址查询域名，等同于dig -x <ip>。</ip></p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-17.png" alt="3-17"></p>
-<h3 id="nslookup"><a href="#nslookup" class="headerlink" title="nslookup"></a>nslookup</h3><p>nslookup命令用于互动式地查询域名记录。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-18.png" alt="3-18"></p>
-<p><a href="http://www.ruanyifeng.com/blog/2016/06/dns.html" target="_blank" rel="external">DNS入门原理</a></p>
-<h1 id="DNS安装部署"><a href="#DNS安装部署" class="headerlink" title="DNS安装部署"></a>DNS安装部署</h1><h2 id="192-168-16-111（主DNS）安装"><a href="#192-168-16-111（主DNS）安装" class="headerlink" title="192.168.16.111（主DNS）安装"></a>192.168.16.111（主DNS）安装</h2><p>安装DNS： yum  install  -y bind-utils bind bind-devel bind-chroot</p>
-<p>检查是否安装完成：rpm -qa | grep bind</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-19.png" alt="3-19"></p>
-<p>配置named.conf文件</p>
-<pre><code>mv  /etc/named .conf  /etc/named .conf.bak
-vim  /etc/named .conf
-</code></pre><p>配置文件的内容为：</p>
-<pre><code>options {
-   version &quot;1.1.1&quot;;
-   listen-on port 53 {any;};
-   directory &quot;/var/named/chroot/etc/&quot;;
-   pid-file &quot;/var/named/chroot/var/run/named/named.pid&quot;;
-   allow-query { any; };
-   Dump-file &quot;/var/named/chroot/var/log/binddump.db&quot;;
-   Statistics-file &quot;/var/named/chroot/var/log/named_stats&quot;;
-   zone-statistics yes;
-   memstatistics-file &quot;log/mem_stats&quot;;
-   empty-zones-enable no;
-   forwarders {202.106.196.115;8.8.8.8; };
-};
-
-key &quot;rndc-key&quot; {
-        algorithm hmac-md5;
-        secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
-};
-
-controls {
-       inet 127.0.0.1 port 953
-               allow { 127.0.0.1; } keys { &quot;rndc-key&quot;; };
-};
-
-logging {
-    channel warning {
-        file &quot;/var/named/chroot/var/log/dns_warning&quot; versions 10 size 10m;
-        severity warning;
-        print-category yes;
-        print-severity yes;
-        print-time yes;
- };
-    channel general_dns {
-    file &quot;/var/named/chroot/var/log/dns_log&quot; versions 10 size 100m;
-    severity info;
-    print-category yes;
-    print-severity yes;
-    print-time yes;
- };
-category default {
-  warning;
- };
-category queries {
-  general_dns;
- };
-};
-
-include &quot;/var/named/chroot/etc/view.conf&quot;;
-</code></pre><p>配置rndc.key文件</p>
-<pre><code>vim /etc/rndc.key
-
-key &quot;rndc-key&quot; {
-        algorithm hmac-md5;
-        secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
-};
-</code></pre><p>配置rndc.conf文件</p>
-<pre><code>vim /etc/rndc.conf
-
-key &quot;rndc-key&quot; {
-        algorithm hmac-md5;
-        secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
-};
-
-options {
-        default-key &quot;rndc-key&quot;;
-        default-server 127.0.0.1;
-        default-port 953;
-};
-</code></pre><p>配置view.conf文件</p>
-<pre><code>vim /var/named/chroot/etc/view.conf
-
-view &quot;View&quot; {
-    zone &quot;yjs.com&quot; {
-            type    master;
-            file    &quot;yjscloud.com.zone&quot;;
-            allow-transfer {
-                    192.168.16.112;
-            };
-            notify  yes;
-            also-notify {
-                    192.168.16.112;
-            };
-    };
-};
-</code></pre><p>配置yjscloud.com.zone文件</p>
-<pre><code>vim /var/named/chroot/etc/yjscloud.com.zone
-
-$ORIGIN .
-$TTL 3600       ; 1 hour
-yjs.com                  IN SOA  op.yjs.com. dns.yjs.com. (
-                                2000       ; serial
-                                900        ; refresh (15 minutes)
-                                600        ; retry (10 minutes)
-                                86400      ; expire (1 day)
-                                3600       ; minimum (1 hour)
-                                )
-                        NS      op.yjs.com.
-$ORIGIN yjs.com.
-shanks              A       1.2.3.4
-op              A       1.2.3.4
-a               A       1.2.3.4
-</code></pre><p>1）Serial：只是一个序号，但这个序号可被用来作为slave与master更新的依据。</p>
-<p>举例来说，master序号为100但slave序号为90时，那么这个zone file的资料就会被传送到slave来更新了。由于这个序号代表新旧资料，通常我们建议你可以利用日期来设定。例如上面的资料是在2015/10/20所写的第一次，所以用2015102001作为序号代表。（yyyymmddnn，nn代表这一天是第几次修改）</p>
-<p>2）Refresh：除了根据Serial来判断新旧之外，我们可以利用这个refresh（更新）命令slave多久进行一次主动更新、</p>
-<p>3）Retry：如果到了Refresh的时间，但是slave却无法连接到master时，那么在多久之后，slave会再次的主动尝试与主机连接。</p>
-<p>4）Expire：如果slave一直无法与master连接上，那么经过多久的时间之后，则命令slave不要再连接了。也就是说，此时我们假设masterDNS可能遇到重大问题而无法上线，则等待系统管理员处理完毕后，再重新到slaveDNS重启bind。</p>
-<p>5）Minimum：这个类似TTL。<br>修改目录权限，并启动服务</p>
-<pre><code>cd /var &amp;&amp; chown -R named.named named/
-/etc/init.d/named start
-chkconfig named on
-</code></pre><p>解析测试</p>
-<pre><code>dig @127.0.0.1 a.yjs.com
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-20.png" alt="3-20"></p>
-<h2 id="192-168-16-112（从DNS）"><a href="#192-168-16-112（从DNS）" class="headerlink" title="192.168.16.112（从DNS）"></a>192.168.16.112（从DNS）</h2><pre><code>yum install -y bind-utils bind bind-devel bind-chroot
-</code></pre><p>配置named.conf文件</p>
-<pre><code>mv /etc/named.conf /etc/named.conf.bak
-vim /etc/named.conf
-
-options {
-    version &quot;1.1.1&quot;;
-    listen-on port 53 {any;};
-    directory &quot;/var/named/chroot/etc/&quot;;
-   pid-file &quot;/var/named/chroot/var/run/named/named.pid&quot;;
-   allow-query { any; };
-   Dump-file &quot;/var/named/chroot/var/log/binddump.db&quot;;
-   Statistics-file &quot;/var/named/chroot/var/log/named_stats&quot;;
-   zone-statistics yes;
-   memstatistics-file &quot;log/mem_stats&quot;;
-   empty-zones-enable no;
-   forwarders {202.106.196.115;8.8.8.8; };
-};
-
-key &quot;rndc-key&quot; {
-        algorithm hmac-md5;
-        secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
-};
-
-controls {
-       inet 127.0.0.1 port 953
-               allow { 127.0.0.1; } keys { &quot;rndc-key&quot;; };
-};
-
-logging {
-    channel warning {
-        file &quot;/var/named/chroot/var/log/dns_warning&quot; versions 10 size 10m;
-        severity warning;
-        print-category yes;
-        print-severity yes;
-        print-time yes;
-    };
-    channel general_dns {
-        file &quot;/var/named/chroot/var/log/dns_log&quot; versions 10 size 100m;
-        severity info;
-        print-category yes;
-        print-severity yes;
-        print-time yes;
-   };
-   category default {
-        warning;
-    };
-   category queries {
-     general_dns;
-  };
-};
-
-include &quot;/var/named/chroot/etc/view.conf&quot;;
-</code></pre><p>配置rndc.key文件</p>
-<pre><code>vim /etc/rndc.key
-
-key &quot;rndc-key&quot; {
-          algorithm hmac-md5;
-          secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
-};
-</code></pre><p>配置rndc.conf文件</p>
-<pre><code>vim /etc/rndc.conf
-
-key &quot;rndc-key&quot; {
-         algorithm hmac-md5;
-       secret &quot;Eqw4hClGExUWeDkKBX/pBg==&quot;;
-};
-
-options {
-         default-key &quot;rndc-key&quot;;
-       default-server 127.0.0.1;
-         default-port 953;
-};
-</code></pre><p>备注：主从DNS主机配置named.conf、rndc.key、rndc.conf文件一样</p>
-<p>配置view.conf文件</p>
-<pre><code>vim /var/named/chroot/etc/view.conf
-
-view &quot;SlaveView&quot; {
-        zone &quot;yjs.com&quot; {
-                 type    slave;
-                 masters {192.168.16.111; };
-                 file    &quot;slave.yjscloud.com.zone&quot;;
-        };    
-};
-</code></pre><p>修改目录权限，并启动服务</p>
-<pre><code>cd /var &amp;&amp; chown -R named.named named/
-/etc/init.d/named start
-chkconfig named on
-</code></pre><p>进入目录/var/named/chroot/etc</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-21.png" alt="3-21"></p>
-<p>如果有slave。yjscloud.com.zone这个文件说明主从已经同步</p>
-<h2 id="添加A、CNAME、MX、PTR记录（主DNS）"><a href="#添加A、CNAME、MX、PTR记录（主DNS）" class="headerlink" title="添加A、CNAME、MX、PTR记录（主DNS）"></a>添加A、CNAME、MX、PTR记录（主DNS）</h2><h3 id="A记录"><a href="#A记录" class="headerlink" title="A记录"></a>A记录</h3><p>编辑master节点/var/named/chroot/etc/yjscloud.com.zone，在文件末尾添加记录</p>
-<pre><code>a               A       192.168.1.100
-将serial + 1
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-22.png" alt="3-22"></p>
-<p>执行rndc reload</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-23.png" alt="3-23"></p>
-<p>检查从DNS主机，slave.yjscloud.com.zone文件已同步更新。</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-24.png" alt="3-24"></p>
-<h3 id="CNAME记录"><a href="#CNAME记录" class="headerlink" title="CNAME记录"></a>CNAME记录</h3><p>编辑master节点/var/named/chroot/etc/yjscloud.com.zone，在文件末尾添加记录</p>
-<pre><code>cname       CNAME   a.yjs.com.
-将serial + 1
-</code></pre><p>执行rndc reload</p>
-<p>检查从DNS主机，slave.yjscloud.com.zone文件已同步更新。</p>
-<p>测试 host a.swj.com 127.0.0.1</p>
-<h3 id="MX记录"><a href="#MX记录" class="headerlink" title="MX记录"></a>MX记录</h3><p>编辑master节点/var/named/chroot/etc/shhnwangjian.com.zone，在文件末尾添加记录</p>
-<pre><code>mx      MX 5    192.168.1.101
-将serial + 1
-</code></pre><p>执行rndc reload</p>
-<p>检查从DNS主机，slave.shhnwangjian.com.zone文件已同步更新。</p>
-<p>测试 host mx.swj.com 127.0.0.1</p>
-<h2 id="PTR记录（反向解析）"><a href="#PTR记录（反向解析）" class="headerlink" title="PTR记录（反向解析）"></a>PTR记录（反向解析）</h2><p>编辑master节点/var/named/chroot/etc/view.conf，加入ptr的zone配置</p>
-<pre><code>zone &quot;168.192.in-addr.arpa&quot; {
-  type    master;
- file    &quot;168.192.zone&quot;;
- allow-transfer{
-       192.168.16.1112;
- };
- notify  yes;
- also-notify{
-     192.168.16.112;
- };
-};
-</code></pre><p>在下面这个位置加入代码：</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-25.png" alt="3-25"></p>
-<p>编辑master节点/var/named/chroot/etc/168.192.zone</p>
-<pre><code>$TTL 3600       ; 1 hour
-@                   IN SOA  op.yjs.com. dns.yjs.com. (
-                            2003       ; serial
-                            900        ; refresh (15 minutes)
-                            600        ; retry (10 minutes)
-                            86400      ; expire (1 day)
-                            3600       ; minimum (1 hour)
-                            )
-                    NS      op.yjs.com.
-100.1               IN  PTR a.yjs.com.
-</code></pre><p>修改168.192.zone文件属主</p>
-<pre><code>chown named.named 168.192.zone
-rndc reload
-</code></pre><p>编辑slave节点/var/named/chroot/etc/view.conf，加入ptr的zone配置</p>
-<pre><code>zone &quot;168.192.in-addr.arpa&quot; {
-     type    slave;
-     masters {192.168.16.111; };
-     file    &quot;slave.168.192.zone&quot;;
-};
-</code></pre><p>在下面的这个位置加入代码：</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-26.png" alt="3-26"></p>
-<p>执行rndc reload</p>
-<p>slava节点/var/named/chroot/etc目录下生成slave.168.192.zone文件。</p>
-<p>解析测试: host 192.168.1.100 127.0.0.1</p>
-<h2 id="DNS实现服务的负载均衡"><a href="#DNS实现服务的负载均衡" class="headerlink" title="DNS实现服务的负载均衡"></a>DNS实现服务的负载均衡</h2><p>编辑master节点/var/named/chroot/etc/yjscloud.com.zone，在文件末尾添加记录</p>
-<pre><code>a               A       192.168.1.102
-将serial + 1
-</code></pre><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-27.png" alt="3-27"></p>
-<p>执行rndc reload</p>
-<p>master和slave执行解析：nslookup a.yjs.com 127.0.0.1，结果如下（轮询）</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-28.png" alt="3-28"></p>
-<h3 id="配置DNS视图（智能DNS）"><a href="#配置DNS视图（智能DNS）" class="headerlink" title="配置DNS视图（智能DNS）"></a>配置DNS视图（智能DNS）</h3><p>编辑master节点/var/named/chroot/etc/named.conf，在include上面添加（对客户端IP分组）</p>
-<pre><code>acl group1 {
- 192.168.137.13;
-};
-
-acl group2 {
- 192.168.137.14;
-};
-</code></pre><p>编辑master节点/var/named/chroot/etc/view.conf（清空原view.conf文件的内容再添加）</p>
-<pre><code>view &quot;GROUP1&quot; {
- match-clients { group1; };
- zone &quot;viewyjs.com&quot; {
-    type master;
-    file &quot;group1.viewyjs.com.zone&quot;;
-  };
-};
-
-view &quot;GROUP2&quot; {
- match-clients { group2; };
- zone &quot;viewyjs.com&quot; {
-    type master;
-    file &quot;group2.viewyjs.com.zone&quot;;
- };
-};
-</code></pre><p>编辑master节点/var/named/chroot/etc/group1.viewyjs.com.zone</p>
-<pre><code>$ORIGIN .
-$TTL 3600       ; 1 hour
-viewyjs.com                  IN SOA  op.viewyjs.com. dns.viewyjs.com. (
-                            2000       ; serial
-                            900        ; refresh (15 minutes)
-                            600        ; retry (10 minutes)
-                            86400      ; expire (1 day)
-                            3600       ; minimum (1 hour)
-                            )
-                    NS      op.viewyjs.com.
-$ORIGIN viewyjs.com.
-view              A       192.168.122.1
-op              A       192.168.122.1
-</code></pre><p>编辑master节点/var/named/chroot/etc/group2.viewyjs.com.zone</p>
-<pre><code>$ORIGIN .
-$TTL 3600       ; 1 hour
-viewyjs.com                  IN SOA  op.viewyjs.com. dns.viewyjs.com. (
-                            2000       ; serial
-                            900        ; refresh (15 minutes)
-                            600        ; retry (10 minutes)
-                            86400      ; expire (1 day)
-                            3600       ; minimum (1 hour)
-                            )
-                    NS      op.viewyjs.com.
-$ORIGIN viewyjs.com.
-view              A       192.168.122.2
-op              A       192.168.122.2
-</code></pre><p>修改文件属主，加载配置</p>
-<pre><code>chown named.named /var/named/chroot/etc/group*.zone
-rndc reload
-</code></pre><p>测试，在192.168.16.111主机上执行host view.viewyjs.com 192.168.16.111</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-29.png" alt="3-29"></p>
-<p>在192.168.16.112主机上执行host view.viewyjs.com 192.168.16.111</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-30.png" alt="3-30"></p>
-<h1 id="构建DNS（企业级）"><a href="#构建DNS（企业级）" class="headerlink" title="构建DNS（企业级）"></a>构建DNS（企业级）</h1><h2 id="硬件选型"><a href="#硬件选型" class="headerlink" title="硬件选型"></a>硬件选型</h2><p>CPU：12C以上配置</p>
-<p>内存：16G</p>
-<p>网络：千兆</p>
-<h2 id="初始化系统配置"><a href="#初始化系统配置" class="headerlink" title="初始化系统配置"></a>初始化系统配置</h2><p>关闭 iptables</p>
-<p>service iptables stop<br>chkconfig iptables off<br>关闭 selinux<br>vi /etc/sysconfig/selinux<br>SELINUX=disabled</p>
-<h2 id="高性能、高可用DNS"><a href="#高性能、高可用DNS" class="headerlink" title="高性能、高可用DNS"></a>高性能、高可用DNS</h2><p><img src="http://opnq5yeqm.bkt.clouddn.com/3-31.png" alt="3-31"></p>
-<p>1）高可用</p>
-<p>物理层：首先确保两台lvs不在同一机柜、同一物理交换机接入；其次确保将所有dns服务器也做到不在同一机柜、同一物理交换机接入；在不通的idc构建多套dns集群，为客户端提供可切换的配置。</p>
-<p>服务层：坚决摒弃lvs上端口检测这种方式，采用自定义脚本检测，为dns的健康检测单独设置一个域名，为了lvs检测dns是否存活而设计。</p>
-<p>客户端层：多idc之间的流量切换是通过客户端的健康检测cron实现的，脚本可以按分钟运行一次，分别检测每个dns集群虚地址的可用性。</p>
-<pre><code>#!/bin/sh
-timeout=5
-Q=&quot;&quot;
-host=&quot;/usr/bin/host&quot;
-if test -z &quot;$1&quot; ; then
-    echo &quot;You need to supply a DNS server to check. Quittind&quot;
-    exit;
-fi
-SERVER=$10
-ERC=`$host -s -w $timeout $Q SERVER &gt; /dev/null 2&gt;$1; echo $?`
-if [ $ERC -eq 0 ] ; then
-    exit 0
-else
-    exit 10
-fi
-</code></pre><p>2）高性能</p>
-<p>   通过lvs可以对每个集群做横向扩容，是否需要扩容的依据是对现有系统的压测结果，以及实时的监控数据。或者可以在最靠近应用层处，加上一次cache-only集群，但前提是你的线上环境中，没有任何系统依赖于dns负载均衡。</p>
-<h2 id="压测"><a href="#压测" class="headerlink" title="压测"></a>压测</h2><p>将bind-9.9.9-P1.tar.gz下载到合适的目录下</p>
-<p>下载bind源码:</p>
-<pre><code>wget http://ftp.isc.org/isc/bind9/9.9.1-P1/bind-9.9.9-P1.tar.gz
-</code></pre><p>解压: </p>
-<pre><code>tar -xvf bind-9.9.9-P1.tar.gz
-cd /bind-9.9.9-P1/contrib/queryperf
-</code></pre><p>编译:</p>
-<pre><code>./configure
-make
-</code></pre><p>此目录下生成queryperf文件</p>
-<pre><code>cp queryperf /usr/bin
-</code></pre><p>压测自己创建的DNS服务，创建一个文件test.txt，内容如下（前面为域名，后面为A记录）</p>
-<pre><code>view.viewyjs.com A
-view.viewyjs.com A
-view.viewyjs.com A
-view.viewyjs.com A
-view.viewyjs.com A
-</code></pre><p>执行命令： </p>
-<pre><code>queryperf -d test.txt -s 192.168.16.111
-</code></pre><p>结果：</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/3-32.png" alt="3-32"></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;DNS简介&quot;&gt;&lt;a href=&quot;#DNS简介&quot; class=&quot;headerlink&quot; title=&quot;DNS简介&quot;&gt;&lt;/a&gt;DNS简介&lt;/h1&gt;&lt;h2 id=&quot;DNS概况&quot;&gt;&lt;a href=&quot;#DNS概况&quot; class=&quot;headerlink&quot; title=&quot;DNS
-    
-    </summary>
-    
-      <category term="运维技能" scheme="http://yjscloud.com/categories/%E8%BF%90%E7%BB%B4%E6%8A%80%E8%83%BD/"/>
-    
-    
-      <category term="Linux技术" scheme="http://yjscloud.com/tags/Linux%E6%8A%80%E6%9C%AF/"/>
-    
-      <category term="DNS" scheme="http://yjscloud.com/tags/DNS/"/>
     
   </entry>
   

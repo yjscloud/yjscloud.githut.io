@@ -4,11 +4,31 @@
 
     
   <url>
-    <loc>http://yjscloud.com/2018/06/10/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E4%B8%80-%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AF%87/</loc>
-    <lastmod>2018-06-18T12:54:31.000Z</lastmod>
+    <loc>http://yjscloud.com/2018/06/15/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%85%A5%E9%97%A8%E7%9F%A5%E8%AF%86%E5%92%8C%E5%AE%9E%E6%88%98%E7%AF%87/</loc>
+    <lastmod>2018-06-18T14:02:59.000Z</lastmod>
     <data>
         <display>
-        <title>Shell学习笔记(一):基础知识篇</title>
+        <title>Shell学习笔记（二）：入门知识和实战篇</title>
+        <pubTime>2018-06-15T13:06:37.000Z</pubTime>
+        
+        <tag>Shell学习笔记</tag>
+         
+         
+           
+             
+              <breadCrumb title="Shell编程" url="http://yjscloud.com/categories/Shell%E7%BC%96%E7%A8%8B/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://yjscloud.com/2018/06/10/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AF%87/</loc>
+    <lastmod>2018-06-18T13:03:32.000Z</lastmod>
+    <data>
+        <display>
+        <title>Shell学习笔记（一）：基础知识篇</title>
         <pubTime>2018-06-10T12:08:59.000Z</pubTime>
         
         <tag>Shell学习笔记</tag>
