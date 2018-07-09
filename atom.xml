@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.com/"/>
-  <updated>2018-07-09T11:42:22.000Z</updated>
+  <updated>2018-07-09T12:01:38.000Z</updated>
   <id>http://yjscloud.com/</id>
   
   <author>
@@ -14,6 +14,127 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Shell学习笔记（四）：必备知识篇</title>
+    <link href="http://yjscloud.com/2018/07/09/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%BF%85%E5%A4%87%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
+    <id>http://yjscloud.com/2018/07/09/Shell学习笔记（四）：必备知识篇/</id>
+    <published>2018-07-09T11:47:24.000Z</published>
+    <updated>2018-07-09T12:01:38.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="循环控制及状态返回值的应用实践"><a href="#循环控制及状态返回值的应用实践" class="headerlink" title="循环控制及状态返回值的应用实践"></a>循环控制及状态返回值的应用实践</h1><p>break、continue、exit、return的区别和对比</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-56.png" alt="s-56"></p>
+<p>例1：break跳出整个循环，执行循环下面的其他程序</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line"><span class="keyword">for</span>((i=0;i&lt;=5;i++))</div><div class="line"><span class="keyword">do</span></div><div class="line">    <span class="keyword">if</span> [ <span class="variable">$i</span> <span class="_">-eq</span> 3 ];<span class="keyword">then</span></div><div class="line">        <span class="comment">#continue;</span></div><div class="line">        <span class="built_in">break</span>;</div><div class="line">        <span class="comment">#exit</span></div><div class="line">    <span class="keyword">fi</span></div><div class="line">        <span class="built_in">echo</span> <span class="variable">$i</span></div><div class="line"><span class="keyword">done</span></div><div class="line"><span class="built_in">echo</span> <span class="string">"ok"</span></div></pre></td></tr></table></figure>
+<p>例2（生产场景）：开发shell脚本实现给服务器临时配置多个别名IP，并可以随时撤销配置的所有<br>IP。IP地址为：10.0.2.1-10.0.2.16，其中10.0.2.10不能设置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">[ <span class="_">-f</span> /etc/init.d/<span class="built_in">functions</span> ] &amp;&amp; . /etc/init.d/<span class="built_in">functions</span></div><div class="line">RETVAL=0</div><div class="line"><span class="function"><span class="title">op</span></span>()&#123;</div><div class="line">    <span class="keyword">if</span> [ <span class="string">"<span class="variable">$1</span>"</span> == <span class="string">"del"</span> ];<span class="keyword">then</span></div><div class="line">        list=`<span class="built_in">echo</span> &#123;16..1&#125;`</div><div class="line">    <span class="keyword">else</span></div><div class="line">        list=`<span class="built_in">echo</span> &#123;1..16&#125;`</div><div class="line">    <span class="keyword">fi</span></div><div class="line">    <span class="keyword">for</span> ip <span class="keyword">in</span> <span class="variable">$list</span>;<span class="keyword">do</span></div><div class="line">        <span class="keyword">if</span> [ <span class="variable">$ip</span> <span class="_">-eq</span> 10 ];<span class="keyword">then</span></div><div class="line">            <span class="built_in">continue</span></div><div class="line">        <span class="keyword">fi</span></div><div class="line">        ip addr <span class="variable">$1</span> 10.0.2.<span class="variable">$ip</span>/24 dev ens33 label ens33:<span class="variable">$ip</span> &amp;&gt;/dev/null</div><div class="line">        RETVAL=$?</div><div class="line">        <span class="keyword">if</span> [ <span class="variable">$RETVAL</span> <span class="_">-eq</span> 0 ];<span class="keyword">then</span></div><div class="line">            action <span class="string">"<span class="variable">$1</span> <span class="variable">$ip</span>"</span> /bin/<span class="literal">true</span>    <span class="comment">#此处的提示用通用的$1，传参来控制</span></div><div class="line">        <span class="keyword">else</span></div><div class="line">            action <span class="string">"<span class="variable">$1</span> <span class="variable">$ip</span>"</span> /bin/<span class="literal">false</span></div><div class="line">        <span class="keyword">fi</span></div><div class="line">    <span class="keyword">done</span></div><div class="line">    <span class="built_in">return</span> <span class="variable">$RETVAL</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span></div><div class="line">    start)</div><div class="line">        op add                          <span class="comment">#启动时，就传参add给op函数</span></div><div class="line">        RETVAL=$?</div><div class="line">        ;;</div><div class="line">    stop)</div><div class="line">        op del                          <span class="comment">#停止时，就传参del给op函数</span></div><div class="line">        RETVAL=$?</div><div class="line">        ;;</div><div class="line">    restart)</div><div class="line">        op del</div><div class="line">        sleep 2</div><div class="line">        op add</div><div class="line">        RETVAL=$?</div><div class="line">        ;;</div><div class="line">    *)</div><div class="line">        <span class="built_in">printf</span> <span class="string">"USAGE:<span class="variable">$0</span> &#123;start|stop|restart&#125;\n"</span></div><div class="line"><span class="keyword">esac</span></div><div class="line"><span class="built_in">exit</span> <span class="variable">$RETVAL</span></div></pre></td></tr></table></figure>
+<h1 id="shell函数语法"><a href="#shell函数语法" class="headerlink" title="shell函数语法"></a>shell函数语法</h1><h2 id="语法格式"><a href="#语法格式" class="headerlink" title="语法格式"></a>语法格式</h2><p>简单的语法：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">函数名（）&#123;</div><div class="line">                指令...</div><div class="line">                <span class="keyword">return</span> n</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>规范的语法：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">function</span> <span class="title">函数名（）&#123;</span></div><div class="line">                指令...</div><div class="line">                <span class="keyword">return</span> <span class="type">n</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="shell函数执行"><a href="#shell函数执行" class="headerlink" title="shell函数执行"></a>shell函数执行</h2><p>调用函数：</p>
+<p>1）直接执行函数名即可。注意，不需要带小括号。</p>
+<p>函数名</p>
+<p>2）带参数的函数执行方法：</p>
+<p>函数名 参数1 参数2</p>
+<p>函数带参数的说明</p>
+<ul>
+<li>在函数体中位置参数（$1、$2、$3、$4、$5、$#、$*、$?以及$@）都可以是函数参数</li>
+<li>父脚本的参数则临时地被函数参数所掩盖或隐藏</li>
+<li>$0比较特殊，他仍然是父脚本的名称</li>
+<li>当函数完成时，原来的命令行参数会恢复</li>
+<li>在shell函数里面，return命令的功能与工作方式与exit相同，用于跳出函数</li>
+<li>在shell函数体里使用exit会终止整个shell脚本</li>
+<li>return语句会返回一个退出值给调用的程序。</li>
+</ul>
+<p>例：编写shell开发linux系统一键优化脚本。</p>
+<p>1、安装系统是最小化安装</p>
+<p>2、配置国内高速yum源</p>
+<p>3、禁用开机不需要启动的服务</p>
+<p>4、优化系统内核参数/etc/sysctl.conf</p>
+<p>5、增加系统文件描述符、堆栈等配置</p>
+<p>6、禁止root远程登录。修改ssh端口为特殊端口，禁止DNS，空密码</p>
+<p>7、有外网ip的机器要开启配置防火墙，仅对外开启需要提供服务的端口，配置或关闭selinux</p>
+<p>8、清除无用的默认系统账户或组（非必须）（添加运维的用户）</p>
+<p>9、锁定敏感文件，如/etc/passwd（非必须）</p>
+<p>10、配置服务器和互联网时间同步</p>
+<p>11、初始化用户，并配置sudo对普通用户权限的控制</p>
+<p>12、修改系统字符集</p>
+<p>13、补装系统软件及升级系统到最新</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/bin:/sbin:/usr/sbin</div><div class="line"><span class="comment"># Require root to run this script.</span></div><div class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$UID</span>"</span> != <span class="string">"0"</span> ]; <span class="keyword">then</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">"Please run this script by root."</span></div><div class="line">    <span class="built_in">exit</span> 1</div><div class="line"><span class="keyword">fi</span></div><div class="line"></div><div class="line"><span class="comment">#define cmd var</span></div><div class="line">SERVICE=`<span class="built_in">which</span> service`</div><div class="line">CHKCONFIG=`<span class="built_in">which</span> chkconfig`</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">mod_yum</span></span>()&#123;</div><div class="line">    <span class="comment">#modify yum path</span></div><div class="line">    <span class="keyword">if</span> [ <span class="_">-e</span> /etc/yum.repos.d/CentOS-Base.repo ]</div><div class="line">     <span class="keyword">then</span></div><div class="line">       mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup&amp;&amp;\</div><div class="line">       wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.sise.edu.cn/repo/CentOS-Base.repo</div><div class="line">    <span class="keyword">fi</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">close_selinux</span></span>()&#123;</div><div class="line">    <span class="comment">#1.close selinux</span></div><div class="line">    sed -i <span class="string">'s/SELINUX=enforcing/SELINUX=disabled/'</span> /etc/selinux/config</div><div class="line">    <span class="comment">#grep SELINUX=disabled /etc/selinux/config</span></div><div class="line">    setenforce 0 &amp;&gt;/dev/null</div><div class="line">    <span class="comment">#getenforce</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">close_firewall</span></span>()&#123;</div><div class="line">    <span class="comment">#2.close firewall</span></div><div class="line">    systemctl stop firewalld</div><div class="line">    systemctl stop firewalld</div><div class="line">    systemctl <span class="built_in">disable</span> firewalld</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">least_service</span></span>()&#123;</div><div class="line">    <span class="comment">#3.least service startup</span></div><div class="line">    chkconfig|awk <span class="string">'&#123;print "chkconfig",$1,"off"&#125;'</span>|bash</div><div class="line">    chkconfig|egrep <span class="string">"crond|sshd|network|rsyslog|sysstat"</span>|awk <span class="string">'&#123;print "chkconfig",$1,"on"&#125;'</span>|bash</div><div class="line">    <span class="comment">#export LANG=en</span></div><div class="line">    <span class="comment">#chkconfig --list|grep 3:on</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">adduser</span></span>()&#123;</div><div class="line">    <span class="comment">#4.add yjscloud and sudo</span></div><div class="line">    <span class="keyword">if</span> [ `grep -w yjscloud /etc/passwd|wc <span class="_">-l</span>` <span class="_">-lt</span> 1 ]</div><div class="line">      <span class="keyword">then</span></div><div class="line">        useradd yjscloud</div><div class="line">        <span class="built_in">echo</span> 123456|passwd --stdin yjscloud</div><div class="line">        \cp /etc/sudoers /etc/sudoers.ori</div><div class="line">        <span class="built_in">echo</span> <span class="string">"yjscloud  ALL=(ALL) NOPASSWD: ALL "</span> &gt;&gt;/etc/sudoers</div><div class="line">        tail -1 /etc/sudoers</div><div class="line">        visudo -c &amp;&gt;/dev/null</div><div class="line">    <span class="keyword">fi</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">charset</span></span>()&#123;</div><div class="line">    <span class="comment">#5.charset config</span></div><div class="line">    cp /etc/locale.conf /etc/locale.conf</div><div class="line">    <span class="built_in">echo</span> <span class="string">'LANG="zh_CN.UTF-8"'</span>  &gt;/etc/locale.conf</div><div class="line">    <span class="built_in">source</span> /etc/locale.conf</div><div class="line">    <span class="comment">#echo $LANG</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">time_sync</span></span>()&#123;</div><div class="line">    <span class="comment">#6.time sync.</span></div><div class="line">    cron=/var/spool/cron/root</div><div class="line">    <span class="keyword">if</span> [ `grep -w <span class="string">"ntpdate"</span> <span class="variable">$cron</span>|wc <span class="_">-l</span>` <span class="_">-lt</span> 1  ]</div><div class="line">      <span class="keyword">then</span></div><div class="line">        <span class="built_in">echo</span> <span class="string">'#time sync by yjscloud at 2018-6-24'</span> &gt;&gt;<span class="variable">$cron</span></div><div class="line">        <span class="built_in">echo</span> <span class="string">'*/5 * * * * /usr/sbin/ntpdate cn.pool.ntp.org &gt;/dev/null 2&gt;&amp;1'</span> &gt;&gt;<span class="variable">$cron</span></div><div class="line">        crontab <span class="_">-l</span></div><div class="line">    <span class="keyword">fi</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">com_line_set</span></span>()&#123;</div><div class="line">    <span class="comment">#7.command set.</span></div><div class="line">    <span class="keyword">if</span> [ `egrep <span class="string">"TMOUT|HISTSIZE|HISTFILESIZE"</span> /etc/profile|wc <span class="_">-l</span>` -ge 3  ]</div><div class="line">      <span class="keyword">then</span></div><div class="line">        <span class="built_in">echo</span> <span class="string">'export TMOUT=300'</span> &gt;&gt;/etc/profile</div><div class="line">        <span class="built_in">echo</span> <span class="string">'export HISTSIZE=5'</span> &gt;&gt;/etc/profile</div><div class="line">        <span class="built_in">echo</span> <span class="string">'export HISTFILESIZE=5'</span> &gt;&gt;/etc/profile</div><div class="line">        . /etc/profile</div><div class="line">    <span class="keyword">fi</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">open_file_set</span></span>()&#123;</div><div class="line">    <span class="comment">#8.increase open file.</span></div><div class="line">    <span class="keyword">if</span> [ `grep 65535 /etc/security/limits.conf|wc <span class="_">-l</span>` <span class="_">-lt</span> 1 ]</div><div class="line">      <span class="keyword">then</span> </div><div class="line">        <span class="built_in">echo</span> <span class="string">'*               -       nofile          65535 '</span> &gt;&gt;/etc/security/limits.conf</div><div class="line">        tail -1 /etc/security/limits.conf</div><div class="line">    <span class="keyword">fi</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">set_kernel</span></span>()&#123;</div><div class="line">    <span class="comment">#9.kernel set.</span></div><div class="line">    <span class="keyword">if</span> [ `grep kernel_flag /etc/sysctl.conf|wc <span class="_">-l</span>` <span class="_">-lt</span> 1 ]</div><div class="line">      <span class="keyword">then</span></div><div class="line">        cat &gt;&gt;/etc/sysctl.conf&lt;&lt;EOF</div><div class="line">        <span class="comment">#kernel_flag</span></div><div class="line">        net.ipv4.tcp_fin_timeout = 2</div><div class="line">        net.ipv4.tcp_tw_reuse = 1</div><div class="line">        net.ipv4.tcp_tw_recycle = 1</div><div class="line">        net.ipv4.tcp_syncookies = 1</div><div class="line">        net.ipv4.tcp_keepalive_time = 600</div><div class="line">        net.ipv4.ip_local_port_range = 4000    65000</div><div class="line">        net.ipv4.tcp_max_syn_backlog = 16384</div><div class="line">        net.ipv4.tcp_max_tw_buckets = 36000</div><div class="line">        net.ipv4.route.gc_timeout = 100</div><div class="line">        net.ipv4.tcp_syn_retries = 1</div><div class="line">        net.ipv4.tcp_synack_retries = 1</div><div class="line">        net.core.somaxconn = 16384</div><div class="line">        net.core.netdev_max_backlog = 16384</div><div class="line">        net.ipv4.tcp_max_orphans = 16384</div><div class="line">EOF</div><div class="line">        sysctl -p</div><div class="line">    <span class="keyword">fi</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">init_ssh</span></span>()&#123;</div><div class="line">    \cp /etc/ssh/sshd_config /etc/ssh/sshd_config.`date +<span class="string">"%Y-%m-%d_%H-%M-%S"</span>`</div><div class="line">    <span class="comment">#sed -i 's%#Port 22%Port 52113%' /etc/ssh/sshd_config</span></div><div class="line">    sed -i <span class="string">'s%#PermitRootLogin yes%PermitRootLogin no%'</span> /etc/ssh/sshd_config</div><div class="line">    sed -i <span class="string">'s%#PermitEmptyPasswords no%PermitEmptyPasswords no%'</span> /etc/ssh/sshd_config</div><div class="line">    sed -i <span class="string">'s%#UseDNS yes%UseDNS no%'</span> /etc/ssh/sshd_config</div><div class="line">    /etc/init.d/sshd reload &amp;&gt;/dev/null</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">update_linux</span></span>()&#123;</div><div class="line">    <span class="comment">#10.upgrade linux.</span></div><div class="line">    <span class="keyword">if</span> [ `rpm -qa lrzsz nmap tree dos2unix nc|wc <span class="_">-l</span>` -le 3 ]</div><div class="line">      <span class="keyword">then</span></div><div class="line">        yum install lrzsz nmap tree dos2unix nc ntpdate -y</div><div class="line">        <span class="comment">#yum update -y</span></div><div class="line">    <span class="keyword">fi</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">main</span></span>()&#123;</div><div class="line">    mod_yum</div><div class="line">    close_selinux</div><div class="line">    close_firewall</div><div class="line">    least_service</div><div class="line">    adduser</div><div class="line">    charset</div><div class="line">    time_sync</div><div class="line">    com_line_set</div><div class="line">    open_file_set</div><div class="line">    set_kernel</div><div class="line">    init_ssh</div><div class="line">    update_linux</div><div class="line">&#125;</div><div class="line">main</div></pre></td></tr></table></figure>
+<h1 id="shell数组"><a href="#shell数组" class="headerlink" title="shell数组"></a>shell数组</h1><p>简单的说，数组就是相同数据类型的元素按一定顺序排列的集合。数组就是把有限个类型相同的变量用一个名字命名，然后用编号区分他们的变量的集合。这个名字成为数组名，编号成为下标。组成数组的各个变量成为数组的分量，也称为数组的元素，有时也称为下标变量。如果有过用其它语言编程的经历，那么想必会熟悉数组的概念。由于有了数组，可以用相同名字引用一系列变量，并用数字（索引）来识别它们。在许多场合，使用数组可以缩短和简化程序，因为可以利用索引值设计一个循环，高校处理多种情况。</p>
+<h2 id="数组定义与读取"><a href="#数组定义与读取" class="headerlink" title="数组定义与读取"></a>数组定义与读取</h2><p>方法1：array=(value1 value2 value3)</p>
+<p>1）定义数组</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# array=(<span class="number">1</span> <span class="number">2</span> <span class="number">3</span>)   #对括号表示数组，数组元素用“空格”符号分割开</div></pre></td></tr></table></figure>
+<p>2）获取数组的长度</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# echo $&#123;#array[@]&#125;    #用$&#123;#数组名[@或*]&#125;可以获得到数组长度</div><div class="line"><span class="number">3</span></div><div class="line">[root@pan ~]# echo $&#123;#array[*]&#125;</div><div class="line"><span class="number">3</span></div></pre></td></tr></table></figure>
+<p>3）打印数组元素</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@pan ~]</span># echo $&#123;array<span class="string">[0]</span>&#125;   #打印数组元素用$&#123;数组名<span class="string">[下标]</span>&#125;下标是从<span class="number">0</span>开始</div><div class="line"><span class="number">1</span></div><div class="line"><span class="string">[root@pan ~]</span># echo $&#123;array<span class="string">[1]</span>&#125;</div><div class="line"><span class="number">2</span></div><div class="line"><span class="string">[root@pan ~]</span># echo $&#123;array<span class="string">[2]</span>&#125;</div><div class="line"><span class="number">3</span></div><div class="line"><span class="string">[root@pan ~]</span># echo $&#123;array<span class="string">[3]</span>&#125;  #超出范围输出为空</div><div class="line"></div><div class="line"><span class="string">[root@pan ~]</span># echo $&#123;array<span class="string">[*]</span>&#125;   #下标是：*或者@得到整个数组内容</div><div class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">3</span></div><div class="line"><span class="string">[root@pan ~]</span># echo $&#123;array<span class="string">[@]</span>&#125;  #把前面去数组长度的#号去掉，例如：$&#123;array<span class="string">[@]</span>&#125;</div><div class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">3</span></div></pre></td></tr></table></figure>
+<p>4）数组赋值</p>
+<p>直接通过数组名[下标]就可以对其进行引用赋值，如果下标不存在，自动添加新一个数组元素，如果存在就覆盖原来的值</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# array[<span class="number">3</span>]=<span class="number">4</span></div><div class="line">[root@pan ~]# echo $&#123;array[@]&#125;</div><div class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span></div><div class="line">[root@pan ~]# array[<span class="number">0</span>]=pan</div><div class="line">[root@pan ~]# echo $&#123;array[@]&#125;</div><div class="line">pan <span class="number">2</span> <span class="number">3</span> <span class="number">4</span></div></pre></td></tr></table></figure>
+<p>5）数组删除</p>
+<p>直接通过：unset数组[下标]可以清除相应的元素，不带下标，清除整个数据</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># echo $&#123;array[@]&#125;</span></div><div class="line">pan <span class="number">2</span> <span class="number">3</span> <span class="number">4</span></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># unset array    #删除整个数组</span></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># echo $&#123;array[@]&#125;</span></div><div class="line"></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># array=(1 2 3)</span></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># unset array[0]    #删除某个数组元素</span></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># echo $&#123;array[@]&#125;</span></div><div class="line"><span class="number">2</span> <span class="number">3</span></div></pre></td></tr></table></figure>
+<p>6）数组内容的截取和替换（和前文变量子串的替换很像）</p>
+<p>截取：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># array=(1 2 3 4 5)</span></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># echo $&#123;array[@]:1:3&#125;     #截取1号到3号数组元素</span></div><div class="line"><span class="number">2</span> <span class="number">3</span> <span class="number">4</span></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># echo $&#123;array[@]:3:2&#125;</span></div><div class="line"><span class="number">4</span> <span class="number">5</span></div></pre></td></tr></table></figure>
+<p>替换：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# echo $&#123;array[@]/<span class="number">5</span>/<span class="number">6</span>&#125;    #把数组中的<span class="number">5</span>替换成<span class="number">6</span>，临时生效，原数组未被修改。和sed很像。</div><div class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">6</span></div><div class="line">[root@pan ~]# array1=($&#123;array[@]/<span class="number">5</span>/<span class="number">6</span>&#125;)</div><div class="line">[root@pan ~]# echo $&#123;array[@]&#125;</div><div class="line"><span class="number">1</span> <span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">5</span></div></pre></td></tr></table></figure>
+<p>调用方法是：<code>${数组名[@或*]/查找字符/替换字符}</code>该操作不会改变原先数组内容，如果需要修改，可以看上面例子，重新定义数组</p>
+<p>删除：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# array1=(<span class="keyword">one</span> <span class="keyword">two</span> three four five)</div><div class="line">[root@pan ~]# echo <span class="variable">$&#123;array1</span>[@]&#125;</div><div class="line"><span class="keyword">one</span> <span class="keyword">two</span> three four five</div><div class="line">[root@pan ~]# echo <span class="variable">$&#123;array1</span>[@]#o&#125;    #左边开始最短的匹配</div><div class="line">ne <span class="keyword">two</span> three four five</div><div class="line">[root@pan ~]# echo <span class="variable">$&#123;array1</span>[@]#fo&#125;    #左边开始最短的匹配</div><div class="line"><span class="keyword">one</span> <span class="keyword">two</span> three ur five</div><div class="line">[root@pan ~]# echo <span class="variable">$&#123;array1</span>[@]%t*<span class="keyword">e</span>&#125;</div><div class="line"><span class="keyword">one</span> <span class="keyword">two</span> four five</div><div class="line">[root@pan ~]# echo <span class="variable">$&#123;array1</span>[@]%%t*<span class="keyword">e</span>&#125;</div><div class="line"><span class="keyword">one</span> <span class="keyword">two</span> four five</div></pre></td></tr></table></figure>
+<p>提示：数组也是变量，因此也适合于前面讲解过的变量的子串处理的功能应用。</p>
+<p>方法2：array=([1]=one [2]=two [3]=three)</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="string">[root@pan ~]</span># array=(<span class="string">[1]</span>=one <span class="string">[2]</span>=two <span class="string">[3]</span>=three)</div><div class="line"><span class="string">[root@pan ~]</span># echo $&#123;#array<span class="string">[*]</span>&#125;</div><div class="line"><span class="number">3</span></div><div class="line"><span class="string">[root@pan ~]</span># echo $&#123;array<span class="string">[*]</span>&#125;</div><div class="line">one two three</div></pre></td></tr></table></figure>
+<p>方法3：array[0]=a  array[1]=b array[2]=c</p>
+<figure class="highlight coffeescript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]<span class="comment"># array[0]=a</span></div><div class="line">[root@pan ~]<span class="comment"># array[1]=b</span></div><div class="line">[root@pan ~]<span class="comment"># array[2]=c</span></div><div class="line">[root@pan ~]<span class="comment"># array[3]=d</span></div><div class="line">[root@pan ~]<span class="comment"># echo $&#123;array[0]&#125;</span></div><div class="line">a</div><div class="line">[root@pan ~]<span class="comment"># echo $&#123;array[2]&#125;</span></div><div class="line">c</div></pre></td></tr></table></figure>
+<h2 id="数组实践"><a href="#数组实践" class="headerlink" title="数组实践"></a>数组实践</h2><p>例1：通过列举法打印数组元素</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">array=(</div><div class="line">xwq</div><div class="line">xdf</div><div class="line">yjs</div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">for</span> ((i=0; i&lt;<span class="variable">$&#123;#array[*]&#125;</span>;i++));<span class="keyword">do</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">"This is num <span class="variable">$i</span>,then content is <span class="variable">$&#123;array[$i]&#125;</span>"</span></div><div class="line"><span class="keyword">done</span></div><div class="line"><span class="built_in">echo</span> ------------</div><div class="line"><span class="built_in">echo</span> <span class="string">"array len:<span class="variable">$&#123;#array[*]&#125;</span>"</span></div></pre></td></tr></table></figure>
+<p>执行效果：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@pan shell]# sh array01.sh</div><div class="line">This <span class="keyword">is</span> num <span class="number">0</span>,<span class="keyword">then</span> content <span class="keyword">is</span> xwq</div><div class="line">This <span class="keyword">is</span> num <span class="number">1</span>,<span class="keyword">then</span> content <span class="keyword">is</span> xdf</div><div class="line">This <span class="keyword">is</span> num <span class="number">2</span>,<span class="keyword">then</span> content <span class="keyword">is</span> yjs</div><div class="line"><span class="comment">------------</span></div><div class="line"><span class="keyword">array</span> len:<span class="number">3</span></div></pre></td></tr></table></figure>
+<p>例2：把系统命令结果做为数组元素</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">dir=($(ls))</div><div class="line"><span class="keyword">for</span> ((i=0;i&lt;`<span class="built_in">echo</span> <span class="variable">$&#123;#dir[@]&#125;</span>`;i++));<span class="keyword">do</span></div><div class="line">    <span class="built_in">echo</span> <span class="variable">$&#123;dir[$i]&#125;</span></div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
+<p>例3：批量检查多个网站地址是否正常</p>
+<p>要求：</p>
+<p>1）使用shell数组的方法实现，检测策略尽量模拟用户访问</p>
+<p>2）每10秒进行一次全部检测，无法访问的输出做出报警</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/bash</span></div><div class="line">. /etc/init.d/<span class="built_in">functions</span></div><div class="line">check_count=0</div><div class="line">url_list=(</div><div class="line">yjscloud.com</div><div class="line">mirrors.sise.edu.cn</div><div class="line">yjsxwq.com</div><div class="line">192.168.0.15</div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">wait</span></span>()</div><div class="line">&#123;</div><div class="line">    <span class="built_in">echo</span> -n <span class="string">'3秒后,执行检查URL操作.'</span>;</div><div class="line">    <span class="keyword">for</span> ((i=0;i&lt;3;i++)); <span class="keyword">do</span></div><div class="line">        <span class="built_in">echo</span> -n <span class="string">"."</span>;sleep 1</div><div class="line">    <span class="keyword">done</span></div><div class="line">    <span class="built_in">echo</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">check_url</span></span>()</div><div class="line">&#123;</div><div class="line">    <span class="built_in">wait</span></div><div class="line">    <span class="keyword">for</span> ((i=0; i&lt;`<span class="built_in">echo</span> <span class="variable">$&#123;#url_list[*]&#125;</span>`; i++));<span class="keyword">do</span></div><div class="line">        wget -o /dev/null -T 3 --tries=1 --spider <span class="variable">$&#123;url_list[$i]&#125;</span> &gt;/dev/null 2&gt;&amp;1</div><div class="line">        <span class="keyword">if</span> [ $? <span class="_">-eq</span> 0 ];<span class="keyword">then</span></div><div class="line">            action <span class="string">"<span class="variable">$&#123;url_list[$i]&#125;</span>"</span> /bin/<span class="literal">true</span></div><div class="line">        <span class="keyword">else</span></div><div class="line">            action <span class="string">"<span class="variable">$&#123;url_list[$i]&#125;</span>"</span> /bin/<span class="literal">false</span></div><div class="line">        <span class="keyword">fi</span></div><div class="line"><span class="keyword">done</span></div><div class="line">((check_count++))</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="title">main</span></span>()&#123;</div><div class="line">    <span class="keyword">while</span> <span class="literal">true</span></div><div class="line">    <span class="keyword">do</span></div><div class="line">    check_url</div><div class="line">    <span class="built_in">echo</span> <span class="string">"-------check count:<span class="variable">$&#123;check_count&#125;</span>---------"</span></div><div class="line">    sleep 7</div><div class="line">    <span class="keyword">done</span></div><div class="line">&#125;</div><div class="line">main</div></pre></td></tr></table></figure>
+<h1 id="脚本语法检查"><a href="#脚本语法检查" class="headerlink" title="脚本语法检查"></a>脚本语法检查</h1><p>对脚本的调试如果把windows下编辑的脚本放置到linux下执行，最好执行<code>dos2unix</code>格式化一下，执行<code>dos2unix</code>格式化是一个很好的习惯。如果没有安装<code>dos2unix</code>，则使用<code>yum -y install dos2unix</code>进行安装。使用echo调试，echo命令是最有用的调试脚本的工具之一。一般应在可能出现问题的脚本的重要部分加入echo命令。例如在变量读取或修改操作的前后加入echo命令，并紧挨着退出命令exit。</p>
+<p>使用bash命令参数调试</p>
+<p>参数说明：</p>
+<p>-n：不会执行该脚本，仅查询脚本语法是否有问题，并给出错误提示。</p>
+<p>-v：在执行脚本时，先将脚本的内容输出到屏幕上，然后执行脚本，如果有错误，也会给出错误提示。</p>
+<p>-x：将执行的脚本内容及输出显示到屏幕上，这对调试很有用的参数。</p>
+<p>使用set命令调试部分脚本内容</p>
+<p>set命令也可以用于辅助脚本调试，下面是set命令常用的调用选项</p>
+<p>set -n：读命令但并不执行</p>
+<p>set -v：显示读取的所有行</p>
+<p>set -x：显示所有命令及其参数</p>
+<p>提示：通过<code>set -x</code>命令开启调试功能，而通过<code>set +x</code>关闭调试功能，和<code>bash -x</code>相比<code>set -x</code>可以缩小调试的作用域。</p>
+<p>例：打印九九乘法表的简版的脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line"><span class="built_in">set</span> -x</div><div class="line"><span class="keyword">for</span> a <span class="keyword">in</span> `seq 9`</div><div class="line"><span class="keyword">do</span></div><div class="line">    <span class="keyword">for</span> b <span class="keyword">in</span> `seq 9`</div><div class="line">    <span class="keyword">do</span></div><div class="line">        [ <span class="variable">$a</span> -ge <span class="variable">$b</span> ] &amp;&amp; <span class="built_in">echo</span> -en <span class="string">"<span class="variable">$a</span> x <span class="variable">$b</span> = <span class="variable">$(expr $a \* $b)</span> "</span></div><div class="line">    <span class="keyword">done</span></div><div class="line"><span class="built_in">set</span> +x</div><div class="line"><span class="built_in">echo</span> <span class="string">" "</span></div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
+<p>小结：</p>
+<p>1）直接执行脚本根据报错来调试</p>
+<p>2）要记得首先用<code>dos2unix</code>处理脚本</p>
+<p>3）<code>sh -x/-n</code>调试整个脚本</p>
+<p>4）<code>set -x</code>和<code>set +x</code>调试部分脚本的执行过程（脚本中设置）</p>
+<p>5）可通过echo命令输出脚本中要确认的变量及相关内容；然后紧跟着使用exit退出，不执行后面程<br>序，这种方式便于一步步跟踪脚本。对于逻辑错误的调试比较好用写法即<code>echo $var;exit</code></p>
+<p>6）最关键的还是要语法熟练，养成良好的编码习惯。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;循环控制及状态返回值的应用实践&quot;&gt;&lt;a href=&quot;#循环控制及状态返回值的应用实践&quot; class=&quot;headerlink&quot; title=&quot;循环控制及状态返回值的应用实践&quot;&gt;&lt;/a&gt;循环控制及状态返回值的应用实践&lt;/h1&gt;&lt;p&gt;break、continue、exi
+    
+    </summary>
+    
+      <category term="Shell编程" scheme="http://yjscloud.com/categories/Shell%E7%BC%96%E7%A8%8B/"/>
+    
+    
+      <category term="Shell学习笔记" scheme="http://yjscloud.com/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>Shell学习笔记（三）：实战进阶篇</title>
@@ -4958,226 +5079,6 @@ class Foo(object,metaclass=Mymeta):
     <summary type="html">
     
       &lt;h1 id=&quot;isinstance和issubclass&quot;&gt;&lt;a href=&quot;#isinstance和issubclass&quot; class=&quot;headerlink&quot; title=&quot;isinstance和issubclass&quot;&gt;&lt;/a&gt;isinstance和issubclass&lt;/
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（十一）三个class方法</title>
-    <link href="http://yjscloud.com/2018/03/11/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%8D%81%E4%B8%80%EF%BC%89%E4%B8%89%E4%B8%AAclass%E6%96%B9%E6%B3%95/"/>
-    <id>http://yjscloud.com/2018/03/11/Python当歌（十一）三个class方法/</id>
-    <published>2018-03-10T17:36:41.000Z</published>
-    <updated>2018-03-11T12:27:25.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Property（特性）"><a href="#Property（特性）" class="headerlink" title="Property（特性）"></a>Property（特性）</h1><h2 id="什么是特性property"><a href="#什么是特性property" class="headerlink" title="什么是特性property"></a>什么是特性property</h2><p>property是一种特殊的属性，访问它时会执行一段功能（函数）然后返回值</p>
-<p>例一：BMI指数（bmi是计算而来的，但很明显它听起来像是一个属性而非方法，如果我们将其做成一个属性，更便于理解）</p>
-<p>成人的BMI数值：</p>
-<p>过轻：低于18.5</p>
-<p>正常：18.5-23.9</p>
-<p>过重：24-27</p>
-<p>肥胖：28-32</p>
-<p>非常肥胖, 高于32</p>
-<p>　　体质指数（BMI）=体重（kg）÷身高^2（m）</p>
-<p>EX：70kg÷（1.75×1.75）=22.86</p>
-<pre><code>class People:
-    def __init__(self,name,weight,height):
-       self.name=name
-       self.weight=weight
-       self.height=height
-   @property
-   def bmi(self):
-       return self.weight / (self.height**2)
-
-p1=People(&apos;egon&apos;,75,1.85)
-print(p1.bmi)
-</code></pre><p>例二：圆的周长和面积</p>
-<pre><code>import math
-class Circle:
-    def __init__(self,radius): #圆的半径radius
-       self.radius=radius
-
-    @property
-    def area(self):
-       return math.pi * self.radius**2 #计算面积
-
-    @property
-    def perimeter(self):
-       return 2*math.pi*self.radius #计算周长
-
-c=Circle(10)
-print(c.radius)
-print(c.area) #可以向访问数据属性一样去访问area,会触发一个函数的执行,动态计算出一个值
-print(c.perimeter) #同上
-</code></pre><p>输出结果:</p>
-<p>314.1592653589793</p>
-<p>62.83185307179586</p>
-<p>注意：此时的特性arear和perimeter不能被赋值，c.area=3 #为特性area赋值</p>
-<h2 id="为什么要用property"><a href="#为什么要用property" class="headerlink" title="为什么要用property"></a>为什么要用property</h2><p>将一个类的函数定义成特性以后，对象再去使用的时候obj.name,根本无法察觉自己的name是执行了一个函数然后计算出来的，这种特性的使用方式遵循了统一访问的原则。</p>
-<p>除此之外，看下</p>
-<p>ps：面向对象的封装有三种方式:</p>
-<p>【public】</p>
-<p>这种其实就是不封装,是对外公开的</p>
-<p>【protected】</p>
-<p>这种封装方式对外不公开,但对朋友(friend)或者子类(形象的说法是“儿子”,但我不知道为什么大家 不说“女儿”,就像“parent”本来是“父母”的意思,但中文都是叫“父类”)公开</p>
-<p>【private】</p>
-<p>这种封装对谁都不公开</p>
-<p>python并没有在语法上把它们三个内建到自己的class机制中，在C++里一般会将所有的所有的数据都设置为私有的，然后提供set和get方法（接口）去设置和获取，在python中通过property方法可以实现。</p>
-<pre><code>class Foo:
-    def __init__(self,val):
-    self.__NAME=val #将所有的数据属性都隐藏起来
-
-    @property
-    def name(self):
-       return self.__NAME #obj.name访问的是self.__NAME(这也是真实值的存放位置)
-
-    @name.setter
-    def name(self,value):
-       if not isinstance(value,str):  #在设定值之前进行类型检查
-          raise TypeError(&apos;%s must be str&apos; %value)
-       self.__NAME=value #通过类型检查后,将值value存放到真实的位置self.__NAME
-
-    @name.deleter
-    def name(self):
-       raise TypeError(&apos;Can not delete&apos;)
-
-f=Foo(&apos;egon&apos;)
-print(f.name)
-# f.name=10 #抛出异常&apos;TypeError: 10 must be str&apos;
-del f.name #抛出异常&apos;TypeError: Can not delete&apos;
-</code></pre><p>不用装饰器</p>
-<pre><code>class Foo:
-    def __init__(self,val):
-          self.__NAME=val #将所有的数据属性都隐藏起来
-
-    def getname(self):
-       return self.__NAME #obj.name访问的是self.__NAME(这也是真实值的存放位置)
-
-    def setname(self,value):
-       if not isinstance(value,str):  #在设定值之前进行类型检查
-          raise TypeError(&apos;%s must be str&apos; %value)
-        self.__NAME=value #通过类型检查后,将值value存放到真实的位置self.__NAME
-
-    def delname(self):
-       raise TypeError(&apos;Can not delete&apos;)
-
-    name=property(getname,setname,delname) #不如装饰器的方式清晰
-</code></pre><h1 id="staticmethod（静态方法）"><a href="#staticmethod（静态方法）" class="headerlink" title="staticmethod（静态方法）"></a>staticmethod（静态方法）</h1><p>通常情况下，在类中定义的所有函数（注意了，这里说的就是所有，跟self啥的没关系，self也只是一个再普通不过的参数而已）都是对象的绑定方法，对象在调用绑定方法时会自动将自己作为参数传递给方法的第一个参数。除此之外还有两种常见的方法：静态方法和类方法，二者是为类量身定制的，但是实例非要使用，也不会报错。静态方法的好处是可以不实例化就可以调用类。</p>
-<p>是一种普通函数，位于类定义的命名空间中，不会对任何实例类型进行操作，python为我们内置了函数staticmethod来把类中的函数定义成静态方法</p>
-<pre><code>class Foo:
-    def spam(x,y,z): #类中的一个函数，千万不要懵逼，self和x啥的没有不同都是参数名
-       print(x,y,z)
-spam=staticmethod(spam) #把spam函数做成静态方法
-</code></pre><p>基于之前所学装饰器的知识，@staticmethod 等同于spam=staticmethod(spam),于是</p>
-<pre><code>class Foo:
-    @staticmethod #装饰器
-    def spam(x,y,z):
-       print(x,y,z)
-</code></pre><p>使用演示</p>
-<pre><code>print(type(Foo.spam)) #类型本质就是函数
-Foo.spam(1,2,3) #调用函数应该有几个参数就传几个参数
-
-f1=Foo()
-f1.spam(3,3,3) #实例也可以使用,但通常静态方法都是给类用的,实例在使用时丧失了自动传值的机制
-
-&lt;class &apos;function&apos;&gt;
-2 3
-3 3
-</code></pre><p>应用场景:编写类时需要采用很多不同的方式来创建实例，而我们只有一个<strong>init</strong>函数，此时静态方法就派上用场了</p>
-<pre><code>class Date:
-    def __init__(self,year,month,day):
-       self.year=year
-       self.month=month
-        self.day=day
-    @staticmethod
-    def now(): #用Date.now()的形式去产生实例,该实例用的是当前时间
-       t=time.localtime() #获取结构化的时间格式
-        return Date(t.tm_year,t.tm_mon,t.tm_mday) #新建实例并且返回
-    @staticmethod
-    def tomorrow():#用Date.tomorrow()的形式去产生实例,该实例用的是明天的时间
-       t=time.localtime(time.time()+86400)
-        return Date(t.tm_year,t.tm_mon,t.tm_mday)
-
-a=Date(&apos;1987&apos;,11,27) #自己定义时间
-b=Date.now() #采用当前时间
-c=Date.tomorrow() #采用明天的时间
-
-print(a.year,a.month,a.day)
-print(b.year,b.month,b.day)
-print(c.year,c.month,c.day)
-</code></pre><h1 id="classmethod（类方法）"><a href="#classmethod（类方法）" class="headerlink" title="classmethod（类方法）"></a>classmethod（类方法）</h1><p>classmethod修饰符对应的函数不需要实例化，不需要 self 参数，但第一个参数需要是表示自身类的cls参数，可以来调用类的属性，类的方法，实例化对象等。</p>
-<p>类方法是给类用的，类在使用时会将类本身当做参数传给类方法的第一个参数，python为我们内置了函数classmethod来把类中的函数定义成类方法</p>
-<pre><code>class A:
-    x=1
-    @classmethod
-    def test(cls):
-       print(cls,cls.x)
-
-class B(A):
-    x=2
-B.test()
-</code></pre><p>输出结果:</p>
-<pre><code>&lt;class &apos;__main__.B&apos;&gt; 2
-</code></pre><p>应用场景：</p>
-<pre><code>import time
-class Date:
-    def __init__(self,year,month,day):
-       self.year=year
-        self.month=month
-        self.day=day
-    @staticmethod
-    def now():
-       t=time.localtime()
-       return Date(t.tm_year,t.tm_mon,t.tm_mday)
-
-class EuroDate(Date):
-    def __str__(self):
-       return &apos;year:%s month:%s day:%s&apos; %(self.year,self.month,self.day)
-
-e=EuroDate.now()
-print(e) #我们的意图是想触发EuroDate.__str__,但是结果为
-</code></pre><p>输出结果:</p>
-<pre><code>&lt;__main__.Date object at 0x1013f9d68&gt;
-</code></pre><p>因为e就是用Date类产生的,所以根本不会触发EuroDate._str__,解决方法就是用classmethod</p>
-<pre><code>import time
-class Date:
-    def __init__(self,year,month,day):
-        self.year=year
-        self.month=month
-        self.day=day
-    #@staticmethod
-    #def now():
-    #        t=time.localtime()
-    #         return Date(t.tm_year,t.tm_mon,t.tm_mday)
-
-    @classmethod #改成类方法
-    def now(cls):
-       t=time.localtime()
-       return cls(t.tm_year,t.tm_mon,t.tm_mday) #哪个类来调用,即用哪个类cls来实例化
-
-class EuroDate(Date):
-    def __str__(self):
-       return &apos;year:%s month:%s day:%s&apos; %(self.year,self.month,self.day)
-
-e=EuroDate.now()
-print(e) #我们的意图是想触发EuroDate.__str__,此时e就是由EuroDate产生的,所以会如我们所愿
-</code></pre><p>输出结果:</p>
-<pre><code>year:2017 month:3 day:3
-</code></pre><p>强调，注意注意注意：静态方法和类方法虽然是给类准备的，但是如果实例去用，也是可以用的，只不过实例去调用的时候容易让人混淆，不知道你要干啥</p>
-<pre><code>x=e.now() #通过实例e去调用类方法也一样可以使用,静态方法也一样
-print(x)
-</code></pre><p>输出结果:</p>
-<pre><code>year:2017 month:3 day:3
-</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;Property（特性）&quot;&gt;&lt;a href=&quot;#Property（特性）&quot; class=&quot;headerlink&quot; title=&quot;Property（特性）&quot;&gt;&lt;/a&gt;Property（特性）&lt;/h1&gt;&lt;h2 id=&quot;什么是特性property&quot;&gt;&lt;a href=&quot;#
     
     </summary>
     
