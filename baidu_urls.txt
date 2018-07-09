@@ -1,3 +1,4 @@
+http://yjscloud.com/2018/06/20/Shell学习笔记（三）：实战进阶篇/
 http://yjscloud.com/2018/06/15/Shell学习笔记（二）：入门知识和实战篇/
 http://yjscloud.com/2018/06/10/Shell学习笔记（一）：基础知识篇/
 http://yjscloud.com/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/

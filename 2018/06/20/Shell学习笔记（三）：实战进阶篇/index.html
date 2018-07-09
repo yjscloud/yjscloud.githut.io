@@ -1,0 +1,1119 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Shell学习笔记," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="戏子登台" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="http://oovxjr0mr.bkt.clouddn.com/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="case结构条件句case结构条件句语法1234567case &quot;字符串变量&quot; in                值 1) 指令 1...;;                值 2) 指令 2...;;   *) 指令...esac case结构条件句范例范例1：根据用户的输入判断式那个数字  拓展让echo输出字符串显示不同颜色范例 开发一个给内容加颜色的函数 效果：  代码：  在脚本中给指">
+<meta name="keywords" content="Shell学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell学习笔记（三）：实战进阶篇">
+<meta property="og:url" content="http://yjscloud.com/2018/06/20/Shell学习笔记（三）：实战进阶篇/index.html">
+<meta property="og:site_name" content="戏子登台">
+<meta property="og:description" content="case结构条件句case结构条件句语法1234567case &quot;字符串变量&quot; in                值 1) 指令 1...;;                值 2) 指令 2...;;   *) 指令...esac case结构条件句范例范例1：根据用户的输入判断式那个数字  拓展让echo输出字符串显示不同颜色范例 开发一个给内容加颜色的函数 效果：  代码：  在脚本中给指">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-31.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-32.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-33.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-34.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-35.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-36.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-36-1.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-37.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-38.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-39.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-40.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-41.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-42.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-43.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-44.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-45.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-46.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-47.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-48.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-49.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-50.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-51.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-52.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-53.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-54.png">
+<meta property="og:image" content="http://p10cma2nn.bkt.clouddn.com/s-55.png">
+<meta property="og:updated_time" content="2018-07-09T11:42:22.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shell学习笔记（三）：实战进阶篇">
+<meta name="twitter:description" content="case结构条件句case结构条件句语法1234567case &quot;字符串变量&quot; in                值 1) 指令 1...;;                值 2) 指令 2...;;   *) 指令...esac case结构条件句范例范例1：根据用户的输入判断式那个数字  拓展让echo输出字符串显示不同颜色范例 开发一个给内容加颜色的函数 效果：  代码：  在脚本中给指">
+<meta name="twitter:image" content="http://p10cma2nn.bkt.clouddn.com/s-31.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yjscloud.com/2018/06/20/Shell学习笔记（三）：实战进阶篇/"/>
+
+
+
+
+
+  <title>Shell学习笔记（三）：实战进阶篇 | 戏子登台</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  <div style="display: none;">
+    <script src="//s95.cnzz.com/z_stat.php?id=true&web_id=true" language="JavaScript"></script>
+  </div>
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">戏子登台</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav" id="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="st-search-show-outputs">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <form class="site-search-form">
+  <input type="text" id="st-search-input" class="st-search-input st-default-search-input" />
+</form>
+
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+    (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+    e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install', 'xFvELz3zTWLevZ-Gjxdd','2.0.0');
+</script>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yjscloud.com/2018/06/20/Shell学习笔记（三）：实战进阶篇/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Pan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="戏子登台">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Shell学习笔记（三）：实战进阶篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-20T19:04:49+08:00">
+                2018-06-20
+              </time>
+            
+
+            
+
+            
+          </span>
+          
+            <span id="busuanzi_container_page_pv">&nbsp;&nbsp;|&nbsp;&nbsp;阅读量 <span id="busuanzi_value_page_pv"></span> 次</span>
+          
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Shell编程/" itemprop="url" rel="index">
+                    <span itemprop="name">Shell编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/06/20/Shell学习笔记（三）：实战进阶篇/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计</span>
+                
+                <span title="字数统计">
+                  2,215
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="case结构条件句"><a href="#case结构条件句" class="headerlink" title="case结构条件句"></a>case结构条件句</h1><h2 id="case结构条件句语法"><a href="#case结构条件句语法" class="headerlink" title="case结构条件句语法"></a>case结构条件句语法</h2><figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> <span class="string">"字符串变量"</span> <span class="keyword">in</span></div><div class="line">                值 <span class="number">1</span>) 指令 <span class="number">1.</span>..</div><div class="line">;;</div><div class="line">                值 <span class="number">2</span>) 指令 <span class="number">2.</span>..</div><div class="line">;;</div><div class="line">   *) 指令...</div><div class="line">esac</div></pre></td></tr></table></figure>
+<h2 id="case结构条件句范例"><a href="#case结构条件句范例" class="headerlink" title="case结构条件句范例"></a>case结构条件句范例</h2><p>范例1：根据用户的输入判断式那个数字</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-31.png" alt="s-31"></p>
+<h2 id="拓展"><a href="#拓展" class="headerlink" title="拓展"></a>拓展</h2><p>让echo输出字符串显示不同颜色范例</p>
+<p>开发一个给内容加颜色的函数</p>
+<p>效果：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-32.png" alt="s-32"></p>
+<p>代码：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-33.png" alt="s-33"></p>
+<p>在脚本中给指定的内容加指定颜色：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-34.png" alt="s-34"></p>
+<h2 id="要掌握的linux系统标杆脚本"><a href="#要掌握的linux系统标杆脚本" class="headerlink" title="要掌握的linux系统标杆脚本"></a>要掌握的linux系统标杆脚本</h2><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta-keyword">/etc/</span>init.d/functions</div><div class="line"><span class="meta-keyword">/etc/</span>rc.d<span class="meta-keyword">/rc/</span>sysinit</div><div class="line"><span class="meta-keyword">/etc/</span>init.d/nfs</div><div class="line"><span class="meta-keyword">/etc/</span>init.d/portmap</div><div class="line"><span class="meta-keyword">/etc/</span>init.d/httpd</div></pre></td></tr></table></figure>
+<h1 id="当型循环和直到型循环"><a href="#当型循环和直到型循环" class="headerlink" title="当型循环和直到型循环"></a>当型循环和直到型循环</h1><h2 id="当型和直到型循环语法"><a href="#当型和直到型循环语法" class="headerlink" title="当型和直到型循环语法"></a>当型和直到型循环语法</h2><p>1、while条件句</p>
+<p>语法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">while</span> 条件</div><div class="line">                        <span class="keyword">do</span></div><div class="line">                        指令...</div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
+<p>2、until条件句</p>
+<p>语法：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">until</span> 条件</div><div class="line">                        <span class="keyword">do</span></div><div class="line">                        指令...</div><div class="line">done</div></pre></td></tr></table></figure>
+<p>提示：until应用场合不多，了解就好</p>
+<p>例1：每隔2秒记录一次系统负载情况</p>
+<p>法一：屏幕输出</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-35.png" alt="s-35"></p>
+<p>提示：while true表示条件永远为真，因此会一直运行，像死循环一样，但是我们称呼为守护进程</p>
+<p>法二：追加到log里，使用微秒单位</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-36.png" alt="s-36"></p>
+<h2 id="拓展知识"><a href="#拓展知识" class="headerlink" title="拓展知识"></a>拓展知识</h2><p><img src="http://p10cma2nn.bkt.clouddn.com/s-36-1.png" alt="s-36"></p>
+<h2 id="一些例子"><a href="#一些例子" class="headerlink" title="一些例子"></a>一些例子</h2><p>1、计算1-100的和，用while</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-37.png" alt="s-37"></p>
+<p>2、使用while循环竖向打印10,9,8…1</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-38.png" alt="s-38"></p>
+<p>3、定时访问网站地址</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-39.png" alt="s-39"></p>
+<p>提示：上面的方法可以用来测负载均衡是否平均分配到了节点</p>
+<h2 id="相关高级生产实战范例拓展"><a href="#相关高级生产实战范例拓展" class="headerlink" title="相关高级生产实战范例拓展"></a>相关高级生产实战范例拓展</h2><p>例1：根据http code status判断</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-40.png" alt="s-40"></p>
+<p>引入函数库：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-41.png" alt="s-41"></p>
+<h1 id="for循环结构"><a href="#for循环结构" class="headerlink" title="for循环结构"></a>for循环结构</h1><h2 id="for循环结构语法"><a href="#for循环结构语法" class="headerlink" title="for循环结构语法"></a>for循环结构语法</h2><p>1、for循环结构语法</p>
+<p>语法：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> 变量名 <span class="keyword">in</span> 变量取值列表</div><div class="line"><span class="keyword">do</span></div><div class="line">                指令...</div><div class="line"><span class="keyword">done</span></div></pre></td></tr></table></figure>
+<p>提示：在此结构中<code>“in 变量取值列表”</code>可省略。省略是相当于in <code>&quot;$@&quot;</code>，使用<code>for i</code>就相当于使用<code>for i in &quot;$@&quot;</code></p>
+<h2 id="for循环结构基础例子"><a href="#for循环结构基础例子" class="headerlink" title="for循环结构基础例子"></a>for循环结构基础例子</h2><p>例1：直接列出变量列表所有元素，打印5、4、3、2、1</p>
+<p>法一：直接列出元素的方法</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-42.png" alt="s-42"></p>
+<p>法二：使用大括号的方法</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-43.png" alt="s-43"></p>
+<p>例2：获取当前目录下的目录名作为变量列表打印输出</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-44.png" alt="s-44"></p>
+<p>例3：mysq分库分表备份的脚本</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-45.png" alt="s-45"></p>
+<p>例4：</p>
+<p>问题1：使用for循环在/yjscloud目录下批量创建10个文件，名称依次为：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">yjs<span class="number">-1</span></div><div class="line">yjs<span class="number">-2</span></div><div class="line">yjs<span class="number">-3</span></div><div class="line">......</div><div class="line">yjs<span class="number">-10</span></div></pre></td></tr></table></figure>
+<p>问题2：将以上文件名中的yjs全部改为cloud。</p>
+<p>问题3：批量创建10个系统账号yjs01-yjs10并设置密码（密码不能相同）</p>
+<p>问题4：批量创建10个系统账号yjs01-yjs10并设置密码（密码为随机8位字符串）</p>
+<p>参考答案：</p>
+<p>问题1：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-46.png" alt="s-46"></p>
+<p>问题2：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-47.png" alt="s-47"></p>
+<p>问题3：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-48.png" alt="s-48"></p>
+<p>问题4：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-49.png" alt="s-49"></p>
+<h2 id="linux系统产生随机数的6种方法"><a href="#linux系统产生随机数的6种方法" class="headerlink" title="linux系统产生随机数的6种方法"></a>linux系统产生随机数的6种方法</h2><p>方法一：通过系统环境变量<code>($RANDOM）</code></p>
+<p>例：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># echo $RANDOM</span></div><div class="line"><span class="number">2390</span></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># echo $RANDOM</span></div><div class="line"><span class="number">1527</span></div></pre></td></tr></table></figure>
+<p>方法二：通过openssl产生随机数</p>
+<p>例：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="section">[root@pan ~]</span><span class="comment"># openssl rand -base64 8</span></div><div class="line"><span class="attr">ZXpVoQC9aLg</span>=</div><div class="line"><span class="section">[root@pan ~]</span><span class="comment"># openssl rand -base64 10</span></div><div class="line"><span class="attr">3MWgyXj4Fp9RXQ</span>==</div></pre></td></tr></table></figure>
+<p>方法三：通过时间获得随机数（date）</p>
+<p>例：</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# <span class="keyword">date</span> +%s%N</div><div class="line"><span class="number">1529673691945995626</span></div><div class="line">[root@pan ~]# <span class="keyword">date</span> +%s%N</div><div class="line"><span class="number">1529673693875826576</span></div></pre></td></tr></table></figure>
+<p>方法四：<br>说明：<code>/dev/random</code>设备，存储着系统当前运行的环境的实时数据。它可以看作是系统某个时候，<br>唯一值数据，因此可以作随机数元数据。我们可以通过文件读取方式，读得里面数据。<code>/dev/urandom</code><br>这个设备数据与random里面一样。只是，它是非阻塞的随机数发生器，读取操作不会产生阻塞。</p>
+<p>例：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># head /dev/urandom|cksum</span></div><div class="line"><span class="number">1250884990</span> <span class="number">2522</span></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># head /dev/urandom|cksum</span></div><div class="line"><span class="number">2562355899</span> <span class="number">2759</span></div></pre></td></tr></table></figure>
+<p>方法五：</p>
+<p>说明：UUID码全称是通用唯一识别码，它是一个软件构建的标准，亦为自由软件基金会的<br>组织在分布式计算环境领域的一部分。UUID的目的，是让分布式系统中的所有元素，都能有唯一<br>的辨识信息，而不需要通过中央控制端来做辨识信息的指定。如此一来，每个人都可以创建不与其它<br>人冲突的UUID。在这样的情况下，就不需考虑数据库创建时的名称重复问题，它会让网络任何一台计算机所生成的uuid码都是互联网整个服务器网络中唯一的。它的原信息会加入硬件时间，机器当前运行信息等等。UUID格式是：包含32个16进位数字，以“-”连接号分为五段，形式为8-4-4-4-12的32个字符。</p>
+<p>例：</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# cat /proc/sys/kernel/random/uuid</div><div class="line"><span class="number">6</span>fd25695-a798<span class="number">-49</span>b0-b88f-ccb6f010e949</div><div class="line">[root@pan ~]# cat /proc/sys/kernel/random/uuid</div><div class="line"><span class="number">746</span>c7ad0<span class="number">-4979</span><span class="number">-4</span>a04-b830<span class="number">-347</span>bdcb3b668</div></pre></td></tr></table></figure>
+<p>方法六：</p>
+<p>例：</p>
+<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># yum -y install expect -y</span></div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># mkpasswd -l 8</span></div><div class="line">ckxCX69&gt;</div><div class="line">[root<span class="symbol">@pan</span> ~]<span class="meta"># mkpasswd -l 8</span></div><div class="line">DhqK9/z7</div></pre></td></tr></table></figure>
+<p>上面的随机数长短不一，如何统一格式化呢？答：使用md5sum命令</p>
+<p>例1:</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# cat /proc/sys/kernel/random/uuid|md5sum|cut -c <span class="number">1</span><span class="number">-9</span></div><div class="line">b555bce24</div><div class="line">[root@pan ~]# head /dev/urandom|cksum|md5sum|cut -c <span class="number">1</span><span class="number">-9</span></div><div class="line"><span class="number">9</span>dfc35416</div><div class="line">[root@pan ~]# date +%s%N|md5sum|cut -c <span class="number">1</span><span class="number">-9</span></div><div class="line"><span class="number">364503</span>a1a</div><div class="line">[root@pan ~]# openssl rand -base64 <span class="number">10</span>|md5sum|cut -c <span class="number">1</span><span class="number">-9</span></div><div class="line"><span class="number">1</span>b9639d90</div></pre></td></tr></table></figure>
+<p>例2：使用for循环测试随机数的唯一性</p>
+<figure class="highlight lsl"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@pan ~]# for n in `seq <span class="number">10</span>`;do echo $RANDOM|md5sum|cut -c <span class="number">1</span><span class="number">-9</span>;done|sort|uniq -c|sort -rn -k1</div><div class="line">      <span class="number">1</span> fed42f93b</div><div class="line">      <span class="number">1</span> f0eb3e614</div><div class="line">      <span class="number">1</span> d4f8e0b04</div><div class="line">      <span class="number">1</span> c080f8c02</div><div class="line">      <span class="number">1</span> <span class="number">8</span>ca398e3a</div><div class="line">      <span class="number">1</span> <span class="number">891321</span>fee</div><div class="line">      <span class="number">1</span> <span class="number">60</span>db6c5bf</div><div class="line">      <span class="number">1</span> <span class="number">31788</span>d2ff</div><div class="line">      <span class="number">1</span> <span class="number">30</span>b296200</div><div class="line">      <span class="number">1</span> <span class="number">2196</span>b3a04</div><div class="line">[root@pan ~]# for n in `seq <span class="number">10</span>`;do echo date +%s%N|md5sum|cut -c <span class="number">1</span><span class="number">-9</span>;done|sort|uniq -c|sort -rn -k1</div><div class="line">     <span class="number">10</span> aa7d1a548</div></pre></td></tr></table></figure>
+<p>企业面试题：</p>
+<p>写一个脚本，实现判断172.16.149.0/24网络里，当前在线用户的ip有哪些</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-50.png" alt="s-50"></p>
+<h1 id="select循环语句介绍及语法"><a href="#select循环语句介绍及语法" class="headerlink" title="select循环语句介绍及语法"></a>select循环语句介绍及语法</h1><p>select循环语句的主要作用可能就是创建菜单，在执行带select循环语句的脚本时，输出会按照数字顺序的列表显示一个菜单项，并显示提示符（默认是#?），同时等待用户输入数字进行选择。<br>语法结构：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> 变量名 [ <span class="keyword">in</span> 菜单取值列表 ]</div><div class="line"><span class="keyword">do</span></div><div class="line">                指令...</div><div class="line">done</div></pre></td></tr></table></figure>
+<h2 id="select循环语句案例"><a href="#select循环语句案例" class="headerlink" title="select循环语句案例"></a>select循环语句案例</h2><p>例1：用select循环打印简单菜单项的多种实现方法</p>
+<p>方法一：直接使用列表字符串</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-51.png" alt="s-51"></p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@pan <span class="keyword">shell</span><span class="bash">]<span class="comment"># sh select01.sh</span></span></div><div class="line"><span class="number">1</span>) xwq</div><div class="line"><span class="number">2</span>) xdf</div><div class="line"><span class="number">3</span>) yjs</div><div class="line"><span class="comment">#? 1</span></div><div class="line">xwq</div><div class="line"><span class="comment">#? 2</span></div><div class="line">xdf</div><div class="line"><span class="comment">#? 3</span></div><div class="line">yjs</div><div class="line"><span class="comment">#? hzw   输入错误，返回空。</span></div></pre></td></tr></table></figure>
+<p>方法二：采用数组做变量列表</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-52.png" alt="s-52"></p>
+<p>方法三：把命令结果作为变量列表（菜单项）</p>
+<p>1）数据准备</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">[root@pan <span class="keyword">shell</span><span class="bash">]<span class="comment"># mkdir -p /tmp/test</span></span></div><div class="line">[root@pan <span class="keyword">shell</span><span class="bash">]<span class="comment"># mkdir -p /tmp/test/&#123;xwq,xdf,yjs&#125;</span></span></div><div class="line">[root@pan <span class="keyword">shell</span><span class="bash">]<span class="comment"># ls -l /tmp/test/</span></span></div><div class="line">total <span class="number">0</span></div><div class="line">drwxr-xr-x <span class="number">2</span> root root <span class="number">6</span> Jun <span class="number">22</span> <span class="number">22</span>:<span class="number">40</span> xdf</div><div class="line">drwxr-xr-x <span class="number">2</span> root root <span class="number">6</span> Jun <span class="number">22</span> <span class="number">22</span>:<span class="number">40</span> xwq</div><div class="line">drwxr-xr-x <span class="number">2</span> root root <span class="number">6</span> Jun <span class="number">22</span> <span class="number">22</span>:<span class="number">40</span> yjs</div></pre></td></tr></table></figure>
+<p>2）开发脚本</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-53.png" alt="s-53"></p>
+<p>3）执行结果</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@pan <span class="keyword">shell</span><span class="bash">]<span class="comment"># sh select03.sh</span></span></div><div class="line"><span class="number">1</span>) xdf</div><div class="line"><span class="number">2</span>) xwq</div><div class="line"><span class="number">3</span>) yjs</div><div class="line"><span class="comment">#?</span></div></pre></td></tr></table></figure>
+<h2 id="修改select默认提示符"><a href="#修改select默认提示符" class="headerlink" title="修改select默认提示符"></a>修改select默认提示符</h2><p>例1：调整select循环菜单项的默认提示符及利用select变量打印数字序号。</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-54.png" alt="s-54"></p>
+<p>提示：PS3就是控制select循环的提示符，REPLY变量就是菜单项对应的数字。</p>
+<p>执行演示：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">[root@pan <span class="keyword">shell</span>]# <span class="keyword">sh</span> select04.<span class="keyword">sh</span></div><div class="line"><span class="number">1</span>) xwq</div><div class="line"><span class="number">2</span>) xdf</div><div class="line"><span class="number">3</span>) yjs</div><div class="line">please select <span class="keyword">a</span> num from <span class="keyword">menu</span>:<span class="number">1</span></div><div class="line">I guess you selected the <span class="keyword">menu</span> i<span class="variable">s:</span></div><div class="line"><span class="number">1</span>) xwq</div><div class="line">please select <span class="keyword">a</span> num from <span class="keyword">menu</span>:<span class="number">2</span></div><div class="line">I guess you selected the <span class="keyword">menu</span> i<span class="variable">s:</span></div><div class="line"><span class="number">2</span>) xdf</div><div class="line">please select <span class="keyword">a</span> num from <span class="keyword">menu</span>:<span class="number">3</span></div><div class="line">I guess you selected the <span class="keyword">menu</span> i<span class="variable">s:</span></div><div class="line"><span class="number">3</span>) yjs</div><div class="line">please select <span class="keyword">a</span> num from <span class="keyword">menu</span>:^C</div></pre></td></tr></table></figure>
+<p>例2：打印选择菜单，按照选择一键安装不同的web服务。</p>
+<p>要求：</p>
+<p>1）当用户输入1时，输出”start installing lamp.“然后执行<code>/server/scripts/lamp.sh</code>，<br>脚本内容输出”lamp is installed“后退出脚本</p>
+<p>2）当用户输入2时，输出”start installing lnmp“然后执行<code>/server/scripts/lnmp.sh</code>，<br>脚本输出内容”lamp is installed“后退出脚本</p>
+<p>3）当输入3时，退出当前菜单脚本；</p>
+<p>4）当输入任何其他字符，给出提示”input error“后退出脚本。</p>
+<p>5）要对执行的脚本进行相关条件判读，例如：脚本是否存在，是否可执行等。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#!/bin/sh</span></div><div class="line">RETVAR=0</div><div class="line">path=/server/scripts                                <span class="comment">#定义脚本路径</span></div><div class="line">[ ! <span class="_">-d</span> <span class="string">"<span class="variable">$path</span>"</span> ] &amp;&amp; mkdir <span class="variable">$path</span> -p                <span class="comment">#如果路径不存在，就创建</span></div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">Usage</span></span>()&#123;                                <span class="comment">#定义帮助函数</span></div><div class="line">        <span class="built_in">echo</span> <span class="string">"Usage:<span class="variable">$0</span> argv"</span></div><div class="line">        <span class="built_in">return</span> 1</div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">InstallService</span></span>()&#123;                        <span class="comment">#定义安装服务函数</span></div><div class="line">        <span class="keyword">if</span> [ <span class="variable">$#</span> <span class="_">-ne</span> 1 ];<span class="keyword">then</span>                        <span class="comment">#参数不等于1，就打印帮助</span></div><div class="line">                Usage</div><div class="line">        <span class="keyword">fi</span></div><div class="line">        <span class="built_in">local</span> RETVAR=0                                <span class="comment">#初始化返回值</span></div><div class="line">        <span class="built_in">echo</span> <span class="string">"start installing <span class="variable">$&#123;1&#125;</span>"</span>                <span class="comment">#打印开始安装服务，传参$1,$1是函数的参数，本例即lamp或lnmp</span></div><div class="line">        sleep 2;</div><div class="line">        <span class="keyword">if</span> [ ! -x <span class="string">"<span class="variable">$path</span>/<span class="variable">$&#123;1&#125;</span>.sh"</span> ];<span class="keyword">then</span>        <span class="comment">#如果安装服务脚本不可执行，则给出提示后退出。</span></div><div class="line">                <span class="built_in">echo</span> <span class="string">"<span class="variable">$path</span>/<span class="variable">$&#123;1&#125;</span>.sh does not exist or can not be exec"</span></div><div class="line">                <span class="built_in">return</span> 1</div><div class="line">        <span class="keyword">else</span></div><div class="line">                <span class="variable">$path</span>/<span class="variable">$&#123;1&#125;</span>.sh                        <span class="comment">#执行脚本       </span></div><div class="line">                <span class="built_in">return</span> <span class="variable">$RETVAR</span>                        <span class="comment">#返回值返回函数体外</span></div><div class="line">        <span class="keyword">fi</span></div><div class="line">&#125;</div><div class="line"><span class="keyword">function</span> <span class="function"><span class="title">main</span></span>()&#123;                                <span class="comment">#主函数</span></div><div class="line">        PS3=<span class="string">"`echo pls input the num you want:`"</span>        <span class="comment">#菜单提示</span></div><div class="line">        select var <span class="keyword">in</span> <span class="string">"Install lamp"</span> <span class="string">"Install lnmp"</span> <span class="string">"exit"</span></div><div class="line">        <span class="comment">#select循环，菜单内容列表，列表中有空格就要加引号</span></div><div class="line">        <span class="keyword">do</span></div><div class="line">                <span class="keyword">case</span> <span class="string">"<span class="variable">$REPLY</span>"</span> <span class="keyword">in</span>                <span class="comment">#使用获取select循环对应的数字序列的环境变量</span></div><div class="line">                        1)                        <span class="comment">#如果匹配1，则执行下面的指令，到双分号结束</span></div><div class="line">                                InstallService lamp</div><div class="line">                                RETVAR=$?</div><div class="line">                                ;;</div><div class="line">                        2)                        <span class="comment">#如果匹配2，则执行下面的指令，到双分号结束</span></div><div class="line">                                InstallService lnmp</div><div class="line">                                RETVAR=$?</div><div class="line">                                ;;</div><div class="line">                        3)                        <span class="comment">#如果匹配3，则执行下面的指令，到双分号结束</span></div><div class="line">                                <span class="built_in">echo</span> <span class="built_in">bye</span></div><div class="line">                                <span class="built_in">return</span> 3</div><div class="line">                                ;;</div><div class="line">                        *)</div><div class="line">                                <span class="built_in">echo</span> <span class="string">"the num you input must be &#123;1|2|3&#125;"</span></div><div class="line">                                <span class="built_in">echo</span> <span class="string">"Input ERROR"</span></div><div class="line">                <span class="keyword">esac</span></div><div class="line">        <span class="keyword">done</span></div><div class="line"><span class="built_in">exit</span> $ RETVAR</div><div class="line">&#125;</div><div class="line">main</div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<p><img src="http://p10cma2nn.bkt.clouddn.com/s-55.png" alt="s-55"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div style="text-align:center;color: #ccc;font-size:14px;">
+------ 本文结束 ------</div>
+<br/>
+<div style="border: 1px solid black">
+<div style="margin-left:10px">
+<span style="font-weight:blod">版权声明</span>
+<img src="http://oovxjr0mr.bkt.clouddn.com/create.png" >
+<br/>
+<p style="font-size: 10px;line-height: 30px"><a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> by <a href="http://yjscloud.com" style="color:#258FC6">Pan</a> is licensed under a <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">Creative Commons BY-NC-ND 4.0 International License</a>.<br/>
+由<a href="http://yjscloud.com" style="color:#258FC6">Pan</a>创作并维护的<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a>博客采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" style="color:#258FC6">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。<br/>
+本文首发于<a href="http://yjscloud.com" style="color:#258FC6">戏子登台</a> 博客（ <a href="http://yjscloud.com" style="color:#258FC6">http://yjscloud.com</a> ），版权所有，侵权必究。</p>
+</div>
+</div>
+
+
+      
+    </div>
+
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+    
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Shell学习笔记/" rel="tag"><i class="fa fa-tag"></i> Shell学习笔记</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/06/15/Shell学习笔记（二）：入门知识和实战篇/" rel="prev" title="Shell学习笔记（二）：入门知识和实战篇">
+                Shell学习笔记（二）：入门知识和实战篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://oovxjr0mr.bkt.clouddn.com/WechatIMG8.jpeg"
+               alt="Pan" />
+          <p class="site-author-name" itemprop="name">Pan</p>
+           
+              <p class="site-description motion-element" itemprop="description">独孤九剑，剑指运维！</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/yjscloud" target="_blank" title="Github">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Github
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5655429866" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:yjscloud@gmail.com" target="_blank" title="Email">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  Email
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/zhao-zi-long-8-52" target="_blank" title="zhihu">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  zhihu
+                </a>
+              </span>
+            
+          
+        </div>
+
+	<div class="swf_clock" align="center">
+	  <embed name="honehoneclock" width="160" height="70" align="middle" pluginspage="http://www.macromedia.com/go/getflashplayer" src="http://chabudai.sakura.ne.jp/blogparts/honehoneclock/honehone_clock01.swf" type="application/x-shockwave-flash" wmode="transparent" quality="high" bgcolor="#000000" allowscriptaccess="always">
+	</div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/yjscloud/" title="博客园" target="_blank">博客园</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://yjscloud.com/about/" title="我的信息" target="_blank">我的信息</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://amon1997.com/" title="Amon的博客" target="_blank">Amon的博客</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#case结构条件句"><span class="nav-number">1.</span> <span class="nav-text">case结构条件句</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#case结构条件句语法"><span class="nav-number">1.1.</span> <span class="nav-text">case结构条件句语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#case结构条件句范例"><span class="nav-number">1.2.</span> <span class="nav-text">case结构条件句范例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展"><span class="nav-number">1.3.</span> <span class="nav-text">拓展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#要掌握的linux系统标杆脚本"><span class="nav-number">1.4.</span> <span class="nav-text">要掌握的linux系统标杆脚本</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#当型循环和直到型循环"><span class="nav-number">2.</span> <span class="nav-text">当型循环和直到型循环</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#当型和直到型循环语法"><span class="nav-number">2.1.</span> <span class="nav-text">当型和直到型循环语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展知识"><span class="nav-number">2.2.</span> <span class="nav-text">拓展知识</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些例子"><span class="nav-number">2.3.</span> <span class="nav-text">一些例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关高级生产实战范例拓展"><span class="nav-number">2.4.</span> <span class="nav-text">相关高级生产实战范例拓展</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#for循环结构"><span class="nav-number">3.</span> <span class="nav-text">for循环结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#for循环结构语法"><span class="nav-number">3.1.</span> <span class="nav-text">for循环结构语法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#for循环结构基础例子"><span class="nav-number">3.2.</span> <span class="nav-text">for循环结构基础例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#linux系统产生随机数的6种方法"><span class="nav-number">3.3.</span> <span class="nav-text">linux系统产生随机数的6种方法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#select循环语句介绍及语法"><span class="nav-number">4.</span> <span class="nav-text">select循环语句介绍及语法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#select循环语句案例"><span class="nav-number">4.1.</span> <span class="nav-text">select循环语句案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改select默认提示符"><span class="nav-number">4.2.</span> <span class="nav-text">修改select默认提示符</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Pan
+
+  &nbsp;&nbsp;|&nbsp;&nbsp;<span><a href="/sitemap.xml">Google网站地图</a></span>
+
+  </span>
+</div>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+
+<script>
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "b3a09e175e704bb0a23058b39947aa9f",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  </script>
+<script type="text/JavaScript">
+function showSubtitle()
+{
+  var siteNav=document.getElementById("site-nav");
+  if(siteNav.style.display=="block")
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="none";
+  }else
+  {
+   var subTitle=document.getElementById("site-subtitle");
+   subTitle.style.display="block";
+  }
+
+}
+</script>
+
+  <script type="text/javascript"> /* 鼠标特效 */ var a_idx = 0; jQuery(document).ready(function($) { $("body").click(function(e) { var a = new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正" ,"法治", "爱国", "敬业", "诚信", "友善"); var $i = $("<span/>").text(a[a_idx]); a_idx = (a_idx + 1) % a.length; var x = e.pageX, y = e.pageY; $i.css({ "z-index": 999999999999999999999999999999999999999999999999999999999999999999999, "top": y - 20, "left": x, "position": "absolute", "font-weight": "bold", "color": "#ff6651" }); $("body").append($i); $i.animate({ "top": y - 180, "opacity": 0 }, 1500, function() { $i.remove(); }); }); }); </script>
+</body>
+</html>
