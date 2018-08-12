@@ -4,9 +4,9 @@
   <subtitle>唱一曲词，戏子登台，人生若只初相见，卖弄风骚为谁演。</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yjscloud.com/"/>
+  <link href="http://yjscloud.site/"/>
   <updated>2018-07-09T12:07:30.000Z</updated>
-  <id>http://yjscloud.com/</id>
+  <id>http://yjscloud.site/</id>
   
   <author>
     <name>Pan</name>
@@ -17,8 +17,8 @@
   
   <entry>
     <title>Shell学习笔记（四）：必备知识篇</title>
-    <link href="http://yjscloud.com/2018/06/21/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%BF%85%E5%A4%87%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
-    <id>http://yjscloud.com/2018/06/21/Shell学习笔记（四）：必备知识篇/</id>
+    <link href="http://yjscloud.site/2018/06/21/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%BF%85%E5%A4%87%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
+    <id>http://yjscloud.site/2018/06/21/Shell学习笔记（四）：必备知识篇/</id>
     <published>2018-06-21T11:47:24.000Z</published>
     <updated>2018-07-09T12:07:30.000Z</updated>
     
@@ -129,17 +129,17 @@
     
     </summary>
     
-      <category term="Shell编程" scheme="http://yjscloud.com/categories/Shell%E7%BC%96%E7%A8%8B/"/>
+      <category term="Shell编程" scheme="http://yjscloud.site/categories/Shell%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="Shell学习笔记" scheme="http://yjscloud.com/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="Shell学习笔记" scheme="http://yjscloud.site/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Shell学习笔记（三）：实战进阶篇</title>
-    <link href="http://yjscloud.com/2018/06/20/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E5%AE%9E%E6%88%98%E8%BF%9B%E9%98%B6%E7%AF%87/"/>
-    <id>http://yjscloud.com/2018/06/20/Shell学习笔记（三）：实战进阶篇/</id>
+    <link href="http://yjscloud.site/2018/06/20/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E5%AE%9E%E6%88%98%E8%BF%9B%E9%98%B6%E7%AF%87/"/>
+    <id>http://yjscloud.site/2018/06/20/Shell学习笔记（三）：实战进阶篇/</id>
     <published>2018-06-20T11:04:49.000Z</published>
     <updated>2018-07-09T11:42:22.000Z</updated>
     
@@ -273,17 +273,17 @@
     
     </summary>
     
-      <category term="Shell编程" scheme="http://yjscloud.com/categories/Shell%E7%BC%96%E7%A8%8B/"/>
+      <category term="Shell编程" scheme="http://yjscloud.site/categories/Shell%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="Shell学习笔记" scheme="http://yjscloud.com/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="Shell学习笔记" scheme="http://yjscloud.site/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Shell学习笔记（二）：入门知识和实战篇</title>
-    <link href="http://yjscloud.com/2018/06/15/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%85%A5%E9%97%A8%E7%9F%A5%E8%AF%86%E5%92%8C%E5%AE%9E%E6%88%98%E7%AF%87/"/>
-    <id>http://yjscloud.com/2018/06/15/Shell学习笔记（二）：入门知识和实战篇/</id>
+    <link href="http://yjscloud.site/2018/06/15/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%85%A5%E9%97%A8%E7%9F%A5%E8%AF%86%E5%92%8C%E5%AE%9E%E6%88%98%E7%AF%87/"/>
+    <id>http://yjscloud.site/2018/06/15/Shell学习笔记（二）：入门知识和实战篇/</id>
     <published>2018-06-15T13:06:37.000Z</published>
     <updated>2018-06-18T14:02:59.000Z</updated>
     
@@ -671,17 +671,17 @@ it is num
     
     </summary>
     
-      <category term="Shell编程" scheme="http://yjscloud.com/categories/Shell%E7%BC%96%E7%A8%8B/"/>
+      <category term="Shell编程" scheme="http://yjscloud.site/categories/Shell%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="Shell学习笔记" scheme="http://yjscloud.com/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="Shell学习笔记" scheme="http://yjscloud.site/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>Shell学习笔记（一）：基础知识篇</title>
-    <link href="http://yjscloud.com/2018/06/10/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
-    <id>http://yjscloud.com/2018/06/10/Shell学习笔记（一）：基础知识篇/</id>
+    <link href="http://yjscloud.site/2018/06/10/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
+    <id>http://yjscloud.site/2018/06/10/Shell学习笔记（一）：基础知识篇/</id>
     <published>2018-06-10T12:08:59.000Z</published>
     <updated>2018-06-18T13:03:32.000Z</updated>
     
@@ -939,17 +939,17 @@ UNSET
     
     </summary>
     
-      <category term="Shell编程" scheme="http://yjscloud.com/categories/Shell%E7%BC%96%E7%A8%8B/"/>
+      <category term="Shell编程" scheme="http://yjscloud.site/categories/Shell%E7%BC%96%E7%A8%8B/"/>
     
     
-      <category term="Shell学习笔记" scheme="http://yjscloud.com/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="Shell学习笔记" scheme="http://yjscloud.site/tags/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
   <entry>
     <title>MySQL系列（七）：MySQL备份与恢复实战</title>
-    <link href="http://yjscloud.com/2018/05/20/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9AMySQL%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E5%AE%9E%E6%88%98/"/>
-    <id>http://yjscloud.com/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/</id>
+    <link href="http://yjscloud.site/2018/05/20/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9AMySQL%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E5%AE%9E%E6%88%98/"/>
+    <id>http://yjscloud.site/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/</id>
     <published>2018-05-20T12:49:10.000Z</published>
     <updated>2018-05-21T13:09:45.000Z</updated>
     
@@ -1097,17 +1097,17 @@ mysql -uroot -pyjscloud &lt; bin.sql
     
     </summary>
     
-      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="数据库学习笔记" scheme="http://yjscloud.site/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+      <category term="MySQL系列" scheme="http://yjscloud.site/tags/MySQL%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
   <entry>
     <title>MySQL系列（六）：MySQL主从复制高级应用</title>
-    <link href="http://yjscloud.com/2018/05/18/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%AB%98%E7%BA%A7%E5%BA%94%E7%94%A8/"/>
-    <id>http://yjscloud.com/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/</id>
+    <link href="http://yjscloud.site/2018/05/18/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%AB%98%E7%BA%A7%E5%BA%94%E7%94%A8/"/>
+    <id>http://yjscloud.site/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/</id>
     <published>2018-05-18T11:24:35.000Z</published>
     <updated>2018-05-21T13:16:23.000Z</updated>
     
@@ -1423,17 +1423,17 @@ show slave status\G
     
     </summary>
     
-      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="数据库学习笔记" scheme="http://yjscloud.site/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+      <category term="MySQL系列" scheme="http://yjscloud.site/tags/MySQL%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
   <entry>
     <title>MySQL系列（五）：MySQL主从复制</title>
-    <link href="http://yjscloud.com/2018/04/27/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
-    <id>http://yjscloud.com/2018/04/27/MySQL系列（五）：MySQL主从复制/</id>
+    <link href="http://yjscloud.site/2018/04/27/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
+    <id>http://yjscloud.site/2018/04/27/MySQL系列（五）：MySQL主从复制/</id>
     <published>2018-04-27T10:51:07.000Z</published>
     <updated>2018-05-21T11:21:22.000Z</updated>
     
@@ -1564,17 +1564,17 @@ Slave_SQL_Running：Yes   #负责读取并执行中继日志中的BINLOG，转�
     
     </summary>
     
-      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="数据库学习笔记" scheme="http://yjscloud.site/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+      <category term="MySQL系列" scheme="http://yjscloud.site/tags/MySQL%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
   <entry>
     <title>MySQL系列（四）：MySQL增量备份及数据恢复</title>
-    <link href="http://yjscloud.com/2018/04/26/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AMySQL%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
-    <id>http://yjscloud.com/2018/04/26/MySQL系列（四）：MySQL增量备份及数据恢复/</id>
+    <link href="http://yjscloud.site/2018/04/26/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AMySQL%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
+    <id>http://yjscloud.site/2018/04/26/MySQL系列（四）：MySQL增量备份及数据恢复/</id>
     <published>2018-04-26T07:31:33.000Z</published>
     <updated>2018-05-21T09:28:45.000Z</updated>
     
@@ -1962,17 +1962,17 @@ mysqlbinlog /application/mysql/data/mysql-bin.000001|grep insert
     
     </summary>
     
-      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="数据库学习笔记" scheme="http://yjscloud.site/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+      <category term="MySQL系列" scheme="http://yjscloud.site/tags/MySQL%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
   <entry>
     <title>MySQL系列（三）：MySQL乱码及字符集实战</title>
-    <link href="http://yjscloud.com/2018/04/25/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9AMySQL%E4%B9%B1%E7%A0%81%E5%8F%8A%E5%AD%97%E7%AC%A6%E9%9B%86%E5%AE%9E%E6%88%98/"/>
-    <id>http://yjscloud.com/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/</id>
+    <link href="http://yjscloud.site/2018/04/25/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9AMySQL%E4%B9%B1%E7%A0%81%E5%8F%8A%E5%AD%97%E7%AC%A6%E9%9B%86%E5%AE%9E%E6%88%98/"/>
+    <id>http://yjscloud.site/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/</id>
     <published>2018-04-25T06:21:03.000Z</published>
     <updated>2018-05-21T06:54:58.000Z</updated>
     
@@ -2120,17 +2120,17 @@ primary key(id)
     
     </summary>
     
-      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="数据库学习笔记" scheme="http://yjscloud.site/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+      <category term="MySQL系列" scheme="http://yjscloud.site/tags/MySQL%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
   <entry>
     <title>MySQL系列（二）：MySQL常用基础命令</title>
-    <link href="http://yjscloud.com/2018/04/23/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AMySQL%E5%B8%B8%E7%94%A8%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/"/>
-    <id>http://yjscloud.com/2018/04/23/MySQL系列（二）：MySQL常用基础命令/</id>
+    <link href="http://yjscloud.site/2018/04/23/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AMySQL%E5%B8%B8%E7%94%A8%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/"/>
+    <id>http://yjscloud.site/2018/04/23/MySQL系列（二）：MySQL常用基础命令/</id>
     <published>2018-04-23T04:02:52.000Z</published>
     <updated>2018-05-21T06:02:24.000Z</updated>
     
@@ -2939,17 +2939,17 @@ truncate table test1;    #清空表中所有内容
     
     </summary>
     
-      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="数据库学习笔记" scheme="http://yjscloud.site/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+      <category term="MySQL系列" scheme="http://yjscloud.site/tags/MySQL%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
   <entry>
     <title>MySQL系列（一）：MySQL源码安装</title>
-    <link href="http://yjscloud.com/2018/04/22/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9AMySQL%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
-    <id>http://yjscloud.com/2018/04/22/MySQL系列（一）：MySQL源码安装/</id>
+    <link href="http://yjscloud.site/2018/04/22/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9AMySQL%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
+    <id>http://yjscloud.site/2018/04/22/MySQL系列（一）：MySQL源码安装/</id>
     <published>2018-04-22T02:35:14.000Z</published>
     <updated>2018-05-21T03:01:57.000Z</updated>
     
@@ -3041,17 +3041,17 @@ chmod 700 /etc/init.d/mysqld   #授权700权限，即脚本可执行
     
     </summary>
     
-      <category term="数据库学习笔记" scheme="http://yjscloud.com/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="数据库学习笔记" scheme="http://yjscloud.site/categories/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="MySQL系列" scheme="http://yjscloud.com/tags/MySQL%E7%B3%BB%E5%88%97/"/>
+      <category term="MySQL系列" scheme="http://yjscloud.site/tags/MySQL%E7%B3%BB%E5%88%97/"/>
     
   </entry>
   
   <entry>
     <title>Kolla容器化部署OpenStack：多节点部署</title>
-    <link href="http://yjscloud.com/2018/04/21/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%A4%9A%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
-    <id>http://yjscloud.com/2018/04/21/Kolla容器化部署OpenStack：多节点部署/</id>
+    <link href="http://yjscloud.site/2018/04/21/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%A4%9A%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.site/2018/04/21/Kolla容器化部署OpenStack：多节点部署/</id>
     <published>2018-04-21T13:59:18.000Z</published>
     <updated>2018-05-17T23:54:33.000Z</updated>
     
@@ -3236,17 +3236,17 @@ ea471af172de        172.16.31.130:4000/99cloud/centos-source-cron:4.0.2.1       
     
     </summary>
     
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="Kolla自动化部署" scheme="http://yjscloud.com/tags/Kolla%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/"/>
+      <category term="Kolla自动化部署" scheme="http://yjscloud.site/tags/Kolla%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
   <entry>
     <title>Kolla容器化部署OpenStack：单点部署</title>
-    <link href="http://yjscloud.com/2018/04/20/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%8D%95%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
-    <id>http://yjscloud.com/2018/04/20/Kolla容器化部署OpenStack：单点部署/</id>
+    <link href="http://yjscloud.site/2018/04/20/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%8D%95%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.site/2018/04/20/Kolla容器化部署OpenStack：单点部署/</id>
     <published>2018-04-20T12:37:32.000Z</published>
     <updated>2018-05-17T23:51:51.000Z</updated>
     
@@ -3317,17 +3317,17 @@ cpu_mode = none
     
     </summary>
     
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="Kolla自动化部署" scheme="http://yjscloud.com/tags/Kolla%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/"/>
+      <category term="Kolla自动化部署" scheme="http://yjscloud.site/tags/Kolla%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2/"/>
     
   </entry>
   
   <entry>
     <title>OpenStack排错（一）：Cinder僵尸卷删除</title>
-    <link href="http://yjscloud.com/2018/04/12/OpenStack%E6%8E%92%E9%94%99-%E4%B8%80-cinder%E5%83%B5%E5%B0%B8%E5%8D%B7%E5%88%A0%E9%99%A4/"/>
-    <id>http://yjscloud.com/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/</id>
+    <link href="http://yjscloud.site/2018/04/12/OpenStack%E6%8E%92%E9%94%99-%E4%B8%80-cinder%E5%83%B5%E5%B0%B8%E5%8D%B7%E5%88%A0%E9%99%A4/"/>
+    <id>http://yjscloud.site/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/</id>
     <published>2018-04-12T12:14:21.000Z</published>
     <updated>2018-05-17T15:45:30.000Z</updated>
     
@@ -3403,17 +3403,17 @@ kill -9 76568
     
     </summary>
     
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
+      <category term="OpenStack技能" scheme="http://yjscloud.site/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
     
   </entry>
   
   <entry>
     <title>制作OpenStack镜像模板</title>
-    <link href="http://yjscloud.com/2018/04/04/%E5%88%B6%E4%BD%9Copenstack%E9%95%9C%E5%83%8F%E6%A8%A1%E6%9D%BF/"/>
-    <id>http://yjscloud.com/2018/04/04/制作openstack镜像模板/</id>
+    <link href="http://yjscloud.site/2018/04/04/%E5%88%B6%E4%BD%9Copenstack%E9%95%9C%E5%83%8F%E6%A8%A1%E6%9D%BF/"/>
+    <id>http://yjscloud.site/2018/04/04/制作openstack镜像模板/</id>
     <published>2018-04-04T11:57:11.000Z</published>
     <updated>2018-05-17T15:43:09.000Z</updated>
     
@@ -3466,17 +3466,17 @@ systemctl enable cloud-config.service cloud-final.service cloud-init-local.servi
     
     </summary>
     
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="OpenStack技能" scheme="http://yjscloud.com/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
+      <category term="OpenStack技能" scheme="http://yjscloud.site/tags/OpenStack%E6%8A%80%E8%83%BD/"/>
     
   </entry>
   
   <entry>
     <title>OpenStack O版搭建（四）：Cinder节点部署</title>
-    <link href="http://yjscloud.com/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9ACinder%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
-    <id>http://yjscloud.com/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/</id>
+    <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9ACinder%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/</id>
     <published>2018-03-25T14:28:38.000Z</published>
     <updated>2018-03-25T14:58:01.000Z</updated>
     
@@ -3582,17 +3582,17 @@ cinder service-list
     
     </summary>
     
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="OpenStack O版搭建" scheme="http://yjscloud.com/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
+      <category term="OpenStack O版搭建" scheme="http://yjscloud.site/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
     
   </entry>
   
   <entry>
     <title>OpenStack O版搭建（三）：Compute节点部署</title>
-    <link href="http://yjscloud.com/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ACompute%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
-    <id>http://yjscloud.com/2018/03/25/OpenStack-O版搭建（三）：Compute节点部署/</id>
+    <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ACompute%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（三）：Compute节点部署/</id>
     <published>2018-03-25T14:16:51.000Z</published>
     <updated>2018-03-25T15:00:09.000Z</updated>
     
@@ -3700,17 +3700,17 @@ openstack flavor list
     
     </summary>
     
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="OpenStack O版搭建" scheme="http://yjscloud.com/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
+      <category term="OpenStack O版搭建" scheme="http://yjscloud.site/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
     
   </entry>
   
   <entry>
     <title>OpenStack O版搭建（二）：Controller节点部署</title>
-    <link href="http://yjscloud.com/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AController%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
-    <id>http://yjscloud.com/2018/03/25/OpenStack-O版搭建（二）：Controller节点部署/</id>
+    <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AController%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（二）：Controller节点部署/</id>
     <published>2018-03-25T14:15:37.000Z</published>
     <updated>2018-03-25T22:55:20.000Z</updated>
     
@@ -4160,17 +4160,17 @@ systemctl status httpd.service memcached.service
     
     </summary>
     
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="OpenStack O版搭建" scheme="http://yjscloud.com/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
+      <category term="OpenStack O版搭建" scheme="http://yjscloud.site/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
     
   </entry>
   
   <entry>
     <title>OpenStack O版搭建（一）：环境初始化</title>
-    <link href="http://yjscloud.com/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E7%8E%AF%E5%A2%83%E5%88%9D%E5%A7%8B%E5%8C%96/"/>
-    <id>http://yjscloud.com/2018/03/25/OpenStack-O版搭建（一）：环境初始化/</id>
+    <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E7%8E%AF%E5%A2%83%E5%88%9D%E5%A7%8B%E5%8C%96/"/>
+    <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（一）：环境初始化/</id>
     <published>2018-03-25T12:36:24.000Z</published>
     <updated>2018-03-25T14:44:00.000Z</updated>
     
@@ -4232,17 +4232,17 @@ systemctl start ntpd
     
     </summary>
     
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.com/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="OpenStack O版搭建" scheme="http://yjscloud.com/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
+      <category term="OpenStack O版搭建" scheme="http://yjscloud.site/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
     
   </entry>
   
   <entry>
     <title>Python当歌（十二）面向对象进阶</title>
-    <link href="http://yjscloud.com/2018/03/11/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BF%9B%E9%98%B6/"/>
-    <id>http://yjscloud.com/2018/03/11/Python当歌（十二）面向对象进阶/</id>
+    <link href="http://yjscloud.site/2018/03/11/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BF%9B%E9%98%B6/"/>
+    <id>http://yjscloud.site/2018/03/11/Python当歌（十二）面向对象进阶/</id>
     <published>2018-03-11T11:42:14.000Z</published>
     <updated>2018-03-11T13:05:06.000Z</updated>
     
@@ -5082,10 +5082,10 @@ class Foo(object,metaclass=Mymeta):
     
     </summary>
     
-      <category term="学习笔记" scheme="http://yjscloud.com/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="学习笔记" scheme="http://yjscloud.site/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
     
-      <category term="Python学习笔记" scheme="http://yjscloud.com/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <category term="Python学习笔记" scheme="http://yjscloud.site/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   
