@@ -3,6 +3,26 @@
 
 
     
+  <url>
+    <loc>http://yjscloud.site/2018/04/04/%E5%88%B6%E4%BD%9Copenstack%E9%95%9C%E5%83%8F%E6%A8%A1%E6%9D%BF/</loc>
+    <lastmod>2018-08-22T14:58:14.000Z</lastmod>
+    <data>
+        <display>
+        <title>制作OpenStack镜像模板</title>
+        <pubTime>2018-04-04T11:57:11.000Z</pubTime>
+        
+        <tag>OpenStack技能</tag>
+         
+         
+           
+             
+              <breadCrumb title="OpenStack学习笔记" url="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>http://yjscloud.site/2018/06/21/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%BF%85%E5%A4%87%E7%9F%A5%E8%AF%86%E7%AF%87/</loc>
@@ -271,26 +291,6 @@
         <display>
         <title>OpenStack排错（一）：Cinder僵尸卷删除</title>
         <pubTime>2018-04-12T12:14:21.000Z</pubTime>
-        
-        <tag>OpenStack技能</tag>
-         
-         
-           
-             
-              <breadCrumb title="OpenStack学习笔记" url="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yjscloud.site/2018/04/04/%E5%88%B6%E4%BD%9Copenstack%E9%95%9C%E5%83%8F%E6%A8%A1%E6%9D%BF/</loc>
-    <lastmod>2018-05-17T15:43:09.000Z</lastmod>
-    <data>
-        <display>
-        <title>制作OpenStack镜像模板</title>
-        <pubTime>2018-04-04T11:57:11.000Z</pubTime>
         
         <tag>OpenStack技能</tag>
          

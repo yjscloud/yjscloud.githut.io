@@ -3415,7 +3415,7 @@ kill -9 76568
     <link href="http://yjscloud.site/2018/04/04/%E5%88%B6%E4%BD%9Copenstack%E9%95%9C%E5%83%8F%E6%A8%A1%E6%9D%BF/"/>
     <id>http://yjscloud.site/2018/04/04/制作openstack镜像模板/</id>
     <published>2018-04-04T11:57:11.000Z</published>
-    <updated>2018-05-17T15:43:09.000Z</updated>
+    <updated>2018-08-22T14:58:14.000Z</updated>
     
     <content type="html"><![CDATA[<p>在kvm服务器上安装一个虚拟机，然后进行如下配置：</p>
 <h1 id="模板默认配置"><a href="#模板默认配置" class="headerlink" title="模板默认配置"></a>模板默认配置</h1><p>制作模版要配置yum源，安装常用软件，yum源可以配置为阿里的源，163的源最好有自己的源<br>需要安装的常用软件：</p>
@@ -3435,7 +3435,8 @@ NM_CONTROLLED=no
 </code></pre><h1 id="编辑cloud的配置文件"><a href="#编辑cloud的配置文件" class="headerlink" title="编辑cloud的配置文件"></a>编辑cloud的配置文件</h1><pre><code>vim /etc/cloud/cloud.cfg    
 修改如下内容：
 ssh_pwauth:    1
-在cloud_init_modules:下面添加一个参数                                                                                          - resolv-conf
+在cloud_init_modules:下面添加一个参数
+ - resolv-conf                                                     
 </code></pre><h1 id="配置脚本文件"><a href="#配置脚本文件" class="headerlink" title="配置脚本文件"></a>配置脚本文件</h1><pre><code>vim /etc/rc.d/rc.local
 覆盖配置这个脚本（Netron配置文件）
 chmod +x /etc/rc.d/rc.local
