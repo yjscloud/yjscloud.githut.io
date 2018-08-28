@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.site/"/>
-  <updated>2018-07-09T12:07:30.000Z</updated>
+  <updated>2018-08-28T09:19:14.014Z</updated>
   <id>http://yjscloud.site/</id>
   
   <author>
@@ -16,11 +16,32 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>hello yjscloud</title>
+    <link href="http://yjscloud.site/2018/08/28/hello-yjscloud/"/>
+    <id>http://yjscloud.site/2018/08/28/hello-yjscloud/</id>
+    <published>2018-08-28T08:49:01.000Z</published>
+    <updated>2018-08-28T09:19:14.014Z</updated>
+    
+    <content type="html"><![CDATA[<p>test<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="built_in">test</span></div></pre></td></tr></table></figure></p>
+<p>test<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">test</span></div></pre></td></tr></table></figure></p>
+<p>test<del>~</del>~~</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;test&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td cl
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>Shell学习笔记（四）：必备知识篇</title>
     <link href="http://yjscloud.site/2018/06/21/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%BF%85%E5%A4%87%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
     <id>http://yjscloud.site/2018/06/21/Shell学习笔记（四）：必备知识篇/</id>
     <published>2018-06-21T11:47:24.000Z</published>
-    <updated>2018-07-09T12:07:30.000Z</updated>
+    <updated>2018-08-28T08:23:44.547Z</updated>
     
     <content type="html"><![CDATA[<h1 id="循环控制及状态返回值的应用实践"><a href="#循环控制及状态返回值的应用实践" class="headerlink" title="循环控制及状态返回值的应用实践"></a>循环控制及状态返回值的应用实践</h1><p>break、continue、exit、return的区别和对比</p>
 <p><img src="http://p10cma2nn.bkt.clouddn.com/s-56.png" alt="s-56"></p>
@@ -141,7 +162,7 @@
     <link href="http://yjscloud.site/2018/06/20/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E5%AE%9E%E6%88%98%E8%BF%9B%E9%98%B6%E7%AF%87/"/>
     <id>http://yjscloud.site/2018/06/20/Shell学习笔记（三）：实战进阶篇/</id>
     <published>2018-06-20T11:04:49.000Z</published>
-    <updated>2018-07-09T11:42:22.000Z</updated>
+    <updated>2018-08-28T08:23:44.547Z</updated>
     
     <content type="html"><![CDATA[<h1 id="case结构条件句"><a href="#case结构条件句" class="headerlink" title="case结构条件句"></a>case结构条件句</h1><h2 id="case结构条件句语法"><a href="#case结构条件句语法" class="headerlink" title="case结构条件句语法"></a>case结构条件句语法</h2><figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> <span class="string">"字符串变量"</span> <span class="keyword">in</span></div><div class="line">                值 <span class="number">1</span>) 指令 <span class="number">1.</span>..</div><div class="line">;;</div><div class="line">                值 <span class="number">2</span>) 指令 <span class="number">2.</span>..</div><div class="line">;;</div><div class="line">   *) 指令...</div><div class="line">esac</div></pre></td></tr></table></figure>
 <h2 id="case结构条件句范例"><a href="#case结构条件句范例" class="headerlink" title="case结构条件句范例"></a>case结构条件句范例</h2><p>范例1：根据用户的输入判断式那个数字</p>
@@ -285,7 +306,7 @@
     <link href="http://yjscloud.site/2018/06/15/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%85%A5%E9%97%A8%E7%9F%A5%E8%AF%86%E5%92%8C%E5%AE%9E%E6%88%98%E7%AF%87/"/>
     <id>http://yjscloud.site/2018/06/15/Shell学习笔记（二）：入门知识和实战篇/</id>
     <published>2018-06-15T13:06:37.000Z</published>
-    <updated>2018-06-18T14:02:59.000Z</updated>
+    <updated>2018-08-28T08:23:44.547Z</updated>
     
     <content type="html"><![CDATA[<h1 id="变量的数值计算常见命令"><a href="#变量的数值计算常见命令" class="headerlink" title="变量的数值计算常见命令"></a>变量的数值计算常见命令</h1><p><code>(())</code>、<code>let</code>、<code>expr</code>、<code>bc</code>、<code>$[]</code>，这里只介绍<code>(())</code>和<code>expr</code></p>
 <h2 id="用法："><a href="#用法：" class="headerlink" title="(())用法："></a>(())用法：</h2><p>如果要执行简单的整数运算，只需将特定的算术表达式用”<code>$((&quot;和&quot;))</code>“括起来即可。shell的算术运算符合常置于”<code>$((&quot;......&quot;))</code>“的语法中。这一语法如同双引号功能，除了内嵌双引号无需转义。</p>
@@ -683,7 +704,7 @@ it is num
     <link href="http://yjscloud.site/2018/06/10/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
     <id>http://yjscloud.site/2018/06/10/Shell学习笔记（一）：基础知识篇/</id>
     <published>2018-06-10T12:08:59.000Z</published>
-    <updated>2018-06-18T13:03:32.000Z</updated>
+    <updated>2018-08-28T08:23:44.547Z</updated>
     
     <content type="html"><![CDATA[<h1 id="初识脚本"><a href="#初识脚本" class="headerlink" title="初识脚本"></a>初识脚本</h1><h2 id="脚本的建立"><a href="#脚本的建立" class="headerlink" title="脚本的建立"></a>脚本的建立</h2><p>shell脚本通常是在编译器（如vi/vim）中编写，由unix/linux命令、bash shell命令、程序结构控制语句和注释等内容组成。</p>
 <p>1）脚本开头（第一行）</p>
@@ -951,7 +972,7 @@ UNSET
     <link href="http://yjscloud.site/2018/05/20/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9AMySQL%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E5%AE%9E%E6%88%98/"/>
     <id>http://yjscloud.site/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/</id>
     <published>2018-05-20T12:49:10.000Z</published>
-    <updated>2018-05-21T13:09:45.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="全量备份与增量备份"><a href="#全量备份与增量备份" class="headerlink" title="全量备份与增量备份"></a>全量备份与增量备份</h1><h2 id="全量备份"><a href="#全量备份" class="headerlink" title="全量备份"></a>全量备份</h2><p>全量数据就是数据库中所有的数据，全量备份就是把数据库中所有的数据进行备份。</p>
 <p>例：</p>
@@ -1109,7 +1130,7 @@ mysql -uroot -pyjscloud &lt; bin.sql
     <link href="http://yjscloud.site/2018/05/18/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%AB%98%E7%BA%A7%E5%BA%94%E7%94%A8/"/>
     <id>http://yjscloud.site/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/</id>
     <published>2018-05-18T11:24:35.000Z</published>
-    <updated>2018-05-21T13:16:23.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h1><h2 id="mysql主从同步配置步骤"><a href="#mysql主从同步配置步骤" class="headerlink" title="mysql主从同步配置步骤"></a>mysql主从同步配置步骤</h2><p>1）准备两台数据库环境，或者单台多实例环境，能否正常启动和登陆</p>
 <p>2）配置my.cnf文件，主库配置log-bin和server-id参数，从库配置server-id，不能和主库以及其他从库一样，一般不开启从库log-bin功能，注意：配置参数后要重启生效。</p>
@@ -1435,7 +1456,7 @@ show slave status\G
     <link href="http://yjscloud.site/2018/04/27/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
     <id>http://yjscloud.site/2018/04/27/MySQL系列（五）：MySQL主从复制/</id>
     <published>2018-04-27T10:51:07.000Z</published>
-    <updated>2018-05-21T11:21:22.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="mysql主从复制介绍"><a href="#mysql主从复制介绍" class="headerlink" title="mysql主从复制介绍"></a>mysql主从复制介绍</h1><p>mysql支持单向、双向、链式级联、实时、异步复制。复制过程中，一台服务器充当主服务器（master），而一个或多个其他的服务器充当从服务器（slave）。复制可以是单向：M==&gt;S，也可以是双向M&lt;==&gt;M，当然也可以多M环状同步等。如果设置了链式级联复制，那么，从（slave）服务器本身除了充当从服务器外，也会同时充当其下面从服务器的主服务器。链式级联复制类似A–&gt;B–&gt;C–&gt;D的复制形式。</p>
 <p>1）单向主从同步逻辑图：</p>
@@ -1576,7 +1597,7 @@ Slave_SQL_Running：Yes   #负责读取并执行中继日志中的BINLOG，转�
     <link href="http://yjscloud.site/2018/04/26/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AMySQL%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
     <id>http://yjscloud.site/2018/04/26/MySQL系列（四）：MySQL增量备份及数据恢复/</id>
     <published>2018-04-26T07:31:33.000Z</published>
-    <updated>2018-05-21T09:28:45.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="MySQL数据库的备份"><a href="#MySQL数据库的备份" class="headerlink" title="MySQL数据库的备份"></a>MySQL数据库的备份</h1><h2 id="备份单个数据库练习多种参数使用"><a href="#备份单个数据库练习多种参数使用" class="headerlink" title="备份单个数据库练习多种参数使用"></a>备份单个数据库练习多种参数使用</h2><p>mysql数据库自带了一个很好用的备份命令，就是mysqldump，它的基本使用如下：</p>
 <p>语法：</p>
@@ -1974,7 +1995,7 @@ mysqlbinlog /application/mysql/data/mysql-bin.000001|grep insert
     <link href="http://yjscloud.site/2018/04/25/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9AMySQL%E4%B9%B1%E7%A0%81%E5%8F%8A%E5%AD%97%E7%AC%A6%E9%9B%86%E5%AE%9E%E6%88%98/"/>
     <id>http://yjscloud.site/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/</id>
     <published>2018-04-25T06:21:03.000Z</published>
-    <updated>2018-05-21T06:54:58.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="MySQL插入中文数据乱码问题"><a href="#MySQL插入中文数据乱码问题" class="headerlink" title="MySQL插入中文数据乱码问题"></a>MySQL插入中文数据乱码问题</h1><h2 id="MySQL数据库插入中文数据乱码"><a href="#MySQL数据库插入中文数据乱码" class="headerlink" title="MySQL数据库插入中文数据乱码"></a>MySQL数据库插入中文数据乱码</h2><p>1）MySQL中添加中文数据乱码演示</p>
 <p>1、创建一个test2测试数据库并查看建表语句</p>
@@ -2132,7 +2153,7 @@ primary key(id)
     <link href="http://yjscloud.site/2018/04/23/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AMySQL%E5%B8%B8%E7%94%A8%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/"/>
     <id>http://yjscloud.site/2018/04/23/MySQL系列（二）：MySQL常用基础命令/</id>
     <published>2018-04-23T04:02:52.000Z</published>
-    <updated>2018-05-21T06:02:24.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="启动与关闭MySQL"><a href="#启动与关闭MySQL" class="headerlink" title="启动与关闭MySQL"></a>启动与关闭MySQL</h1><h2 id="单实例MySQL启动与关闭方法"><a href="#单实例MySQL启动与关闭方法" class="headerlink" title="单实例MySQL启动与关闭方法"></a>单实例MySQL启动与关闭方法</h2><p>常规启动关闭数据库方式（推荐）</p>
 <p>1）启动MySQL命令：</p>
@@ -2951,7 +2972,7 @@ truncate table test1;    #清空表中所有内容
     <link href="http://yjscloud.site/2018/04/22/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9AMySQL%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
     <id>http://yjscloud.site/2018/04/22/MySQL系列（一）：MySQL源码安装/</id>
     <published>2018-04-22T02:35:14.000Z</published>
-    <updated>2018-05-21T03:01:57.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="查看系统信息"><a href="#查看系统信息" class="headerlink" title="查看系统信息"></a>查看系统信息</h1><pre><code>[root@mysql-1 ~]# uname -r
 3.10.0-693.el7.x86_64
@@ -3053,7 +3074,7 @@ chmod 700 /etc/init.d/mysqld   #授权700权限，即脚本可执行
     <link href="http://yjscloud.site/2018/04/21/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%A4%9A%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/04/21/Kolla容器化部署OpenStack：多节点部署/</id>
     <published>2018-04-21T13:59:18.000Z</published>
-    <updated>2018-05-17T23:54:33.000Z</updated>
+    <updated>2018-08-28T08:23:44.531Z</updated>
     
     <content type="html"><![CDATA[<p>前面我们已经部署了单节点的OpenStack环境，这次我们尝试部署一个多节点的环境(包括1个controller节点，1个compute节点，1个storage节点)，之前的单节点因为已经安装了kolla-ansible和docker registry，我们把它当做部署节点。</p>
 <h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>准备三台服务器，分别作为controller节点，compute节点，storage节点。其中controller节点3张网卡，compute、storage节点2张网卡。操作系统为centos7.4</p>
@@ -3248,7 +3269,7 @@ ea471af172de        172.16.31.130:4000/99cloud/centos-source-cron:4.0.2.1       
     <link href="http://yjscloud.site/2018/04/20/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%8D%95%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/04/20/Kolla容器化部署OpenStack：单点部署/</id>
     <published>2018-04-20T12:37:32.000Z</published>
-    <updated>2018-05-17T23:51:51.000Z</updated>
+    <updated>2018-08-28T08:23:44.531Z</updated>
     
     <content type="html"><![CDATA[<p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。<br>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。<br>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
 <h1 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h1><p>（1）使用iso引导，选择 install centos7.3 and kolla</p>
@@ -3329,7 +3350,7 @@ cpu_mode = none
     <link href="http://yjscloud.site/2018/04/12/OpenStack%E6%8E%92%E9%94%99-%E4%B8%80-cinder%E5%83%B5%E5%B0%B8%E5%8D%B7%E5%88%A0%E9%99%A4/"/>
     <id>http://yjscloud.site/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/</id>
     <published>2018-04-12T12:14:21.000Z</published>
-    <updated>2018-05-17T15:45:30.000Z</updated>
+    <updated>2018-08-28T08:23:44.543Z</updated>
     
     <content type="html"><![CDATA[<h1 id="处理报错的大致思路"><a href="#处理报错的大致思路" class="headerlink" title="处理报错的大致思路"></a>处理报错的大致思路</h1><p>(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted；</p>
 <p>(2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程；</p>
@@ -3415,7 +3436,7 @@ kill -9 76568
     <link href="http://yjscloud.site/2018/04/04/%E5%88%B6%E4%BD%9Copenstack%E9%95%9C%E5%83%8F%E6%A8%A1%E6%9D%BF/"/>
     <id>http://yjscloud.site/2018/04/04/制作openstack镜像模板/</id>
     <published>2018-04-04T11:57:11.000Z</published>
-    <updated>2018-08-22T14:58:14.000Z</updated>
+    <updated>2018-08-28T08:23:44.547Z</updated>
     
     <content type="html"><![CDATA[<p>在kvm服务器上安装一个虚拟机，然后进行如下配置：</p>
 <h1 id="模板默认配置"><a href="#模板默认配置" class="headerlink" title="模板默认配置"></a>模板默认配置</h1><p>制作模版要配置yum源，安装常用软件，yum源可以配置为阿里的源，163的源最好有自己的源<br>需要安装的常用软件：</p>
@@ -3479,7 +3500,7 @@ systemctl enable cloud-config.service cloud-final.service cloud-init-local.servi
     <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9ACinder%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/</id>
     <published>2018-03-25T14:28:38.000Z</published>
-    <updated>2018-03-25T14:58:01.000Z</updated>
+    <updated>2018-08-28T08:23:44.543Z</updated>
     
     <content type="html"><![CDATA[<h1 id="在controller节点上配置"><a href="#在controller节点上配置" class="headerlink" title="在controller节点上配置"></a>在controller节点上配置</h1><h2 id="创建数据库用户并赋予权限"><a href="#创建数据库用户并赋予权限" class="headerlink" title="创建数据库用户并赋予权限"></a>创建数据库用户并赋予权限</h2><pre><code>CREATE DATABASE cinder;
 GRANT ALL PRIVILEGES ON cinder.* TO &apos;cinder&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;devops&apos;;
@@ -3595,7 +3616,7 @@ cinder service-list
     <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ACompute%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（三）：Compute节点部署/</id>
     <published>2018-03-25T14:16:51.000Z</published>
-    <updated>2018-03-25T15:00:09.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="安装相关依赖包"><a href="#安装相关依赖包" class="headerlink" title="安装相关依赖包"></a>安装相关依赖包</h1><pre><code>yum install openstack-selinux python-openstackclient yum-plugin-priorities openstack-nova-compute openstack-utils ntpdate -y
 </code></pre><h2 id="配置nova-conf"><a href="#配置nova-conf" class="headerlink" title="配置nova.conf"></a>配置nova.conf</h2><pre><code>cp /etc/nova/nova.conf /etc/nova/nova.conf.bak
@@ -3713,7 +3734,7 @@ openstack flavor list
     <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AController%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（二）：Controller节点部署/</id>
     <published>2018-03-25T14:15:37.000Z</published>
-    <updated>2018-03-25T22:55:20.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="安装Mariadb和RabbitMQ"><a href="#安装Mariadb和RabbitMQ" class="headerlink" title="安装Mariadb和RabbitMQ"></a>安装Mariadb和RabbitMQ</h1><h2 id="搭建Mariadb"><a href="#搭建Mariadb" class="headerlink" title="搭建Mariadb"></a>搭建Mariadb</h2><h3 id="安装mariadb数据库"><a href="#安装mariadb数据库" class="headerlink" title="安装mariadb数据库"></a>安装mariadb数据库</h3><pre><code>yum install -y MariaDB-server MariaDB-client
 </code></pre><h3 id="配置mariadb"><a href="#配置mariadb" class="headerlink" title="配置mariadb"></a>配置mariadb</h3><pre><code>vim /etc/my.cnf.d/mariadb-openstack.cnf
@@ -4173,7 +4194,7 @@ systemctl status httpd.service memcached.service
     <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E7%8E%AF%E5%A2%83%E5%88%9D%E5%A7%8B%E5%8C%96/"/>
     <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（一）：环境初始化/</id>
     <published>2018-03-25T12:36:24.000Z</published>
-    <updated>2018-03-25T14:44:00.000Z</updated>
+    <updated>2018-08-28T08:23:44.539Z</updated>
     
     <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>自己搭建yum，一定要centos7.2源，具体怎么搭建这里略去（在我的cloudstack的系列文章中有提到的）源的下载如下：<br><a href="https://pan.baidu.com/s/1zlHCRwu0AuQx5Dlnc7X8yg" target="_blank" rel="external">百度网盘链接</a>  密码:8odd</p>
 <p>安装CentOS7.2系统（ 最小化安装 ，不要yum update升级到7.3！Ocata版7.3下依然有虚拟机启动出现iPXE启动问题依旧） + 关闭防火墙 + 关闭selinux</p>
@@ -4237,856 +4258,6 @@ systemctl start ntpd
     
     
       <category term="OpenStack O版搭建" scheme="http://yjscloud.site/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Python当歌（十二）面向对象进阶</title>
-    <link href="http://yjscloud.site/2018/03/11/Python%E5%BD%93%E6%AD%8C%EF%BC%88%E5%8D%81%E4%BA%8C%EF%BC%89%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%BF%9B%E9%98%B6/"/>
-    <id>http://yjscloud.site/2018/03/11/Python当歌（十二）面向对象进阶/</id>
-    <published>2018-03-11T11:42:14.000Z</published>
-    <updated>2018-03-11T13:05:06.000Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="isinstance和issubclass"><a href="#isinstance和issubclass" class="headerlink" title="isinstance和issubclass"></a>isinstance和issubclass</h1><p>（1）isinstance() 函数来判断一个对象是否是一个已知的类型，类似 type()。</p>
-<p>isinstance() 与 type() 区别：type() 不会认为子类是一种父类类型，不考虑继承关系。isinstance() 会认为子类是一种父类类型，考虑继承关系。如果要判断两个类型是否相同推荐使用 isinstance()。</p>
-<p>以下是 isinstance() 方法的语法:</p>
-<pre><code>isinstance(object, classinfo)
-        object -- 实例对象。
-        classinfo -- 可以是直接或间接类名、基本类型或者有它们组成的元组。
-</code></pre><p>如果对象的类型与参数二的类型（classinfo）相同则返回 True，否则返回 False。</p>
-<p>例子：</p>
-<pre><code>&gt;&gt;&gt;a = 2
-&gt;&gt;&gt; isinstance (a,int)
-True
-&gt;&gt;&gt; isinstance (a,str)
-False
-&gt;&gt;&gt; isinstance (a,(str,int,list))    # 是元组中的一个返回 True
-True
-</code></pre><p>type() 与 isinstance()区别：</p>
-<pre><code>class A:
-    pass
-
-class B(A):
-    pass
-
-isinstance(A(), A)    # returns True
-type(A()) == A        # returns True
-isinstance(B(), A)    # returns True
-type(B()) == A        # returns False
-</code></pre><p>（2）issubclass() 方法用于判断参数 class 是否是类型参数 classinfo 的子类。</p>
-<p>以下是 issubclass() 方法的语法:</p>
-<pre><code>issubclass(class, classinfo)
-        class -- 类。
-        classinfo -- 类。
-</code></pre><p>如果 class 是 classinfo 的子类返回 True，否则返回 False。</p>
-<p>basestring 函数的实例：</p>
-<pre><code>class A:
-    pass
-class B(A):
-    pass
-
-print(issubclass(B,A))    # 返回 True
-</code></pre><h1 id="反射"><a href="#反射" class="headerlink" title="反射"></a>反射</h1><p>（1）定义：主要指程序可以访问、监测和修改它本身状态或行为的一种能力（自省）。</p>
-<p>（2）python面向对象中的反射：通过字符串的形式操作对象相关的属性。python中的一切事物都是对象（都可以使用反射）</p>
-<p>四个可以实现自省的函数：</p>
-<p>hasattr(obj, attr):这个方法用于检查obj是否有一个名为attr的值的属性，返回一个布尔值。</p>
-<p>getattr(obj, attr):调用这个方法将返回obj中名为attr值的属性的值，例如如果attr为’bar’，则返回obj.bar。</p>
-<p>setattr(obj, attr, val):调用这个方法将给obj的名为attr的值的属性赋值为val。例如如果attr为’bar’，则相当于obj.bar = val。</p>
-<p>delattr(obj, attr)：函数用于删除属性。delattr(x, ‘foobar’) 相等于 del x.foobar。</p>
-<p>四个方法的使用演示：</p>
-<pre><code>class BlackMedium:
-    feature=&apos;Ugly&apos;
-    def __init__(self,name,addr):
-        self.name=name
-        self.addr=addr
-
-    def sell_house(self):
-        print(&apos;%s 黑中介卖房子啦,傻逼才买呢,但是谁能证明自己不傻逼&apos; %self.name)
-    def rent_house(self):
-        print(&apos;%s 黑中介租房子啦,傻逼才租呢&apos; %self.name)
-
-b1=BlackMedium(&apos;万成置地&apos;,&apos;回龙观天露园&apos;)
-
-#检测是否含有某属性
-print(hasattr(b1,&apos;name&apos;))
-print(hasattr(b1,&apos;sell_house&apos;))
-
-#获取属性
-n=getattr(b1,&apos;name&apos;)
-print(n)
-func=getattr(b1,&apos;rent_house&apos;)
-func()
-
-# getattr(b1,&apos;aaaaaaaa&apos;) #报错
-print(getattr(b1,&apos;aaaaaaaa&apos;,&apos;不存在啊&apos;))
-
-#设置属性
-setattr(b1,&apos;sb&apos;,True)
-setattr(b1,&apos;show_name&apos;,lambda self:self.name+&apos;sb&apos;)
-print(b1.__dict__)
-print(b1.show_name(b1))
-
-#删除属性
-delattr(b1,&apos;addr&apos;)
-delattr(b1,&apos;show_name&apos;)
-delattr(b1,&apos;show_name111&apos;)#不存在,则报错
-
-print(b1.__dict__)
-</code></pre><p>类也是对象：</p>
-<pre><code>class Foo(object):
-    staticField = &quot;old boy&quot;
-
-    def __init__(self):
-        self.name = &apos;wupeiqi&apos;
-
-    def func(self):
-        return &apos;func&apos;
-
-    @staticmethod
-    def bar():
-        return &apos;bar&apos;
-
-
-print(getattr(Foo, &apos;staticField&apos;))
-print(getattr(Foo, &apos;func&apos;))
-print(getattr(Foo, &apos;bar&apos;))
-</code></pre><p>反射当前模块属性：</p>
-<pre><code>import sys
-
-def s1():
-    print(&apos;s1&apos;)
-
-
-def s2():
-    print(&apos;s2&apos;)
-
-
-this_module = sys.modules[__name__]
-
-print(hasattr(this_module, &apos;s1&apos;))
-print(getattr(this_module, &apos;s2&apos;))
-</code></pre><p>导入其他模块，利用反射查找该模块是否存在某个方法<br>module_test.py文件：</p>
-<pre><code># -*- coding:utf-8 -*-
-
-def test():
-print(&apos;from the test&apos;)
-</code></pre><p>index.py文件：</p>
-<pre><code># -*- coding:utf-8 -*-
-</code></pre><p>程序目录：</p>
-<pre><code>module_test.py
-index.py
-</code></pre><p>当前文件：</p>
-<p>index.py</p>
-<pre><code>import module_test as obj
-
-#obj.test()
-
-print(hasattr(obj,&apos;test&apos;))
-
-getattr(obj,&apos;test&apos;)()
-</code></pre><p>（3）用反射的好处</p>
-<p>好处一：实现可插拔机制</p>
-<p>服务端编写的程序由于什么情况中断没有继续编写，客户端那边需要用到服务端的类，这是客户端可以使用反射机制继续完成自己的代码，等服务端回来后再继续完成类的定义并去实现客户端想要的功能。<br>总之反射的好处就是，可以事先定义好接口，接口只有在被完成后才会真正执行，这实现了即插即用，这其实是一种‘后期绑定’，什么意思？即你可以事先把主要的逻辑写好（只定义接口），然后后期再去实现接口的功能。</p>
-<p>服务端还未实现的全部功能：</p>
-<pre><code>class FtpClient:
-    &apos;ftp客户端,但是还么有实现具体的功能&apos;
-    def __init__(self,addr):
-        print(&apos;正在连接服务器[%s]&apos; %addr)
-        self.addr=addr
-</code></pre><p>不影响客户端的代码编写：</p>
-<pre><code>#from module import FtpClient
-f1=FtpClient(&apos;192.168.1.1&apos;)
-if hasattr(f1,&apos;get&apos;):
-    func_get=getattr(f1,&apos;get&apos;)
-    func_get()
-else:
-    print(&apos;----&gt;不存在此方法&apos;)
-print(&apos;处理其他的逻辑&apos;)
-</code></pre><p>好处二：动态导入模块（基于反射当前模块成员）</p>
-<p><img src="http://opnq5yeqm.bkt.clouddn.com/12-1.png" alt="12-1"></p>
-<h1 id="setattr-delattr-getattr"><a href="#setattr-delattr-getattr" class="headerlink" title="__setattr__,__delattr__,__getattr__"></a>__setattr__,__delattr__,__getattr__</h1><pre><code>class Foo:
-    x=1
-    def __init__(self,y):
-        self.y=y
-
-    def __getattr__(self, item):
-        print(&apos;----&gt; from getattr:你找的属性不存在&apos;)
-
-
-    def __setattr__(self, key, value):
-        print(&apos;----&gt; from setattr&apos;)
-        # self.key=value #这就无限递归了,你好好想想
-        # self.__dict__[key]=value #应该使用它
-
-    def __delattr__(self, item):
-        print(&apos;----&gt; from delattr&apos;)
-        # del self.item #无限递归了
-        self.__dict__.pop(item)
-
-#__setattr__添加/修改属性会触发它的执行
-f1=Foo(10)
-print(f1.__dict__) # 因为你重写了__setattr__,凡是赋值操作都会触发它的运行,你啥都没写,就是根本没赋值,除非你直接操作属性字典,否则永远无法赋值
-f1.z=3
-print(f1.__dict__)
-
-#__delattr__删除属性的时候会触发
-f1.__dict__[&apos;a&apos;]=3#我们可以直接修改属性字典,来完成添加/修改属性的操作
-del f1.a
-print(f1.__dict__)
-
-#__getattr__只有在使用点调用属性且属性不存在的时候才会触发
-f1.xxxxxx
-</code></pre><h1 id="二次加工标准类型-包装"><a href="#二次加工标准类型-包装" class="headerlink" title="二次加工标准类型(包装)"></a>二次加工标准类型(包装)</h1><p>包装：python为大家提供了标准数据类型，以及丰富的内置方法，其实在很多场景下我们都需要基于标准数据类型来定制我们自己的数据类型，新增/改写方法，这就用到了继承/派生知识（其他的标准类型均可以通过下面的方式进行二次加工）</p>
-<p>二次加工标准类型(基于继承实现)：</p>
-<pre><code>class List(list): #继承list所有的属性，也可以派生出自己新的，比如append和mid
-    def append(self, p_object):
-        &apos; 派生自己的append：加上类型检查&apos;
-        if not isinstance(p_object,int):
-            raise TypeError(&apos;must be int&apos;)
-        super().append(p_object)
-
-    @property
-    def mid(self):
-        &apos;新增自己的属性&apos;
-        index=len(self)//2
-        return self[index]
-
-l=List([1,2,3,4])
-print(l)
-l.append(5)
-print(l)
-# l.append(&apos;1111111&apos;) #报错，必须为int类型
-
-print(l.mid)
-
-#其余的方法都继承list的
-l.insert(0,-123)
-print(l)
-l.clear()
-print(l)
-</code></pre><p>授权：授权是包装的一个特性, 包装一个类型通常是对已存在的类型的一些定制,这种做法可以新建,修改或删除原有产品的功能。其它的则保持原样。授权的过程,即是所有更新的功能都是由新类的某部分来处理,但已存在的功能就授权给对象的默认属性。</p>
-<p>实现授权的关键点就是覆盖<strong>getattr</strong>方法</p>
-<p>授权示范一：</p>
-<pre><code>import time
-class FileHandle:
-    def __init__(self,filename,mode=&apos;r&apos;,encoding=&apos;utf-8&apos;):
-        self.file=open(filename,mode,encoding=encoding)
-    def write(self,line):
-        t=time.strftime(&apos;%Y-%m-%d %T&apos;)
-        self.file.write(&apos;%s %s&apos; %(t,line))
-
-    def __getattr__(self, item):
-        return getattr(self.file,item)
-
-f1=FileHandle(&apos;b.txt&apos;,&apos;w+&apos;)
-f1.write(&apos;你好啊&apos;)
-f1.seek(0)
-print(f1.read())
-f1.close()
-</code></pre><p>授权示范二</p>
-<pre><code>#我们来加上b模式支持
-import time
-class FileHandle:
-    def __init__(self,filename,mode=&apos;r&apos;,encoding=&apos;utf-8&apos;):
-        if &apos;b&apos; in mode:
-            self.file=open(filename,mode)
-        else:
-            self.file=open(filename,mode,encoding=encoding)
-        self.filename=filename
-        self.mode=mode
-        self.encoding=encoding
-
-    def write(self,line):
-        if &apos;b&apos; in self.mode:
-            if not isinstance(line,bytes):
-                raise TypeError(&apos;must be bytes&apos;)
-        self.file.write(line)
-
-    def __getattr__(self, item):
-        return getattr(self.file,item)
-
-    def __str__(self):
-        if &apos;b&apos; in self.mode:
-            res=&quot;&lt;_io.BufferedReader name=&apos;%s&apos;&gt;&quot; %self.filename
-        else:
-            res=&quot;&lt;_io.TextIOWrapper name=&apos;%s&apos; mode=&apos;%s&apos; encoding=&apos;%s&apos;&gt;&quot; %(self.filename,self.mode,self.encoding)
-        return res
-f1=FileHandle(&apos;b.txt&apos;,&apos;wb&apos;)
-# f1.write(&apos;你好啊啊啊啊啊&apos;) #自定制的write,不用在进行encode转成二进制去写了,简单,大气
-f1.write(&apos;你好啊&apos;.encode(&apos;utf-8&apos;))
-print(f1)
-f1.close()
-
-练习题（授权）
-class List:
-    def __init__(self,seq,permission=False):
-        self.seq=seq
-        self.permission=permission
-    def clear(self):
-        if not self.permission:
-            raise PermissionError(&apos;not allow the operation&apos;)
-        self.seq.clear()
-
-    def __getattr__(self, item):
-        return getattr(self.seq,item)
-
-    def __str__(self):
-        return str(self.seq)
-l=List([1,2,3])
-# l.clear() #此时没有权限，抛出异常
-
-l.permission=True
-print(l)
-l.clear()
-print(l)
-
-#基于授权，获得insert方法
-l.insert(0,-123)
-print(l)
-</code></pre><h1 id="getattribute"><a href="#getattribute" class="headerlink" title="__getattribute__"></a>__getattribute__</h1><p>（1）回顾<strong>getattr</strong></p>
-<pre><code>class Foo:
-    def __init__(self,x):
-        self.x=x
-
-    def __getattr__(self, item):
-        print(&apos;执行的是我&apos;)
-        # return self.__dict__[item]
-
-f1=Foo(10)
-print(f1.x)
-f1.xxxxxx #不存在的属性访问，触发__getattr__
-</code></pre><p>（2）<strong>getattribute</strong></p>
-<pre><code>class Foo:
-    def __init__(self,x):
-        self.x=x
-
-    def __getattribute__(self, item):
-        print(&apos;不管是否存在,我都会执行&apos;)
-
-f1=Foo(10)
-f1.x
-f1.xxxxxx
-</code></pre><p>（3）二者同时出现</p>
-<pre><code>#_*_coding:utf-8_*_
-
-class Foo:
-    def __init__(self,x):
-        self.x=x
-
-    def __getattr__(self, item):
-        print(&apos;执行的是我&apos;)
-        # return self.__dict__[item]
-    def __getattribute__(self, item):
-        print(&apos;不管是否存在,我都会执行&apos;)
-        raise AttributeError(&apos;哈哈&apos;)
-
-f1=Foo(10)
-f1.x
-f1.xxxxxx
-
-#当__getattribute__与__getattr__同时存在,只会执行__getattrbute__,除非__getattribute__在执行过程中抛出异常AttributeError
-</code></pre><h1 id="setitem-getitem-delitem"><a href="#setitem-getitem-delitem" class="headerlink" title="__setitem__,__getitem__,__delitem__"></a>__setitem__,__getitem__,__delitem__</h1><p><code>__setitem__(self,key,value)</code>：设置给定键的值<br><code>__getitem__(self,key)</code>:返回键对应的值。<br><code>__delitem__(self,key)</code>:删除给定键对应的元素。</p>
-<p>例子：</p>
-<pre><code>class Foo(object):
-    def __getitem__(self, key):
-        print(&apos;__getitem__&apos;, key)
-
-    def __setitem__(self, key, value):
-        print(&apos;__setitem__&apos;, key, value)
-
-    def __delitem__(self, key):
-        print(&apos;__delitem__&apos;, key)
-
-
-obj = Foo()
-
-result = obj[&apos;k1&apos;]  # 自动触发执行 __getitem__
-obj[&apos;k2&apos;] = &apos;Pan&apos;  # 自动触发执行 __setitem__
-del obj[&apos;k1&apos;]  # 自动触发执行 __delitem__
-</code></pre><h1 id="str-repr-format"><a href="#str-repr-format" class="headerlink" title="__str__,__repr__,__format__"></a>__str__,__repr__,__format__</h1><p>改变对象的字符串显示<code>__str__</code>,<code>__repr__</code></p>
-<p>自定制格式化字符串<code>__format__</code></p>
-<p>例子：</p>
-<pre><code>format_dict={
-    &apos;nat&apos;:&apos;{obj.name}-{obj.addr}-{obj.type}&apos;,#学校名-学校地址-学校类型
-    &apos;tna&apos;:&apos;{obj.type}:{obj.name}:{obj.addr}&apos;,#学校类型:学校名:学校地址
-    &apos;tan&apos;:&apos;{obj.type}/{obj.addr}/{obj.name}&apos;,#学校类型/学校地址/学校名
-}
-class School:
-    def __init__(self,name,addr,type):
-        self.name=name
-        self.addr=addr
-        self.type=type
-
-    def __repr__(self):
-        return &apos;School(%s,%s)&apos; %(self.name,self.addr)
-    def __str__(self):
-        return &apos;(%s,%s)&apos; %(self.name,self.addr)
-
-    def __format__(self, format_spec):
-        # if format_spec
-        if not format_spec or format_spec not in format_dict:
-            format_spec=&apos;nat&apos;
-        fmt=format_dict[format_spec]
-        return fmt.format(obj=self)
-
-s1=School(&apos;oldboy1&apos;,&apos;北京&apos;,&apos;私立&apos;)
-print(&apos;from repr: &apos;,repr(s1))
-print(&apos;from str: &apos;,str(s1))
-print(s1)
-</code></pre><p>str函数或者print函数—&gt;<code>obj.__str__()</code></p>
-<p>repr或者交互式解释器—&gt;<code>obj.__repr__()</code></p>
-<p>如果<strong>str</strong>没有被定义,那么就会使用<strong>repr</strong>来代替输出</p>
-<p>注意:这俩方法的返回值必须是字符串,否则抛出异常</p>
-<pre><code>print(format(s1,&apos;nat&apos;))
-print(format(s1,&apos;tna&apos;))
-print(format(s1,&apos;tan&apos;))
-print(format(s1,&apos;asfdasdffd&apos;))
-</code></pre><h1 id="slots"><a href="#slots" class="headerlink" title="__slots__"></a>__slots__</h1><p>（1）<strong>slots</strong>是什么:是一个类变量,变量值可以是列表,元祖,或者可迭代对象,也可以是一个字符串(意味着所有实例只有一个数据属性)</p>
-<p>（2）    引子:使用点来访问属性本质就是在访问类或者对象的<strong>dict</strong>属性字典(类的字典是共享的,而每个实例的是独立的)</p>
-<p>（3）为何使用<strong>slots</strong>:字典会占用大量内存,如果你有一个属性很少的类,但是有很多实例,为了节省内存可以使用<strong>slots</strong>取代实例的<strong>dict</strong>。<br>当你定义<strong>slots</strong>后,<strong>slots</strong>就会为实例使用一种更加紧凑的内部表示。实例通过一个很小的固定大小的数组来构建,而不是为每个实例定义一个。<br>字典,这跟元组或列表很类似。在<strong>slots</strong>中列出的属性名在内部被映射到这个数组的指定小标上。使用<strong>slots</strong>一个不好的地方就是我们不能再给。<br>实例添加新的属性了,只能使用在<strong>slots</strong>中定义的那些属性名。</p>
-<p>（4）注意事项:<strong>slots</strong>的很多特性都依赖于普通的基于字典的实现。另外,定义了<strong>slots</strong>后的类不再支持一些普通类特性了,比如多继承。大多数情况下,你应该。<br>只在那些经常被使用到的用作数据结构的类上定义<strong>slots</strong>比如在程序中需要创建某个类的几百万个实例对象。<br>关于<strong>slots</strong>的一个常见误区是它可以作为一个封装工具来防止用户给实例增加新的属性。尽管使用<strong>slots</strong>可以达到这样的目的,但是这个并不是它的初衷。           更多的是用来作为一个内存优化工具。</p>
-<p>例一：</p>
-<pre><code>class Foo:
-    __slots__=&apos;x&apos;
-
-f1=Foo()
-f1.x=1
-f1.y=2#报错
-print(f1.__slots__) #f1不再有__dict__
-
-class Bar:
-    __slots__=[&apos;x&apos;,&apos;y&apos;]
-
-n=Bar()
-n.x,n.y=1,2
-n.z=3#报错
-</code></pre><p>例二：</p>
-<pre><code>class Foo:
-    __slots__=[&apos;name&apos;,&apos;age&apos;]
-
-f1=Foo()
-f1.name=&apos;alex&apos;
-f1.age=18
-print(f1.__slots__)
-
-f2=Foo()
-f2.name=&apos;egon&apos;
-f2.age=19
-print(f2.__slots__)
-
-print(Foo.__dict__)
-#f1与f2都没有属性字典__dict__了,统一归__slots__管,节省内存
-</code></pre><h1 id="next-和-iter-实现迭代器协议"><a href="#next-和-iter-实现迭代器协议" class="headerlink" title="__next__和__iter__实现迭代器协议"></a>__next__和__iter__实现迭代器协议</h1><p>（1）简单实现：</p>
-<pre><code>class Foo:
-    def __init__(self,x):
-        self.x=x
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        n=self.x
-        self.x+=1
-        return self.x
-
-f=Foo(3)
-for i in f:
-print(i)
-</code></pre><p>（2）简单模拟range，加上步长：</p>
-<pre><code>class Range:
-    def __init__(self,n,stop,step):
-        self.n=n
-        self.stop=stop
-        self.step=step
-
-    def __next__(self):
-        if self.n &gt;= self.stop:
-            raise StopIteration
-        x=self.n
-        self.n+=self.step
-        return x
-
-    def __iter__(self):
-        return self
-
-for i in Range(1,7,3): #
-print(i)
-</code></pre><p>（3）斐波那契数列</p>
-<pre><code>class Fib:
-    def __init__(self):
-        self._a=0
-        self._b=1
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        self._a,self._b=self._b,self._a + self._b
-        return self._a
-
-f1=Fib()
-
-print(f1.__next__())
-print(next(f1))
-print(next(f1))
-
-for i in f1:
-    if i &gt; 100:
-        break
-print(&apos;%s &apos; %i,end=&apos;&apos;)
-</code></pre><h1 id="doc"><a href="#doc" class="headerlink" title="__doc__"></a>__doc__</h1><p><strong>doc</strong>是类的描述信息</p>
-<pre><code>class Foo:
-    &apos;我是描述信息&apos;
-    pass
-
-print(Foo.__doc__)
-
-该属性无法继承给子类
-class Foo:
-    &apos;我是描述信息&apos;
-    pass
-
-class Bar(Foo):
-    pass
-print(Bar.__doc__) #该属性无法继承给子类
-</code></pre><h1 id="module-和-class"><a href="#module-和-class" class="headerlink" title="__module__和__class__"></a>__module__和__class__</h1><p><code>__module__</code> 表示当前操作的对象在那个模块</p>
-<p><code>__class__</code>   表示当前操作的对象的类是什么</p>
-<pre><code>class C:
-
-    def __init__(self):
-        self.name = ‘SB&apos;
-
-from lib.aa import C
-
-obj = C()
-print obj.__module__  # 输出 lib.aa，即：输出模块
-print obj.__class__      # 输出 lib.aa.C，即：输出类
-</code></pre><h1 id="del"><a href="#del" class="headerlink" title="__del__"></a>__del__</h1><p>析构方法，当对象在内存中被释放时，自动触发执行。</p>
-<p>注：此方法一般无须定义，因为Python是一门高级语言，程序员在使用时无需关心内存的分配和释放，因为此工作都是交给Python解释器来执行，所以，析构函数的调用是由解释器在进行垃圾回收时自动触发执行的。</p>
-<pre><code>class Foo:
-
-    def __del__(self):
-        pass
-</code></pre><h1 id="enter-和-exit"><a href="#enter-和-exit" class="headerlink" title="__enter__和__exit__"></a>__enter__和__exit__</h1><p>我们知道在操作文件对象的时候可以这么写</p>
-<pre><code>with open(&apos;a.txt&apos;) as f:
-    &apos;代码块&apos;
-</code></pre><p>上述叫做上下文管理协议，即with语句，为了让一个对象兼容with语句，必须在这个对象的类中声明<strong>enter</strong>和<strong>exit</strong>方法</p>
-<pre><code>class Open:
-    def __init__(self,name):
-        self.name=name
-
-    def __enter__(self):
-        print(&apos;出现with语句,对象的__enter__被触发,有返回值则赋值给as声明的变量&apos;)
-        # return self
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        print(&apos;with中代码块执行完毕时执行我啊&apos;)
-
-
-with Open(&apos;a.txt&apos;) as f:
-    print(&apos;=====&gt;执行代码块&apos;)
-# print(f,f.name)
-</code></pre><p><code>__exit__</code>()中的三个参数分别代表异常类型，异常值和追溯信息,with语句中代码块出现异常，则with后的代码都无法执行</p>
-<pre><code>class Open:
-    def __init__(self,name):
-        self.name=name
-
-    def __enter__(self):
-        print(&apos;出现with语句,对象的__enter__被触发,有返回值则赋值给as声明的变量&apos;)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        print(&apos;with中代码块执行完毕时执行我啊&apos;)
-        print(exc_type)
-        print(exc_val)
-        print(exc_tb)
-
-
-
-with Open(&apos;a.txt&apos;) as f:
-    print(&apos;=====&gt;执行代码块&apos;)
-    raise AttributeError(&apos;***着火啦,救火啊***&apos;)
-print(&apos;0&apos;*100) #-------------------------------&gt;不会执行
-</code></pre><p>如果__exit()返回值为True,那么异常会被清空，就好像啥都没发生一样，with后的语句正常执行</p>
-<pre><code>class Open:
-    def __init__(self,name):
-        self.name=name
-
-    def __enter__(self):
-        print(&apos;出现with语句,对象的__enter__被触发,有返回值则赋值给as声明的变量&apos;)
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        print(&apos;with中代码块执行完毕时执行我啊&apos;)
-        print(exc_type)
-        print(exc_val)
-        print(exc_tb)
-        return True
-
-with Open(&apos;a.txt&apos;) as f:
-    print(&apos;=====&gt;执行代码块&apos;)
-    raise AttributeError(&apos;***着火啦,救火啊***&apos;)
-print(&apos;0&apos;*100) #-------------------------------&gt;会执行
-</code></pre><p>模拟Open：</p>
-<pre><code>class Open:
-    def __init__(self,filepath,mode=&apos;r&apos;,encoding=&apos;utf-8&apos;):
-        self.filepath=filepath
-        self.mode=mode
-        self.encoding=encoding
-
-    def __enter__(self):
-        # print(&apos;enter&apos;)
-        self.f=open(self.filepath,mode=self.mode,encoding=self.encoding)
-        return self.f
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        # print(&apos;exit&apos;)
-        self.f.close()
-        return True 
-    def __getattr__(self, item):
-        return getattr(self.f,item)
-
-with Open(&apos;a.txt&apos;,&apos;w&apos;) as f:
-    print(f)
-    f.write(&apos;aaaaaa&apos;)
-f.wasdf #抛出异常，交给__exit__处理
-</code></pre><p>用途或者说好处：</p>
-<p>1.使用with语句的目的就是把代码块放入with中执行，with结束后，自动完成清理工作，无须手动干预</p>
-<p>2.在需要管理一些资源比如文件，网络连接和锁的编程环境中，可以在<strong>exit</strong>中定制自动释放资源的机制，你无须再去关系这个问题，这将大有用处</p>
-<h1 id="call"><a href="#call" class="headerlink" title="__call__"></a>__call__</h1><p>对象后面加括号，触发执行。</p>
-<p>注：构造方法的执行是由创建对象触发的，即：对象 = 类名() ；而对于 <strong>call</strong> 方法的执行是由对象后加括号触发的，即：对象() 或者 类()()</p>
-<pre><code>class Foo:
-
-    def __init__(self):
-        pass
-
-    def __call__(self, *args, **kwargs):
-
-        print(&apos;__call__&apos;)
-
-
-obj = Foo() # 执行 __init__
-obj()       # 执行 __call__
-</code></pre><h1 id="描述符-get-set-delete"><a href="#描述符-get-set-delete" class="headerlink" title="描述符(__get__,__set__,__delete__)"></a>描述符(__get__,__set__,__delete__)</h1><p>１）描述符是什么:描述符本质就是一个新式类,在这个新式类中,至少实现了</p>
-<pre><code>__get__(),__set__(),__delete__()中的一个,这也被称为描述符协议。
-__get__():调用一个属性时,触发
-__set__():为一个属性赋值时,触发
-__delete__():采用del删除属性时,触发
-</code></pre><p>定义一个描述符</p>
-<pre><code>class Foo: #在python3中Foo是新式类,它实现了三种方法,这个类就被称作一个描述符
-    def __get__(self, instance, owner):
-        pass
-    def __set__(self, instance, value):
-        pass
-    def __delete__(self, instance):
-        pass
-</code></pre><p>2)描述符是干什么的:描述符的作用是用来代理另外一个类的属性的(必须把描述符定义成这个类的类属性，不能定义到构造函数中)</p>
-<p>引子:描述符类产生的实例进行属性操作并不会触发三个方法的执行</p>
-<pre><code>class Foo:
-    def __get__(self, instance, owner):
-        print(&apos;触发get&apos;)
-    def __set__(self, instance, value):
-        print(&apos;触发set&apos;)
-    def __delete__(self, instance):
-        print(&apos;触发delete&apos;)
-
-#包含这三个方法的新式类称为描述符,由这个类产生的实例进行属性的调用/赋值/删除,并不会触发这三个方法
-f1=Foo()
-f1.name=&apos;egon&apos;
-f1.name
-del f1.name
-#疑问:何时,何地,会触发这三个方法的执行
-
-描述符应用之何时?何地?
-#描述符Str
-class Str:
-    def __get__(self, instance, owner):
-        print(&apos;Str调用&apos;)
-    def __set__(self, instance, value):
-        print(&apos;Str设置...&apos;)
-    def __delete__(self, instance):
-        print(&apos;Str删除...&apos;)
-
-#描述符Int
-class Int:
-    def __get__(self, instance, owner):
-        print(&apos;Int调用&apos;)
-    def __set__(self, instance, value):
-        print(&apos;Int设置...&apos;)
-    def __delete__(self, instance):
-        print(&apos;Int删除...&apos;)
-
-class People:
-    name=Str()
-    age=Int()
-    def __init__(self,name,age): #name被Str类代理,age被Int类代理,
-        self.name=name
-        self.age=age
-
-#何地？：定义成另外一个类的类属性
-
-#何时？：且看下列演示
-
-p1=People(&apos;alex&apos;,18)
-
-#描述符Str的使用
-p1.name
-p1.name=&apos;egon&apos;
-del p1.name
-
-#描述符Int的使用
-p1.age
-p1.age=18
-del p1.age
-
-#我们来瞅瞅到底发生了什么
-print(p1.__dict__)
-print(People.__dict__)
-
-#补充
-print(type(p1) == People) #type(obj)其实是查看obj是由哪个类实例化来的
-print(type(p1).__dict__ == People.__dict__)
-</code></pre><p>3)描述符分为两种</p>
-<p>（1）数据描述符:至少实现了<code>__get__()</code>和<code>__set__()</code></p>
-<pre><code>class Foo:
-     def __set__(self, instance, value):
-         print(&apos;set&apos;)
-     def __get__(self, instance, owner):
-        print(&apos;get&apos;)
-</code></pre><p>（2）非数据描述符:没有实现<code>__set__()</code></p>
-<pre><code>class Foo:
-     def __get__(self, instance, owner):
-         print(&apos;get&apos;)
-</code></pre><p>4）注意事项:</p>
-<p>一） 描述符本身应该定义成新式类,被代理的类也应该是新式类</p>
-<p>二 ）必须把描述符定义成这个类的类属性，不能为定义到构造函数中</p>
-<p>三 ）要严格遵循该优先级,优先级由高到底分别是</p>
-<p>1.类属性</p>
-<p>2.数据描述符</p>
-<p>3.实例属性</p>
-<p>4.非数据描述符</p>
-<p>5.找不到的属性触发<strong>getattr</strong>()</p>
-<p>5）描述符总结</p>
-<p>描述符是可以实现大部分python类特性中的底层魔法,包括@classmethod,@staticmethd,@property甚至是<strong>slots</strong>属性。<br>描述父是很多高级库和框架的重要工具之一,描述符通常是使用到装饰器或者元类的大型框架中的一个组件.</p>
-<p>6）利用描述符原理完成一个自定制@property,实现延迟计算（本质就是把一个函数属性利用装饰器原理做成一个描述符：类的属性字典中函数名为key，value为描述符类产生的对象）</p>
-<p>@property回顾</p>
-<pre><code>class Room:
-    def __init__(self,name,width,length):
-        self.name=name
-        self.width=width
-        self.length=length
-
-    @property
-    def area(self):
-        return self.width * self.length
-
-r1=Room(&apos;alex&apos;,1,1)
-print(r1.area)
-</code></pre><p>自己做一个@property</p>
-<pre><code>class Lazyproperty:
-    def __init__(self,func):
-        self.func=func
-    def __get__(self, instance, owner):
-        print(&apos;这是我们自己定制的静态属性,r1.area实际是要执行r1.area()&apos;)
-        if instance is None:
-            return self
-        return self.func(instance) #此时你应该明白,到底是谁在为你做自动传递self的事情
-
-class Room:
-    def __init__(self,name,width,length):
-        self.name=name
-        self.width=width
-        self.length=length
-
-    @Lazyproperty #area=Lazyproperty(area) 相当于定义了一个类属性,即描述符
-    def area(self):
-        return self.width * self.length
-
-r1=Room(&apos;alex&apos;,1,1)
-print(r1.area)
-</code></pre><h1 id="元类metaclass"><a href="#元类metaclass" class="headerlink" title="元类metaclass"></a>元类metaclass</h1><p>1）引子</p>
-<pre><code>class Foo:
-    pass
-
-f1=Foo() #f1是通过Foo类实例化的对象
-</code></pre><p>python中一切皆是对象，类本身也是一个对象，当使用关键字class的时候，python解释器在加载class的时候就会创建一个对象(这里的对象指的是类而非类的实例)。<br>上例可以看出f1是由Foo这个类产生的对象，而Foo本身也是对象，那它又是由哪个类产生的呢？</p>
-<pre><code>#type函数可以查看类型，也可以用来查看对象的类，二者是一样的
-print(type(f1)) # 输出：&lt;class &apos;__main__.Foo&apos;&gt;     表示，obj 对象由Foo类创建
-print(type(Foo)) # 输出：&lt;type &apos;type&apos;&gt;
-</code></pre><p>2）什么是元类？</p>
-<p>元类是类的类，是类的模板</p>
-<p>元类是用来控制如何创建类的，正如类是创建对象的模板一样</p>
-<p>元类的实例为类，正如类的实例为对象(f1对象是Foo类的一个实例，Foo类是 type 类的一个实例)</p>
-<p>type是python的一个内建元类，用来直接控制生成类，python中任何class定义的类其实都是type类实例化的对象。</p>
-<p>3）创建类的两种方式</p>
-<p>方式一：</p>
-<pre><code>class Foo:
-    def func(self):
-        print(&apos;from func&apos;)
-</code></pre><p>方式二：</p>
-<pre><code>def func(self):
-    print(&apos;from func&apos;)
-x=1
-Foo=type(&apos;Foo&apos;,(object,),{&apos;func&apos;:func,&apos;x&apos;:1})
-</code></pre><p>4）一个类没有声明自己的元类，默认他的元类就是type，除了使用元类type，用户也可以通过继承type来自定义元类（顺便我们也可以瞅一瞅元类如何控制类的创建，工作流程是什么）</p>
-<pre><code>class Mytype(type):
-    def __init__(self,what,bases=None,dict=None):
-        print(what,bases,dict)
-
-    def __call__(self, *args, **kwargs):
-        print(&apos;---&gt;&apos;)
-        obj=object.__new__(self)
-        self.__init__(obj,*args,**kwargs)
-        return obj
-class Room(metaclass=Mytype):
-    def __init__(self,name):
-        self.name=name
-
-r1=Room(&apos;alex&apos;)
-print(r1.__dict__)
-</code></pre><p>5）元类总结</p>
-<pre><code>class Mymeta(type):
-    def __init__(self,name,bases,dic):
-        print(&apos;===&gt;Mymeta.__init__&apos;)
-
-    def __new__(cls, *args, **kwargs):
-        print(&apos;===&gt;Mymeta.__new__&apos;)
-        return type.__new__(cls,*args,**kwargs)
-
-    def __call__(self, *args, **kwargs):
-        print(&apos;aaa&apos;)
-        obj=self.__new__(self)
-        self.__init__(self,*args,**kwargs)
-        return obj
-
-class Foo(object,metaclass=Mymeta):
-    def __init__(self,name):
-        self.name=name
-    def __new__(cls, *args, **kwargs):
-        return object.__new__(cls)
-</code></pre><p>需要记住一点:名字加括号的本质(即,任何name()的形式),都是先找到name的爹,然后执行:爹.<strong>call</strong></p>
-<p>而爹.<strong>call</strong>一般做两件事:</p>
-<p>1.调用name.<strong>new</strong>方法并返回一个对象</p>
-<p>2.进而调用name.<strong>init</strong>方法对儿子name进行初始化<br>class 定义Foo,并指定元类为Mymeta,这就相当于要用Mymeta创建一个新的对象Foo,于是相当于执行Foo=Mymeta(‘foo’,(…),{…})因此我们可以看到,只定义class就会有如下执行效果</p>
-<p>===&gt;Mymeta.<strong>new</strong></p>
-<p>===&gt;Mymeta.<strong>init</strong></p>
-<p>实际上class Foo(metaclass=Mymeta)是触发了Foo=Mymeta(‘Foo’,(…),{…})操作,遇到了名字加括号的形式,即Mymeta(…),于是就去找Mymeta的爹type,然后执<code>type.__call__(...)</code>方法，于是触发Mymeta.<strong>new</strong>方法得到一个具体的对象,然后触发Mymeta.<strong>init</strong>方法对对象进行初始化obj=Foo(‘egon’)的原理同上</p>
-<p>总结:元类的难点在于执行顺序很绕,其实我们只需要记住两点就可以了</p>
-<p>1.谁后面跟括号,就从谁的爹中找<strong>call</strong>方法执行</p>
-<p>type-&gt;Mymeta-&gt;Foo-&gt;obj</p>
-<p>Mymeta()触发type.<strong>call</strong></p>
-<p>Foo()触发Mymeta.<strong>call</strong></p>
-<p>obj()触发Foo.<strong>call</strong></p>
-<p>2.<strong>call</strong>内按先后顺序依次调用儿子的<strong>new</strong>和<strong>init</strong>方法</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;isinstance和issubclass&quot;&gt;&lt;a href=&quot;#isinstance和issubclass&quot; class=&quot;headerlink&quot; title=&quot;isinstance和issubclass&quot;&gt;&lt;/a&gt;isinstance和issubclass&lt;/
-    
-    </summary>
-    
-      <category term="学习笔记" scheme="http://yjscloud.site/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="Python学习笔记" scheme="http://yjscloud.site/tags/Python%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
     
   </entry>
   

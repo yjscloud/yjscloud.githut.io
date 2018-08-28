@@ -105,7 +105,7 @@
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/err-4.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/err-5.png">
 <meta property="og:image" content="http://oxysobnip.bkt.clouddn.com/err-6.png">
-<meta property="og:updated_time" content="2018-05-17T15:45:30.000Z">
+<meta property="og:updated_time" content="2018-08-28T08:23:44.543Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OpenStack排错（一）：Cinder僵尸卷删除">
 <meta name="twitter:description" content="处理报错的大致思路(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted； (2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程； (3)应用命令lvremove来删除相应">
@@ -691,7 +691,7 @@ kill -9 76568
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">65</span>
+                <span class="site-state-item-count">66</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
