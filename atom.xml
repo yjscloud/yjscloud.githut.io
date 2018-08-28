@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.site/"/>
-  <updated>2018-08-28T09:19:14.014Z</updated>
+  <updated>2018-08-28T16:41:21.263Z</updated>
   <id>http://yjscloud.site/</id>
   
   <author>
@@ -20,16 +20,18 @@
     <link href="http://yjscloud.site/2018/08/28/hello-yjscloud/"/>
     <id>http://yjscloud.site/2018/08/28/hello-yjscloud/</id>
     <published>2018-08-28T08:49:01.000Z</published>
-    <updated>2018-08-28T09:19:14.014Z</updated>
+    <updated>2018-08-28T16:41:21.263Z</updated>
     
-    <content type="html"><![CDATA[<p>test<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="built_in">test</span></div></pre></td></tr></table></figure></p>
+    <content type="html"><![CDATA[<p>test<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">**测试数据**</span></div><div class="line"></div><div class="line"><span class="keyword">test</span></div></pre></td></tr></table></figure></p>
 <p>test<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">test</span></div></pre></td></tr></table></figure></p>
-<p>test<del>~</del>~~</p>
+<p>test~~~~</p>
+<p>附加内容～测试～</p>
+<p><strong>博客迁移测试内容</strong></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;test&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td cl
+      &lt;p&gt;test&lt;figure class=&quot;highlight stata&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line
     
     </summary>
     
