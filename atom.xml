@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.site/"/>
-  <updated>2018-08-28T16:41:21.263Z</updated>
+  <updated>2018-08-29T02:38:59.958Z</updated>
   <id>http://yjscloud.site/</id>
   
   <author>
@@ -16,25 +16,62 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>hello yjscloud</title>
-    <link href="http://yjscloud.site/2018/08/28/hello-yjscloud/"/>
-    <id>http://yjscloud.site/2018/08/28/hello-yjscloud/</id>
+    <title>hexo博客迁移步骤</title>
+    <link href="http://yjscloud.site/2018/08/28/hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E6%AD%A5%E9%AA%A4/"/>
+    <id>http://yjscloud.site/2018/08/28/hexo博客迁移步骤/</id>
     <published>2018-08-28T08:49:01.000Z</published>
-    <updated>2018-08-28T16:41:21.263Z</updated>
+    <updated>2018-08-29T02:38:59.958Z</updated>
     
-    <content type="html"><![CDATA[<p>test<figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment">**测试数据**</span></div><div class="line"></div><div class="line"><span class="keyword">test</span></div></pre></td></tr></table></figure></p>
-<p>test<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">test</span></div></pre></td></tr></table></figure></p>
-<p>test~~~~</p>
-<p>附加内容～测试～</p>
-<p><strong>博客迁移测试内容</strong></p>
+    <content type="html"><![CDATA[<p>最近沉迷于deepin,deepin系统友好的界面和对常用软件的支持所以我果断抛弃了黑苹果系统转入deepin的怀抱，原黑苹果系统有我搭建好的hexo博客需要对其进行迁移，为了防止将来还需要迁移，特记录下操作流程，以便将来查看。</p>
+<h1 id="hexo环境搭建"><a href="#hexo环境搭建" class="headerlink" title="hexo环境搭建"></a>hexo环境搭建</h1><p>第一步：安装相应的软件和配置好环境，需要安装的软件有Node.js和Git</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo apt-get <span class="keyword">install</span> -y nodejs</div><div class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> -y npm</div></pre></td></tr></table></figure>
+<p>然后检查一下我们安装node的版本号<br><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">node</span> <span class="title">-v</span></div></pre></td></tr></table></figure></p>
+<p>安装Git<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo apt-<span class="keyword">get</span> install -y git</div></pre></td></tr></table></figure></p>
+<p>查看git版本号</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo git <span class="comment">--version</span></div></pre></td></tr></table></figure>
+<p>第二步：安装hexo</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo npm <span class="keyword">install</span> -g hexo</div></pre></td></tr></table></figure>
+<p>终端cd到一个你选定的目录，执行`hexo init .``初始化命令：<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo init .</div></pre></td></tr></table></figure></p>
+<p>终端cd到目录下，安装npm</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm <span class="keyword">install</span></div></pre></td></tr></table></figure>
+<p>此时开启hexo服务就可以在本地（本地预览地址<a href="http://localhost:4000" target="_blank" rel="external">http://localhost:4000</a> ）预览博客主页了</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">hexo s</span></div></pre></td></tr></table></figure>
+<h1 id="拷贝文件"><a href="#拷贝文件" class="headerlink" title="拷贝文件"></a>拷贝文件</h1><p>拷贝原来搭建好的博客的站点配置文件和主题配置文件<code>_config.yml</code>并在对应的配置目录下做替换。</p>
+<p>如果还有其他修改过的配置文件，也一并替换掉。比如主题目录下<code>layout/_partials/header.swig</code>就有部分修改，因而需要替换。最重要的是拷贝并替换数据文件，即站点更目录下的source文件夹，所有博文的原始文件都在这个目录下。</p>
+<p>这里我就直接将原来hexo博客目录下的所有文件拷贝过来全部替换掉新环境hexo博客目录下的所有文件。</p>
+<p>执行命令预览一下博客是否于原来的一样</p>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">hexo g</span></div><div class="line">hexo s</div></pre></td></tr></table></figure>
+<h1 id="添加ssh公钥"><a href="#添加ssh公钥" class="headerlink" title="添加ssh公钥"></a>添加ssh公钥</h1><p>最后要部属到远程服务器，如github，新电脑上生成ssh公钥，并注册到远程服务器。</p>
+<p>第一步：生成SSH</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ ssh-keygen -t rsa -C <span class="string">"邮件地址@youremail.com"</span></div><div class="line">Generating <span class="keyword">public</span>/<span class="keyword">private</span> rsa <span class="keyword">key</span> pair.</div><div class="line">Enter file <span class="keyword">in</span> which <span class="keyword">to</span> save the <span class="keyword">key</span> (/Users/your_user_directory/.ssh/id_rsa):&lt;回车&gt;</div></pre></td></tr></table></figure>
+<p>系统会要求你输入密码，这里设置的密码主要是在你提交Git时弹出密码认证，直接回车</p>
+<p>成功输出如下代码</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">Your identification has been saved in /root/.ssh/id_rsa.</div><div class="line"></div><div class="line">Your public key has been saved in /root/.ssh/id_rsa.pub.</div><div class="line"></div><div class="line">The key fingerprint is:</div><div class="line"></div><div class="line">02:58:bd:65:5c:dc:12:78:4f:fe:bf:6e:5e:e9:84:79 1303460512<span class="meta">@qq.com</span></div><div class="line"></div><div class="line">The key's randomart image is:</div><div class="line"></div><div class="line">+--[ RSA 2048]----+</div><div class="line"></div><div class="line">|<span class="string">    .. . +oo     </span>|</div><div class="line"></div><div class="line">|<span class="string">   o  . = + o    </span>|</div><div class="line"></div><div class="line">|<span class="string">  . .  + . =     </span>|</div><div class="line"></div><div class="line">|<span class="string">     ..     o    </span>|</div><div class="line"></div><div class="line">|<span class="string">      . S    .   </span>|</div><div class="line"></div><div class="line">|<span class="string">       .      + .</span>|</div><div class="line"></div><div class="line">|<span class="string">             o E.</span>|</div><div class="line"></div><div class="line">|<span class="string">              +.o</span>|</div><div class="line"></div><div class="line">|<span class="string">              +=.</span>|</div><div class="line"></div><div class="line">+-----------------+</div></pre></td></tr></table></figure>
+<p>第二步：配置SSH<br>找到<code>id_rsa.pub</code> 并复制文件内容<br><code>id_rsa.pub</code>文件一般位于电脑用户配置文件夹下的一个.ssh文件下<code>\Users\</code>你的用户名<code>.ssh</code><br>登录Github并添加密钥<br>进入github首页在右上角选择settings设置。</p>
+<p><img src="http://op9ud5mja.bkt.clouddn.com/ssh02.png" alt="ssh01"></p>
+<p>创建一个新的SSH key，图中显示我已经创建好了。<br>title可以随便取<br><img src="http://op9ud5mja.bkt.clouddn.com/ssh01.png" alt="ssh02"></p>
+<p>第三步：测试通过git bash链接到Git<br>链接Git</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>ssh -T git<span class="variable">@github</span>.com</div></pre></td></tr></table></figure>
+<p>提示如下：yes</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">The authenticity <span class="keyword">of</span> host <span class="comment">'github.com (207.65.227.44)' can't be established.</span></div><div class="line">RSA <span class="keyword">key</span> fingerprint <span class="keyword">is</span> <span class="number">16</span>:<span class="number">27</span>:<span class="number">42</span>:<span class="number">18</span>:<span class="number">60</span>:<span class="number">1</span>d:<span class="number">7</span>b:<span class="number">13</span>:d2:b5:c4:<span class="number">20</span>:<span class="number">7</span>e:<span class="number">56</span>:<span class="number">86</span>:d8:<span class="number">71</span>:f3</div><div class="line">Are you sure you want <span class="keyword">to</span> <span class="keyword">continue</span> connecting (yes/no)?</div></pre></td></tr></table></figure>
+<p>以下为成功链接到Git</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Hi XXXX! You<span class="symbol">'ve</span> successfully authenticated, but GitHub does <span class="keyword">not</span> provide shell <span class="keyword">access</span>.</div></pre></td></tr></table></figure>
+<p>最后使用Git bash简单的设置一下用户信息：</p>
+<figure class="highlight lua"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git <span class="built_in">config</span> <span class="comment">--global user.name your name</span></div><div class="line">git <span class="built_in">config</span> <span class="comment">--global user.email your_email@youremail.com</span></div></pre></td></tr></table></figure>
+<p>最后博客预览效果没问题的话，就可以部属到远程服务器了。<br><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">hexo d</span></div></pre></td></tr></table></figure></p>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;test&lt;figure class=&quot;highlight stata&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line
+      &lt;p&gt;最近沉迷于deepin,deepin系统友好的界面和对常用软件的支持所以我果断抛弃了黑苹果系统转入deepin的怀抱，原黑苹果系统有我搭建好的hexo博客需要对其进行迁移，为了防止将来还需要迁移，特记录下操作流程，以便将来查看。&lt;/p&gt;
+&lt;h1 id=&quot;hexo环境搭建&quot;&gt;
     
     </summary>
     
+      <category term="学习笔记" scheme="http://yjscloud.site/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="hexo" scheme="http://yjscloud.site/tags/hexo/"/>
     
   </entry>
   

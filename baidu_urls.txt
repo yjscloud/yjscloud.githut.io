@@ -1,4 +1,4 @@
-http://yjscloud.site/2018/08/28/hello-yjscloud/
+http://yjscloud.site/2018/08/28/hexo博客迁移步骤/
 http://yjscloud.site/2018/06/21/Shell学习笔记（四）：必备知识篇/
 http://yjscloud.site/2018/06/20/Shell学习笔记（三）：实战进阶篇/
 http://yjscloud.site/2018/06/15/Shell学习笔记（二）：入门知识和实战篇/
