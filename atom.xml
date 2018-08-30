@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.site/"/>
-  <updated>2018-08-29T02:38:59.958Z</updated>
+  <updated>2018-08-30T05:08:03.808Z</updated>
   <id>http://yjscloud.site/</id>
   
   <author>
@@ -16,11 +16,45 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>deepin使用记录</title>
+    <link href="http://yjscloud.site/2018/08/30/deepin%E4%BD%BF%E7%94%A8%E8%AE%B0%E5%BD%95/"/>
+    <id>http://yjscloud.site/2018/08/30/deepin使用记录/</id>
+    <published>2018-08-30T04:58:06.000Z</published>
+    <updated>2018-08-30T05:08:03.808Z</updated>
+    
+    <content type="html"><![CDATA[<p>1、deepin  wifi网速慢问题解决：<br>将<code>/etc/modprobe.d/iwlwifi.conf</code>中的<code>11n_disable=1</code>改为<code>11n_disable=8</code>，然后重启系统<br>Linux的网速测试工具安装： <code>sudo apt-get install speedtest-cli</code><br>运行speedtest命令进行网速测试</p>
+<p>2、zsh安装：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo apt install zsh curl</div><div class="line"><span class="keyword">sh</span> -<span class="keyword">c</span> <span class="string">"$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"</span></div><div class="line"><span class="keyword">vim</span> ~/.zshrc</div></pre></td></tr></table></figure>
+<p>3.解决<code>YouCompleteMe unavailable: requires Vim compiled with Python (2.7.1+ or 3.4+) support.</code>问题<br>安装第三方vim<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-<span class="built_in">get</span> install -<span class="keyword">y</span> <span class="keyword">vim</span>-nox</div></pre></td></tr></table></figure></p>
+<p>4、解决deepin的远程问题<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">apt-get <span class="keyword">install</span> -y openssh-<span class="keyword">server</span></div><div class="line">systemctl <span class="keyword">start</span> sshd</div></pre></td></tr></table></figure></p>
+<p>5、mybase安装<br>mybase下载地址：<a href="https://pan.baidu.com/s/1RBeuVJEy2MemTirV8e9jqQ" target="_blank" rel="external">https://pan.baidu.com/s/1RBeuVJEy2MemTirV8e9jqQ</a><br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">tar -xjvf myBase-Desktop-Ver710-Linux-amd64<span class="selector-class">.tar</span><span class="selector-class">.bz2</span></div><div class="line">cd myBase7</div><div class="line">apt-get install -y libpng12-<span class="number">0</span></div><div class="line">./myBase.run</div></pre></td></tr></table></figure></p>
+<p>进入<code>cd /usr/share/applications</code>目录，在目录下创建文件<code>myBase7.desktop</code>，内容如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="section">[Desktop Entry]</span></div><div class="line"><span class="attr">Name</span>=myBase7</div><div class="line"><span class="attr">Name[zh_CN]</span>=myBase7</div><div class="line"><span class="attr">Name[zh_TW]</span>=myBase7</div><div class="line"><span class="attr">Exec</span>=/opt/myBase7/myBase.run</div><div class="line"><span class="attr">Icon</span>=/opt/myBase7/images/nyf_logo_128.png</div><div class="line"><span class="attr">Terminal</span>=<span class="literal">false</span></div><div class="line"><span class="attr">X-MultipleArgs</span>=<span class="literal">false</span></div><div class="line"><span class="attr">Type</span>=Application</div><div class="line"><span class="attr">Encoding</span>=UTF-<span class="number">8</span></div><div class="line"><span class="attr">Categories</span>=myBase7</div></pre></td></tr></table></figure>
+<p>6、安装pip3<br><figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="string">wget </span><span class="string">https:</span>//<span class="string">bootstrap.</span><span class="string">pypa.</span><span class="string">io/</span><span class="built_in">get-pip.py</span></div><div class="line"><span class="string">python3 </span><span class="built_in">get-pip.py</span></div></pre></td></tr></table></figure></p>
+<p>7、kvm安装：<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-<span class="keyword">get</span> install qemu virt-manager qemu-kvm</div></pre></td></tr></table></figure></p>
+<p>8、kdesvn安装<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-<span class="keyword">get</span> install -y kdesvn</div></pre></td></tr></table></figure></p>
+<p>9、安装kchmviewer<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">apt-<span class="keyword">get</span> install -y kchmviewer</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;1、deepin  wifi网速慢问题解决：&lt;br&gt;将&lt;code&gt;/etc/modprobe.d/iwlwifi.conf&lt;/code&gt;中的&lt;code&gt;11n_disable=1&lt;/code&gt;改为&lt;code&gt;11n_disable=8&lt;/code&gt;，然后重启系统&lt;br&gt;Li
+    
+    </summary>
+    
+      <category term="学习笔记" scheme="http://yjscloud.site/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="deepin操作" scheme="http://yjscloud.site/tags/deepin%E6%93%8D%E4%BD%9C/"/>
+    
+  </entry>
+  
+  <entry>
     <title>hexo博客迁移步骤</title>
     <link href="http://yjscloud.site/2018/08/28/hexo%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E6%AD%A5%E9%AA%A4/"/>
     <id>http://yjscloud.site/2018/08/28/hexo博客迁移步骤/</id>
     <published>2018-08-28T08:49:01.000Z</published>
-    <updated>2018-08-29T02:38:59.958Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<p>最近沉迷于deepin,deepin系统友好的界面和对常用软件的支持所以我果断抛弃了黑苹果系统转入deepin的怀抱，原黑苹果系统有我搭建好的hexo博客需要对其进行迁移，为了防止将来还需要迁移，特记录下操作流程，以便将来查看。</p>
 <h1 id="hexo环境搭建"><a href="#hexo环境搭建" class="headerlink" title="hexo环境搭建"></a>hexo环境搭建</h1><p>第一步：安装相应的软件和配置好环境，需要安装的软件有Node.js和Git</p>
@@ -31,7 +65,7 @@
 <figure class="highlight ada"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo git <span class="comment">--version</span></div></pre></td></tr></table></figure>
 <p>第二步：安装hexo</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo npm <span class="keyword">install</span> -g hexo</div></pre></td></tr></table></figure>
-<p>终端cd到一个你选定的目录，执行`hexo init .``初始化命令：<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo init .</div></pre></td></tr></table></figure></p>
+<p>终端cd到一个你选定的目录，执行<code>hexo init .</code>初始化命令：<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">hexo init .</div></pre></td></tr></table></figure></p>
 <p>终端cd到目录下，安装npm</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">npm <span class="keyword">install</span></div></pre></td></tr></table></figure>
 <p>此时开启hexo服务就可以在本地（本地预览地址<a href="http://localhost:4000" target="_blank" rel="external">http://localhost:4000</a> ）预览博客主页了</p>
@@ -80,7 +114,7 @@
     <link href="http://yjscloud.site/2018/06/21/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9A%E5%BF%85%E5%A4%87%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
     <id>http://yjscloud.site/2018/06/21/Shell学习笔记（四）：必备知识篇/</id>
     <published>2018-06-21T11:47:24.000Z</published>
-    <updated>2018-08-28T08:23:44.547Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="循环控制及状态返回值的应用实践"><a href="#循环控制及状态返回值的应用实践" class="headerlink" title="循环控制及状态返回值的应用实践"></a>循环控制及状态返回值的应用实践</h1><p>break、continue、exit、return的区别和对比</p>
 <p><img src="http://p10cma2nn.bkt.clouddn.com/s-56.png" alt="s-56"></p>
@@ -201,7 +235,7 @@
     <link href="http://yjscloud.site/2018/06/20/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9A%E5%AE%9E%E6%88%98%E8%BF%9B%E9%98%B6%E7%AF%87/"/>
     <id>http://yjscloud.site/2018/06/20/Shell学习笔记（三）：实战进阶篇/</id>
     <published>2018-06-20T11:04:49.000Z</published>
-    <updated>2018-08-28T08:23:44.547Z</updated>
+    <updated>2018-08-30T04:41:05.157Z</updated>
     
     <content type="html"><![CDATA[<h1 id="case结构条件句"><a href="#case结构条件句" class="headerlink" title="case结构条件句"></a>case结构条件句</h1><h2 id="case结构条件句语法"><a href="#case结构条件句语法" class="headerlink" title="case结构条件句语法"></a>case结构条件句语法</h2><figure class="highlight clean"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> <span class="string">"字符串变量"</span> <span class="keyword">in</span></div><div class="line">                值 <span class="number">1</span>) 指令 <span class="number">1.</span>..</div><div class="line">;;</div><div class="line">                值 <span class="number">2</span>) 指令 <span class="number">2.</span>..</div><div class="line">;;</div><div class="line">   *) 指令...</div><div class="line">esac</div></pre></td></tr></table></figure>
 <h2 id="case结构条件句范例"><a href="#case结构条件句范例" class="headerlink" title="case结构条件句范例"></a>case结构条件句范例</h2><p>范例1：根据用户的输入判断式那个数字</p>
@@ -345,7 +379,7 @@
     <link href="http://yjscloud.site/2018/06/15/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9A%E5%85%A5%E9%97%A8%E7%9F%A5%E8%AF%86%E5%92%8C%E5%AE%9E%E6%88%98%E7%AF%87/"/>
     <id>http://yjscloud.site/2018/06/15/Shell学习笔记（二）：入门知识和实战篇/</id>
     <published>2018-06-15T13:06:37.000Z</published>
-    <updated>2018-08-28T08:23:44.547Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="变量的数值计算常见命令"><a href="#变量的数值计算常见命令" class="headerlink" title="变量的数值计算常见命令"></a>变量的数值计算常见命令</h1><p><code>(())</code>、<code>let</code>、<code>expr</code>、<code>bc</code>、<code>$[]</code>，这里只介绍<code>(())</code>和<code>expr</code></p>
 <h2 id="用法："><a href="#用法：" class="headerlink" title="(())用法："></a>(())用法：</h2><p>如果要执行简单的整数运算，只需将特定的算术表达式用”<code>$((&quot;和&quot;))</code>“括起来即可。shell的算术运算符合常置于”<code>$((&quot;......&quot;))</code>“的语法中。这一语法如同双引号功能，除了内嵌双引号无需转义。</p>
@@ -743,7 +777,7 @@ it is num
     <link href="http://yjscloud.site/2018/06/10/Shell%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E7%AF%87/"/>
     <id>http://yjscloud.site/2018/06/10/Shell学习笔记（一）：基础知识篇/</id>
     <published>2018-06-10T12:08:59.000Z</published>
-    <updated>2018-08-28T08:23:44.547Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="初识脚本"><a href="#初识脚本" class="headerlink" title="初识脚本"></a>初识脚本</h1><h2 id="脚本的建立"><a href="#脚本的建立" class="headerlink" title="脚本的建立"></a>脚本的建立</h2><p>shell脚本通常是在编译器（如vi/vim）中编写，由unix/linux命令、bash shell命令、程序结构控制语句和注释等内容组成。</p>
 <p>1）脚本开头（第一行）</p>
@@ -1011,7 +1045,7 @@ UNSET
     <link href="http://yjscloud.site/2018/05/20/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%83%EF%BC%89%EF%BC%9AMySQL%E5%A4%87%E4%BB%BD%E4%B8%8E%E6%81%A2%E5%A4%8D%E5%AE%9E%E6%88%98/"/>
     <id>http://yjscloud.site/2018/05/20/MySQL系列（七）：MySQL备份与恢复实战/</id>
     <published>2018-05-20T12:49:10.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="全量备份与增量备份"><a href="#全量备份与增量备份" class="headerlink" title="全量备份与增量备份"></a>全量备份与增量备份</h1><h2 id="全量备份"><a href="#全量备份" class="headerlink" title="全量备份"></a>全量备份</h2><p>全量数据就是数据库中所有的数据，全量备份就是把数据库中所有的数据进行备份。</p>
 <p>例：</p>
@@ -1169,7 +1203,7 @@ mysql -uroot -pyjscloud &lt; bin.sql
     <link href="http://yjscloud.site/2018/05/18/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%85%AD%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E9%AB%98%E7%BA%A7%E5%BA%94%E7%94%A8/"/>
     <id>http://yjscloud.site/2018/05/18/MySQL系列（六）：MySQL主从复制高级应用/</id>
     <published>2018-05-18T11:24:35.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h1><h2 id="mysql主从同步配置步骤"><a href="#mysql主从同步配置步骤" class="headerlink" title="mysql主从同步配置步骤"></a>mysql主从同步配置步骤</h2><p>1）准备两台数据库环境，或者单台多实例环境，能否正常启动和登陆</p>
 <p>2）配置my.cnf文件，主库配置log-bin和server-id参数，从库配置server-id，不能和主库以及其他从库一样，一般不开启从库log-bin功能，注意：配置参数后要重启生效。</p>
@@ -1495,7 +1529,7 @@ show slave status\G
     <link href="http://yjscloud.site/2018/04/27/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%94%EF%BC%89%EF%BC%9AMySQL%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
     <id>http://yjscloud.site/2018/04/27/MySQL系列（五）：MySQL主从复制/</id>
     <published>2018-04-27T10:51:07.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="mysql主从复制介绍"><a href="#mysql主从复制介绍" class="headerlink" title="mysql主从复制介绍"></a>mysql主从复制介绍</h1><p>mysql支持单向、双向、链式级联、实时、异步复制。复制过程中，一台服务器充当主服务器（master），而一个或多个其他的服务器充当从服务器（slave）。复制可以是单向：M==&gt;S，也可以是双向M&lt;==&gt;M，当然也可以多M环状同步等。如果设置了链式级联复制，那么，从（slave）服务器本身除了充当从服务器外，也会同时充当其下面从服务器的主服务器。链式级联复制类似A–&gt;B–&gt;C–&gt;D的复制形式。</p>
 <p>1）单向主从同步逻辑图：</p>
@@ -1636,7 +1670,7 @@ Slave_SQL_Running：Yes   #负责读取并执行中继日志中的BINLOG，转�
     <link href="http://yjscloud.site/2018/04/26/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9AMySQL%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD%E5%8F%8A%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"/>
     <id>http://yjscloud.site/2018/04/26/MySQL系列（四）：MySQL增量备份及数据恢复/</id>
     <published>2018-04-26T07:31:33.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="MySQL数据库的备份"><a href="#MySQL数据库的备份" class="headerlink" title="MySQL数据库的备份"></a>MySQL数据库的备份</h1><h2 id="备份单个数据库练习多种参数使用"><a href="#备份单个数据库练习多种参数使用" class="headerlink" title="备份单个数据库练习多种参数使用"></a>备份单个数据库练习多种参数使用</h2><p>mysql数据库自带了一个很好用的备份命令，就是mysqldump，它的基本使用如下：</p>
 <p>语法：</p>
@@ -2034,7 +2068,7 @@ mysqlbinlog /application/mysql/data/mysql-bin.000001|grep insert
     <link href="http://yjscloud.site/2018/04/25/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9AMySQL%E4%B9%B1%E7%A0%81%E5%8F%8A%E5%AD%97%E7%AC%A6%E9%9B%86%E5%AE%9E%E6%88%98/"/>
     <id>http://yjscloud.site/2018/04/25/MySQL系列（三）：MySQL乱码及字符集实战/</id>
     <published>2018-04-25T06:21:03.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="MySQL插入中文数据乱码问题"><a href="#MySQL插入中文数据乱码问题" class="headerlink" title="MySQL插入中文数据乱码问题"></a>MySQL插入中文数据乱码问题</h1><h2 id="MySQL数据库插入中文数据乱码"><a href="#MySQL数据库插入中文数据乱码" class="headerlink" title="MySQL数据库插入中文数据乱码"></a>MySQL数据库插入中文数据乱码</h2><p>1）MySQL中添加中文数据乱码演示</p>
 <p>1、创建一个test2测试数据库并查看建表语句</p>
@@ -2192,7 +2226,7 @@ primary key(id)
     <link href="http://yjscloud.site/2018/04/23/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AMySQL%E5%B8%B8%E7%94%A8%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/"/>
     <id>http://yjscloud.site/2018/04/23/MySQL系列（二）：MySQL常用基础命令/</id>
     <published>2018-04-23T04:02:52.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="启动与关闭MySQL"><a href="#启动与关闭MySQL" class="headerlink" title="启动与关闭MySQL"></a>启动与关闭MySQL</h1><h2 id="单实例MySQL启动与关闭方法"><a href="#单实例MySQL启动与关闭方法" class="headerlink" title="单实例MySQL启动与关闭方法"></a>单实例MySQL启动与关闭方法</h2><p>常规启动关闭数据库方式（推荐）</p>
 <p>1）启动MySQL命令：</p>
@@ -3011,7 +3045,7 @@ truncate table test1;    #清空表中所有内容
     <link href="http://yjscloud.site/2018/04/22/MySQL%E7%B3%BB%E5%88%97%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9AMySQL%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85/"/>
     <id>http://yjscloud.site/2018/04/22/MySQL系列（一）：MySQL源码安装/</id>
     <published>2018-04-22T02:35:14.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="查看系统信息"><a href="#查看系统信息" class="headerlink" title="查看系统信息"></a>查看系统信息</h1><pre><code>[root@mysql-1 ~]# uname -r
 3.10.0-693.el7.x86_64
@@ -3113,7 +3147,7 @@ chmod 700 /etc/init.d/mysqld   #授权700权限，即脚本可执行
     <link href="http://yjscloud.site/2018/04/21/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%A4%9A%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/04/21/Kolla容器化部署OpenStack：多节点部署/</id>
     <published>2018-04-21T13:59:18.000Z</published>
-    <updated>2018-08-28T08:23:44.531Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<p>前面我们已经部署了单节点的OpenStack环境，这次我们尝试部署一个多节点的环境(包括1个controller节点，1个compute节点，1个storage节点)，之前的单节点因为已经安装了kolla-ansible和docker registry，我们把它当做部署节点。</p>
 <h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>准备三台服务器，分别作为controller节点，compute节点，storage节点。其中controller节点3张网卡，compute、storage节点2张网卡。操作系统为centos7.4</p>
@@ -3308,7 +3342,7 @@ ea471af172de        172.16.31.130:4000/99cloud/centos-source-cron:4.0.2.1       
     <link href="http://yjscloud.site/2018/04/20/Kolla%E5%AE%B9%E5%99%A8%E5%8C%96%E9%83%A8%E7%BD%B2OpenStack%EF%BC%9A%E5%8D%95%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/04/20/Kolla容器化部署OpenStack：单点部署/</id>
     <published>2018-04-20T12:37:32.000Z</published>
-    <updated>2018-08-28T08:23:44.531Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<p>陈沙克老师发布了一个kolla的Ocata的ISO,这个ISO把所有需要的软件及Docker镜像都集成起来，安装应该非常方便，所以决定试一试。<br>首先我在一台16g的戴尔服务器上面安装这个iso，配置2块网卡，一块为em1(隧道网络，网段为192.168.0.0/24)，一块为em2(作为作为管理和外部网络，网段为172.16.31.0/24)。<br>注意硬盘至少需要200G(安装完成后实际占用空间为25G以内)，否则无法进行安装。</p>
 <h1 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h1><p>（1）使用iso引导，选择 install centos7.3 and kolla</p>
@@ -3389,7 +3423,7 @@ cpu_mode = none
     <link href="http://yjscloud.site/2018/04/12/OpenStack%E6%8E%92%E9%94%99-%E4%B8%80-cinder%E5%83%B5%E5%B0%B8%E5%8D%B7%E5%88%A0%E9%99%A4/"/>
     <id>http://yjscloud.site/2018/04/12/OpenStack排错-一-cinder僵尸卷删除/</id>
     <published>2018-04-12T12:14:21.000Z</published>
-    <updated>2018-08-28T08:23:44.543Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="处理报错的大致思路"><a href="#处理报错的大致思路" class="headerlink" title="处理报错的大致思路"></a>处理报错的大致思路</h1><p>(1)到数据库cinder表中找到volumes，将其中对应要删除的卷的状态由error_deleting改为deleted；</p>
 <p>(2)针对lvm，可以用命令lvdisplay列出所有卷的信息，如果现在应用命令lvremove来删除相应的卷，则会提示要删除的卷正在使用中，所以我们使用命令lsof查看相应卷所占用的进程，然后kill这个进程；</p>
@@ -3475,7 +3509,7 @@ kill -9 76568
     <link href="http://yjscloud.site/2018/04/04/%E5%88%B6%E4%BD%9Copenstack%E9%95%9C%E5%83%8F%E6%A8%A1%E6%9D%BF/"/>
     <id>http://yjscloud.site/2018/04/04/制作openstack镜像模板/</id>
     <published>2018-04-04T11:57:11.000Z</published>
-    <updated>2018-08-28T08:23:44.547Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<p>在kvm服务器上安装一个虚拟机，然后进行如下配置：</p>
 <h1 id="模板默认配置"><a href="#模板默认配置" class="headerlink" title="模板默认配置"></a>模板默认配置</h1><p>制作模版要配置yum源，安装常用软件，yum源可以配置为阿里的源，163的源最好有自己的源<br>需要安装的常用软件：</p>
@@ -3539,7 +3573,7 @@ systemctl enable cloud-config.service cloud-final.service cloud-init-local.servi
     <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E5%9B%9B%EF%BC%89%EF%BC%9ACinder%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（四）：Cinder节点部署/</id>
     <published>2018-03-25T14:28:38.000Z</published>
-    <updated>2018-08-28T08:23:44.543Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="在controller节点上配置"><a href="#在controller节点上配置" class="headerlink" title="在controller节点上配置"></a>在controller节点上配置</h1><h2 id="创建数据库用户并赋予权限"><a href="#创建数据库用户并赋予权限" class="headerlink" title="创建数据库用户并赋予权限"></a>创建数据库用户并赋予权限</h2><pre><code>CREATE DATABASE cinder;
 GRANT ALL PRIVILEGES ON cinder.* TO &apos;cinder&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;devops&apos;;
@@ -3655,7 +3689,7 @@ cinder service-list
     <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%B8%89%EF%BC%89%EF%BC%9ACompute%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（三）：Compute节点部署/</id>
     <published>2018-03-25T14:16:51.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="安装相关依赖包"><a href="#安装相关依赖包" class="headerlink" title="安装相关依赖包"></a>安装相关依赖包</h1><pre><code>yum install openstack-selinux python-openstackclient yum-plugin-priorities openstack-nova-compute openstack-utils ntpdate -y
 </code></pre><h2 id="配置nova-conf"><a href="#配置nova-conf" class="headerlink" title="配置nova.conf"></a>配置nova.conf</h2><pre><code>cp /etc/nova/nova.conf /etc/nova/nova.conf.bak
@@ -3773,7 +3807,7 @@ openstack flavor list
     <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AController%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
     <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（二）：Controller节点部署/</id>
     <published>2018-03-25T14:15:37.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
+    <updated>2018-08-30T04:41:05.153Z</updated>
     
     <content type="html"><![CDATA[<h1 id="安装Mariadb和RabbitMQ"><a href="#安装Mariadb和RabbitMQ" class="headerlink" title="安装Mariadb和RabbitMQ"></a>安装Mariadb和RabbitMQ</h1><h2 id="搭建Mariadb"><a href="#搭建Mariadb" class="headerlink" title="搭建Mariadb"></a>搭建Mariadb</h2><h3 id="安装mariadb数据库"><a href="#安装mariadb数据库" class="headerlink" title="安装mariadb数据库"></a>安装mariadb数据库</h3><pre><code>yum install -y MariaDB-server MariaDB-client
 </code></pre><h3 id="配置mariadb"><a href="#配置mariadb" class="headerlink" title="配置mariadb"></a>配置mariadb</h3><pre><code>vim /etc/my.cnf.d/mariadb-openstack.cnf
@@ -4218,78 +4252,6 @@ systemctl status httpd.service memcached.service
     <summary type="html">
     
       &lt;h1 id=&quot;安装Mariadb和RabbitMQ&quot;&gt;&lt;a href=&quot;#安装Mariadb和RabbitMQ&quot; class=&quot;headerlink&quot; title=&quot;安装Mariadb和RabbitMQ&quot;&gt;&lt;/a&gt;安装Mariadb和RabbitMQ&lt;/h1&gt;&lt;h2 id=&quot;搭
-    
-    </summary>
-    
-      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
-    
-    
-      <category term="OpenStack O版搭建" scheme="http://yjscloud.site/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>OpenStack O版搭建（一）：环境初始化</title>
-    <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E7%8E%AF%E5%A2%83%E5%88%9D%E5%A7%8B%E5%8C%96/"/>
-    <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（一）：环境初始化/</id>
-    <published>2018-03-25T12:36:24.000Z</published>
-    <updated>2018-08-28T08:23:44.539Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>自己搭建yum，一定要centos7.2源，具体怎么搭建这里略去（在我的cloudstack的系列文章中有提到的）源的下载如下：<br><a href="https://pan.baidu.com/s/1zlHCRwu0AuQx5Dlnc7X8yg" target="_blank" rel="external">百度网盘链接</a>  密码:8odd</p>
-<p>安装CentOS7.2系统（ 最小化安装 ，不要yum update升级到7.3！Ocata版7.3下依然有虚拟机启动出现iPXE启动问题依旧） + 关闭防火墙 + 关闭selinux</p>
-<pre><code>systemctl stop firewalld.service
-systemctl disable firewalld.service
-</code></pre><h1 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h1><p>虚拟出三台配置至少CPU 4c MEM 4G的虚拟机</p>
-<p>Controller节点和Compute节点配置：</p>
-<p>CPU:4c</p>
-<p>MEM:4G</p>
-<p>Disk:100G</p>
-<p>Network: 3 (eth0 ens8 ens9， 第一块网卡就是extenel的网卡，第二块网卡是admin网卡，第三块是tunnel隧道)</p>
-<p>Cinder节点配置：</p>
-<p>CPU:4c</p>
-<p>MEM:4G</p>
-<p>Disk:100G+300G（这个300G可以根据自己需求调整大小）</p>
-<p>Network: 2 (eth0 ens8 ens9， 第一块网卡就是extenel的网卡，第二块网卡是admin网卡，第三块是tunnel隧道)</p>
-<p>每个节点都要做</p>
-<p>安装好相关工具，因为系统是最小化安装的，所以一些ifconfig vim等命令没有，运行下面的命令把它们装上：</p>
-<pre><code>yum install net-tools wget vim ntpdate bash-completion -y
-</code></pre><h1 id="更改hostname"><a href="#更改hostname" class="headerlink" title="更改hostname"></a>更改hostname</h1><pre><code>hostnamectl set-hostname controller
-</code></pre><p>如果是compute就运行：</p>
-<pre><code>hostnamectl set-hostname compute1
-</code></pre><p>cinder节点就运行：</p>
-<pre><code>hostnamectl set-hostname cinder
-</code></pre><p>然后每个节点配置/etc/hosts文件添加如下内容</p>
-<pre><code>10.1.1.120 controller
-10.1.1.121 compute1
-10.1.1.122 cinder
-</code></pre><h1 id="NTP同步系统时间"><a href="#NTP同步系统时间" class="headerlink" title="NTP同步系统时间"></a>NTP同步系统时间</h1><pre><code>ntpdate cn.pool.ntp.org
-</code></pre><p>配置ntp服务</p>
-<pre><code>yum -y install ntp
-vim /etc/ntp.conf
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-1.png" alt="o-1"></p>
-<pre><code>systemctl enable ntpd
-systemctl start ntpd
-</code></pre><p>检查同步状态</p>
-<pre><code>ntpq -p
-</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-2.png" alt="o-2"></p>
-<h1 id="配置IP-网络配置规划"><a href="#配置IP-网络配置规划" class="headerlink" title="配置IP 网络配置规划"></a>配置IP 网络配置规划</h1><p>网络配置：</p>
-<p>external : 192.168.0.0/24</p>
-<p>admin mgt : 10.1.1.0/24</p>
-<p>tunnel：10.2.2.0/24</p>
-<p>controller虚拟机第一块网卡external，请配置IP 192.168.0.120</p>
-<p>第二块网卡admin，请配置IP 10.1.1.120</p>
-<p>第三块网卡tunnel，请配置IP 10.2.2.120</p>
-<p>compute1虚拟机第一块网卡external，请配置IP 192.168.0.121</p>
-<p>第二块网卡admin，请配置IP 10.1.1.121</p>
-<p>第三块网卡tunnel，请配置IP 10.2.2.121</p>
-<p>cinder虚拟机第一块网卡external，请配置IP 192.168.0.122</p>
-<p>第二块网卡admin，请配置IP 10.1.1.122</p>
-<p>第三块网卡tunnel，请配置IP 10.2.2.122</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;自己搭建yum，一定要centos7.2源，具体怎么搭建这里略去（在我的cloudstack的系列文章中有提到的）源的下载如下：&lt;br&gt;&lt;a
     
     </summary>
     
