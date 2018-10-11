@@ -1,4 +1,3 @@
-http://yjscloud.site/2018/10/11/windows博客迁移测试/
 http://yjscloud.site/2018/08/30/deepin使用记录/
 http://yjscloud.site/2018/08/28/hexo博客迁移步骤/
 http://yjscloud.site/2018/06/21/Shell学习笔记（四）：必备知识篇/

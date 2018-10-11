@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yjscloud.site/"/>
-  <updated>2018-10-11T15:27:31.794Z</updated>
+  <updated>2018-08-30T05:08:03.000Z</updated>
   <id>http://yjscloud.site/</id>
   
   <author>
@@ -14,26 +14,6 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>windows博客迁移测试</title>
-    <link href="http://yjscloud.site/2018/10/11/windows%E5%8D%9A%E5%AE%A2%E8%BF%81%E7%A7%BB%E6%B5%8B%E8%AF%95/"/>
-    <id>http://yjscloud.site/2018/10/11/windows博客迁移测试/</id>
-    <published>2018-10-11T15:10:58.000Z</published>
-    <updated>2018-10-11T15:27:31.794Z</updated>
-    
-    <content type="html"><![CDATA[<p>windows平台博客迁移测试</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;windows平台博客迁移测试&lt;/p&gt;
-
-    
-    </summary>
-    
-    
-  </entry>
   
   <entry>
     <title>deepin使用记录</title>
@@ -3812,6 +3792,466 @@ openstack flavor list
     <summary type="html">
     
       &lt;h1 id=&quot;安装相关依赖包&quot;&gt;&lt;a href=&quot;#安装相关依赖包&quot; class=&quot;headerlink&quot; title=&quot;安装相关依赖包&quot;&gt;&lt;/a&gt;安装相关依赖包&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;yum install openstack-selinux python-opens
+    
+    </summary>
+    
+      <category term="OpenStack学习笔记" scheme="http://yjscloud.site/categories/OpenStack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+    
+      <category term="OpenStack O版搭建" scheme="http://yjscloud.site/tags/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OpenStack O版搭建（二）：Controller节点部署</title>
+    <link href="http://yjscloud.site/2018/03/25/OpenStack-O%E7%89%88%E6%90%AD%E5%BB%BA%EF%BC%88%E4%BA%8C%EF%BC%89%EF%BC%9AController%E8%8A%82%E7%82%B9%E9%83%A8%E7%BD%B2/"/>
+    <id>http://yjscloud.site/2018/03/25/OpenStack-O版搭建（二）：Controller节点部署/</id>
+    <published>2018-03-25T14:15:37.000Z</published>
+    <updated>2018-08-30T04:41:05.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="安装Mariadb和RabbitMQ"><a href="#安装Mariadb和RabbitMQ" class="headerlink" title="安装Mariadb和RabbitMQ"></a>安装Mariadb和RabbitMQ</h1><h2 id="搭建Mariadb"><a href="#搭建Mariadb" class="headerlink" title="搭建Mariadb"></a>搭建Mariadb</h2><h3 id="安装mariadb数据库"><a href="#安装mariadb数据库" class="headerlink" title="安装mariadb数据库"></a>安装mariadb数据库</h3><pre><code>yum install -y MariaDB-server MariaDB-client
+</code></pre><h3 id="配置mariadb"><a href="#配置mariadb" class="headerlink" title="配置mariadb"></a>配置mariadb</h3><pre><code>vim /etc/my.cnf.d/mariadb-openstack.cnf
+</code></pre><p>在mysqld区块添加如下内容：</p>
+<pre><code>[mysqld]
+default-storage-engine = innodb
+innodb_file_per_table
+collation-server = utf8_general_ci
+init-connect = &apos;SET NAMES utf8&apos;
+character-set-server = utf8
+bind-address = 10.1.1.120
+</code></pre><h3 id="启动数据库及设置mariadb开机启动"><a href="#启动数据库及设置mariadb开机启动" class="headerlink" title="启动数据库及设置mariadb开机启动"></a>启动数据库及设置mariadb开机启动</h3><pre><code>systemctl enable mariadb.service
+systemctl restart mariadb.service
+systemctl status mariadb.service
+systemctl list-unit-files |grep mariadb.service
+</code></pre><h3 id="配置mariadb，给mariadb设置密码"><a href="#配置mariadb，给mariadb设置密码" class="headerlink" title="配置mariadb，给mariadb设置密码"></a>配置mariadb，给mariadb设置密码</h3><pre><code>mysql_secure_installation
+</code></pre><p>先按回车，然后按Y，设置mysql密码，然后一直按y结束<br>这里我们设置的密码是devops</p>
+<h2 id="安装RabbitMQ"><a href="#安装RabbitMQ" class="headerlink" title="安装RabbitMQ"></a>安装RabbitMQ</h2><h3 id="安装erlang"><a href="#安装erlang" class="headerlink" title="安装erlang"></a>安装erlang</h3><pre><code>yum install -y erlang
+</code></pre><h3 id="安装RabbitMQ-1"><a href="#安装RabbitMQ-1" class="headerlink" title="安装RabbitMQ"></a>安装RabbitMQ</h3><pre><code>yum install -y rabbitmq-server
+</code></pre><h3 id="启动rabbitmq及设置开机启动"><a href="#启动rabbitmq及设置开机启动" class="headerlink" title="启动rabbitmq及设置开机启动"></a>启动rabbitmq及设置开机启动</h3><pre><code>systemctl enable rabbitmq-server.service
+systemctl restart rabbitmq-server.service
+systemctl status rabbitmq-server.service
+systemctl list-unit-files |grep rabbitmq-server.service
+</code></pre><h3 id="创建openstack用户"><a href="#创建openstack用户" class="headerlink" title="创建openstack用户"></a>创建openstack用户</h3><p>注意将密码替换为自己的合适密码，这里密码都是devops</p>
+<pre><code>rabbitmqctl add_user openstack devops
+</code></pre><h3 id="将openstack用户赋予权限"><a href="#将openstack用户赋予权限" class="headerlink" title="将openstack用户赋予权限"></a>将openstack用户赋予权限</h3><pre><code>rabbitmqctl set_permissions openstack &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
+rabbitmqctl set_user_tags openstack administrator
+rabbitmqctl list_users
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-3.png" alt="o-3">    </p>
+<h3 id="查看监听端口"><a href="#查看监听端口" class="headerlink" title="查看监听端口"></a>查看监听端口</h3><p>rabbitmq用的是5672端口</p>
+<pre><code>netstat -ntlp |grep 5672
+</code></pre><h3 id="查看RabbitMQ插件"><a href="#查看RabbitMQ插件" class="headerlink" title="查看RabbitMQ插件"></a>查看RabbitMQ插件</h3><pre><code>/usr/lib/rabbitmq/bin/rabbitmq-plugins list
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-4.png" alt="o-4"></p>
+<h3 id="打开RabbitMQ相关插件"><a href="#打开RabbitMQ相关插件" class="headerlink" title="打开RabbitMQ相关插件"></a>打开RabbitMQ相关插件</h3><pre><code>/usr/lib/rabbitmq/bin/rabbitmq-plugins enable rabbitmq_management mochiweb webmachine rabbitmq_web_dispatch amqp_client rabbitmq_management_agent
+</code></pre><p>打开相关插件后，重启下rabbitmq服务</p>
+<pre><code>systemctl restart rabbitmq-server
+</code></pre><p>浏览器输入：<a href="http://192.168.0.120:15672" target="_blank" rel="external">http://192.168.0.120:15672</a> 默认用户名密码：guest/guest,<br>通过这个界面，我们能很直观的看到rabbitmq的运行和负载情况</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-5.png" alt="o-5"></p>
+<h1 id="安装配置keystone"><a href="#安装配置keystone" class="headerlink" title="安装配置keystone"></a>安装配置keystone</h1><h2 id="创建keystone数据库"><a href="#创建keystone数据库" class="headerlink" title="创建keystone数据库"></a>创建keystone数据库</h2><pre><code>CREATE DATABASE keystone;
+</code></pre><h2 id="创建数据库keystone用户-amp-root用户及赋予权限"><a href="#创建数据库keystone用户-amp-root用户及赋予权限" class="headerlink" title="创建数据库keystone用户&amp;root用户及赋予权限"></a>创建数据库keystone用户&amp;root用户及赋予权限</h2><pre><code>GRANT ALL PRIVILEGES ON keystone.* TO &apos;keystone&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON keystone.* TO &apos;keystone&apos;@&apos;%&apos; IDENTIFIED BY &apos;devops&apos;;
+</code></pre><p>注意将devops替换为自己的数据库密码</p>
+<h2 id="安装keystone和memcached"><a href="#安装keystone和memcached" class="headerlink" title="安装keystone和memcached"></a>安装keystone和memcached</h2><pre><code>yum -y install openstack-keystone httpd mod_wsgi python-openstackclient memcached python-memcached openstack-utils
+</code></pre><h2 id="启动memcache服务并设置开机自启动"><a href="#启动memcache服务并设置开机自启动" class="headerlink" title="启动memcache服务并设置开机自启动"></a>启动memcache服务并设置开机自启动</h2><pre><code>systemctl enable memcached.service
+systemctl restart memcached.service
+systemctl status memcached.service
+</code></pre><h2 id="配置-etc-keystone-keystone-conf文件"><a href="#配置-etc-keystone-keystone-conf文件" class="headerlink" title="配置/etc/keystone/keystone.conf文件"></a>配置/etc/keystone/keystone.conf文件</h2><pre><code>cp /etc/keystone/keystone.conf /etc/keystone/keystone.conf.bak
+&gt;/etc/keystone/keystone.conf
+openstack-config --set /etc/keystone/keystone.conf DEFAULT transport_url rabbit://openstack:devops@controller
+openstack-config --set /etc/keystone/keystone.conf database connection mysql://keystone:devops@controller/keystone
+openstack-config --set /etc/keystone/keystone.conf cache backend oslo_cache.memcache_pool
+openstack-config --set /etc/keystone/keystone.conf cache enabled true
+openstack-config --set /etc/keystone/keystone.conf cache memcache_servers controller:11211
+openstack-config --set /etc/keystone/keystone.conf memcache servers controller:11211
+openstack-config --set /etc/keystone/keystone.conf token expiration 3600
+openstack-config --set /etc/keystone/keystone.conf token provider fernet
+</code></pre><h2 id="配置httpd-conf文件-amp-memcached文件"><a href="#配置httpd-conf文件-amp-memcached文件" class="headerlink" title="配置httpd.conf文件&amp;memcached文件"></a>配置httpd.conf文件&amp;memcached文件</h2><pre><code>sed -i &quot;s/#ServerName www.example.com:80/ServerName controller/&quot; /etc/httpd/conf/httpd.conf
+sed -i &apos;s/OPTIONS*.*/OPTIONS=&quot;-l 127.0.0.1,::1,10.1.1.120&quot;/&apos; /etc/sysconfig/memcached
+</code></pre><h2 id="配置keystone与httpd结合"><a href="#配置keystone与httpd结合" class="headerlink" title="配置keystone与httpd结合"></a>配置keystone与httpd结合</h2><pre><code>ln -s /usr/share/keystone/wsgi-keystone.conf /etc/httpd/conf.d/
+</code></pre><h2 id="数据库同步"><a href="#数据库同步" class="headerlink" title="数据库同步"></a>数据库同步</h2><pre><code>su -s /bin/sh -c &quot;keystone-manage db_sync&quot; keystone
+</code></pre><h2 id="初始化fernet"><a href="#初始化fernet" class="headerlink" title="初始化fernet"></a>初始化fernet</h2><pre><code>keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone
+keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
+</code></pre><h2 id="启动httpd，并设置httpd开机启动"><a href="#启动httpd，并设置httpd开机启动" class="headerlink" title="启动httpd，并设置httpd开机启动"></a>启动httpd，并设置httpd开机启动</h2><pre><code>systemctl enable httpd.service
+systemctl restart httpd.service
+systemctl status httpd.service
+systemctl list-unit-files |grep httpd.service
+</code></pre><h2 id="创建admin用户角色"><a href="#创建admin用户角色" class="headerlink" title="创建admin用户角色"></a>创建admin用户角色</h2><pre><code>keystone-manage bootstrap \
+--bootstrap-password devops \
+--bootstrap-username admin \
+--bootstrap-project-name admin \
+--bootstrap-role-name admin \
+--bootstrap-service-name keystone \
+--bootstrap-region-id RegionOne \
+--bootstrap-admin-url http://controller:35357/v3 \
+--bootstrap-internal-url http://controller:35357/v3 \
+--bootstrap-public-url http://controller:5000/v3
+</code></pre><p>验证：</p>
+<pre><code>openstack project list --os-username admin --os-project-name admin --os-user-domain-id default --os-project-domain-id default --os-identity-api-version 3 --os-auth-url http://controller:5000 --os-password devops
+</code></pre><p>返回如下结果说明你的keystone服务就没有问题了</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-6.png" alt="o-6"></p>
+<h2 id="创建admin用户环境变量"><a href="#创建admin用户环境变量" class="headerlink" title="创建admin用户环境变量"></a>创建admin用户环境变量</h2><p>创建/root/admin-openrc 文件并写入如下内容：</p>
+<pre><code>vim /root/admin-openrc
+</code></pre><p>添加以下内容：</p>
+<pre><code>export OS_USER_DOMAIN_ID=default
+export OS_PROJECT_DOMAIN_ID=default
+export OS_USERNAME=admin
+export OS_PROJECT_NAME=admin
+export OS_PASSWORD=devops
+export OS_IDENTITY_API_VERSION=3
+export OS_IMAGE_API_VERSION=2
+export OS_AUTH_URL=http://controller:35357/v3
+</code></pre><h2 id="创建service项目"><a href="#创建service项目" class="headerlink" title="创建service项目"></a>创建service项目</h2><pre><code>source /root/admin-openrc
+openstack project create --domain default --description &quot;Service Project&quot; service
+</code></pre><h2 id="创建demo项目"><a href="#创建demo项目" class="headerlink" title="创建demo项目"></a>创建demo项目</h2><pre><code>openstack project create --domain default --description &quot;Demo Project&quot; demo
+</code></pre><h2 id="创建demo用户"><a href="#创建demo用户" class="headerlink" title="创建demo用户"></a>创建demo用户</h2><pre><code>openstack user create --domain default demo --password devops
+</code></pre><p>注意：devops为demo用户密码</p>
+<h2 id="创建user角色"><a href="#创建user角色" class="headerlink" title="创建user角色"></a>创建user角色</h2><p>创建user角色将demo用户赋予user角色</p>
+<pre><code>openstack role create user
+openstack role add --project demo --user demo user
+</code></pre><h2 id="验证keystone"><a href="#验证keystone" class="headerlink" title="验证keystone"></a>验证keystone</h2><pre><code>unset OS_TOKEN OS_URL
+openstack --os-auth-url http://controller:35357/v3 --os-project-domain-name default --os-user-domain-name default --os-project-name admin --os-username admin token issue --os-password devops
+openstack --os-auth-url http://controller:5000/v3 --os-project-domain-name default --os-user-domain-name default --os-project-name demo --os-username demo token issue --os-password devops
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-7.png" alt="o-7"></p>
+<h1 id="安装配置glance"><a href="#安装配置glance" class="headerlink" title="安装配置glance"></a>安装配置glance</h1><h2 id="创建glance数据库"><a href="#创建glance数据库" class="headerlink" title="创建glance数据库"></a>创建glance数据库</h2><pre><code>CREATE DATABASE glance;
+</code></pre><h2 id="创建数据库用户并赋予权限"><a href="#创建数据库用户并赋予权限" class="headerlink" title="创建数据库用户并赋予权限"></a>创建数据库用户并赋予权限</h2><pre><code>GRANT ALL PRIVILEGES ON glance.* TO &apos;glance&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON glance.* TO &apos;glance&apos;@&apos;%&apos; IDENTIFIED BY &apos;devops&apos;;
+</code></pre><h2 id="创建glance用户及赋予admin权限"><a href="#创建glance用户及赋予admin权限" class="headerlink" title="创建glance用户及赋予admin权限"></a>创建glance用户及赋予admin权限</h2><pre><code>source /root/admin-openrc
+openstack user create --domain default glance --password devops
+openstack role add --project service --user glance admin
+</code></pre><h2 id="创建image服务"><a href="#创建image服务" class="headerlink" title="创建image服务"></a>创建image服务</h2><pre><code>openstack service create --name glance --description &quot;OpenStack Image service&quot; image
+</code></pre><h2 id="创建glance的endpoint"><a href="#创建glance的endpoint" class="headerlink" title="创建glance的endpoint"></a>创建glance的endpoint</h2><pre><code>openstack endpoint create --region RegionOne image public http://controller:9292
+openstack endpoint create --region RegionOne image internal http://controller:9292
+openstack endpoint create --region RegionOne image admin http://controller:9292
+</code></pre><h2 id="安装glance相关rpm包"><a href="#安装glance相关rpm包" class="headerlink" title="安装glance相关rpm包"></a>安装glance相关rpm包</h2><pre><code>yum install openstack-glance -y
+</code></pre><h2 id="修改glance配置文件-etc-glance-glance-api-conf"><a href="#修改glance配置文件-etc-glance-glance-api-conf" class="headerlink" title="修改glance配置文件/etc/glance/glance-api.conf"></a>修改glance配置文件/etc/glance/glance-api.conf</h2><p>注意将devops的密码设置成你自己的</p>
+<pre><code>cp /etc/glance/glance-api.conf /etc/glance/glance-api.conf.bak
+&gt;/etc/glance/glance-api.conf
+openstack-config --set /etc/glance/glance-api.conf DEFAULT transport_url rabbit://openstack:devops@controller
+openstack-config --set /etc/glance/glance-api.conf database connection mysql+pymysql://glance:devops@controller/glance
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken auth_uri http://controller:5000
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken auth_url http://controller:35357
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken memcached_servers controller:11211
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken auth_type password
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken project_domain_name default
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken user_domain_name default
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken username glance
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken password devops
+openstack-config --set /etc/glance/glance-api.conf keystone_authtoken project_name service
+openstack-config --set /etc/glance/glance-api.conf paste_deploy flavor keystone
+openstack-config --set /etc/glance/glance-api.conf glance_store stores file,http
+openstack-config --set /etc/glance/glance-api.conf glance_store default_store file
+openstack-config --set /etc/glance/glance-api.conf glance_store filesystem_store_datadir /var/lib/glance/images/
+</code></pre><h2 id="修改glance配置文件-etc-glance-glance-registry-conf："><a href="#修改glance配置文件-etc-glance-glance-registry-conf：" class="headerlink" title="修改glance配置文件/etc/glance/glance-registry.conf："></a>修改glance配置文件/etc/glance/glance-registry.conf：</h2><pre><code>cp /etc/glance/glance-registry.conf /etc/glance/glance-registry.conf.bak
+&gt;/etc/glance/glance-registry.conf
+openstack-config --set /etc/glance/glance-registry.conf DEFAULT transport_url rabbit://openstack:devops@controller
+openstack-config --set /etc/glance/glance-registry.conf database connection mysql+pymysql://glance:devops@controller/glance
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_uri http://controller:5000
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_url http://controller:35357
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken memcached_servers controller:11211
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_type password
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken project_domain_name default
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken user_domain_name default
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken project_name service
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken username glance
+openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken password devops
+openstack-config --set /etc/glance/glance-registry.conf paste_deploy flavor keystone
+</code></pre><h2 id="同步glance数据库"><a href="#同步glance数据库" class="headerlink" title="同步glance数据库"></a>同步glance数据库</h2><pre><code>su -s /bin/sh -c &quot;glance-manage db_sync&quot; glance
+</code></pre><p>同步成功</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-8.png" alt="o-8"></p>
+<h2 id="启动glance及设置开机启动"><a href="#启动glance及设置开机启动" class="headerlink" title="启动glance及设置开机启动"></a>启动glance及设置开机启动</h2><pre><code>systemctl enable openstack-glance-api.service openstack-glance-registry.service
+systemctl restart openstack-glance-api.service openstack-glance-registry.service
+systemctl status openstack-glance-api.service openstack-glance-registry.service
+</code></pre><h2 id="下载测试镜像文件"><a href="#下载测试镜像文件" class="headerlink" title="下载测试镜像文件"></a>下载测试镜像文件</h2><pre><code>wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-x86_64-disk.img
+</code></pre><h2 id="上传镜像到glance"><a href="#上传镜像到glance" class="headerlink" title="上传镜像到glance"></a>上传镜像到glance</h2><pre><code>source /root/admin-openrc
+glance image-create --name &quot;cirros-0.3.4-x86_64&quot; --file cirros-0.3.4-x86_64-disk.img --disk-format qcow2 --container-format bare --visibility public --progress
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-9.png" alt="o-9"></p>
+<p>如果你做好了一个CentOS7.2系统的镜像，也可以用这命令操作，例：</p>
+<pre><code>glance image-create --name &quot;CentOS7.2-x86_64&quot; --file CentOS_7.2.qcow2 --disk-format qcow2 --container-format bare --visibility public --progress
+</code></pre><p>查看镜像列表：</p>
+<pre><code>glance image-list
+</code></pre><h1 id="安装配置nova"><a href="#安装配置nova" class="headerlink" title="安装配置nova"></a>安装配置nova</h1><h2 id="创建nova数据库"><a href="#创建nova数据库" class="headerlink" title="创建nova数据库"></a>创建nova数据库</h2><pre><code>CREATE DATABASE nova;
+CREATE DATABASE nova_api;
+CREATE DATABASE nova_cell0;
+</code></pre><h2 id="创建数据库用户并赋予权限-1"><a href="#创建数据库用户并赋予权限-1" class="headerlink" title="创建数据库用户并赋予权限"></a>创建数据库用户并赋予权限</h2><pre><code>GRANT ALL PRIVILEGES ON nova.* TO &apos;nova&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON nova.* TO &apos;nova&apos;@&apos;%&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON nova_api.* TO &apos;nova&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON nova_api.* TO &apos;nova&apos;@&apos;%&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON nova_cell0.* TO &apos;nova&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON nova_cell0.* TO &apos;nova&apos;@&apos;%&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON *.* TO &apos;root&apos;@&apos;controller&apos; IDENTIFIED BY &apos;devops&apos;;
+FLUSH PRIVILEGES;
+</code></pre><p>注：查看授权列表信息 SELECT DISTINCT CONCAT(‘User: ‘’’,user,’’’@’’’,host,’’’;’) AS query FROM mysql.user;<br>取消之前某个授权 REVOKE ALTER ON *.* TO ‘root’@’controller’ IDENTIFIED BY ‘devops’;</p>
+<h2 id="创建nova用户及赋予admin权限"><a href="#创建nova用户及赋予admin权限" class="headerlink" title="创建nova用户及赋予admin权限"></a>创建nova用户及赋予admin权限</h2><pre><code>source /root/admin-openrc
+openstack user create --domain default nova --password devops
+openstack role add --project service --user nova admin
+</code></pre><h2 id="创建computer服务"><a href="#创建computer服务" class="headerlink" title="创建computer服务"></a>创建computer服务</h2><pre><code>openstack service create --name nova --description &quot;OpenStack Compute&quot; compute
+</code></pre><h2 id="创建nova的endpoint"><a href="#创建nova的endpoint" class="headerlink" title="创建nova的endpoint"></a>创建nova的endpoint</h2><pre><code>openstack endpoint create --region RegionOne compute public http://controller:8774/v2.1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne compute internal http://controller:8774/v2.1/%\(tenant_id\)s
+openstack endpoint create --region RegionOne compute admin http://controller:8774/v2.1/%\(tenant_id\)s
+</code></pre><h2 id="安装nova相关软件"><a href="#安装nova相关软件" class="headerlink" title="安装nova相关软件"></a>安装nova相关软件</h2><pre><code>yum install -y openstack-nova-api openstack-nova-conductor openstack-nova-cert openstack-nova-console openstack-nova-novncproxy openstack-nova-scheduler
+</code></pre><h2 id="配置nova的配置文件-etc-nova-nova-conf"><a href="#配置nova的配置文件-etc-nova-nova-conf" class="headerlink" title="配置nova的配置文件/etc/nova/nova.conf"></a>配置nova的配置文件/etc/nova/nova.conf</h2><pre><code>cp /etc/nova/nova.conf /etc/nova/nova.conf.bak
+&gt;/etc/nova/nova.conf
+openstack-config --set /etc/nova/nova.conf DEFAULT enabled_apis osapi_compute,metadata
+openstack-config --set /etc/nova/nova.conf DEFAULT auth_strategy keystone
+openstack-config --set /etc/nova/nova.conf DEFAULT my_ip 10.1.1.120
+openstack-config --set /etc/nova/nova.conf DEFAULT use_neutron True
+openstack-config --set /etc/nova/nova.conf DEFAULT firewall_driver nova.virt.firewall.NoopFirewallDriver
+openstack-config --set /etc/nova/nova.conf DEFAULT transport_url rabbit://openstack:devops@controller
+openstack-config --set /etc/nova/nova.conf database connection mysql+pymysql://nova:devops@controller/nova
+openstack-config --set /etc/nova/nova.conf api_database connection mysql+pymysql://nova:devops@controller/nova_api
+openstack-config --set /etc/nova/nova.conf scheduler discover_hosts_in_cells_interval -1
+openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_uri http://controller:5000
+openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_url http://controller:35357
+openstack-config --set /etc/nova/nova.conf keystone_authtoken memcached_servers controller:11211
+openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_type password
+openstack-config --set /etc/nova/nova.conf keystone_authtoken project_domain_name default
+openstack-config --set /etc/nova/nova.conf keystone_authtoken user_domain_name default
+openstack-config --set /etc/nova/nova.conf keystone_authtoken project_name service
+openstack-config --set /etc/nova/nova.conf keystone_authtoken username nova
+openstack-config --set /etc/nova/nova.conf keystone_authtoken password devops
+openstack-config --set /etc/nova/nova.conf keystone_authtoken service_token_roles_required True
+openstack-config --set /etc/nova/nova.conf vnc vncserver_listen 10.1.1.120
+openstack-config --set /etc/nova/nova.conf vnc vncserver_proxyclient_address 10.1.1.120
+openstack-config --set /etc/nova/nova.conf glance api_servers http://controller:9292
+openstack-config --set /etc/nova/nova.conf oslo_concurrency lock_path /var/lib/nova/tmp
+</code></pre><p>注意：其他节点上记得替换IP，还有密码。</p>
+<h2 id="设置cell（单元格）"><a href="#设置cell（单元格）" class="headerlink" title="设置cell（单元格）"></a>设置cell（单元格）</h2><p>关于cell（单元格）的介绍，引用出自于九州云分享的《Ocata组件Nova Cell V2 详解》&amp; 有云的《引入Cells功能最核心要解决的问题就是OpenStack集群的扩展性》两篇文章的整合介绍：<br>OpenStack 在控制平面上的性能瓶颈主要在 Message Queue 和 Database 。尤其是 Message Queue , 随着计算节点的增加，性能变的越来越差，因为openstack里每个资源和接口都是通过消息队列来通信的，有测试表明，当集群规模到了200，一个消息可能要在十几秒后才会响应；为了应对这种情况，引入Cells功能以解决OpenStack集群的扩展性。</p>
+<p>同步下nova数据库</p>
+<pre><code>su -s /bin/sh -c &quot;nova-manage api_db sync&quot; nova
+su -s /bin/sh -c &quot;nova-manage db sync&quot; nova
+</code></pre><p>不用管这个报警</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-10.png" alt="o-10"></p>
+<p>设置cell_v2关联上创建好的数据库nova_cell0</p>
+<pre><code>nova-manage cell_v2 map_cell0 --database_connection mysql+pymysql://root:devops@controller/nova_cell0
+</code></pre><p>创建一个常规cell，名字叫cell1，这个单元格里面将会包含计算节点</p>
+<pre><code>nova-manage cell_v2 create_cell --verbose --name cell1 --database_connection mysql+pymysql://root:devops@controller/nova_cell0 --transport-url rabbit://openstack:devops@controller:5672/
+</code></pre><p>检查部署是否正常</p>
+<pre><code>nova-status upgrade check
+</code></pre><p>如有报错请先运行下面的命令<br>创建和映射cell0，并将现有计算主机和实例映射到单元格中</p>
+<pre><code>nova-manage cell_v2 simple_cell_setup
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-11.png" alt="o-11"></p>
+<p>查看已经创建好的单元格列表</p>
+<pre><code>nova-manage cell_v2 list_cells --verbose
+</code></pre><p>注意，如果有新添加的计算节点，需要运行下面命令来发现，并且添加到单元格中</p>
+<pre><code>nova-manage cell_v2 discover_hosts
+</code></pre><p>当然，你可以在控制节点的nova.conf文件里[scheduler]模块下添加discover_hosts_in_cells_interval=-1 这个设置来自动发现</p>
+<h2 id="安装placement"><a href="#安装placement" class="headerlink" title="安装placement"></a>安装placement</h2><p>从Ocata开始，需要安装配置placement参与nova调度了，不然虚拟机将无法创建！</p>
+<pre><code>yum install -y openstack-nova-placement-api
+</code></pre><p>创建placement用户和placement 服务</p>
+<pre><code>openstack user create --domain default placement --password devops
+openstack role add --project service --user placement admin
+openstack service create --name placement --description &quot;OpenStack Placement&quot; placement
+</code></pre><p>创建placement endpoint</p>
+<pre><code>openstack endpoint create --region RegionOne placement public http://controller:8778
+openstack endpoint create --region RegionOne placement admin http://controller:8778
+openstack endpoint create --region RegionOne placement internal http://controller:8778
+</code></pre><p>把placement 整合到nova.conf里</p>
+<pre><code>openstack-config --set /etc/nova/nova.conf placement auth_url http://controller:35357
+openstack-config --set /etc/nova/nova.conf placement memcached_servers controller:11211
+openstack-config --set /etc/nova/nova.conf placement auth_type password
+openstack-config --set /etc/nova/nova.conf placement project_domain_name default
+openstack-config --set /etc/nova/nova.conf placement user_domain_name default
+openstack-config --set /etc/nova/nova.conf placement project_name service
+openstack-config --set /etc/nova/nova.conf placement username placement
+openstack-config --set /etc/nova/nova.conf placement password devops
+openstack-config --set /etc/nova/nova.conf placement os_region_name RegionOne
+</code></pre><p>配置修改00-nova-placement-api.conf文件，这步没做创建虚拟机的时候会出现禁止访问资源的问题</p>
+<pre><code>cd /etc/httpd/conf.d/
+cp 00-nova-placement-api.conf 00-nova-placement-api.conf.bak
+&gt;00-nova-placement-api.conf
+vim 00-nova-placement-api.conf
+</code></pre><p>添加以下内容：</p>
+<pre><code>Listen 8778
+
+&lt;VirtualHost *:8778&gt;
+WSGIProcessGroup nova-placement-api
+WSGIApplicationGroup %{GLOBAL}
+WSGIPassAuthorization On
+WSGIDaemonProcess nova-placement-api processes=3 threads=1 user=nova group=nova
+WSGIScriptAlias / /usr/bin/nova-placement-api
+&lt;Directory &quot;/&quot;&gt;
+    Order allow,deny
+    Allow from all
+    Require all granted
+&lt;/Directory&gt;
+&lt;IfVersion &gt;= 2.4&gt;
+  ErrorLogFormat &quot;%M&quot;
+&lt;/IfVersion&gt;
+  ErrorLog /var/log/nova/nova-placement-api.log
+&lt;/VirtualHost&gt;
+
+Alias /nova-placement-api /usr/bin/nova-placement-api
+&lt;Location /nova-placement-api&gt;
+  SetHandler wsgi-script
+  Options +ExecCGI
+  WSGIProcessGroup nova-placement-api
+  WSGIApplicationGroup %{GLOBAL}
+  WSGIPassAuthorization On
+&lt;/Location&gt;
+</code></pre><p>重启下httpd服务</p>
+<pre><code>systemctl restart httpd
+</code></pre><p>检查下是否配置成功</p>
+<pre><code>nova-status upgrade check
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-11.png" alt="o-12"></p>
+<h2 id="设置nova相关服务开机启动"><a href="#设置nova相关服务开机启动" class="headerlink" title="设置nova相关服务开机启动"></a>设置nova相关服务开机启动</h2><pre><code>systemctl enable openstack-nova-api.service openstack-nova-cert.service     openstack-nova-consoleauth.service openstack-nova-scheduler.service     openstack-nova-conductor.service openstack-nova-novncproxy.service
+</code></pre><p>启动nova服务：</p>
+<pre><code>systemctl restart openstack-nova-api.service openstack-nova-cert.service openstack-nova-consoleauth.service openstack-nova-scheduler.service openstack-nova-conductor.service openstack-nova-novncproxy.service
+</code></pre><p>查看nova服务：</p>
+<pre><code>systemctl status openstack-nova-api.service openstack-nova-cert.service openstack-nova-consoleauth.service openstack-nova-scheduler.service openstack-nova-conductor.service openstack-nova-novncproxy.service
+
+systemctl list-unit-files |grep openstack-nova-*
+</code></pre><h2 id="验证nova服务"><a href="#验证nova服务" class="headerlink" title="验证nova服务"></a>验证nova服务</h2><pre><code>unset OS_TOKEN OS_URL
+source /root/admin-openrc
+nova service-list
+</code></pre><p><img src="http://oxysobnip.bkt.clouddn.com/o-13.png" alt="o-13"></p>
+<p>openstack endpoint list 查看endpoint list<br>看是否有结果正确输出</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-14.png" alt="o-14"></p>
+<h1 id="安装配置neutron"><a href="#安装配置neutron" class="headerlink" title="安装配置neutron"></a>安装配置neutron</h1><h2 id="创建neutron数据库"><a href="#创建neutron数据库" class="headerlink" title="创建neutron数据库"></a>创建neutron数据库</h2><pre><code>CREATE DATABASE neutron;
+</code></pre><h2 id="创建数据库用户并赋予权限-2"><a href="#创建数据库用户并赋予权限-2" class="headerlink" title="创建数据库用户并赋予权限"></a>创建数据库用户并赋予权限</h2><pre><code>GRANT ALL PRIVILEGES ON neutron.* TO &apos;neutron&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;devops&apos;;
+GRANT ALL PRIVILEGES ON neutron.* TO &apos;neutron&apos;@&apos;%&apos; IDENTIFIED BY &apos;devops&apos;;
+</code></pre><h2 id="创建neutron用户及赋予admin权限"><a href="#创建neutron用户及赋予admin权限" class="headerlink" title="创建neutron用户及赋予admin权限"></a>创建neutron用户及赋予admin权限</h2><pre><code>source /root/admin-openrc
+openstack user create --domain default neutron --password devops
+openstack role add --project service --user neutron admin
+</code></pre><h2 id="创建network服务"><a href="#创建network服务" class="headerlink" title="创建network服务"></a>创建network服务</h2><pre><code>openstack service create --name neutron --description &quot;OpenStack Networking&quot; network
+</code></pre><h2 id="创建endpoint"><a href="#创建endpoint" class="headerlink" title="创建endpoint"></a>创建endpoint</h2><pre><code>openstack endpoint create --region RegionOne network public http://controller:9696
+openstack endpoint create --region RegionOne network internal http://controller:9696
+openstack endpoint create --region RegionOne network admin http://controller:9696
+</code></pre><h2 id="安装neutron相关软件"><a href="#安装neutron相关软件" class="headerlink" title="安装neutron相关软件"></a>安装neutron相关软件</h2><pre><code>yum install openstack-neutron openstack-neutron-ml2 openstack-neutron-linuxbridge ebtables -y
+</code></pre><h2 id="配置neutron配置文件-etc-neutron-neutron-conf"><a href="#配置neutron配置文件-etc-neutron-neutron-conf" class="headerlink" title="配置neutron配置文件/etc/neutron/neutron.conf"></a>配置neutron配置文件/etc/neutron/neutron.conf</h2><pre><code>cp /etc/neutron/neutron.conf /etc/neutron/neutron.conf.bak
+&gt;/etc/neutron/neutron.conf
+openstack-config --set /etc/neutron/neutron.conf DEFAULT core_plugin ml2
+openstack-config --set /etc/neutron/neutron.conf DEFAULT service_plugins router
+openstack-config --set /etc/neutron/neutron.conf DEFAULT allow_overlapping_ips True
+openstack-config --set /etc/neutron/neutron.conf DEFAULT auth_strategy keystone
+openstack-config --set /etc/neutron/neutron.conf DEFAULT transport_url rabbit://openstack:devops@controller
+openstack-config --set /etc/neutron/neutron.conf DEFAULT notify_nova_on_port_status_changes True
+openstack-config --set /etc/neutron/neutron.conf DEFAULT notify_nova_on_port_data_changes True
+openstack-config --set /etc/neutron/neutron.conf keystone_authtoken auth_uri http://controller:5000
+openstack-config --set /etc/neutron/neutron.conf keystone_authtoken auth_url http://controller:35357
+openstack-config --set /etc/neutron/neutron.conf keystone_authtoken memcached_servers controller:11211
+openstack-config --set /etc/neutron/neutron.conf keystone_authtoken auth_type password
+openstack-config --set /etc/neutron/neutron.conf keystone_authtoken project_domain_name default
+openstack-config --set /etc/neutron/neutron.conf keystone_authtoken user_domain_name default
+openstack-config --set /etc/neutron/neutron.conf keystone_authtoken project_name service
+openstack-config --set /etc/neutron/neutron.conf keystone_authtoken username neutron
+openstack-config --set /etc/neutron/neutron.conf keystone_authtoken password devops
+openstack-config --set /etc/neutron/neutron.conf database connection mysql+pymysql://neutron:devops@controller/neutron
+openstack-config --set /etc/neutron/neutron.conf nova auth_url http://controller:35357
+openstack-config --set /etc/neutron/neutron.conf nova auth_type password
+openstack-config --set /etc/neutron/neutron.conf nova project_domain_name default
+openstack-config --set /etc/neutron/neutron.conf nova user_domain_name default
+openstack-config --set /etc/neutron/neutron.conf nova region_name RegionOne
+openstack-config --set /etc/neutron/neutron.conf nova project_name service
+openstack-config --set /etc/neutron/neutron.conf nova username nova
+openstack-config --set /etc/neutron/neutron.conf nova password devops
+openstack-config --set /etc/neutron/neutron.conf oslo_concurrency lock_path /var/lib/neutron/tmp
+</code></pre><h2 id="配置-etc-neutron-plugins-ml2-ml2-conf-ini"><a href="#配置-etc-neutron-plugins-ml2-ml2-conf-ini" class="headerlink" title="配置/etc/neutron/plugins/ml2/ml2_conf.ini"></a>配置/etc/neutron/plugins/ml2/ml2_conf.ini</h2><pre><code>openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers flat,vlan,vxlan
+openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers linuxbridge,l2population
+openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 extension_drivers port_security
+openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types vxlan
+openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 path_mtu 1500
+openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_flat flat_networks provider
+openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_vxlan vni_ranges 1:1000
+openstack-config --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enable_ipset True
+</code></pre><h2 id="配置-etc-neutron-plugins-ml2-linuxbridge-agent-ini"><a href="#配置-etc-neutron-plugins-ml2-linuxbridge-agent-ini" class="headerlink" title="配置/etc/neutron/plugins/ml2/linuxbridge_agent.ini"></a>配置/etc/neutron/plugins/ml2/linuxbridge_agent.ini</h2><pre><code>openstack-config --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini DEFAULT debug false
+openstack-config --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini linux_bridge physical_interface_mappings provider:eth0
+openstack-config --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan enable_vxlan True
+openstack-config --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan local_ip 10.2.2.120
+openstack-config --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan l2_population True
+openstack-config --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini agent prevent_arp_spoofing True
+openstack-config --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup enable_security_group True
+openstack-config --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
+</code></pre><ul>
+<li>注意eth0是外网网卡，一般这里写的网卡名都是能访问外网的，如果不是外网网卡，那么VM就会与外界网络隔离。local_ip 定义的是隧道网络，vxLan下 vm-linuxbridge-&gt;vxlan ——tun—–vxlan-&gt;linuxbridge-vm</li>
+</ul>
+<h2 id="配置-etc-neutron-l3-agent-ini"><a href="#配置-etc-neutron-l3-agent-ini" class="headerlink" title="配置 /etc/neutron/l3_agent.ini"></a>配置 /etc/neutron/l3_agent.ini</h2><pre><code>openstack-config --set /etc/neutron/l3_agent.ini DEFAULT interface_driver neutron.agent.linux.interface.BridgeInterfaceDriver
+openstack-config --set /etc/neutron/l3_agent.ini DEFAULT external_network_bridge
+openstack-config --set /etc/neutron/l3_agent.ini DEFAULT debug false
+</code></pre><h2 id="配置-etc-neutron-dhcp-agent-ini"><a href="#配置-etc-neutron-dhcp-agent-ini" class="headerlink" title="配置/etc/neutron/dhcp_agent.ini"></a>配置/etc/neutron/dhcp_agent.ini</h2><pre><code>openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT interface_driver neutron.agent.linux.interface.BridgeInterfaceDriver
+openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT dhcp_driver neutron.agent.linux.dhcp.Dnsmasq
+openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT enable_isolated_metadata True
+openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT verbose True
+openstack-config --set /etc/neutron/dhcp_agent.ini DEFAULT debug false
+</code></pre><h2 id="重新配置-etc-nova-nova-conf"><a href="#重新配置-etc-nova-nova-conf" class="headerlink" title="重新配置/etc/nova/nova.conf"></a>重新配置/etc/nova/nova.conf</h2><p>配置这步的目的是让compute节点能使用上neutron网络</p>
+<pre><code>openstack-config --set /etc/nova/nova.conf neutron url http://controller:9696
+openstack-config --set /etc/nova/nova.conf neutron auth_url http://controller:35357
+openstack-config --set /etc/nova/nova.conf neutron auth_plugin password
+openstack-config --set /etc/nova/nova.conf neutron project_domain_id default
+openstack-config --set /etc/nova/nova.conf neutron user_domain_id default
+openstack-config --set /etc/nova/nova.conf neutron region_name RegionOne
+openstack-config --set /etc/nova/nova.conf neutron project_name service
+openstack-config --set /etc/nova/nova.conf neutron username neutron
+openstack-config --set /etc/nova/nova.conf neutron password devops
+openstack-config --set /etc/nova/nova.conf neutron service_metadata_proxy True
+openstack-config --set /etc/nova/nova.conf neutron metadata_proxy_shared_secret devops
+</code></pre><h2 id="dnsmasq-neutron-conf配置"><a href="#dnsmasq-neutron-conf配置" class="headerlink" title="dnsmasq-neutron.conf配置"></a>dnsmasq-neutron.conf配置</h2><p>echo “dhcp-option-force=26,1450” &gt;/etc/neutron/dnsmasq-neutron.conf</p>
+<h2 id="配置-etc-neutron-metadata-agent-ini"><a href="#配置-etc-neutron-metadata-agent-ini" class="headerlink" title="配置/etc/neutron/metadata_agent.ini"></a>配置/etc/neutron/metadata_agent.ini</h2><pre><code>openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT nova_metadata_ip controller
+openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT metadata_proxy_shared_secret devops
+openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT metadata_workers 4
+openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT verbose True
+openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT debug false
+openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT nova_metadata_protocol http
+</code></pre><h2 id="创建硬链接"><a href="#创建硬链接" class="headerlink" title="创建硬链接"></a>创建硬链接</h2><pre><code>ln -s /etc/neutron/plugins/ml2/ml2_conf.ini /etc/neutron/plugin.ini
+</code></pre><h2 id="同步数据库"><a href="#同步数据库" class="headerlink" title="同步数据库"></a>同步数据库</h2><pre><code>su -s /bin/sh -c &quot;neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head&quot; neutron
+</code></pre><h2 id="重启nova服务，因为刚才改了nova-conf"><a href="#重启nova服务，因为刚才改了nova-conf" class="headerlink" title="重启nova服务，因为刚才改了nova.conf"></a>重启nova服务，因为刚才改了nova.conf</h2><pre><code>systemctl restart openstack-nova-api.service
+systemctl status openstack-nova-api.service
+</code></pre><h2 id="重启neutron服务并设置开机启动"><a href="#重启neutron服务并设置开机启动" class="headerlink" title="重启neutron服务并设置开机启动"></a>重启neutron服务并设置开机启动</h2><pre><code>systemctl enable neutron-server.service neutron-linuxbridge-agent.service neutron-dhcp-agent.service neutron-metadata-agent.service
+systemctl restart neutron-server.service neutron-linuxbridge-agent.service neutron-dhcp-agent.service neutron-metadata-agent.service
+systemctl status neutron-server.service neutron-linuxbridge-agent.service neutron-dhcp-agent.service neutron-metadata-agent.service
+</code></pre><h2 id="启动neutron-l3-agent-service并设置开机启动"><a href="#启动neutron-l3-agent-service并设置开机启动" class="headerlink" title="启动neutron-l3-agent.service并设置开机启动"></a>启动neutron-l3-agent.service并设置开机启动</h2><pre><code>systemctl enable neutron-l3-agent.service
+systemctl restart neutron-l3-agent.service
+systemctl status neutron-l3-agent.service
+</code></pre><h2 id="执行验证"><a href="#执行验证" class="headerlink" title="执行验证"></a>执行验证</h2><pre><code>source /root/admin-openrc
+neutron ext-list
+neutron agent-list
+</code></pre><h2 id="创建vxLan模式网络，让虚拟机能外出"><a href="#创建vxLan模式网络，让虚拟机能外出" class="headerlink" title="创建vxLan模式网络，让虚拟机能外出"></a>创建vxLan模式网络，让虚拟机能外出</h2><p>a）首先先执行环境变量</p>
+<pre><code>source /root/admin-openrc
+</code></pre><p>b）创建flat模式的public网络，注意这个public是外出网络，必须是flat模式的</p>
+<pre><code>neutron --debug net-create --shared provider --router:external True --provider:network_type flat --provider:physical_network provider
+</code></pre><p>执行完这步，在界面里进行操作，把public网络设置为共享和外部网络。</p>
+<p>c）创建public网络子网，名为public-sub，网段就是192.168.0.1，并且IP范围是50-90（这个一般是给VM用的floating IP了），dns设置为192.168.0.1，网关为192.168.0.1</p>
+<pre><code>neutron subnet-create provider 192.168.0.1/24 --name provider-sub --allocation-pool start=192.168.0.50,end=192.168.0.90 --dns-nameserver 192.168.0.1 --gateway 192.168.0.1
+</code></pre><p>d）创建名为private的私有网络, 网络模式为vxlan</p>
+<pre><code>neutron net-create private --provider:network_type vxlan --router:external False --shared
+</code></pre><p>e）创建名为private-subnet的私有网络子网，网段为192.168.1.0, 这个网段就是虚拟机获取的私有的IP地址</p>
+<pre><code>neutron subnet-create private --name private-subnet --gateway 192.168.1.1 192.168.1.0/24
+</code></pre><p>假如你们公司的私有云环境是用于不同的业务，比如行政、销售、技术等，那么你可以创建3个不同名称的私有网络</p>
+<pre><code>neutron net-create private-office --provider:network_type vxlan --router:external False --shared
+neutron subnet-create private-office --name office-net --gateway 192.168.2.1 192.168.2.0/24
+
+neutron net-create private-sale --provider:network_type vxlan --router:external False --shared
+neutron subnet-create private-sale --name sale-net --gateway 192.168.3.1 192.168.3.0/24
+
+neutron net-create private-technology --provider:network_type vxlan --router:external False --shared
+neutron subnet-create private-technology --name technology-net --gateway 192.168.4.1 192.168.4.0/24
+</code></pre><p>f）创建路由，我们在界面上操作</p>
+<p>点击项目–&gt;网络–&gt;路由–&gt;新建路由</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-15.png" alt="o-15"></p>
+<p>路由名称随便命名，我这里写”router”, 管理员状态，选择”上”(up)，外部网络选择”provider”</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-16.png" alt="o-16"></p>
+<p>点击”新建路由”后，提示创建router创建成功</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-17.png" alt="o-17"></p>
+<p>接着点击”接口”–&gt;”增加接口”</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-18.png" alt="o-18"></p>
+<p>添加一个连接私网的接口，选中”private-office: 192.168.2.0/24”</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-19.png" alt="o-19"></p>
+<p>点击”增加接口”成功后，我们可以看到两个接口先是down的状态，过一会儿刷新下就是running状态（注意，一定得是运行running状态，不然到时候虚拟机网络会出不去）</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-20.png" alt="o-20"></p>
+<h2 id="检查网络服务"><a href="#检查网络服务" class="headerlink" title="检查网络服务"></a>检查网络服务</h2><pre><code>neutron agent-list
+</code></pre><p>看服务是否是笑脸</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-21.png" alt="o-21"></p>
+<h1 id="安装Dashboard"><a href="#安装Dashboard" class="headerlink" title="安装Dashboard"></a>安装Dashboard</h1><h2 id="安装dashboard相关软件包"><a href="#安装dashboard相关软件包" class="headerlink" title="安装dashboard相关软件包"></a>安装dashboard相关软件包</h2><pre><code>yum install openstack-dashboard -y
+</code></pre><h2 id="修改配置文件-etc-openstack-dashboard-local-settings"><a href="#修改配置文件-etc-openstack-dashboard-local-settings" class="headerlink" title="修改配置文件/etc/openstack-dashboard/local_settings"></a>修改配置文件/etc/openstack-dashboard/local_settings</h2><pre><code>vim /etc/openstack-dashboard/local_settings
+</code></pre><p>直接覆盖我给的local_settings文件也行（为了减少出错，用我提供的local_settings文件替换覆盖）</p>
+<p><a href="https://pan.baidu.com/s/1hxN35B5LITfetZDin-6Y5Q" target="_blank" rel="external">百度云盘链接</a>    密码：e4p9</p>
+<h2 id="启动dashboard服务并设置开机启动"><a href="#启动dashboard服务并设置开机启动" class="headerlink" title="启动dashboard服务并设置开机启动"></a>启动dashboard服务并设置开机启动</h2><pre><code>systemctl restart httpd.service memcached.service
+systemctl status httpd.service memcached.service
+</code></pre><p>到此，Controller节点搭建完毕，打开firefox浏览器即可访问 <a href="http://192.168.0.120/dashboard/" target="_blank" rel="external">http://192.168.0.120/dashboard/</a> 可进入openstack界面！</p>
+<p><img src="http://oxysobnip.bkt.clouddn.com/o-22.png" alt="o-22"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;安装Mariadb和RabbitMQ&quot;&gt;&lt;a href=&quot;#安装Mariadb和RabbitMQ&quot; class=&quot;headerlink&quot; title=&quot;安装Mariadb和RabbitMQ&quot;&gt;&lt;/a&gt;安装Mariadb和RabbitMQ&lt;/h1&gt;&lt;h2 id=&quot;搭
     
     </summary>
     
